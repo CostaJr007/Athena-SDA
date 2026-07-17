@@ -1,0 +1,104 @@
+{
+  "n_samples": 1108,
+  "n_features": 26,
+  "log_loss_test": 0.011676347814500332,
+  "accuracy_test": 0.9954954954954955,
+  "macro_f1": 0.9965656565656565,
+  "class_distribution": {
+    "NORMAL": 683,
+    "ANÔMALO": 80,
+    "SUSPEITO": 252,
+    "HOSTIL": 93
+  },
+  "classification_report": {
+    "NORMAL": {
+      "precision": 0.9927536231884058,
+      "recall": 1.0,
+      "f1-score": 0.9963636363636363,
+      "support": 137.0
+    },
+    "ANÔMALO": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 16.0
+    },
+    "SUSPEITO": {
+      "precision": 1.0,
+      "recall": 0.98,
+      "f1-score": 0.98989898989899,
+      "support": 50.0
+    },
+    "HOSTIL": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 19.0
+    },
+    "accuracy": 0.9954954954954955,
+    "macro avg": {
+      "precision": 0.9981884057971014,
+      "recall": 0.995,
+      "f1-score": 0.9965656565656565,
+      "support": 222.0
+    },
+    "weighted avg": {
+      "precision": 0.9955281368324846,
+      "recall": 0.9954954954954955,
+      "f1-score": 0.9954809354809354,
+      "support": 222.0
+    }
+  },
+  "feature_columns": [
+    "semi_major_axis_km",
+    "eccentricity",
+    "inclination_deg",
+    "raan_deg",
+    "mean_motion_rev_per_day",
+    "delta_sma_7d_km",
+    "delta_sma_30d_km",
+    "delta_inc_30d_deg",
+    "maneuver_count_30d",
+    "shannon_entropy_sma_30d",
+    "kolmogorov_proxy_7d",
+    "hurst_exponent_sma",
+    "mandelbrot_tail_score",
+    "adf_pvalue",
+    "williams_threat",
+    "l1_cusum_sma",
+    "spectral_anomaly_rkhs",
+    "chern_simons_proxy",
+    "ricci_mean",
+    "h0_persistent",
+    "h1_persistent",
+    "tle_age_hours",
+    "min_distance_to_military_km",
+    "cointegration_pvalue",
+    "lukasiewicz_implication",
+    "anomaly_score"
+  ],
+  "iforest_columns": [
+    "semi_major_axis_km",
+    "eccentricity",
+    "inclination_deg",
+    "raan_deg",
+    "mean_motion_rev_per_day",
+    "delta_sma_7d_km",
+    "delta_sma_30d_km",
+    "delta_inc_30d_deg",
+    "maneuver_count_30d",
+    "shannon_entropy_sma_30d",
+    "kolmogorov_proxy_7d",
+    "hurst_exponent_sma",
+    "mandelbrot_tail_score",
+    "adf_pvalue",
+    "williams_threat",
+    "l1_cusum_sma",
+    "spectral_anomaly_rkhs",
+    "chern_simons_proxy",
+    "ricci_mean",
+    "h0_persistent",
+    "h1_persistent",
+    "tle_age_hours"
+  ]
+}
