@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATHENA-SDA — Tactical Dossier</title>
+<style>
+/* ── Reset & tokens ─────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:          #121e14;
+  --panel:       rgba(18,30,20,.88);
+  --panel-border:rgba(72,180,90,.38);
+  --primary:     #4fbf68;
+  --primary-dim: rgba(79,191,104,.35);
+  --hostile:     #e85d3a;
+  --suspect:     #e8b93a;
+  --anomaly:     #e8df3a;
+  --nominal:     #4fbf68;
+  --fg:          #d4eeda;
+  --muted:       #6f9e7a;
+  --border:      rgba(79,191,104,.22);
+  --grid:        rgba(79,191,104,.07);
+}
+html{background:#0b130d;color:var(--fg);font-family:"JetBrains Mono","IBM Plex Mono",ui-monospace,monospace;font-size:13px;line-height:1.5;}
+body{
+  background-color:var(--bg);
+  background-image:
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px),
+    radial-gradient(ellipse at 15% 10%,rgba(60,160,80,.18),transparent 60%),
+    radial-gradient(ellipse at 88% 88%,rgba(60,120,80,.12),transparent 55%);
+  background-size:48px 48px,48px 48px,100% 100%,100% 100%;
+  min-height:100vh;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+  background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,.10) 2px,rgba(0,0,0,.10) 3px);}
+
+/* ── Panels ─────────────────────────────────────────────── */
+.panel{position:relative;background:var(--panel);border:1px solid var(--panel-border);backdrop-filter:blur(3px);}
+.panel::before,.panel::after,.panel .ctlb,.panel .cbrb{content:"";position:absolute;width:11px;height:11px;border-color:var(--primary);}
+.panel::before{top:-1px;left:-1px;border-top:2px solid;border-left:2px solid;}
+.panel::after {top:-1px;right:-1px;border-top:2px solid;border-right:2px solid;}
+.panel .ctlb  {bottom:-1px;left:-1px;border-bottom:2px solid var(--primary);border-left:2px solid var(--primary);}
+.panel .cbrb  {bottom:-1px;right:-1px;border-bottom:2px solid var(--primary);border-right:2px solid var(--primary);}
+
+/* ── Utilities ───────────────────────────────────────────── */
+.text-glow{text-shadow:0 0 8px currentColor;}
+.badge{display:inline-flex;align-items:center;gap:5px;border:1px solid currentColor;padding:2px 8px;font-size:10px;letter-spacing:.18em;}
+.badge-HOSTILE{color:var(--hostile);}
+.badge-SUSPECT{color:var(--suspect);}
+.badge-ANOMALY{color:var(--anomaly);}
+.badge-NOMINAL{color:var(--nominal);}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;margin-bottom:12px;border-bottom:1px solid var(--border);}
+.panel-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:.25em;color:var(--primary);text-shadow:0 0 6px var(--primary);}
+.panel-sub{font-size:9px;color:var(--muted);letter-spacing:.18em;}
+
+/* ── Layout ──────────────────────────────────────────────── */
+.page-wrap{max-width:1400px;margin:0 auto;padding:0 10px 20px;}
+
+/* ── Header ──────────────────────────────────────────────── */
+header.dossier-head{margin:10px 0 0;padding:12px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;}
+.back-btn{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--primary);background:rgba(79,191,104,.08);color:var(--primary);
+  padding:6px 14px;font-size:11px;font-weight:700;letter-spacing:.2em;text-decoration:none;
+  box-shadow:0 0 10px rgba(79,191,104,.25);}
+.back-btn:hover{background:var(--primary);color:#0b130d;}
+.head-id{font-size:10px;color:var(--muted);letter-spacing:.2em;}
+.head-name{font-size:17px;font-weight:700;letter-spacing:.2em;color:var(--primary);text-shadow:0 0 8px var(--primary);}
+.head-right{display:flex;align-items:center;gap:10px;}
+
+/* ── Grid ────────────────────────────────────────────────── */
+.grid-2{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin:10px 0 0;}
+.grid-full{margin:10px 0 0;}
+.grid-2-eq{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 0;}
+
+/* ── Identification ──────────────────────────────────────── */
+.id-panel{padding:16px;}
+.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 16px;margin-top:6px;}
+.field dt{font-size:9px;letter-spacing:.25em;color:var(--muted);}
+.field dd{margin-top:2px;font-size:12px;}
+.field-mono dd{color:var(--primary);text-shadow:0 0 5px var(--primary);font-variant-numeric:tabular-nums;}
+.field-span dd{grid-column:span 2;}
+.section-divider{border:none;border-top:1px solid var(--border);margin:14px 0 10px;}
+.section-label{font-size:9px;letter-spacing:.25em;color:var(--muted);margin-bottom:5px;}
+.section-text{font-size:11px;line-height:1.65;color:rgba(212,238,218,.88);}
+
+/* ── Current state ───────────────────────────────────────── */
+.state-panel{padding:16px;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+.stat{border:1px solid var(--border);padding:8px;}
+.stat-k{font-size:9px;letter-spacing:.25em;color:var(--muted);}
+.stat-v{font-size:1.5rem;font-weight:700;color:var(--primary);text-shadow:0 0 8px var(--primary);margin-top:2px;font-variant-numeric:tabular-nums;}
+.ground-track{margin-top:14px;}
+.ground-label{font-size:9px;color:var(--muted);letter-spacing:.18em;text-align:center;margin-top:4px;}
+
+/* ── Orbital elements ────────────────────────────────────── */
+.orbital-panel{padding:16px;}
+.orb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px;}
+
+/* ── ML Assessment ───────────────────────────────────────── */
+.ml-panel{padding:16px;}
+.ml-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
+.conf-section{margin-top:12px;}
+.conf-track-full{width:100%;height:6px;background:rgba(79,191,104,.15);position:relative;overflow:hidden;margin-top:4px;}
+.conf-fill-full{position:absolute;inset-y:0;left:0;}
+
+/* ── Globe ───────────────────────────────────────────────── */
+.globe-panel{padding:16px;}
+.globe-inner{display:grid;grid-template-columns:1fr 300px;gap:16px;margin-top:8px;}
+.globe-frame{position:relative;min-height:320px;display:flex;align-items:center;justify-content:center;}
+.scan-line{position:absolute;inset:0;overflow:hidden;pointer-events:none;}
+.scan-line::after{content:"";position:absolute;left:0;right:0;height:40%;
+  background:linear-gradient(180deg,transparent,rgba(79,191,104,.08),transparent);
+  animation:scan 6s linear infinite;}
+@keyframes scan{0%{transform:translateY(-100%);}100%{transform:translateY(100%);}}
+.globe-stats{display:flex;flex-direction:column;gap:8px;}
+.globe-subpoint{border:1px solid var(--border);padding:12px;}
+.subpoint-label{font-size:9px;letter-spacing:.25em;color:var(--muted);margin-bottom:6px;}
+.subpoint-coords{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.coord-k{font-size:9px;color:var(--muted);}
+.coord-v{font-size:1.4rem;font-weight:700;color:var(--primary);text-shadow:0 0 8px var(--primary);}
+.data-block{border:1px solid var(--border);padding:10px;}
+.row-kv{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;border-bottom:1px solid rgba(79,191,104,.07);}
+.row-kv:last-child{border-bottom:none;}
+.row-k{font-size:9px;letter-spacing:.25em;color:var(--muted);}
+.row-v{color:var(--primary);text-shadow:0 0 4px var(--primary);font-variant-numeric:tabular-nums;font-size:11px;}
+.legend{display:flex;align-items:center;gap:12px;font-size:9px;letter-spacing:.15em;color:var(--muted);}
+.legend-dot{width:8px;height:8px;border-radius:50%;}
+
+/* ── Footer nav ──────────────────────────────────────────── */
+footer.strip{margin:10px 0 0;padding:7px 14px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:9px;letter-spacing:.18em;color:var(--muted);}
+.other-tracks{display:flex;align-items:center;gap:10px;overflow-x:auto;}
+.other-tracks a{color:var(--muted);text-decoration:none;}
+.other-tracks a:hover{color:var(--primary);text-shadow:0 0 5px var(--primary);}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media(max-width:900px){.grid-2{grid-template-columns:1fr;}.globe-inner{grid-template-columns:1fr;}.orb-grid{grid-template-columns:1fr 1fr;}.fields{grid-template-columns:1fr 1fr;}}
+@media(max-width:600px){.grid-2-eq{grid-template-columns:1fr;}.fields{grid-template-columns:1fr;}.stat-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- ── DOSSIER HEADER ── -->
+<header class="panel dossier-head">
+  <div class="ctlb"></div><div class="cbrb"></div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <a class="back-btn" href="index.html">← BACK TO THREAT BOARD</a>
+    <div>
+      <div class="head-id">TACTICAL DOSSIER · NORAD</div>
+      <div class="head-name" id="head-title">— LOADING —</div>
+    </div>
+  </div>
+  <div class="head-right" id="head-right">
+    <!-- flag + threat badge injected by JS -->
+  </div>
+</header>
+
+<!-- ── IDENTIFICATION + CURRENT STATE ── -->
+<div class="grid-2">
+  <div class="panel id-panel">
+    <div class="ctlb"></div><div class="cbrb"></div>
+    <div class="panel-header">
+      <div class="panel-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+        IDENTIFICATION
+      </div>
+      <span class="panel-sub">OSINT · SPACE-TRACK</span>
+    </div>
+    <dl class="fields" id="id-fields"></dl>
+    <hr class="section-divider">
+    <div class="section-label">MISSION</div>
+    <p class="section-text" id="mission-text"></p>
+    <hr class="section-divider">
+    <div class="section-label">INTEL NOTES</div>
+    <p class="section-text" id="notes-text"></p>
+  </div>
+
+  <div class="panel state-panel">
+    <div class="ctlb"></div><div class="cbrb"></div>
+    <div class="panel-header">
+      <div class="panel-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        CURRENT STATE
+      </div>
+      <span class="panel-sub">ECI → LLA</span>
+    </div>
+    <div class="stat-grid" id="state-stats"></div>
+    <div class="ground-track">
+      <svg id="ground-svg" viewBox="0 0 100 50" style="width:100%;aspect-ratio:2/1;border:1px solid rgba(79,191,104,.25);background:rgba(0,0,0,.2)">
+        <!-- graticule lines -->
+        <line x1="0" y1="12.5" x2="100" y2="12.5" stroke="var(--primary)" stroke-opacity=".12" stroke-dasharray="1 2"/>
+        <line x1="0" y1="25"   x2="100" y2="25"   stroke="var(--primary)" stroke-opacity=".3"/>
+        <line x1="0" y1="37.5" x2="100" y2="37.5" stroke="var(--primary)" stroke-opacity=".12" stroke-dasharray="1 2"/>
+        <line x1="25"  y1="0" x2="25"  y2="50" stroke="var(--primary)" stroke-opacity=".12" stroke-dasharray="1 2"/>
+        <line x1="50"  y1="0" x2="50"  y2="50" stroke="var(--primary)" stroke-opacity=".3"/>
+        <line x1="75"  y1="0" x2="75"  y2="50" stroke="var(--primary)" stroke-opacity=".12" stroke-dasharray="1 2"/>
+        <g id="ground-marker"></g>
+      </svg>
+      <div class="ground-label">ORBITAL SUB-POINT · REFRESH T-00:00:15</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ORBITAL ELEMENTS + ML ── -->
+<div class="grid-2-eq">
+  <div class="panel orbital-panel">
+    <div class="ctlb"></div><div class="cbrb"></div>
+    <div class="panel-header">
+      <div class="panel-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-30,12,12)"/><circle cx="12" cy="12" r="2"/></svg>
+        ORBITAL ELEMENTS
+      </div>
+      <span class="panel-sub">TLE MEASUREMENT</span>
+    </div>
+    <div class="orb-grid" id="orb-grid"></div>
+  </div>
+
+  <div class="panel ml-panel">
+    <div class="ctlb"></div><div class="cbrb"></div>
+    <div class="panel-header">
+      <div class="panel-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        ML ASSESSMENT
+      </div>
+      <span class="panel-sub">XGB → FUZZY</span>
+    </div>
+    <div class="ml-grid" id="ml-grid"></div>
+    <div class="conf-section">
+      <div style="font-size:9px;letter-spacing:.25em;color:var(--muted);margin-bottom:4px">CLASSIFIER FUSION</div>
+      <div class="conf-track-full"><div class="conf-fill-full" id="conf-bar"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── GLOBE ── -->
+<div class="grid-full">
+  <div class="panel globe-panel">
+    <div class="ctlb"></div><div class="cbrb"></div>
+    <div class="panel-header">
+      <div class="panel-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+        ORBITAL GLOBE
+      </div>
+      <span class="panel-sub">ORTHOGRAPHIC · REAL-TIME</span>
+    </div>
+    <div class="globe-inner">
+      <div class="globe-frame">
+        <div class="scan-line"></div>
+        <svg id="globe-svg" viewBox="0 0 400 400" style="width:100%;max-width:420px;aspect-ratio:1"></svg>
+      </div>
+      <div class="globe-stats">
+        <div class="globe-subpoint">
+          <div class="subpoint-label">ORBITAL SUB-POINT</div>
+          <div class="subpoint-coords">
+            <div><div class="coord-k">LAT</div><div class="coord-v" id="sp-lat">—</div></div>
+            <div><div class="coord-k">LON</div><div class="coord-v" id="sp-lon">—</div></div>
+          </div>
+        </div>
+        <div class="data-block" id="globe-rows"></div>
+        <div class="legend">
+          <span class="legend-dot" id="threat-dot"></span>TARGET
+          <span class="legend-dot" style="background:rgba(72,180,90,.7)"></span>ORBIT
+          <span class="legend-dot" style="background:var(--primary)"></span>DAY
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER NAV ── -->
+<footer class="panel strip">
+  <div class="ctlb"></div><div class="cbrb"></div>
+  <span>⏱ TLE AGE 03:14:22</span>
+  <div class="other-tracks" id="other-tracks">
+    <span>OTHER TRACKS:</span>
+  </div>
+</footer>
+
+</div><!-- /page-wrap -->
+<script src="tracks.js"></script>
+<script>
+/* ─── Load current track from query string ──────────────── */
+const params = new URLSearchParams(location.search);
+const id = params.get('id');
+const t = getTrack(id);
+
+if (!t) {
+  document.body.innerHTML = '<div style="padding:40px;color:var(--hostile);font-family:monospace"><h1>TRACK NOT FOUND</h1><p style="margin-top:8px;color:var(--muted)">NORAD ID not in curated catalog.</p><a href="index.html" style="color:var(--primary);margin-top:16px;display:inline-block">← RETURN TO C2</a></div>';
+  throw new Error('track not found');
+}
+
+document.title = `#${t.id} · ${t.name} - ATHENA-SDA`;
+
+/* ─── Threat colour helper ──────────────────────────────── */
+const THREAT_COLORS = {HOSTILE:'var(--hostile)',SUSPECT:'var(--suspect)',ANOMALY:'var(--anomaly)',NOMINAL:'var(--nominal)'};
+const tc = THREAT_COLORS[t.threat];
+
+/* ─── Header ────────────────────────────────────────────── */
+document.getElementById('head-title').textContent = `#${t.id} · ${t.name}`;
+document.getElementById('head-right').innerHTML = `
+  <img src="https://flagcdn.com/w80/${t.cc}.png" height="24" alt="${t.country}" style="border:1px solid rgba(79,191,104,.25)">
+  <span style="font-size:9px;letter-spacing:.18em;color:var(--muted)">${t.country}</span>
+  <span class="badge badge-${t.threat}">
+    ${t.threat==='HOSTILE'?'<span style="width:7px;height:7px;background:var(--hostile);animation:blink 1.2s ease-in-out infinite;display:inline-block"></span>':''}
+    ${t.threat}
+  </span>`;
+
+/* ─── ID fields ─────────────────────────────────────────── */
+const FIELDS = [
+  ['NORAD ID', '#'+t.id, true],
+  ['DESIGNATION', t.name, false],
+  ['COUNTRY', t.country, false],
+  ['OPERATOR', t.operator, false, 2],
+  ['PURPOSE', t.purpose, false],
+  ['LAUNCHED', t.launched, false],
+  ['SITE', t.launchSite, false],
+  ['VEHICLE', t.vehicle, false],
+  ['MASS', t.mass, false],
+];
+const idFields = document.getElementById('id-fields');
+FIELDS.forEach(([k, v, mono, span]) => {
+  const dt = document.createElement('dt');
+  const dd = document.createElement('dd');
+  const div = document.createElement('div');
+  div.className = 'field' + (mono ? ' field-mono' : '') + (span ? ' field-span' : '');
+  dt.textContent = k; dd.textContent = v;
+  div.appendChild(dt); div.appendChild(dd);
+  if (span) div.style.gridColumn = `span ${span}`;
+  idFields.appendChild(div);
+});
+document.getElementById('mission-text').textContent = t.mission;
+document.getElementById('notes-text').textContent = t.notes;
+
+/* ─── Current state ─────────────────────────────────────── */
+const stateStats = document.getElementById('state-stats');
+[['LAT', `${t.lat.toFixed(3)}°`], ['LON', `${t.lon.toFixed(3)}°`],
+ ['ALT', `${t.alt} km`], ['VEL', `${t.vel.toFixed(2)} km/s`]].forEach(([k, v]) => {
+  const d = document.createElement('div'); d.className = 'stat';
+  d.innerHTML = `<div class="stat-k">${k}</div><div class="stat-v">${v}</div>`;
+  stateStats.appendChild(d);
+});
+
+/* ground track marker */
+const gx = ((t.lon + 180) / 360) * 100;
+const gy = ((90 - t.lat) / 180) * 50;
+document.getElementById('ground-marker').innerHTML = `
+  <circle cx="${gx}" cy="${gy}" r="1.6" fill="var(--hostile)"/>
+  <circle cx="${gx}" cy="${gy}" r="3.5" fill="none" stroke="var(--hostile)" stroke-opacity=".6">
+    <animate attributeName="r" from="2" to="6" dur="1.6s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" from="0.8" to="0" dur="1.6s" repeatCount="indefinite"/>
+  </circle>`;
+
+/* ─── Orbital elements ──────────────────────────────────── */
+const orbGrid = document.getElementById('orb-grid');
+[['INC', `${t.inclination}°`], ['PERIOD', `${t.period} min`],
+ ['APOGEE', `${t.apogee} km`], ['PERIGEE', `${t.perigee} km`]].forEach(([k, v]) => {
+  const d = document.createElement('div'); d.className = 'stat';
+  d.innerHTML = `<div class="stat-k">${k}</div><div class="stat-v">${v}</div>`;
+  orbGrid.appendChild(d);
+});
+
+/* ─── ML Assessment ─────────────────────────────────────── */
+const mlGrid = document.getElementById('ml-grid');
+[['H(SHAN)', t.ent.toFixed(2)], ['CONFIDENCE', `${(t.conf*100).toFixed(0)}%`]].forEach(([k, v]) => {
+  const d = document.createElement('div'); d.className = 'stat';
+  d.innerHTML = `<div class="stat-k">${k}</div><div class="stat-v">${v}</div>`;
+  mlGrid.appendChild(d);
+});
+const cfill = document.getElementById('conf-bar');
+cfill.style.width = `${t.conf*100}%`;
+cfill.style.background = tc;
+
+/* sub-point display */
+document.getElementById('sp-lat').textContent = `${t.lat.toFixed(3)}°`;
+document.getElementById('sp-lon').textContent = `${t.lon.toFixed(3)}°`;
+document.getElementById('threat-dot').style.background = tc;
+
+/* Globe rows */
+const globeRows = document.getElementById('globe-rows');
+[['ALTITUDE', `${t.alt} km`], ['VELOCITY', `${t.vel.toFixed(2)} km/s`],
+ ['INCLINATION', `${t.inclination}°`], ['PERIOD', `${t.period} min`]].forEach(([k, v]) => {
+  globeRows.innerHTML += `<div class="row-kv"><span class="row-k">${k}</span><span class="row-v">${v}</span></div>`;
+});
+
+/* ─── Globe SVG ─────────────────────────────────────────── */
+(function drawGlobe(lat, lon, alt, inclination, threat) {
+  const R = 120, CX = 200, CY = 200;
+  const toRad = d => d * Math.PI / 180;
+  const project = (latD, lonD, radius = R) => {
+    const phi = toRad(latD), lam = toRad(lonD - lon);
+    const x = Math.cos(phi) * Math.sin(lam);
+    const y = Math.sin(phi);
+    const z = Math.cos(phi) * Math.cos(lam);
+    const a = toRad(lat);
+    const yr = y * Math.cos(a) + z * Math.sin(a);
+    const zr = -y * Math.sin(a) + z * Math.cos(a);
+    return { x: CX + x * radius, y: CY - yr * radius, z: zr };
+  };
+  const buildPath = pts => {
+    let d = '', pen = false;
+    for (const p of pts) {
+      if (p.z >= 0) { d += (pen ? 'L' : 'M') + p.x.toFixed(1) + ',' + p.y.toFixed(1) + ' '; pen = true; }
+      else pen = false;
+    }
+    return d;
+  };
+
+  const svgEl = document.getElementById('globe-svg');
+  const ns = 'http://www.w3.org/2000/svg';
+  const mk = (tag, attrs) => {
+    const el = document.createElementNS(ns, tag);
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    return el;
+  };
+
+  /* defs */
+  const defs = mk('defs', {});
+  defs.innerHTML = `
+    <radialGradient id="g-fill" cx="35%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="rgba(60,160,80,.55)"/>
+      <stop offset="70%" stop-color="rgba(20,60,30,.35)"/>
+      <stop offset="100%" stop-color="rgba(12,20,14,.15)"/>
+    </radialGradient>
+    <radialGradient id="g-atm" cx="50%" cy="50%" r="55%">
+      <stop offset="88%" stop-color="transparent"/>
+      <stop offset="96%" stop-color="rgba(72,180,90,.35)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>`;
+  svgEl.appendChild(defs);
+
+  /* atm halo + globe */
+  svgEl.appendChild(mk('circle', {cx:CX,cy:CY,r:R+18,fill:'url(#g-atm)'}));
+  svgEl.appendChild(mk('circle', {cx:CX,cy:CY,r:R,fill:'url(#g-fill)',stroke:'rgba(72,180,90,.6)','stroke-width':'.75'}));
+
+  /* orbit ring (back dashed) */
+  const orbitR = R * (1 + Math.min(alt, 40000) / 6371);
+  const orbPts = [], inc = toRad(inclination), latR = toRad(lat);
+  for (let a = 0; a <= 360; a += 3) {
+    const th = toRad(a);
+    let ox = Math.cos(th), oy = Math.sin(th)*Math.cos(inc), oz = Math.sin(th)*Math.sin(inc);
+    const yr = oy*Math.cos(latR)+oz*Math.sin(latR), zr = -oy*Math.sin(latR)+oz*Math.cos(latR);
+    orbPts.push({x:CX+ox*orbitR, y:CY-yr*orbitR, z:zr});
+  }
+  const backOrbit = buildPath(orbPts.map(p => p.z < 0 ? {...p,z:1} : {z:-1,x:p.x,y:p.y}).filter((_,i)=>orbPts[i].z<0));
+  svgEl.appendChild(mk('path', {d:backOrbit,fill:'none',stroke:tc,'stroke-opacity':'.25','stroke-dasharray':'2 3','stroke-width':'1'}));
+
+  /* graticule */
+  for (let mLon = -180; mLon <= 180; mLon += 30) {
+    const pts = []; for (let la = -90; la <= 90; la += 4) pts.push(project(la, mLon));
+    svgEl.appendChild(mk('path', {d:buildPath(pts),fill:'none',stroke:'rgba(72,180,90,.3)','stroke-width':'.5'}));
+  }
+  for (const pLat of [-60,-40,-20,0,20,40,60]) {
+    const pts = []; for (let lo = -180; lo <= 180; lo += 4) pts.push(project(pLat, lo));
+    svgEl.appendChild(mk('path', {d:buildPath(pts),fill:'none',stroke:'rgba(72,180,90,.3)','stroke-width':'.5'}));
+  }
+  /* equator + prime meridian */
+  const equPts = []; for (let lo = -180; lo <= 180; lo += 3) equPts.push(project(0, lo));
+  svgEl.appendChild(mk('path', {d:buildPath(equPts),fill:'none',stroke:'rgba(100,200,120,.55)','stroke-width':'.8'}));
+  const pmPts = []; for (let la = -90; la <= 90; la += 3) pmPts.push(project(la, 0));
+  svgEl.appendChild(mk('path', {d:buildPath(pmPts),fill:'none',stroke:'rgba(100,200,120,.55)','stroke-width':'.8'}));
+
+  /* front orbit */
+  const frontOrbit = buildPath(orbPts.filter(p => p.z >= 0));
+  svgEl.appendChild(mk('path', {d:frontOrbit,fill:'none',stroke:tc,'stroke-opacity':'.85','stroke-width':'1.2'}));
+
+  /* sub-satellite crosshair on surface */
+  const sub = project(lat, lon, R);
+  svgEl.appendChild(mk('circle', {cx:sub.x,cy:sub.y,r:'2',fill:'rgba(150,230,170,.9)'}));
+  svgEl.appendChild(mk('circle', {cx:sub.x,cy:sub.y,r:'5',fill:'none',stroke:'rgba(150,230,170,.5)','stroke-dasharray':'1 2'}));
+
+  /* satellite marker */
+  const sat = project(lat, lon, orbitR);
+  svgEl.appendChild(mk('line', {x1:sub.x,y1:sub.y,x2:sat.x,y2:sat.y,stroke:tc,'stroke-opacity':'.5','stroke-dasharray':'2 2','stroke-width':'.75'}));
+  svgEl.appendChild(mk('circle', {cx:sat.x,cy:sat.y,r:'4',fill:tc}));
+  const pulse1 = mk('circle', {cx:sat.x,cy:sat.y,r:'5',fill:'none',stroke:tc,'stroke-opacity':'.7'});
+  pulse1.innerHTML = `<animate attributeName="r" from="5" to="14" dur="1.8s" repeatCount="indefinite"/><animate attributeName="opacity" from=".9" to="0" dur="1.8s" repeatCount="indefinite"/>`;
+  svgEl.appendChild(pulse1);
+  svgEl.appendChild(mk('circle', {cx:sat.x,cy:sat.y,r:'12',fill:'none',stroke:tc,'stroke-opacity':'.25'}));
+
+  /* compass ticks */
+  ['N','E','S','W'].forEach((lbl, i) => {
+    const deg = i * 90;
+    const th = toRad(deg - 90);
+    const x1 = CX + Math.cos(th)*(R+22), y1 = CY + Math.sin(th)*(R+22);
+    const x2 = CX + Math.cos(th)*(R+30), y2 = CY + Math.sin(th)*(R+30);
+    svgEl.appendChild(mk('line', {x1,y1,x2,y2,stroke:'rgba(100,200,120,.6)','stroke-width':'1'}));
+    const txt = mk('text', {x:CX+Math.cos(th)*(R+40), y:CY+Math.sin(th)*(R+40)+3,
+      'text-anchor':'middle',fill:'rgba(100,200,120,.8)','font-size':'10','font-family':'monospace'});
+    txt.textContent = lbl; svgEl.appendChild(txt);
+  });
+
+  /* range rings */
+  [R+45, R+60].forEach(r => svgEl.appendChild(mk('circle', {cx:CX,cy:CY,r,fill:'none',stroke:'rgba(79,191,104,.12)','stroke-dasharray':'1 4'})));
+
+  /* readouts */
+  const addTxt = (x,y,anchor,txt) => {
+    const el = mk('text',{x,y,'text-anchor':anchor,fill:'rgba(100,200,120,.7)','font-size':'9','font-family':'monospace','letter-spacing':'2'});
+    el.textContent=txt; svgEl.appendChild(el);
+  };
+  addTxt(20,24,'start','ECI · J2000');
+  addTxt(20,380,'start',`LAT ${lat.toFixed(2)}° · LON ${lon.toFixed(2)}° · ALT ${alt} KM`);
+  addTxt(380,24,'end',`INC ${inclination}°`);
+})(t.lat, t.lon, t.alt, t.inclination, t.threat);
+
+/* ─── Other tracks nav ──────────────────────────────────── */
+const otherEl = document.getElementById('other-tracks');
+TRACKS.filter(x => x.id !== t.id).slice(0, 7).forEach(x => {
+  const a = document.createElement('a');
+  a.href = `track.html?id=${x.id}`;
+  a.textContent = `#${x.id}`;
+  otherEl.appendChild(a);
+});
+</script>
+</body>
+</html>
