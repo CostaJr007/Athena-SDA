@@ -1,9 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SidePanel from './SidePanel'
 import type { SatInfo } from '@/lib/satellites'
 import { UI_GROUPS, formatUtc } from '@/lib/satellites'
 import type { Telemetry } from '@/components/hud/DetailPanel'
-import { getTrack, type Threat } from '@/lib/athena-tracks'
+import {
+  bobBrief,
+  boardThreat,
+  type BoardEntry,
+  type Threat,
+} from '@/lib/risk-report'
 
 const THREAT_COLOR: Record<Threat, string> = {
   HOSTILE: 'text-rose-300 border-rose-400/40 bg-rose-500/10',
@@ -14,6 +19,7 @@ const THREAT_COLOR: Record<Threat, string> = {
 
 interface RightDockProps {
   sat: SatInfo | null
+  boardEntry: BoardEntry | null
   telemetry: Telemetry | null
   showOrbit: boolean
   showFoot: boolean
@@ -24,10 +30,12 @@ interface RightDockProps {
   onClose: () => void
   totalTracked: number
   fps: number
+  reportDay?: string | null
 }
 
 export default function RightDock({
   sat,
+  boardEntry,
   telemetry,
   showOrbit,
   showFoot,
@@ -38,6 +46,7 @@ export default function RightDock({
   onClose,
   totalTracked,
   fps,
+  reportDay,
 }: RightDockProps) {
   const [chatInput, setChatInput] = useState('')
   const [chatLog, setChatLog] = useState<
@@ -45,31 +54,41 @@ export default function RightDock({
   >([
     {
       role: 'bob',
-      text: 'Cmdr. Bob online. Select a track or ask about active hostiles.',
+      text: 'Cmdr. Bob online. Select a watchlist track for a quant briefing (scores only — no invented threat).',
     },
   ])
 
-  const athena = sat ? getTrack(String(sat.norad)) : null
   const group = sat ? UI_GROUPS[sat.group] : null
+  const threat = boardEntry ? boardThreat(boardEntry) : null
+
+  useEffect(() => {
+    if (!boardEntry) return
+    setChatLog((prev) => {
+      const last = prev[prev.length - 1]
+      const brief = bobBrief(boardEntry)
+      if (last?.role === 'bob' && last.text === brief) return prev
+      const next: { role: 'op' | 'bob'; text: string }[] = [
+        ...prev,
+        { role: 'bob', text: brief },
+      ]
+      return next.slice(-12)
+    })
+  }, [boardEntry?.norad_id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const sendChat = (e: React.FormEvent) => {
     e.preventDefault()
     const q = chatInput.trim()
     if (!q) return
-    setChatLog((prev) => [
-      ...prev,
-      { role: 'op', text: q },
-      {
-        role: 'bob',
-        text: sat
-          ? `Track #${sat.norad} (${sat.name}): ${
-              athena
-                ? `${athena.threat} · conf ${(athena.conf * 100).toFixed(0)}% · H=${athena.ent.toFixed(2)}. ${athena.notes.slice(0, 120)}…`
-                : 'No Athena fusion score yet — orbital telemetry only.'
-            }`
-          : 'No object selected. Open a priority track or click a satellite on the globe.',
-      },
-    ])
+    let reply: string
+    if (boardEntry) {
+      reply = bobBrief(boardEntry)
+    } else if (sat) {
+      reply = `Track #${sat.norad} (${sat.name}): no row in risk_report for this NORAD — orbital telemetry only. Watchlist objects carry IF/pair scores.`
+    } else {
+      reply =
+        'No object selected. Open a priority track on the mission board or click a satellite on the globe.'
+    }
+    setChatLog((prev) => [...prev, { role: 'op', text: q }, { role: 'bob', text: reply }])
     setChatInput('')
   }
 
@@ -77,7 +96,11 @@ export default function RightDock({
     <SidePanel
       side="right"
       title="Track intel"
-      subtitle="Telemetry · fusion · Bob"
+      subtitle={
+        reportDay
+          ? `Telemetry · ML ${reportDay} · Bob`
+          : 'Telemetry · fusion · Bob'
+      }
       footer={
         <div className="flex items-center justify-between text-[10px] text-zinc-500">
           <span>{totalTracked.toLocaleString()} catalog</span>
@@ -113,23 +136,23 @@ export default function RightDock({
             <div className="border border-white/12 bg-black/50 p-3">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <div
-                    className="text-[10px] uppercase tracking-[0.18em] text-zinc-400"
-                  >
-                    {group?.label ?? 'Unknown'}
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-zinc-400">
+                    {boardEntry?.role ?? group?.label ?? 'Unknown'}
+                    {boardEntry?.orbit_class ? ` · ${boardEntry.orbit_class}` : ''}
                   </div>
                   <div className="mt-1 truncate text-sm font-semibold text-zinc-50">
-                    {sat.name}
+                    {boardEntry?.object_name ?? sat.name}
                   </div>
                   <div className="mt-0.5 text-[11px] text-zinc-500">
                     NORAD {sat.norad}
+                    {boardEntry?.country ? ` · ${boardEntry.country}` : ''}
                   </div>
                 </div>
-                {athena && (
+                {threat && (
                   <span
-                    className={`shrink-0 border px-1.5 py-0.5 text-[9px] tracking-wider ${THREAT_COLOR[athena.threat]}`}
+                    className={`shrink-0 border px-1.5 py-0.5 text-[9px] tracking-wider ${THREAT_COLOR[threat]}`}
                   >
-                    {athena.threat}
+                    {threat}
                   </span>
                 )}
               </div>
@@ -187,20 +210,72 @@ export default function RightDock({
                 ))}
               </div>
 
-              {athena && (
+              {boardEntry && (
                 <div className="mt-3 space-y-2 border-t border-white/10 pt-3">
                   <div className="text-[10px] uppercase tracking-[0.18em] text-zinc-500">
-                    Athena fusion
+                    Athena quant · risk_report
                   </div>
                   <div className="grid grid-cols-2 gap-1.5 text-[11px]">
-                    <Metric k="Entropy H" v={athena.ent.toFixed(2)} />
-                    <Metric k="Conf" v={`${(athena.conf * 100).toFixed(0)}%`} />
-                    <Metric k="Country" v={athena.country} />
-                    <Metric k="Purpose" v={athena.purpose} />
+                    <Metric k="Attention" v={boardEntry.attention_score.toFixed(3)} />
+                    <Metric k="Anomaly" v={boardEntry.anomaly_score.toFixed(3)} />
+                    <Metric k="Status" v={boardEntry.status} />
+                    <Metric
+                      k="DQ"
+                      v={
+                        boardEntry.data_quality.reliable
+                          ? `${(boardEntry.data_quality.score * 100).toFixed(0)}%`
+                          : 'UNRELIABLE'
+                      }
+                    />
+                    <Metric
+                      k="Hurst"
+                      v={
+                        boardEntry.features_snapshot.hurst_exponent_sma != null
+                          ? boardEntry.features_snapshot.hurst_exponent_sma.toFixed(3)
+                          : '—'
+                      }
+                    />
+                    <Metric
+                      k="Shannon H"
+                      v={
+                        boardEntry.features_snapshot.shannon_entropy_sma_30d != null
+                          ? boardEntry.features_snapshot.shannon_entropy_sma_30d.toFixed(
+                              2,
+                            )
+                          : '—'
+                      }
+                    />
+                    <Metric k="Purpose" v={boardEntry.purpose || '—'} />
+                    <Metric
+                      k="F10.7"
+                      v={
+                        boardEntry.features_snapshot.f10_7 != null
+                          ? String(boardEntry.features_snapshot.f10_7)
+                          : '—'
+                      }
+                    />
                   </div>
-                  <p className="text-[11px] leading-relaxed text-zinc-400">
-                    {athena.notes}
-                  </p>
+                  {boardEntry.pair && (
+                    <div className="border border-amber-400/25 bg-amber-500/10 px-2.5 py-2 text-[11px] leading-relaxed text-zinc-200">
+                      <div className="text-[9px] uppercase tracking-wider text-amber-200/80">
+                        Pair · {boardEntry.pair.risk_level}
+                      </div>
+                      <div className="mt-1">
+                        vs {boardEntry.pair.asset_name} (#{boardEntry.pair.asset_norad})
+                      </div>
+                      <div className="mt-0.5 text-zinc-400">
+                        dist {boardEntry.pair.min_distance_km.toFixed(1)} km · coint p=
+                        {boardEntry.pair.cointegration_pvalue.toExponential(2)} · risk{' '}
+                        {boardEntry.pair.pair_risk.toFixed(3)}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {sat && !boardEntry && (
+                <div className="mt-3 border border-white/10 bg-black/40 px-2.5 py-2 text-[11px] text-zinc-500">
+                  Not on today&apos;s watchlist board — catalog telemetry only.
                 </div>
               )}
             </div>
@@ -212,7 +287,7 @@ export default function RightDock({
             Bob · tactical copilot
           </div>
           <div className="flex min-h-[160px] flex-1 flex-col border border-white/12 bg-black/60">
-            <div className="athena-scroll min-h-0 flex-1 space-y-2 overflow-y-auto p-2.5">
+            <div className="athena-scroll min-h-[120px] flex-1 space-y-2 overflow-y-auto p-2.5">
               {chatLog.map((m, i) => (
                 <div
                   key={i}
@@ -239,13 +314,16 @@ export default function RightDock({
                 placeholder="Ask Bob about this track…"
                 className="athena-input min-w-0 flex-1 px-2.5 py-1.5 text-[11px]"
               />
-              <button type="submit" className="athena-btn athena-btn-active px-2.5 py-1.5 text-[10px]">
+              <button
+                type="submit"
+                className="athena-btn athena-btn-active px-2.5 py-1.5 text-[10px]"
+              >
                 Send
               </button>
             </form>
           </div>
           <p className="mt-1.5 text-[9px] text-zinc-600">
-            Stub replies · connect watsonx / Bob backend next
+            Local quant brief · watsonx optional later
           </p>
         </section>
       </div>

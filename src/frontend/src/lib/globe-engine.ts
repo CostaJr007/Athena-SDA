@@ -48,6 +48,9 @@ interface GroupRuntime {
   p1: Float32Array
   v1: Float32Array
   sizes: Float32Array
+  /** Base RGB (0–1) painted at build time; used when clearing risk tints. */
+  baseColor: [number, number, number]
+  baseSize: number
 }
 
 const SAT_VERT = /* glsl */ `
@@ -179,6 +182,9 @@ export class GlobeEngine {
   /** hidden replacement set during a dataset swap (old groups keep rendering) */
   private replacement: GroupRuntime[] | null = null
   private desiredVisible: boolean[] = []
+  /** Last risk/role tint maps — reapplied on revealReplacement. */
+  private pendingColors: Map<number, string> | null = null
+  private pendingSizes: Map<number, number> | null = null
   private qualityCap = 1.5
   private appliedW = 0
   private appliedH = 0
@@ -650,10 +656,57 @@ export class GlobeEngine {
         p1,
         v1,
         sizes: siz,
+        baseColor: [c.r, c.g, c.b],
+        baseSize: def.size,
       })
       offset += def.count
     }
     this.replacement = list
+  }
+
+  /**
+   * Tint individual satellites by global catalog index (post build/reveal).
+   * `colors` maps index → CSS hex; missing keys keep the layer base color.
+   * Optional `sizes` boosts pixel size for priority tracks.
+   */
+  applyIndexColors(
+    colors: Map<number, string> | null,
+    sizes?: Map<number, number> | null,
+  ) {
+    this.pendingColors = colors
+    this.pendingSizes = sizes ?? null
+    this.paintIndexColors(this.groups.length ? this.groups : this.replacement)
+  }
+
+  private paintIndexColors(groups: GroupRuntime[] | null) {
+    if (!groups) return
+    const colors = this.pendingColors
+    const sizes = this.pendingSizes
+    for (const g of groups) {
+      const colAttr = g.points.geometry.getAttribute('aColor') as THREE.BufferAttribute
+      const sizeAttr = g.points.geometry.getAttribute('aSize') as THREE.BufferAttribute
+      const colArr = colAttr.array as Float32Array
+      const sizeArr = sizeAttr.array as Float32Array
+      const n = g.count
+      for (let i = 0; i < n; i++) {
+        const globalIdx = g.offset + i
+        const hex = colors?.get(globalIdx)
+        if (hex) {
+          const c = new THREE.Color(hex)
+          colArr[i * 3] = c.r
+          colArr[i * 3 + 1] = c.g
+          colArr[i * 3 + 2] = c.b
+        } else {
+          colArr[i * 3] = g.baseColor[0]
+          colArr[i * 3 + 1] = g.baseColor[1]
+          colArr[i * 3 + 2] = g.baseColor[2]
+        }
+        const sz = sizes?.get(globalIdx)
+        sizeArr[i] = sz ?? g.baseSize
+      }
+      colAttr.needsUpdate = true
+      sizeAttr.needsUpdate = true
+    }
   }
 
   /** Swap the hidden replacement in and dispose of the retired groups. */
@@ -667,6 +720,8 @@ export class GlobeEngine {
       this.groups[i].points.visible = this.desiredVisible[i] !== false
     }
     this.disposeGroups(retired)
+    // Re-tint watchlist after swap (risk colors applied while replacement was hidden)
+    this.paintIndexColors(this.groups)
   }
 
   setGroupVisible(i: number, v: boolean) {

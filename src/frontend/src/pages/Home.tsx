@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as satellite from 'satellite.js'
 import { GlobeEngine } from '@/lib/globe-engine'
 import { UI_GROUPS } from '@/lib/satellites'
@@ -6,6 +6,13 @@ import type { SatInfo } from '@/lib/satellites'
 import { useSimClock } from '@/hooks/useSimClock'
 import { useTleData } from '@/hooks/useTleData'
 import { usePropagator } from '@/hooks/usePropagator'
+import { useRiskReport } from '@/hooks/useRiskReport'
+import { useWalkforward } from '@/hooks/useWalkforward'
+import {
+  boardByNorad,
+  boardColor,
+  boardThreat,
+} from '@/lib/risk-report'
 import IdentityBlock from '@/components/hud/IdentityBlock'
 import ClockCard from '@/components/hud/ClockCard'
 import TimeController from '@/components/hud/TimeController'
@@ -54,6 +61,16 @@ export default function Home() {
   const engineRef = useRef<GlobeEngine | null>(null)
   const clock = useSimClock()
   const { status, dataset, error } = useTleData()
+  const {
+    status: riskStatus,
+    report: riskReport,
+    error: riskError,
+  } = useRiskReport()
+  const {
+    status: walkforwardStatus,
+    summary: walkforwardSummary,
+  } = useWalkforward()
+  const boardMap = useMemo(() => boardByNorad(riskReport), [riskReport])
 
   const [webglOk] = useState(detectWebGL)
   const [ctxLost, setCtxLost] = useState(false)
@@ -186,7 +203,11 @@ export default function Home() {
         }
         setSelectedIndex(index)
         setSelectedNorad(s.norad)
-        engineRef.current?.setSelected(index, UI_GROUPS[s.group]?.color)
+        {
+          const entry = boardMap.get(s.norad)
+          const selColor = entry ? boardColor(entry) : UI_GROUPS[s.group]?.color
+          engineRef.current?.setSelected(index, selColor)
+        }
         setUrlSat(s.norad)
         setRightOpen(true)
         return
@@ -204,10 +225,14 @@ export default function Home() {
       ensureGroupVisible(s.group)
       setSelectedIndex(index)
       setSelectedNorad(s.norad)
-      engineRef.current?.setSelected(index, UI_GROUPS[s.group]?.color)
+      {
+        const entry = boardMap.get(s.norad)
+        const selColor = entry ? boardColor(entry) : UI_GROUPS[s.group]?.color
+        engineRef.current?.setSelected(index, selColor)
+      }
       setUrlSat(s.norad)
     },
-    [ensureGroupVisible],
+    [ensureGroupVisible, boardMap],
   )
 
   // ---- engine lifecycle (created once) ----
@@ -262,7 +287,11 @@ export default function Home() {
         setUrlSat(null)
       } else {
         setSelectedIndex(idx)
-        engineRef.current?.setSelected(idx, UI_GROUPS[dataset.sats[idx].group]?.color)
+        const entry = boardMap.get(norad)
+        const selColor = entry
+          ? boardColor(entry)
+          : UI_GROUPS[dataset.sats[idx].group]?.color
+        engineRef.current?.setSelected(idx, selColor)
       }
     }
 
@@ -280,6 +309,31 @@ export default function Home() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataset])
+
+  // Paint watchlist sats with risk/role colors after catalog + risk load
+  useEffect(() => {
+    if (!dataset || !riskReport) return
+    const colors = new Map<number, string>()
+    const sizes = new Map<number, number>()
+    for (const b of riskReport.board) {
+      const idx = noradMapRef.current.get(b.norad_id)
+      if (idx === undefined) continue
+      colors.set(idx, boardColor(b))
+      const threat = boardThreat(b)
+      const boost =
+        threat === 'HOSTILE' ? 3.4 : threat === 'SUSPECT' ? 2.8 : threat === 'ANOMALY' ? 2.4 : 2.0
+      sizes.set(idx, boost)
+    }
+    // apply after revealReplacement may have swapped groups (next frames)
+    const apply = () => engineRef.current?.applyIndexColors(colors, sizes)
+    apply()
+    const t = window.setTimeout(apply, 400)
+    const t2 = window.setTimeout(apply, 1200)
+    return () => {
+      clearTimeout(t)
+      clearTimeout(t2)
+    }
+  }, [dataset, riskReport])
 
   const { degraded } = usePropagator(dataset, engineRef, clock)
 
@@ -575,6 +629,8 @@ export default function Home() {
 
   const selSat =
     selectedIndex !== null && selectedIndex < sats.length ? sats[selectedIndex] : null
+  const selBoard =
+    selectedNorad !== null ? (boardMap.get(selectedNorad) ?? null) : null
 
   // Auto-open right dock when a sat is selected
   useEffect(() => {
@@ -615,21 +671,37 @@ export default function Home() {
       {/* hover tooltip */}
       {hover && tooltipPos && hoverSat && (
         <div
-          className="pointer-events-none fixed z-30 flex max-w-[200px] items-center gap-1.5 truncate border border-white/15 bg-black/90 px-2.5 py-1"
+          className="pointer-events-none fixed z-30 flex max-w-[240px] items-center gap-1.5 truncate border border-white/15 bg-black/90 px-2.5 py-1"
           style={tooltipPos}
         >
           <span
             className="h-[6px] w-[6px] shrink-0"
-            style={{ background: UI_GROUPS[hoverSat.group]?.color }}
+            style={{
+              background: boardMap.has(hoverSat.norad)
+                ? boardColor(boardMap.get(hoverSat.norad)!)
+                : UI_GROUPS[hoverSat.group]?.color,
+            }}
           />
-          <span className="truncate text-[11px] text-zinc-100">{hoverSat.name}</span>
+          <span className="truncate text-[11px] text-zinc-100">
+            {hoverSat.name}
+            {boardMap.has(hoverSat.norad) && (
+              <span className="text-zinc-400">
+                {' '}
+                · {boardThreat(boardMap.get(hoverSat.norad)!)}
+              </span>
+            )}
+          </span>
         </div>
       )}
 
       {/* ── Command strip ── */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-3 p-2.5 md:p-3">
         <div className="pointer-events-auto flex flex-wrap items-start gap-2">
-          <IdentityBlock total={dataset?.total ?? 0} />
+          <IdentityBlock
+            total={dataset?.total ?? 0}
+            mlDay={riskReport?.day ?? null}
+            watchlistN={riskReport?.summary.n_scored ?? null}
+          />
           <div className="flex flex-col gap-1.5 pt-0.5">
             <button
               type="button"
@@ -705,6 +777,11 @@ export default function Home() {
           onToggleGroup={toggleGroup}
           selectedNorad={selectedNorad}
           onSelectNorad={selectByNorad}
+          report={riskReport}
+          reportStatus={riskStatus}
+          reportError={riskError}
+          walkforward={walkforwardSummary}
+          walkforwardStatus={walkforwardStatus}
           extra={
             <CrossRoutePanel
               enabled={compareOn}
@@ -735,6 +812,7 @@ export default function Home() {
       >
         <RightDock
           sat={selSat}
+          boardEntry={selBoard}
           telemetry={telemetry}
           showOrbit={showOrbit}
           showFoot={showFoot}
@@ -745,6 +823,7 @@ export default function Home() {
           onClose={() => selectSat(null)}
           totalTracked={dataset?.total ?? 0}
           fps={fps}
+          reportDay={riskReport?.day ?? null}
         />
       </div>
 
@@ -754,7 +833,8 @@ export default function Home() {
       </div>
 
       <div className="pointer-events-none absolute bottom-1 left-1/2 z-10 hidden -translate-x-1/2 text-[10px] tracking-wider text-zinc-600 md:block">
-        ATHENA-SDA · live TLE · SGP4 · conjunction lab
+        ATHENA-SDA · live TLE · SGP4 · risk_report
+        {riskReport ? ` · ${riskReport.day}` : ''} · conjunction lab
       </div>
 
       {degraded && (

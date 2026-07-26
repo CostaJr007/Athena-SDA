@@ -1,9 +1,9 @@
 # Athena-SDA — Handoff de sessão (continuar)
 
-**Última atualização:** 2026-07-25 (Linux)  
+**Última atualização:** 2026-07-26 (Linux)  
 **Workspace:** `/run/media/adeilsoncosta/Novo volume/Athena-SDA`  
 **Sessão anterior (Windows):** `D:\Athena-SDA` — mesmo disco/projeto; handoff antigo migrado para cá.  
-**Repo GitHub:** https://github.com/CostaJr007/Athena-SDA (remoto ainda **atrasado** vs disco)
+**Repo GitHub:** https://github.com/CostaJr007/Athena-SDA
 
 Use este arquivo no início da próxima sessão: *“leia docs/SESSION_HANDOFF.md e continue”*.
 
@@ -130,14 +130,24 @@ Ver lista completa: `python scripts/run_anomaly_monitor.py catalog -v`
 - [x] CLI: `score` (com pares) e `score-pairs`
 - [ ] TCA full SGP4 no backend (front já tem orbit-crossing)
 
-### F. Contrato front (só depois do JSON estável)
-- [ ] Schema `risk_report_latest.json`
-- [ ] RightDock/LeftDock leem JSON
-- [ ] Cores no globo por threat/anomaly
-- [ ] (opcional) painel Event replay walk-forward
+### F. Contrato front — **FEITO 2026-07-26**
+- [x] Schema `athena.risk_report.v1` tipado em `src/frontend/src/lib/risk-report.ts`
+- [x] Snapshot em `src/frontend/public/data/risk_report_latest.json`
+- [x] Hook `useRiskReport` + Mission board (LeftDock) a partir do board real
+- [x] RightDock: attention/anomaly/pair/DQ + Bob stub quant-only
+- [x] Cores/tamanho no globo por threat/role (`GlobeEngine.applyIndexColors`)
+- [x] Sync: `scripts/sync_frontend_data.sh` (após `run-daily`)
+- [x] Painel walk-forward no Mission board (hit/placebo/lead-time)
+- [x] Legenda de cores threat/role + IdentityBlock ML day
 
-### G. Git (quando estável)
-- [ ] Commit organizado + push
+### G. Git
+- [x] Commit local: `f692604` feat: connect tactical UI to risk_report and walk-forward ML
+- [ ] Push origin (falhou sem credenciais GitHub neste ambiente — fazer `git push` na máquina autenticada)
+
+### H. Backlog (não bloqueia demo)
+- [ ] Bob watsonx (opcional) — stub local já usa scores do board
+- [ ] Polish militar pesado do chrome
+- [ ] TCA SGP4 full no backend
 
 ---
 
@@ -158,8 +168,10 @@ python scripts/run_anomaly_monitor.py train-baseline --holdout-days 1
 python scripts/run_anomaly_monitor.py score
 python scripts/run_anomaly_monitor.py run-daily
 
-# Frontend
-cd src/frontend && npm run dev
+# Demo path (sync JSON → UI)
+bash scripts/demo_day.sh
+# full refresh: bash scripts/demo_day.sh --run-daily
+cd src/frontend && npm run dev   # http://127.0.0.1:3000
 ```
 
 ---
@@ -188,7 +200,7 @@ cd src/frontend && npm run dev
 1. Accuracy ~99% no treino sintético = **circular**.  
 2. Ricci/Homologia/Chern-Simons = **proxies**.  
 3. CelesTrak `GROUP=active` pode **403** — usar CATNR (default do ingest).  
-4. Front e pipeline Python **ainda desconectados**.  
+4. Front consome **snapshot** `public/data/risk_report_latest.json` (não API live) — rodar `scripts/sync_frontend_data.sh` após score diário.  
 5. Labels HOSTIL são heurísticos.  
 6. NORADs antigos no README/docs legados podem estar desatualizados vs `watchlist.json`.  
 7. Histórico antigo (`real_tle_history_*`) mistura poucos sats com nomes incorretos — **re-seed HF** substitui a massa.  
@@ -200,10 +212,9 @@ cd src/frontend && npm run dev
 
 ```text
 Leia docs/SESSION_HANDOFF.md e o README.md do Athena-SDA.
-Continue: seed-history --hf (2014+, watchlist do catalog) se precisar re-seed;
-train-baseline, score diário, depois score de pares
-(proximidade/cointegração/TCA). Não redesenhar o front até o JSON
-de risco estar estável. Foco: quant + ML + narrativa militar/Palantir.
+Front já lê risk_report (Mission board + globo). Continuar: commit/push,
+opcional walk-forward replay panel, Bob watsonx, polish militar.
+Operação diária: run-daily → scripts/sync_frontend_data.sh → npm run dev.
 ```
 
 ---

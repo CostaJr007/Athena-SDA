@@ -310,8 +310,15 @@ Alertas: `data/alerts/anomalies_latest.json`.
 
 ```bash
 streamlit run app.py                  # http://localhost:8501
+
+# Demo path: sync JSON ML → UI (opcional: --run-daily)
+bash scripts/demo_day.sh
+
 cd src/frontend && npm install && npm run dev   # UI tática / globo
+# http://127.0.0.1:3000 — Mission board + walk-forward + globo tintado
 ```
+
+Contrato do board: [`docs/SCHEMA_RISK_REPORT.md`](docs/SCHEMA_RISK_REPORT.md).
 
 ---
 
