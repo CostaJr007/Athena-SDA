@@ -11,6 +11,10 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 MODELS_DIR = ROOT / "models"
 DOCS_DIR = ROOT / "docs"
+# Anomaly monitor stores (created by src/tle_store.py)
+HISTORY_DIR = DATA_DIR / "history"
+DAILY_DIR = DATA_DIR / "daily"
+ALERTS_DIR = DATA_DIR / "alerts"
 
 # Optional .env loading (no crash if python-dotenv missing)
 try:
@@ -51,13 +55,26 @@ FEATURE_COLUMNS = [
     "h0_persistent",
     "h1_persistent",
     "tle_age_hours",
-    # Context (filled at inference; may be 0 at pure train windows)
+    # Space weather (solar / geomagnetic) — reduce drag-vs-maneuver confusion
+    "f10_7",
+    "f10_7_adj",
+    "ap_index",
+    "kp_mean",
+    "sunspot_number",
+    "f10_7_delta_7d",
+    "f10_7_mean_7d",
+    "ap_mean_7d",
+    "ap_max_7d",
+    "ap_delta_7d",
+    "geomagnetic_storm",
+    "space_weather_available",
     "min_distance_to_military_km",
     "cointegration_pvalue",
     "lukasiewicz_implication",
 ]
 
-# Isolation Forest trains WITHOUT context/proximity features that require multi-object state
+# Isolation Forest trains WITHOUT multi-object context (proximity / coint)
+# Space weather IS included in IF — part of the "normal climate" background
 IFOREST_COLUMNS = [c for c in FEATURE_COLUMNS if c not in (
     "min_distance_to_military_km",
     "cointegration_pvalue",
@@ -75,8 +92,21 @@ CLASS_NAMES = {
 }
 CLASS_TO_ID = {v: k for k, v in CLASS_NAMES.items()}
 
-# High-value assets treated as "military protected" for proximity (demo catalog)
-MILITARY_ASSET_IDS = {4001, 43941}  # USSF / MILSAT demo targets
+# High-value assets treated as "military protected" for proximity.
+# Prefer data/catalog/watchlist.json (role=asset); fallback keeps old demo IDs.
+def _military_asset_ids() -> set:
+    try:
+        from src.catalog import asset_ids
+
+        ids = asset_ids()
+        if ids:
+            return set(ids)
+    except Exception:
+        pass
+    return {25544, 39166, 28874, 28054}  # ISS + GPS + DMSP fallback
+
+
+MILITARY_ASSET_IDS = _military_asset_ids()
 
 # Default severity weights for Kelly (purpose → severity multiplier)
 PURPOSE_SEVERITY = {

@@ -1,0 +1,228 @@
+{
+  "version": 1,
+  "updated": "2026-07-25",
+  "description": "Watchlist militar-first Athena-SDA. Roles: asset (proteger), suspect (caçar/monitorar), baseline (âncora de normalidade p/ Isolation Forest). NORADs validados via CelesTrak GP (2026-07-25).",
+  "doctrine": {
+    "assets": "Plataformas de alto valor a proteger — proximidade/Kelly elevam severidade quando suspeitos se aproximam.",
+    "suspects": "Plataformas de interesse (recon/SIGINT/experimental/PNT dual-use). Treino e score de comportamento + pares vs assets.",
+    "baseline": "Civis estáveis (EO/meteo/constelação). Ancoram o IF: 'órbita normal' sem narrativa de ameaça."
+  },
+  "objects": [
+    {
+      "norad_id": 25544,
+      "name": "ISS (ZARYA)",
+      "role": "asset",
+      "country": "INTL",
+      "purpose": "crewed_station",
+      "orbit_class": "LEO",
+      "notes": "Plataforma tripulada de alto valor; referência de manobra/station-keeping."
+    },
+    {
+      "norad_id": 39166,
+      "name": "NAVSTAR 68 (USA 242)",
+      "role": "asset",
+      "country": "US",
+      "purpose": "navigation",
+      "orbit_class": "MEO",
+      "notes": "GPS — PNT crítico; ameaça a GNSS é prioridade SDA."
+    },
+    {
+      "norad_id": 28874,
+      "name": "GPS BIIRM-1 (PRN 17)",
+      "role": "asset",
+      "country": "US",
+      "purpose": "navigation",
+      "orbit_class": "MEO",
+      "notes": "Segundo âncora GPS na watchlist."
+    },
+    {
+      "norad_id": 28054,
+      "name": "DMSP 5D-3 F16 (USA 172)",
+      "role": "asset",
+      "country": "US",
+      "purpose": "military",
+      "orbit_class": "LEO",
+      "notes": "Meteorologia militar US (DMSP)."
+    },
+    {
+      "norad_id": 35951,
+      "name": "DMSP 5D-3 F18 (USA 210)",
+      "role": "asset",
+      "country": "US",
+      "purpose": "military",
+      "orbit_class": "LEO",
+      "notes": "DMSP F18 — asset meteo militar."
+    },
+    {
+      "norad_id": 31598,
+      "name": "COSMO-SKYMED 1",
+      "role": "asset",
+      "country": "IT",
+      "purpose": "reconnaissance",
+      "orbit_class": "LEO",
+      "notes": "SAR aliado (Itália); dual-use EO de alto valor."
+    },
+    {
+      "norad_id": 31698,
+      "name": "TERRASAR-X",
+      "role": "asset",
+      "country": "DE",
+      "purpose": "reconnaissance",
+      "orbit_class": "LEO",
+      "notes": "SAR aliado (Alemanha)."
+    },
+    {
+      "norad_id": 41038,
+      "name": "YAOGAN-29",
+      "role": "suspect",
+      "country": "CN",
+      "purpose": "reconnaissance",
+      "orbit_class": "LEO",
+      "notes": "Reconhecimento chinês (série Yaogan) — candidato a manobra/RPO."
+    },
+    {
+      "norad_id": 32289,
+      "name": "YAOGAN-3",
+      "role": "suspect",
+      "country": "CN",
+      "purpose": "reconnaissance",
+      "orbit_class": "LEO",
+      "notes": "Yaogan-3 — recon CN histórico ainda em catálogo."
+    },
+    {
+      "norad_id": 39150,
+      "name": "GAOFEN-1",
+      "role": "suspect",
+      "country": "CN",
+      "purpose": "earth obs",
+      "orbit_class": "LEO",
+      "notes": "EO chinês de alta resolução (Gaofen)."
+    },
+    {
+      "norad_id": 41727,
+      "name": "GAOFEN-3",
+      "role": "suspect",
+      "country": "CN",
+      "purpose": "reconnaissance",
+      "orbit_class": "LEO",
+      "notes": "Gaofen-3 SAR — capacidade dual-use."
+    },
+    {
+      "norad_id": 39208,
+      "name": "SHIYAN-7 (SY-7)",
+      "role": "suspect",
+      "country": "CN",
+      "purpose": "military",
+      "orbit_class": "LEO",
+      "notes": "Experimental chinês (Shiyan) — histórico de manobras/RPO em open source."
+    },
+    {
+      "norad_id": 50321,
+      "name": "SHIYAN-12 01 (SY-12 01)",
+      "role": "suspect",
+      "country": "CN",
+      "purpose": "military",
+      "orbit_class": "LEO",
+      "notes": "Shiyan-12 — plataforma experimental recente."
+    },
+    {
+      "norad_id": 40258,
+      "name": "LUCH (OLYMP-K 1)",
+      "role": "suspect",
+      "country": "RU",
+      "purpose": "sigint",
+      "orbit_class": "GEO",
+      "notes": "Olymp-K / Luch — satélite russo de retransmissão/SIGINT frequentemente citado em shadowing GEO."
+    },
+    {
+      "norad_id": 55841,
+      "name": "LUCH-5X (OLYMP-K 2)",
+      "role": "suspect",
+      "country": "RU",
+      "purpose": "sigint",
+      "orbit_class": "GEO",
+      "notes": "Segundo Olymp-K — par ideal p/ narrativa de perseguição em GEO."
+    },
+    {
+      "norad_id": 48865,
+      "name": "COSMOS 2550",
+      "role": "suspect",
+      "country": "RU",
+      "purpose": "military",
+      "orbit_class": "LEO",
+      "notes": "Cosmos militar russo recente (catálogo público visual)."
+    },
+    {
+      "norad_id": 43603,
+      "name": "BEIDOU-3 M11",
+      "role": "suspect",
+      "country": "CN",
+      "purpose": "navigation",
+      "orbit_class": "MEO",
+      "notes": "Beidou PNT dual-use — contraste com GPS assets."
+    },
+    {
+      "norad_id": 48274,
+      "name": "CSS (TIANHE)",
+      "role": "suspect",
+      "country": "CN",
+      "purpose": "crewed_station",
+      "orbit_class": "LEO",
+      "notes": "Estação espacial chinesa — alto valor adversário / manobras de docking."
+    },
+    {
+      "norad_id": 25994,
+      "name": "TERRA",
+      "role": "baseline",
+      "country": "US",
+      "purpose": "scientific",
+      "orbit_class": "LEO",
+      "notes": "EO científico estável — âncora IF."
+    },
+    {
+      "norad_id": 27424,
+      "name": "AQUA",
+      "role": "baseline",
+      "country": "US",
+      "purpose": "scientific",
+      "orbit_class": "LEO",
+      "notes": "A-Train científico — baseline passivo."
+    },
+    {
+      "norad_id": 43013,
+      "name": "NOAA 20 (JPSS-1)",
+      "role": "baseline",
+      "country": "US",
+      "purpose": "earth obs",
+      "orbit_class": "LEO",
+      "notes": "Meteo polar civil — baixa manobra relativa."
+    },
+    {
+      "norad_id": 39084,
+      "name": "LANDSAT 8",
+      "role": "baseline",
+      "country": "US",
+      "purpose": "earth obs",
+      "orbit_class": "LEO",
+      "notes": "EO civil clássico."
+    },
+    {
+      "norad_id": 28654,
+      "name": "NOAA 18",
+      "role": "baseline",
+      "country": "US",
+      "purpose": "earth obs",
+      "orbit_class": "LEO",
+      "notes": "NOAA legado — série estável."
+    },
+    {
+      "norad_id": 44714,
+      "name": "STARLINK-1008",
+      "role": "baseline",
+      "country": "US",
+      "purpose": "commercial",
+      "orbit_class": "LEO",
+      "notes": "Constelação comercial; station-keeping típico (não hostil)."
+    }
+  ]
+}

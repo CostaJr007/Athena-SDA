@@ -1,0 +1,1541 @@
+{
+  "event_id": "placebo_terra_2015",
+  "type": "placebo_baseline",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past noise/regime). Target is scored at asof. Metrics test whether anomalous noise rises before public report anchors (t_peak), vs placebo baselines. Not a classified ground-truth claim.",
+  "t_start": "2015-01-15",
+  "t_peak": "2015-09-15",
+  "t_end": "2016-03-01",
+  "norad_ids": [
+    25994
+  ],
+  "pair_with": [],
+  "sources": [
+    "Control EO scientific same calendar as Luch Intelsat 2015"
+  ],
+  "notes": "Placebo: não deve mostrar rampa de anomalia como Luch no mesmo período.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 30,
+  "folds": [
+    {
+      "asof": "2015-01-15",
+      "cutoff": "2015-01-12",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.36234857080531835,
+          "window_end": "2015-01-14 16:08:55.207680",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 7.8513312
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0761031709967224,
+            "hurst_exponent_sma": 0.906733383909131,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 2.442469049546347e-05,
+            "delta_sma_7d_km": -0.007664914360248076,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 7.8513312,
+            "f10_7": 131.4,
+            "ap_index": 5.0,
+            "kp_mean": 1.124875,
+            "f10_7_delta_7d": -25.799999999999983,
+            "ap_delta_7d": -2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.045,
+            "cointegration_pvalue": 0.3057,
+            "pair_risk": 0.7433,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5718718568623933
+        }
+      }
+    },
+    {
+      "asof": "2015-01-29",
+      "cutoff": "2015-01-26",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3705575922725173,
+          "window_end": "2015-01-28 21:17:55.762944",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.70117696
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8205898566665466,
+            "hurst_exponent_sma": 0.9392019734387067,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9080049224599684,
+            "delta_sma_7d_km": -0.005332324564733426,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.70117696,
+            "f10_7": 171.8,
+            "ap_index": 8.0,
+            "kp_mean": 1.8752499999999999,
+            "f10_7_delta_7d": 51.500000000000014,
+            "ap_delta_7d": -1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.976,
+            "cointegration_pvalue": 0.399107,
+            "pair_risk": 0.7106,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5575809165226328
+        }
+      }
+    },
+    {
+      "asof": "2015-02-12",
+      "cutoff": "2015-02-09",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.37099227876605195,
+          "window_end": "2015-02-11 19:51:21.582432",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.14400488
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.418722908066561,
+            "hurst_exponent_sma": 0.9000762847520196,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.9929263326183444e-10,
+            "delta_sma_7d_km": -0.009148578318672662,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.14400488,
+            "f10_7": 127.6,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": -14.300000000000011,
+            "ap_delta_7d": -3.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.999,
+            "cointegration_pvalue": 0.08131,
+            "pair_risk": 0.9718,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7014365254447235
+        }
+      }
+    },
+    {
+      "asof": "2015-02-26",
+      "cutoff": "2015-02-23",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.36406576084310704,
+          "window_end": "2015-02-25 20:03:35.051904",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.94026336
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6100635408770723,
+            "hurst_exponent_sma": 0.8842571482119813,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.007887291958787903,
+            "delta_sma_7d_km": -0.005432670915979543,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 3.94026336,
+            "f10_7": 111.3,
+            "ap_index": 4.0,
+            "kp_mean": 0.8748750000000001,
+            "f10_7_delta_7d": -7.400000000000006,
+            "ap_delta_7d": -5.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.928,
+            "cointegration_pvalue": 0.625403,
+            "pair_risk": 0.6315,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5111545923793982
+        }
+      }
+    },
+    {
+      "asof": "2015-03-12",
+      "cutoff": "2015-03-09",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.34854226873377586,
+          "window_end": "2015-03-11 20:15:57.867264",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.73392576
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.394281147713395,
+            "hurst_exponent_sma": 0.8690136936707145,
+            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.20961694834445682,
+            "delta_sma_7d_km": -0.004425391663062328,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 3.73392576,
+            "f10_7": 126.7,
+            "ap_index": 8.0,
+            "kp_mean": 1.83325,
+            "f10_7_delta_7d": -13.499999999999986,
+            "ap_delta_7d": -1.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.054,
+            "cointegration_pvalue": 0.265046,
+            "pair_risk": 0.7575,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5734690209301991
+        }
+      }
+    },
+    {
+      "asof": "2015-03-26",
+      "cutoff": "2015-03-23",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3646889814792415,
+          "window_end": "2015-03-25 20:28:32.333664",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.52435176
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8258459340407502,
+            "hurst_exponent_sma": 0.9073934567679689,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8443312977022095,
+            "delta_sma_7d_km": -0.007162793388488353,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 3.52435176,
+            "f10_7": 136.1,
+            "ap_index": 8.0,
+            "kp_mean": 1.916625,
+            "f10_7_delta_7d": 26.799999999999997,
+            "ap_delta_7d": -8.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.051,
+            "cointegration_pvalue": 0.737004,
+            "pair_risk": 0.5923,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4898750416656587
+        }
+      }
+    },
+    {
+      "asof": "2015-04-09",
+      "cutoff": "2015-04-06",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.36838178718865144,
+          "window_end": "2015-04-08 17:23:06.772416",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 6.61478544
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.181366328891459,
+            "hurst_exponent_sma": 0.9186085447345613,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8729440795101913,
+            "delta_sma_7d_km": -0.007587029949718271,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 6.61478544,
+            "f10_7": 111.3,
+            "ap_index": 11.0,
+            "kp_mean": 2.54175,
+            "f10_7_delta_7d": -10.0,
+            "ap_delta_7d": 3.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.994,
+            "cointegration_pvalue": 0.070243,
+            "pair_risk": 0.9757,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7024068042348932
+        }
+      }
+    },
+    {
+      "asof": "2015-04-23",
+      "cutoff": "2015-04-20",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3837369228716843,
+          "window_end": "2015-04-22 19:14:06.478368",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.76486712
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6550505394177746,
+            "hurst_exponent_sma": 0.9201409898005498,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9932254160773681,
+            "delta_sma_7d_km": -0.008983097650343552,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.76486712,
+            "f10_7": 140.5,
+            "ap_index": 6.0,
+            "kp_mean": 1.25,
+            "f10_7_delta_7d": -9.699999999999989,
+            "ap_delta_7d": -10.25,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.936,
+            "cointegration_pvalue": 0.978333,
+            "pair_risk": 0.508,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.452081615292258
+        }
+      }
+    },
+    {
+      "asof": "2015-05-07",
+      "cutoff": "2015-05-04",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.35879137037159414,
+          "window_end": "2015-05-06 21:05:45.276000",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.90409
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9053077763737467,
+            "hurst_exponent_sma": 0.896096207223063,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9965143213994213,
+            "delta_sma_7d_km": -0.0037483006562979426,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 2.90409,
+            "f10_7": 146.6,
+            "ap_index": 6.0,
+            "kp_mean": 1.5418749999999999,
+            "f10_7_delta_7d": 44.8,
+            "ap_delta_7d": -2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.057,
+            "cointegration_pvalue": 0.512123,
+            "pair_risk": 0.671,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5305061166672174
+        }
+      }
+    },
+    {
+      "asof": "2015-05-21",
+      "cutoff": "2015-05-18",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.38301933724487036,
+          "window_end": "2015-05-20 21:18:18.185472",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.6949484800000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.155565013329719,
+            "hurst_exponent_sma": 0.8953164143338547,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.05650348579482563,
+            "delta_sma_7d_km": -0.00613905625687039,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.6949484800000003,
+            "f10_7": 101.8,
+            "ap_index": 2.0,
+            "kp_mean": 0.45825,
+            "f10_7_delta_7d": -43.3,
+            "ap_delta_7d": -5.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.039,
+            "cointegration_pvalue": 0.252814,
+            "pair_risk": 0.7618,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5913487017601917
+        }
+      }
+    },
+    {
+      "asof": "2015-06-04",
+      "cutoff": "2015-06-01",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3477472534156442,
+          "window_end": "2015-06-03 19:51:53.778528",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.13506152
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.563716987127796,
+            "hurst_exponent_sma": 0.9288956651887947,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6562381258634925,
+            "delta_sma_7d_km": -0.0020409685566846747,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 4.13506152,
+            "f10_7": 118.0,
+            "ap_index": 2.0,
+            "kp_mean": 0.333125,
+            "f10_7_delta_7d": 25.0,
+            "ap_delta_7d": -2.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.016,
+            "cointegration_pvalue": 0.793779,
+            "pair_risk": 0.5725,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.47136126403703993
+        }
+      }
+    },
+    {
+      "asof": "2015-06-18",
+      "cutoff": "2015-06-15",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.41032012151816694,
+          "window_end": "2015-06-17 20:04:22.831968",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.92699112
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.6282202760321465,
+            "hurst_exponent_sma": 0.8425057886478652,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7781553490269432,
+            "adf_pvalue": 0.4077179078746482,
+            "delta_sma_7d_km": 0.05268602003616252,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.92699112,
+            "f10_7": 150.8,
+            "ap_index": 6.0,
+            "kp_mean": 1.5,
+            "f10_7_delta_7d": 10.900000000000006,
+            "ap_delta_7d": -4.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.06,
+            "cointegration_pvalue": 0.155557,
+            "pair_risk": 0.7958,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6223340546831752
+        }
+      }
+    },
+    {
+      "asof": "2015-07-02",
+      "cutoff": "2015-06-29",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3832745158737377,
+          "window_end": "2015-07-01 18:38:02.592960",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 5.3659463999999994
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6550505394177746,
+            "hurst_exponent_sma": 0.9336108497272655,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9436602367163509,
+            "delta_sma_7d_km": -0.004023616060294444,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 5.3659463999999994,
+            "f10_7": 113.8,
+            "ap_index": 2.0,
+            "kp_mean": 0.37475,
+            "f10_7_delta_7d": 12.0,
+            "ap_delta_7d": -7.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.021,
+            "cointegration_pvalue": 0.022892,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.722473532143182
+        }
+      }
+    },
+    {
+      "asof": "2015-07-16",
+      "cutoff": "2015-07-13",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.37440373512119696,
+          "window_end": "2015-07-15 17:11:36.674880",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 6.8064792
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.615319618251277,
+            "hurst_exponent_sma": 0.9264060808302099,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.052301367319090276,
+            "delta_sma_7d_km": -0.00533884796914208,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 6.8064792,
+            "f10_7": 99.6,
+            "ap_index": 7.0,
+            "kp_mean": 1.7085,
+            "f10_7_delta_7d": -22.30000000000001,
+            "ap_delta_7d": -5.375,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.989,
+            "cointegration_pvalue": 0.144368,
+            "pair_risk": 0.7998,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6083716808045386
+        }
+      }
+    },
+    {
+      "asof": "2015-07-30",
+      "cutoff": "2015-07-27",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3615204607797675,
+          "window_end": "2015-07-29 17:23:57.717312",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 6.60063408
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.865576855207249,
+            "hurst_exponent_sma": 0.9180587075800307,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.2663728323459378,
+            "delta_sma_7d_km": -0.002316294600859692,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 6.60063408,
+            "f10_7": 102.0,
+            "ap_index": 12.0,
+            "kp_mean": 2.25,
+            "f10_7_delta_7d": 12.599999999999994,
+            "ap_delta_7d": 3.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 503.938,
+            "cointegration_pvalue": 0.020134,
+            "pair_risk": 0.556,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.46848420735089547
+        }
+      }
+    },
+    {
+      "asof": "2015-08-13",
+      "cutoff": "2015-08-10",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.35510167850507685,
+          "window_end": "2015-08-12 17:36:13.974912",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 6.39611808
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.860320777833045,
+            "hurst_exponent_sma": 0.8762242436214844,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9939009649366437,
+            "delta_sma_7d_km": -0.002941510126220237,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 6.39611808,
+            "f10_7": 94.8,
+            "ap_index": 10.0,
+            "kp_mean": 2.08325,
+            "f10_7_delta_7d": -26.799999999999997,
+            "ap_delta_7d": -0.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.949,
+            "cointegration_pvalue": 0.931305,
+            "pair_risk": 0.5244,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4482157553272846
+        }
+      }
+    },
+    {
+      "asof": "2015-08-27",
+      "cutoff": "2015-08-24",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.45012628105339825,
+          "window_end": "2015-08-26 17:48:25.366464",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 6.19295376
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0503018554349817,
+            "hurst_exponent_sma": 0.7548646949712129,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.19679385423048218,
+            "delta_sma_7d_km": -0.002860505005628511,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 6.19295376,
+            "f10_7": 110.2,
+            "ap_index": 52.0,
+            "kp_mean": 4.958375,
+            "f10_7_delta_7d": 7.400000000000006,
+            "ap_delta_7d": 34.125,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.942,
+            "cointegration_pvalue": 0.893713,
+            "pair_risk": 0.5376,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4982368264740292
+        }
+      }
+    },
+    {
+      "asof": "2015-09-10",
+      "cutoff": "2015-09-07",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.39373144288974093,
+          "window_end": "2015-09-09 21:18:17.757792",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.69506728
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0105709342684834,
+            "hurst_exponent_sma": 0.9307652488651679,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.010143959634582929,
+            "delta_sma_7d_km": -0.00021380744601628976,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.69506728,
+            "f10_7": 83.5,
+            "ap_index": 12.0,
+            "kp_mean": 2.375,
+            "f10_7_delta_7d": -3.0,
+            "ap_delta_7d": -12.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.91,
+            "cointegration_pvalue": 0.953735,
+            "pair_risk": 0.5166,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4613091493003834
+        }
+      }
+    },
+    {
+      "asof": "2015-09-24",
+      "cutoff": "2015-09-21",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3622616513362243,
+          "window_end": "2015-09-23 21:30:19.425888",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.49460392
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9708400131019856,
+            "hurst_exponent_sma": 0.8838335459146123,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.24416441248345744,
+            "delta_sma_7d_km": -0.000793674000306055,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 2.49460392,
+            "f10_7": 106.8,
+            "ap_index": 7.0,
+            "kp_mean": 1.708375,
+            "f10_7_delta_7d": 0.0,
+            "ap_delta_7d": -7.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.904,
+            "cointegration_pvalue": 0.929906,
+            "pair_risk": 0.5249,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.45171274310130094
+        }
+      }
+    },
+    {
+      "asof": "2015-10-08",
+      "cutoff": "2015-10-05",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.4776837146714765,
+          "window_end": "2015-10-07 20:03:42.171264",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.93828576
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.192250860234642,
+            "hurst_exponent_sma": 0.9678627977614648,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 7.295157836084472e-15,
+            "delta_sma_7d_km": -0.003317404934023216,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.93828576,
+            "f10_7": 79.7,
+            "ap_index": 45.0,
+            "kp_mean": 4.875125000000001,
+            "f10_7_delta_7d": -40.0,
+            "ap_delta_7d": 19.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.027,
+            "cointegration_pvalue": 0.96809,
+            "pair_risk": 0.5114,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.49622767160216447
+        }
+      }
+    },
+    {
+      "asof": "2015-10-22",
+      "cutoff": "2015-10-19",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.35286820021123044,
+          "window_end": "2015-10-21 21:55:09.332544",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.08074096
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9258530145612833,
+            "hurst_exponent_sma": 0.9366332656063374,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.4922450836015573,
+            "delta_sma_7d_km": -0.003275260435657401,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.08074096,
+            "f10_7": 120.5,
+            "ap_index": 4.0,
+            "kp_mean": 1.16675,
+            "f10_7_delta_7d": 13.700000000000003,
+            "ap_delta_7d": -4.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.032,
+            "cointegration_pvalue": 0.748937,
+            "pair_risk": 0.5881,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4822456900950537
+        }
+      }
+    },
+    {
+      "asof": "2015-11-05",
+      "cutoff": "2015-11-02",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3906079890804406,
+          "window_end": "2015-11-04 22:07:37.750944",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.87284696
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.3920788329783202,
+            "hurst_exponent_sma": 0.8796626144253286,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9105539264894078,
+            "delta_sma_7d_km": -0.0019308061555420863,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 1.87284696,
+            "f10_7": 109.9,
+            "ap_index": 16.0,
+            "kp_mean": 2.958375,
+            "f10_7_delta_7d": -3.0,
+            "ap_delta_7d": 2.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.962,
+            "cointegration_pvalue": 0.020503,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7257735950861983
+        }
+      }
+    },
+    {
+      "asof": "2015-11-19",
+      "cutoff": "2015-11-16",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3646455204030073,
+          "window_end": "2015-11-18 20:41:07.077408",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.3147007200000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8603207778330453,
+            "hurst_exponent_sma": 0.9352035709212245,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8225838175486169,
+            "delta_sma_7d_km": -0.006119548355854931,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.3147007200000003,
+            "f10_7": 108.1,
+            "ap_index": 8.0,
+            "kp_mean": 1.708375,
+            "f10_7_delta_7d": 4.599999999999994,
+            "ap_delta_7d": -1.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 421.013,
+            "cointegration_pvalue": 0.195223,
+            "pair_risk": 0.5237,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.45212548418135334
+        }
+      }
+    },
+    {
+      "asof": "2015-12-03",
+      "cutoff": "2015-11-30",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.36996810553350973,
+          "window_end": "2015-12-02 19:14:28.417920",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.7587728
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.050301855434982,
+            "hurst_exponent_sma": 0.8738823305096809,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.8314664860191898e-14,
+            "delta_sma_7d_km": -0.004042943233798724,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.7587728,
+            "f10_7": 94.5,
+            "ap_index": 4.0,
+            "kp_mean": 0.8331250000000001,
+            "f10_7_delta_7d": -9.400000000000006,
+            "ap_delta_7d": -3.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.968,
+            "cointegration_pvalue": 0.971568,
+            "pair_risk": 0.5103,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4471506474900794
+        }
+      }
+    },
+    {
+      "asof": "2015-12-17",
+      "cutoff": "2015-12-14",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.356705774156359,
+          "window_end": "2015-12-16 21:05:29.391360",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.9085024
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9450386975402454,
+            "hurst_exponent_sma": 0.8559107379352242,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9957931195337639,
+            "delta_sma_7d_km": -0.005672381324075104,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.9085024,
+            "f10_7": 117.8,
+            "ap_index": 6.0,
+            "kp_mean": 1.374875,
+            "f10_7_delta_7d": 9.299999999999997,
+            "ap_delta_7d": -7.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.927,
+            "cointegration_pvalue": 0.986831,
+            "pair_risk": 0.505,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4382675983703616
+        }
+      }
+    },
+    {
+      "asof": "2015-12-31",
+      "cutoff": "2015-12-28",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.4425570279254546,
+          "window_end": "2015-12-30 21:18:00.320544",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.69991096
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.010570934268484,
+            "hurst_exponent_sma": 0.8996450464793497,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.005342026001078594,
+            "delta_sma_7d_km": 0.0007807484344084514,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 2.69991096,
+            "f10_7": 96.2,
+            "ap_index": 35.0,
+            "kp_mean": 4.25,
+            "f10_7_delta_7d": -36.499999999999986,
+            "ap_delta_7d": 24.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.004,
+            "cointegration_pvalue": 0.460227,
+            "pair_risk": 0.6892,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5782106625664547
+        }
+      }
+    },
+    {
+      "asof": "2016-01-14",
+      "cutoff": "2016-01-11",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3480069854318763,
+          "window_end": "2016-01-13 19:51:34.059456",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.14053904
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7550576199383077,
+            "hurst_exponent_sma": 0.8772389204751645,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9754809570127566,
+            "delta_sma_7d_km": -0.003531160433340119,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.14053904,
+            "f10_7": 103.2,
+            "ap_index": 7.0,
+            "kp_mean": 1.91675,
+            "f10_7_delta_7d": -0.20000000000000284,
+            "ap_delta_7d": -2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.003,
+            "cointegration_pvalue": 0.187903,
+            "pair_risk": 0.7845,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5880781434443443
+        }
+      }
+    },
+    {
+      "asof": "2016-01-28",
+      "cutoff": "2016-01-25",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.35379300664257934,
+          "window_end": "2016-01-27 20:03:55.485504",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.93458736
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9655839357277816,
+            "hurst_exponent_sma": 0.8753796859326449,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.009283056584313594,
+            "delta_sma_7d_km": -0.0030516770975737018,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.93458736,
+            "f10_7": 109.9,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": 5.900000000000006,
+            "ap_delta_7d": -6.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.004,
+            "cointegration_pvalue": 0.883986,
+            "pair_risk": 0.5409,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4567018529891608
+        }
+      }
+    },
+    {
+      "asof": "2016-02-11",
+      "cutoff": "2016-02-08",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3383976979229506,
+          "window_end": "2016-02-10 21:55:05.006496",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.08194264
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.010570934268484,
+            "hurst_exponent_sma": 0.8444909228745147,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.2455452382486334,
+            "delta_sma_7d_km": -0.0020506332775767078,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 2.08194264,
+            "f10_7": 112.8,
+            "ap_index": 8.0,
+            "kp_mean": 2.041625,
+            "f10_7_delta_7d": -10.5,
+            "ap_delta_7d": -0.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.963,
+            "cointegration_pvalue": 0.96636,
+            "pair_risk": 0.5121,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4339339640653278
+        }
+      }
+    },
+    {
+      "asof": "2016-02-25",
+      "cutoff": "2016-02-22",
+      "n_train_ok": true,
+      "targets": {
+        "25994": {
+          "ok": true,
+          "anomaly_score": 0.3736029123972304,
+          "window_end": "2016-02-24 22:07:12.657792",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.87981728
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.786115012874252,
+            "hurst_exponent_sma": 0.9084102488190562,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.18472335977905496,
+            "delta_sma_7d_km": -0.0008163532138496521,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 1.87981728,
+            "f10_7": 91.7,
+            "ap_index": 5.0,
+            "kp_mean": 1.2918749999999999,
+            "f10_7_delta_7d": -3.200000000000003,
+            "ap_delta_7d": -4.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 25994,
+          "object_name": "TERRA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.938,
+            "cointegration_pvalue": 0.890088,
+            "pair_risk": 0.5388,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4644613105787537
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "25994": {
+      "norad_id": 25994,
+      "object_name": "TERRA",
+      "n_folds_scored": 30,
+      "anomaly_score_mean": 0.3760816315148626,
+      "anomaly_score_max": 0.4776837146714765,
+      "anomaly_score_at_nearest_peak": 0.39373144288974093,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "n_hits_in_window": 0,
+      "lead_time_days": null,
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 2.690934426393508,
+          "late_mean": 2.842856763402135
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.9011126567917537,
+          "late_mean": 0.8899883042658953
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.12280701754385963,
+          "late_mean": 0.05263157894736842
+        }
+      },
+      "pair_risk_max": 1.0,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 18,
+        "pre_peak_anomaly_mean": 0.3750750199851967,
+        "pre_peak_anomaly_max": 0.45012628105339825,
+        "early_pre_peak_mean": 0.36353257548333534,
+        "late_pre_peak_mean": 0.3863596857038198,
+        "noise_ramp": 0.022827110220484448,
+        "pre_peak_pair_risk_max": 1.0,
+        "elevated_noise_before_peak": false
+      },
+      "is_placebo": true
+    }
+  }
+}

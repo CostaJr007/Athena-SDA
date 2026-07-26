@@ -39,10 +39,11 @@ def calculate_kolmogorov_proxy(sma_series):
             tokens.append("S")
 
     s = "".join(tokens).encode("utf-8")
-    if len(s) == 0:
+    if len(s) < 10:
         return 0.0
     compressed = zlib.compress(s)
-    return float(np.clip(len(compressed) / len(s), 0.0, 1.0))
+    comp_len = max(len(compressed) - 11, 1)
+    return float(np.clip(comp_len / len(s), 0.0, 1.0))
 
 def calculate_hurst_exponent(series, max_lag=20):
     """
@@ -247,7 +248,10 @@ def calculate_mandelbrot_tail_anomaly(series, quantile=90):
         return 0.0
     
     # Estimador de Hill para o alfa de cauda
-    alpha = len(tail_data) / np.sum(np.log(tail_data / threshold))
+    log_sum = np.sum(np.log(tail_data / threshold))
+    if log_sum < 1e-9:
+        return 0.0
+    alpha = len(tail_data) / log_sum
     current = series[-1]
     if current < threshold:
         return 0.0

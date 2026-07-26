@@ -1,121 +1,53 @@
-# Frontend — ATHENA-SDA Command Center
+# ATHENA-SDA Frontend
 
-Interface de visualização estática do projeto, inspirada no design do repositório [heartfelt-hub](https://github.com/CostaJr007/heartfelt-hub).
+Tactical Space Domain Awareness console: live globe + TLE propagation + mission board + conjunction lab.
 
-## Localização
+Engine: Three.js / satellite.js (SGP4). Chrome UI is Athena-branded (black panels, emerald accents) — not a consumer “tracker” skin.
 
-```
-src/frontend/
-├── index.html      ← Dashboard principal (Command Center)
-├── track.html      ← Dossier individual de cada objeto rastreado
-└── tracks.js       ← Catálogo de dados dos 7 objetos de demonstração
-```
-
-## Como usar
-
-### Opção 1 — Abrir diretamente no navegador
-
-Abra o arquivo `src/frontend/index.html` no navegador. Por ser estático (sem dependências externas), funciona sem servidor.
-
-```
-# Windows
-start src/frontend/index.html
-
-# Linux / macOS
-xdg-open src/frontend/index.html
-```
-
-### Opção 2 — Servir com Python (recomendado para evitar CORS)
+## Run
 
 ```bash
 cd src/frontend
-python3 -m http.server 8080
-# Acesse: http://localhost:8080
+npm install
+npm run dev
 ```
 
-### Opção 3 — Servir junto com o Streamlit (produção)
+Open http://localhost:3000
 
-O arquivo `app.py` do Streamlit pode servir os arquivos estáticos via:
+## Layout
 
-```python
-import streamlit.components.v1 as components
-components.html(open("src/frontend/index.html").read(), height=900, scrolling=True)
-```
+| Zone | Content |
+|------|---------|
+| Center | 3D Earth + live TLE propagation (Three.js + satellite.js) |
+| **Left dock** | Threat Board + **Route Cross** + catalog layers |
+| **Right dock** | Selected object telemetry / fusion notes + Bob copilot shell |
+| Top | Brand, UTC clock, search, **Cross** toggle |
+| Bottom | Time controller (sim speed) |
 
----
+Docks can be toggled with **Board** / **Intel** buttons.
 
-## Páginas
+### Route Cross (two-orbit compare)
 
-### `index.html` — Command Center
+1. Click **Cross** (top bar) or enable **Route cross** in the left dock.
+2. Fill **slot A** and **slot B** by clicking sats on the globe, search, or “Selected → A/B”.
+3. The globe draws both full orbits (cyan / magenta) and yellow markers:
+   - **Orbit-path proximity** — closest points between the two rings (geometry)
+   - **Time-synced TCA** — minimum range in the next ~3 hours (same sim clock)
+4. Yellow line connects the geometric closest pair.
 
-Dashboard completo com HUD tático militar:
+## Stack
 
-| Painel | Descrição |
-|--------|-----------|
-| **KPI Row** | Tracks ativos, Hostis, Anomalias, Kelly Max |
-| **Orbital Scope** | Radar polar SVG animado com todos os objetos clicáveis |
-| **Threat Board** | Tabela com NORAD ID, país (bandeira), designação, classe, altitude, velocidade, entropia, confiança |
-| **Inference DAG** | Pipeline: Feature Extractor → Isolation Forest → XGBoost → Fuzzy Mamdani → Kelly → Bob/Granite |
-| **Sensor Tasking** | Fila Kelly: 4 sensores GEODSS/Space Fence com alocação f* |
-| **Copilot / Bob** | Chat com Bob (respostas estáticas simuladas + fallback por NORAD ID) |
+- Vite + React + TypeScript + Tailwind
+- Three.js globe engine
+- CelesTrak TLE feeds (+ offline snapshots in `public/data/`)
+- Athena demo catalog: `src/lib/athena-tracks.ts`
 
-### `track.html` — Dossier Individual
+## Next integrations
 
-Página de detalhes por objeto (navegação via `track.html?id=44231`):
+1. Color globe points by Athena threat class
+2. Wire Bob chat to `src/bob.py` / watsonx
+3. Live scores from the Python pipeline instead of static tracks
 
-| Painel | Descrição |
-|--------|-----------|
-| **Identification** | NORAD, designação, operador, site, veículo, missão, notas de intel |
-| **Current State** | LAT/LON/ALT/VEL + mapa equiretangular com marcador animado |
-| **Orbital Elements** | INC, período, apogeu, perigeu |
-| **ML Assessment** | Shannon entropy, confiança, barra de classificação |
-| **Orbital Globe** | Globo 3D ortográfico SVG com anel de órbita real, satélite pulsante |
-| **Footer Nav** | Links rápidos para outros objetos do catálogo |
+## Backup
 
----
-
-## Objetos no Catálogo de Demonstração
-
-| NORAD | Designação | Ameaça |
-|-------|-----------|--------|
-| #44231 | COSMOS-2542 | 🔴 HOSTILE |
-| #48274 | USA-311 | 🟠 SUSPECT |
-| #39227 | SHIYAN-7 | 🟠 SUSPECT |
-| #25544 | ISS (ZARYA) | 🟢 NOMINAL |
-| #43013 | NROL-42 | 🟡 ANOMALY |
-| #02001 | COSMOS-482 DB | 🟡 ANOMALY |
-| #58291 | STARLINK-30412 | 🟢 NOMINAL |
-
----
-
-## Integração com o Pipeline Python
-
-Quando o backend estiver implementado, substituir `tracks.js` por dados gerados dinamicamente:
-
-```python
-# athena/export.py
-import json
-
-def export_tracks_js(tracks_df, path="src/frontend/tracks.js"):
-    """Exporta DataFrame de tracks para JS estático."""
-    tracks = tracks_df.to_dict(orient='records')
-    with open(path, 'w') as f:
-        f.write("const TRACKS = ")
-        json.dump(tracks, f, indent=2)
-        f.write(";\nfunction getTrack(id){return TRACKS.find(t=>t.id===id);}\n")
-```
-
-Ou servir via endpoint Streamlit/FastAPI que retorna o JSON diretamente.
-
----
-
-## Design System
-
-Inspirado em HUD tático militar (heartfelt-hub):
-
-- **Fundo:** Grid verde escuro com efeito scanlines CRT
-- **Cor primária:** Verde fosforescente `oklch(0.82 0.22 148)` → `#4fbf68`
-- **Classes de ameaça:** Hostile (vermelho), Suspect (âmbar), Anomaly (amarelo), Nominal (verde)
-- **Tipografia:** JetBrains Mono / IBM Plex Mono (monoespacial)
-- **Cantos HUD:** Decoração `.panel` com pseudoelementos `::before/::after`
-- **Animações:** Scan line, radar sweep, blink alert, pulso de satélite
+Previous Lovable frontend: `src/frontend-lovable-backup/`

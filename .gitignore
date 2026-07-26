@@ -34,5 +34,23 @@ data/tle/*.txt
 data/features/*.parquet
 data/features/*.feather
 
+# Frontend deps / build
+node_modules/
+src/frontend/node_modules/
+src/frontend/dist/
+*.local
+
+# Backups / legacy trees / chat dumps (not product code)
+leo-live-old/
+src/frontend-lovable-backup/
+chat_history_hackathon*.txt
+
+# Redundant bulk mirrors (parquet/csv curated kept; raw GFZ re-downloadable)
+data/history/epochs.csv
+data/space_weather/Kp_ap_Ap_SN_F107_since_1932.txt
+
 # Jupyter
 .ipynb_checkpoints/
+
+# Agent session dumps
+docs/references/sessions/

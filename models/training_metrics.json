@@ -1,52 +1,61 @@
 {
-  "n_samples": 1108,
-  "n_features": 26,
-  "log_loss_test": 0.011676347814500332,
-  "accuracy_test": 0.9954954954954955,
-  "macro_f1": 0.9965656565656565,
+  "n_samples": 960,
+  "n_features": 38,
+  "training_source": "history_store",
+  "iforest_contamination": 0.08,
+  "anomaly_score_formula": "clip(0.5 - decision_function)",
+  "sample_weights": {
+    "0": 1.0,
+    "1": 1.5,
+    "2": 3.0,
+    "3": 5.0
+  },
+  "log_loss_test": 0.1512584090232849,
+  "accuracy_test": 0.9479166666666666,
+  "macro_f1": 0.8749075037039789,
   "class_distribution": {
-    "NORMAL": 683,
-    "ANÔMALO": 80,
-    "SUSPEITO": 252,
-    "HOSTIL": 93
+    "NORMAL": 459,
+    "ANÔMALO": 42,
+    "SUSPEITO": 281,
+    "HOSTIL": 178
   },
   "classification_report": {
     "NORMAL": {
-      "precision": 0.9927536231884058,
-      "recall": 1.0,
-      "f1-score": 0.9963636363636363,
-      "support": 137.0
+      "precision": 0.9285714285714286,
+      "recall": 0.9891304347826086,
+      "f1-score": 0.9578947368421052,
+      "support": 92.0
     },
     "ANÔMALO": {
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1-score": 1.0,
-      "support": 16.0
+      "precision": 0.8,
+      "recall": 0.5,
+      "f1-score": 0.6153846153846154,
+      "support": 8.0
     },
     "SUSPEITO": {
-      "precision": 1.0,
-      "recall": 0.98,
-      "f1-score": 0.98989898989899,
-      "support": 50.0
+      "precision": 0.9811320754716981,
+      "recall": 0.9285714285714286,
+      "f1-score": 0.9541284403669725,
+      "support": 56.0
     },
     "HOSTIL": {
-      "precision": 1.0,
-      "recall": 1.0,
-      "f1-score": 1.0,
-      "support": 19.0
+      "precision": 0.9722222222222222,
+      "recall": 0.9722222222222222,
+      "f1-score": 0.9722222222222222,
+      "support": 36.0
     },
-    "accuracy": 0.9954954954954955,
+    "accuracy": 0.9479166666666666,
     "macro avg": {
-      "precision": 0.9981884057971014,
-      "recall": 0.995,
-      "f1-score": 0.9965656565656565,
-      "support": 222.0
+      "precision": 0.9204814315663372,
+      "recall": 0.8474810213940649,
+      "f1-score": 0.8749075037039789,
+      "support": 192.0
     },
     "weighted avg": {
-      "precision": 0.9955281368324846,
-      "recall": 0.9954954954954955,
-      "f1-score": 0.9954809354809354,
-      "support": 222.0
+      "precision": 0.9467289982030548,
+      "recall": 0.9479166666666666,
+      "f1-score": 0.9452113821515681,
+      "support": 192.0
     }
   },
   "feature_columns": [
@@ -72,6 +81,18 @@
     "h0_persistent",
     "h1_persistent",
     "tle_age_hours",
+    "f10_7",
+    "f10_7_adj",
+    "ap_index",
+    "kp_mean",
+    "sunspot_number",
+    "f10_7_delta_7d",
+    "f10_7_mean_7d",
+    "ap_mean_7d",
+    "ap_max_7d",
+    "ap_delta_7d",
+    "geomagnetic_storm",
+    "space_weather_available",
     "min_distance_to_military_km",
     "cointegration_pvalue",
     "lukasiewicz_implication",
@@ -99,6 +120,25 @@
     "ricci_mean",
     "h0_persistent",
     "h1_persistent",
-    "tle_age_hours"
+    "tle_age_hours",
+    "f10_7",
+    "f10_7_adj",
+    "ap_index",
+    "kp_mean",
+    "sunspot_number",
+    "f10_7_delta_7d",
+    "f10_7_mean_7d",
+    "ap_mean_7d",
+    "ap_max_7d",
+    "ap_delta_7d",
+    "geomagnetic_storm",
+    "space_weather_available"
+  ],
+  "gemini_coherent_fixes": [
+    "history_store_primary_training",
+    "geometry_in_features_and_labels",
+    "unified_anomaly_score",
+    "light_threat_boost_only",
+    "asymmetric_class_weights"
   ]
 }

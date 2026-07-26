@@ -1,24 +1,40 @@
 import os
+import sys
+from pathlib import Path
+
 import pandas as pd
 from datasets import load_dataset
 from datetime import datetime
 import zoneinfo
 
+# Project root on path (script may be run from any cwd)
+_ROOT = Path(__file__).resolve().parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
 print("Iniciando o download de dados reais e públicos de satélites (Space-Track TLE History)...")
 print("Fonte: Hugging Face Datasets (juliensimon/space-track-tle-history)")
 
-# Lista curada de satélites de interesse para treinamento de Machine Learning.
-# Inclui satélites militares, constelações civis, espiões conhecidos e satélites com manobras bruscas.
-TARGET_SATS = {
-    44231: "YAOGAN-31 (CN Militar/Espião)",
-    43013: "COSMOS-2521 (RU Militar - Manobras Hostis)",
-    25994: "TERRA (US Científico)",
-    41905: "STARLINK-1001 (US Civil/Comercial)",
-    43941: "USSF-22988 (US Militar Alvo)",
-    43603: "SHIYAN-12 (CN Experimento Tecnológico)",
-    39166: "EUTELSAT-36B (FR Comercial GEO)",
-    25544: "ISS (Estação Espacial Internacional)"
-}
+# Prefer data/catalog/watchlist.json (military-first). Fallback list is validated NORADs.
+try:
+    from src.catalog import name_map
+
+    TARGET_SATS = name_map()
+    if not TARGET_SATS:
+        raise RuntimeError("empty catalog")
+except Exception:
+    TARGET_SATS = {
+        25544: "ISS (ZARYA)",
+        39166: "NAVSTAR 68 (USA 242)",
+        41038: "YAOGAN-29",
+        40258: "LUCH (OLYMP-K 1)",
+        39208: "SHIYAN-7 (SY-7)",
+        25994: "TERRA",
+        43013: "NOAA 20 (JPSS-1)",
+        44714: "STARLINK-1008",
+        48274: "CSS (TIANHE)",
+        43603: "BEIDOU-3 M11",
+    }
 
 norad_ids = set(TARGET_SATS.keys())
 

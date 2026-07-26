@@ -1,0 +1,721 @@
+"""
+Anomaly monitoring loop for Athena-SDA — protocolo diário padronizado.
+
+  SÉRIE (passado)  ──treino──►  baseline Isolation Forest  (= "normal" do objeto)
+  DADO NOVO (D0)   ──score───►  janela mais recente vs baseline
+  RELEVÂNCIA       ──alerta──►  desvio forte OU salto dia-a-dia (Δ score)
+
+Ciclo operacional (D = hoje UTC):
+  1) ingest-daily     → anexa TLE frescos à série (direita do histórico)
+  2) train-baseline   → treina SÓ com janelas que terminam ANTES de D−holdout
+                        (padrão holdout=1: "ontem e antes" = normal; "hoje" não entra)
+  3) score            → pontua a ÚLTIMA janela de cada sat vs esse baseline
+  4) relevância       → anomaly_score ≥ thr  e/ou  Δscore vs relatório de ontem
+
+Design:
+  - A série é a memória; o modelo não "memoriza o dia de hoje" no treino
+  - Comparação é distribuiçãoal (IF) + contextual (SW, pares, DQ)
+  - Alerta só com dado confiável (data quality gate)
+"""
+from __future__ import annotations
+
+import json
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Sequence, Tuple
+
+import joblib
+import numpy as np
+import pandas as pd
+from sklearn.ensemble import IsolationForest
+
+from src.config import IFOREST_COLUMNS, MODELS_DIR, FEATURE_COLUMNS
+from src.models import extract_satellite_features, load_models, predict_threat
+from src.tle_store import (
+    ALERTS_DIR,
+    DATA_DIR,
+    DEFAULT_WATCHLIST,
+    ensure_dirs,
+    history_as_sat_histories,
+    load_history,
+)
+
+
+def _watchlist_names() -> dict:
+    try:
+        from src.catalog import name_map
+
+        return name_map() or dict(DEFAULT_WATCHLIST)
+    except Exception:
+        return dict(DEFAULT_WATCHLIST)
+
+
+def _watchlist_meta(norad_id: int) -> dict:
+    try:
+        from src.catalog import get_meta
+
+        return get_meta(int(norad_id))
+    except Exception:
+        return {
+            "norad_id": int(norad_id),
+            "name": DEFAULT_WATCHLIST.get(int(norad_id), str(norad_id)),
+            "role": "unknown",
+            "country": "UNKNOWN",
+            "purpose": "unknown",
+            "orbit_class": "LEO",
+        }
+
+FEATURES_DIR = DATA_DIR / "features"
+IFOREST_MONITOR_PATH = MODELS_DIR / "isolation_forest_monitor.joblib"
+MONITOR_META_PATH = MODELS_DIR / "anomaly_monitor_meta.json"
+WINDOW = 20  # epochs required by extract_satellite_features
+
+
+# ── Data quality (light gate) ───────────────────────────────────────────────
+
+def data_quality_score(
+    hist: pd.DataFrame,
+    *,
+    reference_time: Optional[pd.Timestamp] = None,
+) -> Dict[str, Any]:
+    """
+    Simple DQ metrics for the latest state of a history series.
+    Low score → do not treat anomaly as HOSTIL; mark UNRELIABLE.
+
+    tle_age is recomputed vs reference_time (asof) or UTC now — never trusts
+    frozen 0.0 placeholders from parquet ingest.
+    """
+    from src.models import tle_age_hours_at
+
+    issues: List[str] = []
+    score = 1.0
+
+    if len(hist) < WINDOW:
+        return {"score": 0.0, "issues": ["insufficient_history"], "reliable": False}
+
+    last = hist.iloc[-1]
+    age = tle_age_hours_at(
+        last.get("timestamp"),
+        reference_time=reference_time,
+        fallback=float(last.get("tle_age_hours", 24.0) or 24.0),
+    )
+    if age > 72:
+        score -= 0.35
+        issues.append(f"tle_stale_{age:.0f}h")
+    elif age > 36:
+        score -= 0.15
+        issues.append(f"tle_aging_{age:.0f}h")
+
+    # Gaps in timeline
+    ts = pd.to_datetime(hist["timestamp"], utc=True, errors="coerce")
+    if ts.notna().sum() >= 2:
+        gaps = ts.diff().dt.total_seconds().dropna() / 3600.0
+        max_gap = float(gaps.max()) if len(gaps) else 0.0
+        if max_gap > 168:  # > 7 days
+            score -= 0.3
+            issues.append(f"gap_{max_gap:.0f}h")
+        elif max_gap > 72:
+            score -= 0.15
+            issues.append(f"gap_{max_gap:.0f}h")
+
+    # Impossible jumps (SMA)
+    sma = hist["semi_major_axis_km"].astype(float).values
+    if len(sma) >= 2:
+        d = np.abs(np.diff(sma))
+        if np.nanmax(d) > 200:  # >200 km single-step LEO is extreme
+            score -= 0.25
+            issues.append("sma_jump")
+
+    # Physical bounds
+    mm = float(last["mean_motion_rev_per_day"])
+    if not (0.5 < mm < 20):
+        score -= 0.4
+        issues.append("mean_motion_oob")
+
+    score = float(np.clip(score, 0.0, 1.0))
+    return {
+        "score": score,
+        "issues": issues,
+        "reliable": score >= 0.45,
+        "tle_age_hours": age,
+    }
+
+
+# ── Feature windows from history ────────────────────────────────────────────
+
+def _select_window_ends(
+    ends: List[int],
+    *,
+    max_windows: int,
+    sample_mode: str = "hybrid",
+) -> List[int]:
+    """
+    sample_mode:
+      recent  — só as últimas N (regime atual)
+      full    — N janelas espaçadas por toda a série
+      hybrid  — metade série longa + metade recente (padrão operacional)
+    """
+    if not ends or max_windows <= 0:
+        return []
+    if len(ends) <= max_windows:
+        return ends
+
+    mode = (sample_mode or "hybrid").lower()
+    if mode == "recent":
+        return ends[-max_windows:]
+    if mode == "full":
+        idx = np.linspace(0, len(ends) - 1, num=max_windows, dtype=int)
+        return [ends[i] for i in sorted(set(idx.tolist()))]
+
+    # hybrid: span history + dense recent tip
+    n_recent = max(1, max_windows // 2)
+    n_span = max_windows - n_recent
+    recent = ends[-n_recent:]
+    older = ends[:-n_recent] if len(ends) > n_recent else []
+    if older and n_span > 0:
+        idx = np.linspace(0, len(older) - 1, num=min(n_span, len(older)), dtype=int)
+        span = [older[i] for i in sorted(set(idx.tolist()))]
+    else:
+        span = []
+    merged = sorted(set(span + recent))
+    # if set collapse, pad with more recent
+    if len(merged) < max_windows:
+        for e in reversed(ends):
+            if e not in merged:
+                merged.append(e)
+            if len(merged) >= max_windows:
+                break
+        merged = sorted(merged)
+    return merged[-max_windows:]
+
+
+def build_feature_windows(
+    sat_histories: Dict[int, pd.DataFrame],
+    *,
+    end_before: Optional[pd.Timestamp] = None,
+    end_after: Optional[pd.Timestamp] = None,
+    step: int = 2,
+    max_windows_per_sat: int = 40,
+    sample_mode: str = "hybrid",
+    names: Optional[Dict[int, str]] = None,
+) -> Tuple[pd.DataFrame, List[Dict[str, Any]]]:
+    """
+    Sliding windows of length WINDOW → feature rows for IF training / scoring.
+
+    end_before: only use windows whose last epoch is < end_before (past train)
+    end_after: only windows with last epoch >= end_after (recent score set)
+    sample_mode: hybrid | recent | full — how to subsample the series
+    """
+    names = names or {}
+    rows: List[Dict[str, float]] = []
+    meta: List[Dict[str, Any]] = []
+
+    for sid, hist in sat_histories.items():
+        h = hist.sort_values("timestamp").reset_index(drop=True)
+        if end_before is not None:
+            h = h[pd.to_datetime(h["timestamp"], utc=True) < end_before]
+        if len(h) < WINDOW:
+            continue
+
+        # indices of window ends
+        ends = list(range(WINDOW, len(h) + 1, step))
+        if end_after is not None:
+            # only windows that end in the recent period
+            filtered = []
+            for e in ends:
+                t_end = pd.to_datetime(h.iloc[e - 1]["timestamp"], utc=True)
+                if t_end >= end_after:
+                    filtered.append(e)
+            ends = filtered
+        ends = _select_window_ends(ends, max_windows=max_windows_per_sat, sample_mode=sample_mode)
+
+        for e in ends:
+            sub = h.iloc[e - WINDOW : e]
+            try:
+                win_end = pd.to_datetime(sub["timestamp"].iloc[-1], utc=True, errors="coerce")
+                cat = _watchlist_meta(int(sid))
+                feats = extract_satellite_features(
+                    sub,
+                    country=str(cat.get("country") or "UNKNOWN"),
+                    purpose=str(cat.get("purpose") or "unknown"),
+                    orbit_class=str(
+                        cat.get("orbit_class")
+                        or ("LEO" if float(sub["semi_major_axis_km"].iloc[-1]) < 8000 else "MEO")
+                    ),
+                    min_distance_to_military_km=500.0,
+                    reference_time=win_end if pd.notnull(win_end) else None,
+                )
+            except Exception:
+                continue
+            rows.append(feats)
+            meta.append(
+                {
+                    "norad_id": int(sid),
+                    "object_name": names.get(int(sid), str(sid)),
+                    "window_end": str(sub["timestamp"].iloc[-1]),
+                    "n_epochs": int(len(sub)),
+                }
+            )
+
+    if not rows:
+        return pd.DataFrame(columns=IFOREST_COLUMNS), []
+
+    X = pd.DataFrame(rows)
+    for c in IFOREST_COLUMNS:
+        if c not in X.columns:
+            X[c] = 0.0
+    X = X[IFOREST_COLUMNS].astype(float).replace([np.inf, -np.inf], 0.0).fillna(0.0)
+    return X, meta
+
+
+# ── Train baseline on the past ──────────────────────────────────────────────
+
+def train_baseline_from_history(
+    *,
+    holdout_days: int = 1,
+    contamination: float = 0.08,
+    n_estimators: int = 200,
+    watchlist: Optional[Sequence[int]] = None,
+    max_windows_per_sat: int = 60,
+    sample_mode: str = "hybrid",
+) -> Dict[str, Any]:
+    """
+    Fit Isolation Forest on feature windows that end BEFORE (now - holdout_days).
+
+    Protocolo: a série até "ontem" (holdout=1) define o normal.
+    O dado de hoje NÃO entra no treino — só no score (comparação).
+    sample_mode=hybrid: cobre a série longa + ponta recente.
+    """
+    ensure_dirs()
+    MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    FEATURES_DIR.mkdir(parents=True, exist_ok=True)
+
+    names = _watchlist_names()
+    ids = list(watchlist) if watchlist is not None else list(names.keys())
+    hists = history_as_sat_histories(norad_ids=ids, min_epochs=WINDOW)
+    if not hists:
+        # fallback: all sats in store
+        hists = history_as_sat_histories(min_epochs=WINDOW)
+    if not hists:
+        raise RuntimeError(
+            "Sem histórico suficiente. Rode: seed-history e/ou ingest-daily antes do treino."
+        )
+
+    cutoff = pd.Timestamp.now(tz="UTC") - timedelta(days=holdout_days)
+    X, meta = build_feature_windows(
+        hists,
+        end_before=cutoff,
+        step=3,
+        max_windows_per_sat=max_windows_per_sat,
+        sample_mode=sample_mode,
+        names=names,
+    )
+    if len(X) < 30:
+        # relax: train on all available past windows without cutoff
+        print("Poucas janelas com holdout — treinando em todo o histórico disponível.")
+        X, meta = build_feature_windows(
+            hists,
+            step=2,
+            max_windows_per_sat=max(80, max_windows_per_sat),
+            sample_mode=sample_mode,
+            names=names,
+        )
+    if len(X) < 15:
+        raise RuntimeError(f"Apenas {len(X)} janelas de features — colete mais histórico.")
+
+    # cobertura temporal das janelas de treino (a "série" do baseline)
+    win_ts = pd.to_datetime([m["window_end"] for m in meta], utc=True, errors="coerce")
+    win_min = str(win_ts.min()) if win_ts.notna().any() else None
+    win_max = str(win_ts.max()) if win_ts.notna().any() else None
+
+    print(
+        f"Treino IF (série=passado): {len(X)} janelas, {X.shape[1]} features, "
+        f"cutoff={cutoff.date()} sample={sample_mode}"
+    )
+    if win_min and win_max:
+        print(f"  cobertura window_end: {win_min[:10]} → {win_max[:10]}")
+    iforest = IsolationForest(
+        n_estimators=n_estimators,
+        contamination=contamination,
+        random_state=42,
+        n_jobs=-1,
+    )
+    iforest.fit(X)
+
+    joblib.dump(iforest, IFOREST_MONITOR_PATH)
+    # Also refresh main isolation_forest used by pipeline if desired
+    joblib.dump(iforest, MODELS_DIR / "isolation_forest.joblib")
+
+    raw = iforest.decision_function(X)
+    scores = np.clip(0.5 - raw, 0.0, 1.0)
+    meta_out = {
+        "protocol": "series_past_train__latest_score",
+        "description": (
+            "Baseline = janelas da série com fim < cutoff (passado). "
+            "Score diário = última janela vs esse baseline. "
+            "holdout_days=1 ⇒ ontem e antes treinam; hoje só compara."
+        ),
+        "trained_at": datetime.now(timezone.utc).isoformat(),
+        "n_windows": int(len(X)),
+        "n_sats": int(len({m["norad_id"] for m in meta})),
+        "holdout_days": holdout_days,
+        "contamination": contamination,
+        "sample_mode": sample_mode,
+        "max_windows_per_sat": max_windows_per_sat,
+        "feature_columns": IFOREST_COLUMNS,
+        "score_mean": float(np.mean(scores)),
+        "score_p95": float(np.percentile(scores, 95)),
+        "score_p99": float(np.percentile(scores, 99)),
+        "cutoff_utc": str(cutoff),
+        "train_window_end_min": win_min,
+        "train_window_end_max": win_max,
+    }
+    MONITOR_META_PATH.write_text(json.dumps(meta_out, indent=2), encoding="utf-8")
+
+    feat_path = FEATURES_DIR / "train_windows_latest.csv"
+    X.assign(**{k: [m[k] for m in meta] for k in ("norad_id", "window_end")}).to_csv(
+        feat_path, index=False
+    )
+    print(f"Modelo salvo: {IFOREST_MONITOR_PATH}")
+    print(f"Features de treino: {feat_path}")
+    return meta_out
+
+
+def _load_previous_day_scores(day: str) -> Dict[int, float]:
+    """Map norad_id → anomaly_score do relatório do dia anterior (para Δ relevância)."""
+    try:
+        d = datetime.strptime(day, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+    except Exception:
+        return {}
+    prev = (d - timedelta(days=1)).strftime("%Y-%m-%d")
+    path = ALERTS_DIR / f"anomalies_{prev}.json"
+    if not path.exists():
+        # tenta latest se for o mesmo "ontem" implícito
+        return {}
+    try:
+        rep = json.loads(path.read_text(encoding="utf-8"))
+        out: Dict[int, float] = {}
+        for a in rep.get("alerts") or []:
+            if a.get("norad_id") is None:
+                continue
+            out[int(a["norad_id"])] = float(a.get("anomaly_score") or 0.0)
+        return out
+    except Exception:
+        return {}
+
+
+def _load_monitor_iforest() -> IsolationForest:
+    path = IFOREST_MONITOR_PATH
+    if not path.exists():
+        path = MODELS_DIR / "isolation_forest.joblib"
+    if not path.exists():
+        raise FileNotFoundError(
+            "Nenhum Isolation Forest de monitor. Rode train-baseline primeiro."
+        )
+    return joblib.load(path)
+
+
+# ── Score daily / latest ────────────────────────────────────────────────────
+
+def score_latest(
+    *,
+    anomaly_threshold: float = 0.55,
+    use_full_pipeline: bool = True,
+    watchlist: Optional[Sequence[int]] = None,
+    with_pairs: bool = True,
+    delta_relevance: float = 0.08,
+) -> Dict[str, Any]:
+    """
+    Compara a **última janela** de cada sat com o baseline treinado na série (passado).
+
+    Relevância (alerta):
+      - anomaly_score ≥ threshold  (desvio vs distribuição da série), ou
+      - Δscore vs relatório de ontem ≥ delta_relevance  (mudança dia-a-dia relevante)
+
+    Writes data/alerts/anomalies_YYYY-MM-DD.json
+    """
+    ensure_dirs()
+    ids = list(watchlist) if watchlist is not None else None
+    hists = history_as_sat_histories(norad_ids=ids, min_epochs=WINDOW)
+    if not hists:
+        hists = history_as_sat_histories(min_epochs=WINDOW)
+    if not hists:
+        raise RuntimeError("Sem satélites com histórico ≥ 20 épocas para scoring.")
+
+    iforest = _load_monitor_iforest()
+    mon_meta = {}
+    if MONITOR_META_PATH.exists():
+        mon_meta = json.loads(MONITOR_META_PATH.read_text(encoding="utf-8"))
+
+    # Optional full stack
+    xgb = None
+    rkhs = None
+    if use_full_pipeline:
+        try:
+            iforest_full, xgb, rkhs, _ = load_models()
+            # Prefer monitor IF for anomaly channel; keep xgb for class
+            _ = iforest_full
+        except Exception as e:
+            print(f"Full pipeline models not loaded ({e}); IF-only scoring.")
+            use_full_pipeline = False
+
+    # Precompute best proximity to protected assets (for feature context)
+    asset_hists: Dict[int, pd.DataFrame] = {}
+    try:
+        from src.catalog import asset_ids
+
+        for aid in asset_ids():
+            if aid in hists:
+                asset_hists[int(aid)] = hists[int(aid)]
+    except Exception:
+        pass
+    if not asset_hists:
+        # fallback: any sat marked military in DEFAULT names — use empty
+        asset_hists = {}
+
+    from src.orbital import min_distance_to_assets as _min_dist_assets
+    from src.engine import calculate_cointegration_pvalue as _coint_p
+
+    alerts: List[Dict[str, Any]] = []
+    day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    prev_scores = _load_previous_day_scores(day)
+    thr_elevated = float(mon_meta.get("score_p95") or max(0.45, anomaly_threshold - 0.05))
+
+    for sid, hist in hists.items():
+        hist = hist.sort_values("timestamp").reset_index(drop=True)
+        sub = hist.iloc[-WINDOW:]
+        win_end = pd.to_datetime(sub["timestamp"].iloc[-1], utc=True, errors="coerce")
+        ref_t = win_end if pd.notnull(win_end) else None
+        # Live score: age vs now (None → now). Prefer last epoch only if far future? Use now for ops.
+        dq = data_quality_score(hist, reference_time=None)
+        cat = _watchlist_meta(int(sid))
+        name = cat.get("name") or DEFAULT_WATCHLIST.get(int(sid), str(sid))
+        sma_last = float(sub["semi_major_axis_km"].iloc[-1])
+        orbit_guess = cat.get("orbit_class") or (
+            "LEO" if sma_last < 8000 else ("GEO" if sma_last > 35000 else "MEO")
+        )
+
+        # Context: distance / coint vs protected assets
+        min_dist = 500.0
+        closest_asset = None
+        coint_p = 1.0
+        if asset_hists:
+            others = {k: v for k, v in asset_hists.items() if k != int(sid)}
+            if others:
+                min_dist, closest_asset = _min_dist_assets(hist, others, cap_km=2000.0)
+                if closest_asset is not None and closest_asset in hists:
+                    try:
+                        from src.pair_score import _align_series
+
+                        sa, aa = _align_series(hist, hists[closest_asset])
+                        coint_p = _coint_p(sa, aa) if len(sa) >= 20 else 1.0
+                    except Exception:
+                        n = min(80, len(hist), len(hists[closest_asset]))
+                        coint_p = _coint_p(
+                            hist["semi_major_axis_km"].astype(float).values[-n:],
+                            hists[closest_asset]["semi_major_axis_km"].astype(float).values[-n:],
+                        )
+
+        try:
+            feats = extract_satellite_features(
+                sub,
+                reference_matrix=rkhs,
+                country=str(cat.get("country") or "UNKNOWN"),
+                purpose=str(cat.get("purpose") or "unknown"),
+                reference_time=None,  # live inference: age vs now
+                orbit_class=str(orbit_guess),
+                min_distance_to_military_km=float(min_dist),
+                cointegration_pvalue=float(coint_p),
+            )
+        except Exception as e:
+            alerts.append(
+                {
+                    "norad_id": int(sid),
+                    "object_name": name,
+                    "role": cat.get("role", "unknown"),
+                    "country": cat.get("country", "UNKNOWN"),
+                    "purpose": cat.get("purpose", "unknown"),
+                    "status": "FEATURE_ERROR",
+                    "error": str(e),
+                    "data_quality": dq,
+                }
+            )
+            continue
+
+        # Isolation Forest anomaly — comparação ponto atual vs série (baseline)
+        row = pd.DataFrame([{c: float(feats.get(c, 0.0)) for c in IFOREST_COLUMNS}])
+        row = row.replace([np.inf, -np.inf], 0.0).fillna(0.0)
+        try:
+            raw = float(iforest.decision_function(row)[0])
+        except Exception:
+            # column mismatch fallback
+            raw = float(iforest.decision_function(row.values)[0])
+        anomaly_score = float(np.clip(0.5 - raw, 0.0, 1.0))
+        feats["anomaly_score"] = anomaly_score
+
+        # Δ vs ontem = relevância temporal (algo mudou de um dia pro outro?)
+        prev = prev_scores.get(int(sid))
+        score_delta = float(anomaly_score - prev) if prev is not None else None
+        changed_relevant = bool(
+            score_delta is not None and score_delta >= delta_relevance and anomaly_score >= thr_elevated * 0.85
+        )
+        series_outlier = bool(anomaly_score >= anomaly_threshold)
+
+        rec: Dict[str, Any] = {
+            "norad_id": int(sid),
+            "object_name": name,
+            "role": cat.get("role", "unknown"),
+            "country": cat.get("country", "UNKNOWN"),
+            "purpose": cat.get("purpose", "unknown"),
+            "orbit_class": orbit_guess,
+            "window_end": str(sub["timestamp"].iloc[-1]),
+            "anomaly_score": anomaly_score,
+            "score_prev_day": prev,
+            "score_delta_1d": score_delta,
+            "series_outlier": series_outlier,
+            "day_over_day_relevant": changed_relevant,
+            "is_anomaly": bool(
+                dq["reliable"] and (series_outlier or changed_relevant)
+            ),
+            "data_quality": dq,
+            "min_distance_to_asset_km": float(min_dist) if asset_hists else None,
+            "closest_asset_norad": int(closest_asset) if closest_asset is not None else None,
+            "cointegration_pvalue": float(coint_p) if asset_hists else None,
+            "features_snapshot": {
+                k: float(feats.get(k, 0.0))
+                for k in (
+                    "delta_sma_7d_km",
+                    "shannon_entropy_sma_30d",
+                    "hurst_exponent_sma",
+                    "kolmogorov_proxy_7d",
+                    "l1_cusum_sma",
+                    "tle_age_hours",
+                    "f10_7",
+                    "f10_7_adj",
+                    "ap_index",
+                    "kp_mean",
+                    "f10_7_delta_7d",
+                    "ap_mean_7d",
+                    "ap_max_7d",
+                    "ap_delta_7d",
+                    "geomagnetic_storm",
+                    "space_weather_available",
+                    "min_distance_to_military_km",
+                    "cointegration_pvalue",
+                )
+            },
+        }
+
+        if not dq["reliable"]:
+            rec["status"] = "UNRELIABLE_DATA"
+            rec["is_anomaly"] = False
+        elif series_outlier:
+            rec["status"] = "ANOMALY"
+        elif changed_relevant:
+            rec["status"] = "CHANGE_RELEVANT"
+        else:
+            rec["status"] = "NOMINAL"
+
+        if use_full_pipeline and xgb is not None:
+            try:
+                ml = predict_threat(iforest, xgb, feats)
+                rec["xgb_class"] = ml["xgb_class"]
+                rec["xgb_confidence"] = ml["xgb_confidence"]
+                rec["xgb_proba"] = ml["xgb_proba"]
+            except Exception as e:
+                rec["xgb_error"] = str(e)
+
+        alerts.append(rec)
+
+    # Sort: anomalies first
+    alerts.sort(key=lambda a: (-float(a.get("anomaly_score", 0)), a.get("norad_id", 0)))
+
+    report = {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "day": day,
+        "protocol": "series_past_train__latest_score",
+        "compare": {
+            "baseline": "IF on series windows ending before cutoff (past / D-holdout)",
+            "point": "latest WINDOW epochs per sat (includes today's inject)",
+            "relevance": (
+                f"anomaly_score>={anomaly_threshold} OR "
+                f"Δscore_1d>={delta_relevance} with elevated level"
+            ),
+            "prev_day_scores_loaded": len(prev_scores),
+            "delta_relevance": delta_relevance,
+        },
+        "n_scored": len(alerts),
+        "n_anomalies": sum(1 for a in alerts if a.get("is_anomaly")),
+        "n_series_outliers": sum(1 for a in alerts if a.get("series_outlier")),
+        "n_day_over_day_relevant": sum(1 for a in alerts if a.get("day_over_day_relevant")),
+        "n_unreliable": sum(1 for a in alerts if a.get("status") == "UNRELIABLE_DATA"),
+        "threshold": anomaly_threshold,
+        "model": str(IFOREST_MONITOR_PATH if IFOREST_MONITOR_PATH.exists() else MODELS_DIR / "isolation_forest.joblib"),
+        "train_meta": mon_meta,
+        "alerts": alerts,
+    }
+
+    # Pair layer (suspect × asset) + unified risk report
+    pair_report = None
+    if with_pairs:
+        try:
+            from src.pair_score import (
+                build_risk_report,
+                merge_pairs_into_alerts,
+                score_all_pairs,
+            )
+
+            print("Scoring suspect×asset pairs…")
+            pair_report = score_all_pairs()
+            report = merge_pairs_into_alerts(report, pair_report)
+            risk = build_risk_report(report, pair_report)
+            print(
+                f"Pairs: {pair_report.get('n_pairs_scored')} scored, "
+                f"elevated={pair_report.get('n_elevated')} → risk_report_latest.json"
+            )
+            print(f"Risk report day={risk.get('day')} board={len(risk.get('board') or [])}")
+        except Exception as e:
+            print(f"Pair scoring skipped/failed: {e}")
+
+    out_path = ALERTS_DIR / f"anomalies_{day}.json"
+    out_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    # also latest pointer
+    (ALERTS_DIR / "anomalies_latest.json").write_text(
+        json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+
+    # flat CSV for easy view
+    flat = []
+    for a in alerts:
+        pair = a.get("pair") or {}
+        flat.append(
+            {
+                "norad_id": a.get("norad_id"),
+                "object_name": a.get("object_name"),
+                "role": a.get("role"),
+                "status": a.get("status"),
+                "anomaly_score": a.get("anomaly_score"),
+                "score_prev_day": a.get("score_prev_day"),
+                "score_delta_1d": a.get("score_delta_1d"),
+                "series_outlier": a.get("series_outlier"),
+                "day_over_day_relevant": a.get("day_over_day_relevant"),
+                "attention_score": a.get("attention_score"),
+                "is_anomaly": a.get("is_anomaly"),
+                "dq_score": (a.get("data_quality") or {}).get("score"),
+                "window_end": a.get("window_end"),
+                "xgb_class": a.get("xgb_class"),
+                "pair_asset": pair.get("asset_norad"),
+                "pair_risk": pair.get("pair_risk"),
+                "pair_dist_km": pair.get("min_distance_km"),
+            }
+        )
+    pd.DataFrame(flat).to_csv(ALERTS_DIR / f"anomalies_{day}.csv", index=False)
+
+    print(
+        f"Scored {report['n_scored']} sats → anomalies={report['n_anomalies']} "
+        f"(series_outliers={report.get('n_series_outliers')} "
+        f"Δ1d_relevant={report.get('n_day_over_day_relevant')}) "
+        f"unreliable={report['n_unreliable']}"
+    )
+    print(f"Report: {out_path}")
+    return report

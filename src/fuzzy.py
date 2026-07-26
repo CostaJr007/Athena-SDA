@@ -89,21 +89,21 @@ def fuzzy_inference_threat(features, min_dist_mil):
     """
     sim = ctrl.ControlSystemSimulation(_fuzzy_system)
     
-    # Alimenta as entradas "crisp" no sistema
-    sim.input['anomaly'] = features.get('anomaly_score', 0.0)
-    sim.input['entropy'] = features.get('shannon_entropy_sma_30d', 0.0)
-    sim.input['tle_age'] = features.get('tle_age_hours', 12.0)
-    sim.input['dist_military'] = min_dist_mil
-    sim.input['kolmogorov'] = features.get('kolmogorov_proxy_7d', 0.0)
-    sim.input['hurst'] = features.get('hurst_exponent_sma', 0.5)
+    # Clamp all crisp inputs to fuzzy universe supports (avoid silent fail → NORMAL)
+    sim.input['anomaly'] = float(np.clip(features.get('anomaly_score', 0.0), 0.0, 1.0))
+    sim.input['entropy'] = float(np.clip(features.get('shannon_entropy_sma_30d', 0.0), 0.0, 3.0))
+    sim.input['tle_age'] = float(np.clip(features.get('tle_age_hours', 12.0), 0.0, 168.0))
+    sim.input['dist_military'] = float(np.clip(float(min_dist_mil), 0.0, 500.0))
+    sim.input['kolmogorov'] = float(np.clip(features.get('kolmogorov_proxy_7d', 0.0), 0.0, 1.0))
+    sim.input['hurst'] = float(np.clip(features.get('hurst_exponent_sma', 0.5), 0.0, 1.0))
     
     try:
         # Executa inferência fuzzy
         sim.compute()
         crisp_threat = float(sim.output['threat'])
     except Exception:
-        # Fallback caso a inferência falhe devido a valores fora do suporte do universo
-        crisp_threat = 0.0
+        # Fail-safe: uncertain/anomalous — never silent NORMAL (0.0)
+        crisp_threat = 0.5
         
     # Classificação baseada em limites de defuzzificação
     if crisp_threat < 0.35:

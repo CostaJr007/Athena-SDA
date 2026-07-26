@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-from src.config import MILITARY_ASSET_IDS, PURPOSE_SEVERITY
+from src.config import PURPOSE_SEVERITY
 from src.engine import (
     calculate_cointegration_pvalue,
     calculate_kelly_allocation,
@@ -26,6 +26,20 @@ from src.fuzzy import fuzzy_inference_threat
 from src.models import extract_satellite_features, predict_threat
 from src.orbital import min_distance_to_assets, orbit_class_from_sma
 from src.utils import generate_mock_tle_history, generate_shadowing_pair
+
+
+def _protected_asset_ids() -> set:
+    try:
+        from src.catalog import asset_ids
+
+        ids = asset_ids()
+        if ids:
+            return set(ids)
+    except Exception:
+        pass
+    from src.config import MILITARY_ASSET_IDS
+
+    return set(MILITARY_ASSET_IDS)
 
 
 def build_demo_constellation() -> Dict[int, Dict[str, Any]]:
@@ -79,16 +93,17 @@ def build_demo_constellation() -> Dict[int, Dict[str, Any]]:
 
 def _military_histories(all_sats: Mapping[int, Dict[str, Any]]) -> Dict[int, pd.DataFrame]:
     """Assets considered protected (military) for proximity sensing."""
+    protected = _protected_asset_ids()
     out = {}
     for sid, sat in all_sats.items():
         meta = sat["metadata"]
         purpose = str(meta.get("purpose", "")).lower()
-        if sid in MILITARY_ASSET_IDS or purpose in ("military",) and meta.get("country") in ("US", "UK", "FR", "CA"):
+        if sid in protected or purpose in ("military",) and meta.get("country") in ("US", "UK", "FR", "CA"):
             # Don't use adversary milsats as "protected assets"
-            if meta.get("country") in ("US", "UK", "FR", "CA", "EU"):
+            if meta.get("country") in ("US", "UK", "FR", "CA", "EU", "IT", "DE", "INTL"):
                 out[sid] = sat["history"]
-    # Always include explicit targets
-    for mid in MILITARY_ASSET_IDS:
+    # Always include explicit catalog assets when present in the constellation
+    for mid in protected:
         if mid in all_sats:
             out[mid] = all_sats[mid]["history"]
     return out

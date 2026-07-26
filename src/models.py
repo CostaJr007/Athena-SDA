@@ -77,6 +77,42 @@ def _orbital_state_vectors(history_df: pd.DataFrame) -> Tuple[np.ndarray, np.nda
     return positions, velocities
 
 
+def tle_age_hours_at(
+    epoch_ts,
+    *,
+    reference_time: Optional[pd.Timestamp] = None,
+    fallback: float = 12.0,
+) -> float:
+    """
+    TLE age in hours relative to reference_time (walk-forward asof / window end)
+    or UTC now for live inference. Never uses a frozen parquet placeholder alone
+    when a real epoch timestamp is available.
+    """
+    if epoch_ts is None or (isinstance(epoch_ts, float) and np.isnan(epoch_ts)):
+        return float(fallback)
+    try:
+        ep = pd.Timestamp(epoch_ts)
+        if ep.tzinfo is None:
+            ep = ep.tz_localize("UTC")
+        else:
+            ep = ep.tz_convert("UTC")
+    except Exception:
+        return float(fallback)
+
+    ref = reference_time
+    if ref is None:
+        ref = pd.Timestamp.now(tz="UTC")
+    else:
+        ref = pd.Timestamp(ref)
+        if ref.tzinfo is None:
+            ref = ref.tz_localize("UTC")
+        else:
+            ref = ref.tz_convert("UTC")
+
+    age = float((ref - ep).total_seconds() / 3600.0)
+    return float(max(0.0, age))
+
+
 def extract_satellite_features(
     history_df: pd.DataFrame,
     reference_matrix: Optional[np.ndarray] = None,
@@ -87,10 +123,14 @@ def extract_satellite_features(
     cointegration_pvalue: float = 1.0,
     lukasiewicz_implication: float = 1.0,
     neighbor_positions: Optional[List[np.ndarray]] = None,
+    reference_time: Optional[pd.Timestamp] = None,
 ) -> Dict[str, float]:
     """
     Extract the unified feature vector for the last epoch in history_df.
     Includes the full math framework used by Athena-SDA.
+
+    reference_time: clock for tle_age_hours. Use window end / walk-forward asof
+    for historical scoring; omit (None) for live inference (= now UTC).
     """
     history_df = history_df.ffill().bfill()
     if len(history_df) < 20:
@@ -102,7 +142,37 @@ def extract_satellite_features(
     inc = float(last_row["inclination_deg"])
     raan = float(last_row.get("raan_deg", 0.0))
     mean_motion = float(last_row["mean_motion_rev_per_day"])
-    tle_age = float(last_row.get("tle_age_hours", 12.0))
+    if "timestamp" in last_row.index and pd.notnull(last_row["timestamp"]):
+        tle_age = tle_age_hours_at(
+            last_row["timestamp"],
+            reference_time=reference_time,
+            fallback=float(last_row.get("tle_age_hours", 12.0) or 12.0),
+        )
+        sw_when = reference_time if reference_time is not None else last_row["timestamp"]
+    else:
+        tle_age = float(last_row.get("tle_age_hours", 12.0) or 12.0)
+        sw_when = reference_time
+
+    # Space weather at epoch/asof — F10.7 / Ap / Kp (drag vs maneuver)
+    try:
+        from src.space_weather import space_weather_feature_vector
+
+        sw_feats = space_weather_feature_vector(sw_when, auto_seed=False)
+    except Exception:
+        sw_feats = {
+            "f10_7": 120.0,
+            "f10_7_adj": 120.0,
+            "ap_index": 8.0,
+            "kp_mean": 2.0,
+            "sunspot_number": 50.0,
+            "f10_7_delta_7d": 0.0,
+            "f10_7_mean_7d": 120.0,
+            "ap_mean_7d": 8.0,
+            "ap_max_7d": 8.0,
+            "ap_delta_7d": 0.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 0.0,
+        }
 
     sma_series = history_df["semi_major_axis_km"].values.astype(float)
 
@@ -182,6 +252,18 @@ def extract_satellite_features(
         "h0_persistent": float(h0_pers),
         "h1_persistent": float(h1_pers),
         "tle_age_hours": tle_age,
+        "f10_7": float(sw_feats.get("f10_7", 120.0)),
+        "f10_7_adj": float(sw_feats.get("f10_7_adj", 120.0)),
+        "ap_index": float(sw_feats.get("ap_index", 8.0)),
+        "kp_mean": float(sw_feats.get("kp_mean", 2.0)),
+        "sunspot_number": float(sw_feats.get("sunspot_number", 50.0)),
+        "f10_7_delta_7d": float(sw_feats.get("f10_7_delta_7d", 0.0)),
+        "f10_7_mean_7d": float(sw_feats.get("f10_7_mean_7d", 120.0)),
+        "ap_mean_7d": float(sw_feats.get("ap_mean_7d", 8.0)),
+        "ap_max_7d": float(sw_feats.get("ap_max_7d", 8.0)),
+        "ap_delta_7d": float(sw_feats.get("ap_delta_7d", 0.0)),
+        "geomagnetic_storm": float(sw_feats.get("geomagnetic_storm", 0.0)),
+        "space_weather_available": float(sw_feats.get("space_weather_available", 0.0)),
         "min_distance_to_military_km": float(min_distance_to_military_km),
         "cointegration_pvalue": float(cointegration_pvalue),
         "lukasiewicz_implication": float(lukasiewicz_implication),
@@ -190,11 +272,12 @@ def extract_satellite_features(
 
 def label_features_for_threat(features: Dict[str, float], min_dist_mil: Optional[float] = None) -> int:
     """
-    Doctrine-based ground-truth labels for supervised training (public SDA heuristics).
+    Doctrine-based weak labels for supervised training (public SDA heuristics).
     0=NORMAL, 1=ANÔMALO, 2=SUSPEITO, 3=HOSTIL
 
-    Rules are intentionally conservative so that passive drag / short-window ADF
-    noise does not flood the SUSPEITO class.
+    Geometry (dist / coint) is first-class — coherent with Gemini audit:
+    labels that use proximity must match features seen by XGBoost.
+    Conservative so passive drag does not flood SUSPEITO.
     """
     dist = features.get("min_distance_to_military_km", min_dist_mil if min_dist_mil is not None else 500.0)
     delta = abs(features.get("delta_sma_7d_km", 0.0))
@@ -204,33 +287,51 @@ def label_features_for_threat(features: Dict[str, float], min_dist_mil: Optional
     coint = features.get("cointegration_pvalue", 1.0)
     maneuvers = features.get("maneuver_count_30d", 0)
     shannon = features.get("shannon_entropy_sma_30d", 0.0)
+    anomaly = features.get("anomaly_score", 0.0)
 
-    # HOSTIL: critical RPO or large impulsive Δv near assets / confirmed shadowing
-    if dist < 10.0 and (delta > 0.5 or hurst > 0.55 or coint < 0.05):
+    # Space weather context: strong geomag / high F10.7 inflate LEO drag Δa
+    # Soft-suppress HOSTIL when stormy + mild delta (favor drag over maneuver)
+    storm = float(features.get("geomagnetic_storm", 0.0) or 0.0) >= 0.5
+    ap = float(features.get("ap_index", 8.0) or 8.0)
+    f107 = float(features.get("f10_7", 120.0) or 120.0)
+    high_drag_climate = storm or ap >= 30.0 or f107 >= 180.0
+
+    # HOSTIL: critical RPO geometry + active Δ / shadowing
+    # Under high drag climate, require stronger Δ or cointegration for HOSTIL
+    hostil_delta_thr = 3.0 if high_drag_climate else 2.0
+    if dist < 25.0 and (delta > hostil_delta_thr or hurst > 0.6 or coint < 0.05 or anomaly > 0.55):
+        if not (high_drag_climate and delta <= 2.5 and coint >= 0.05 and dist >= 15.0):
+            return 3
+    if delta > (5.0 if high_drag_climate else 4.0) and dist < 80.0:
         return 3
-    if delta > 4.0 and dist < 80.0:
-        return 3
-    if coint < 0.05 and dist < 25.0 and hurst > 0.55:
+    if coint < 0.05 and dist < 40.0 and hurst > 0.55:
         return 3
 
-    # SUSPEITO: persistence + proximity, multi-maneuver, or cointegrated pursuit
-    if delta > 2.0 and dist < 50.0:
+    # SUSPEITO: mid-range approach, multi-maneuver, or cointegrated pursuit
+    if dist < 150.0 and (delta > 1.0 or hurst > 0.7 or coint < 0.08):
         return 2
-    if hurst > 0.78 and kolmogorov > 0.6 and dist < 150.0:
+    if delta > (2.5 if high_drag_climate else 2.0) and dist < 200.0:
         return 2
-    if maneuvers >= 4 and dist < 80.0:
+    if hurst > 0.78 and kolmogorov > 0.6 and dist < 250.0:
         return 2
-    if coint < 0.05 and dist < 40.0:
+    if maneuvers >= 4 and dist < 120.0:
+        return 2
+    if coint < 0.05 and dist < 80.0:
         return 2
     if hurst > 0.8 and shannon > 1.5 and delta > 1.0:
         return 2
 
-    # ANÔMALO: clear structural break or moderate ΔSMA without hostile geometry
+    # ANÔMALO: structural break without hostile geometry
+    # Mild Δ under storm → more often NORMAL (natural drag), not ANÔMALO
+    if high_drag_climate and delta < 1.2 and dist > 150.0 and cusum < 0.9:
+        return 0
     if cusum > 0.85 and delta > 0.8:
         return 1
-    if delta > 1.5:
+    if delta > (2.0 if high_drag_climate else 1.5):
         return 1
     if maneuvers >= 3 and delta > 0.5:
+        return 1
+    if anomaly > 0.55 and dist > 200.0:
         return 1
 
     return 0
@@ -353,8 +454,107 @@ def _build_synthetic_training_set() -> Tuple[pd.DataFrame, np.ndarray]:
     return pd.DataFrame(data_rows), np.array(labels)
 
 
+def _try_load_history_store_training(
+    max_windows_per_sat: int = 40,
+    step: int = 5,
+) -> Optional[Tuple[pd.DataFrame, np.ndarray]]:
+    """
+    Preferred real training source: data/history/epochs (HF seed + daily).
+    Injects catalog country/purpose and approximate min_distance to assets
+    so XGBoost sees the same geometry used in labels (Gemini fix).
+    """
+    try:
+        from src.tle_store import history_as_sat_histories, load_history
+        from src.orbital import min_distance_to_assets
+        from src.engine import calculate_cointegration_pvalue
+    except Exception:
+        return None
+
+    hist_all = load_history()
+    if len(hist_all) < 100:
+        return None
+
+    hists = history_as_sat_histories(min_epochs=20)
+    if len(hists) < 4:
+        return None
+
+    # Catalog meta
+    try:
+        from src.catalog import asset_ids, get_meta, baseline_ids
+
+        assets = set(asset_ids())
+        baselines = set(baseline_ids())
+    except Exception:
+        assets, baselines = set(), set()
+        def get_meta(nid: int) -> Dict[str, Any]:
+            return {"country": "UNKNOWN", "purpose": "unknown", "orbit_class": "LEO", "role": "unknown"}
+
+    asset_h = {i: h for i, h in hists.items() if i in assets} if assets else {}
+    # If no assets tagged, use nothing for dist (500 default)
+
+    data_rows: List[Dict[str, float]] = []
+    labels: List[int] = []
+
+    for sid, hist in hists.items():
+        meta = get_meta(int(sid))
+        country = str(meta.get("country") or "UNKNOWN")
+        purpose = str(meta.get("purpose") or "unknown")
+        orbit = str(meta.get("orbit_class") or "LEO")
+        role = str(meta.get("role") or "unknown")
+
+        h = hist.sort_values("timestamp").reset_index(drop=True)
+        ends = list(range(20, len(h) + 1, step))[-max_windows_per_sat:]
+        others = {k: v for k, v in asset_h.items() if k != int(sid)}
+
+        for e in ends:
+            sub = h.iloc[e - 20 : e]
+            dist = 500.0
+            coint = 1.0
+            if others:
+                try:
+                    dist, closest = min_distance_to_assets(sub, others, cap_km=2000.0)
+                    if closest is not None and closest in hists:
+                        n = min(60, len(sub), len(hists[closest]))
+                        coint = calculate_cointegration_pvalue(
+                            sub["semi_major_axis_km"].astype(float).values[-n:],
+                            hists[closest]["semi_major_axis_km"].astype(float).values[-n:],
+                        )
+                except Exception:
+                    pass
+            # Baseline assets far from "self-threat"
+            if role == "baseline":
+                dist = max(float(dist), 300.0)
+            try:
+                win_end = pd.to_datetime(sub["timestamp"].iloc[-1], utc=True, errors="coerce")
+                feats = extract_satellite_features(
+                    sub,
+                    country=country,
+                    purpose=purpose,
+                    orbit_class=orbit,
+                    min_distance_to_military_km=float(dist),
+                    cointegration_pvalue=float(coint),
+                    reference_time=win_end if pd.notnull(win_end) else None,
+                )
+                # Placeholder anomaly; refined after IF fit
+                feats["anomaly_score"] = 0.0
+                lab = label_features_for_threat(feats)
+                data_rows.append(feats)
+                labels.append(lab)
+            except Exception:
+                continue
+
+    if len(data_rows) < 80:
+        return None
+    print(f"History store training: {len(data_rows)} windows from {len(hists)} sats")
+    return pd.DataFrame(data_rows), np.array(labels)
+
+
 def _try_load_real_training() -> Optional[Tuple[pd.DataFrame, np.ndarray]]:
-    """Optional real TLE history path for training augmentation."""
+    """Legacy CSV path; prefer history store when present."""
+    store = _try_load_history_store_training()
+    if store is not None:
+        return store
+
     candidates = [
         MODELS_DIR.parent / "data" / "real_tle_history_2024_2026.csv",
         MODELS_DIR.parent / "data" / "real_celestrak_active.csv",
@@ -368,7 +568,6 @@ def _try_load_real_training() -> Optional[Tuple[pd.DataFrame, np.ndarray]]:
     except Exception:
         return None
 
-    # Normalize column names from either Space-Track style or mock history
     cols = {c.upper(): c for c in df_real.columns}
     if "NORAD_CAT_ID" in cols or "NORAD_CAT_ID" in df_real.columns:
         id_col = "NORAD_CAT_ID" if "NORAD_CAT_ID" in df_real.columns else cols.get("NORAD_CAT_ID")
@@ -405,8 +604,6 @@ def _try_load_real_training() -> Optional[Tuple[pd.DataFrame, np.ndarray]]:
                 sub = group.iloc[end_idx - 20 : end_idx]
                 o_class = "LEO" if sub["semi_major_axis_km"].iloc[-1] < 8000 else "MEO"
                 dist = 500.0
-                if int(sat_id) in (44231, 43013):
-                    dist = float(np.random.choice([8.0, 35.0]))
                 try:
                     feats = extract_satellite_features(
                         sub, country=c, purpose=p, orbit_class=o_class,
@@ -418,21 +615,94 @@ def _try_load_real_training() -> Optional[Tuple[pd.DataFrame, np.ndarray]]:
                     continue
         if len(data_rows) < 50:
             return None
-        print(f"Dados reais carregados: {len(data_rows)} janelas de {path.name}")
+        print(f"Dados reais (CSV legado): {len(data_rows)} janelas de {path.name}")
         return pd.DataFrame(data_rows), np.array(labels)
     return None
 
 
-def train_and_save_models(use_real_if_available: bool = True) -> Dict[str, Any]:
-    """Train Isolation Forest + XGBoost, save models and metrics."""
+def _synth_threat_boost() -> Tuple[pd.DataFrame, np.ndarray]:
+    """
+    Small synthetic set ONLY for rare HOSTIL/SUSPEITO geometry — not full sky.
+    Used when real history is almost all NORMAL (Gemini: don't drown real in synth).
+    """
+    data_rows: List[Dict[str, float]] = []
+    labels: List[int] = []
+    # Impulsive near-asset
+    for norad_id in range(2000, 2015):
+        df = generate_mock_tle_history(norad_id, num_days=30, anomaly_type="impulsive_maneuver")
+        dist = float(np.random.choice([8.0, 18.0, 40.0]))
+        for end_idx in range(20, len(df) + 1, 3):
+            sub = df.iloc[end_idx - 20 : end_idx]
+            feats = extract_satellite_features(
+                sub, country="RU", purpose="military", orbit_class="LEO",
+                min_distance_to_military_km=dist,
+            )
+            data_rows.append(feats)
+            labels.append(label_features_for_threat(feats))
+    # Low-thrust near
+    for norad_id in range(3000, 3012):
+        df = generate_mock_tle_history(norad_id, num_days=30, anomaly_type="low_thrust_disguised")
+        dist = float(np.random.choice([12.0, 30.0, 70.0]))
+        for end_idx in range(20, len(df) + 1, 3):
+            sub = df.iloc[end_idx - 20 : end_idx]
+            feats = extract_satellite_features(
+                sub, country="CN", purpose="military", orbit_class="LEO",
+                min_distance_to_military_km=dist,
+            )
+            data_rows.append(feats)
+            labels.append(label_features_for_threat(feats))
+    # Shadowing
+    for seed in range(8):
+        t_id, s_id = 4000 + seed, 5000 + seed
+        df_t, df_s = generate_shadowing_pair(t_id, s_id, num_days=30)
+        for end_idx in range(20, len(df_s) + 1, 4):
+            sub = df_s.iloc[end_idx - 20 : end_idx]
+            sub_t = df_t.iloc[end_idx - 20 : end_idx]
+            from src.engine import calculate_cointegration_pvalue
+
+            coint = calculate_cointegration_pvalue(
+                sub["semi_major_axis_km"].values,
+                sub_t["semi_major_axis_km"].values,
+            )
+            dist = float(abs(sub["semi_major_axis_km"].iloc[-1] - sub_t["semi_major_axis_km"].iloc[-1]))
+            feats = extract_satellite_features(
+                sub, country="CN", purpose="sigint", orbit_class="LEO",
+                min_distance_to_military_km=max(dist, 5.0),
+                cointegration_pvalue=coint,
+            )
+            data_rows.append(feats)
+            labels.append(label_features_for_threat(feats))
+    return pd.DataFrame(data_rows), np.array(labels)
+
+
+def train_and_save_models(
+    use_real_if_available: bool = True,
+    *,
+    augment_threats: bool = True,
+) -> Dict[str, Any]:
+    """
+    Train Isolation Forest + XGBoost.
+
+    Priority (Gemini-coherent):
+      1) history store (watchlist real TLE)
+      2) light synthetic boost for rare HOSTIL/SUSPEITO only
+      3) full synthetic fallback if no real data
+    """
     real = _try_load_real_training() if use_real_if_available else None
+    source = "synthetic"
     if real is not None:
         X_df, y = real
-        synth_X, synth_y = _build_synthetic_training_set()
-        # Augment real with synthetic threat classes (real catalogs are mostly normal)
-        X_df = pd.concat([X_df, synth_X], ignore_index=True)
-        y = np.concatenate([y, synth_y])
-        print("Treino híbrido: dados reais + sintéticos de ameaça.")
+        source = "history_store"
+        # Only boost minority threat classes if almost no HOSTIL/SUSPEITO
+        n_hot = int(sum((y == 2) | (y == 3)))
+        if augment_threats and n_hot < max(30, int(0.05 * len(y))):
+            boost_X, boost_y = _synth_threat_boost()
+            X_df = pd.concat([X_df, boost_X], ignore_index=True)
+            y = np.concatenate([y, boost_y])
+            source = "history_store+threat_boost"
+            print(f"Threat boost sintético leve: +{len(boost_y)} janelas (HOSTIL/SUSPEITO raros no real).")
+        else:
+            print("Treino predominante em history real (sem diluir com sintético full).")
     else:
         print("Gerando dataset sintético de treino (cenários SDA)...")
         X_df, y = _build_synthetic_training_set()
@@ -443,7 +713,7 @@ def train_and_save_models(use_real_if_available: bool = True) -> Dict[str, Any]:
             X_df[col] = 0.0
     X_df = X_df[FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], 0.0).fillna(0.0)
 
-    print(f"Dataset: {X_df.shape[0]} amostras, {X_df.shape[1]} features.")
+    print(f"Dataset: {X_df.shape[0]} amostras, {X_df.shape[1]} features. source={source}")
     print(
         f"Classes: Normal={sum(y==0)}, Anômalo={sum(y==1)}, "
         f"Suspeito={sum(y==2)}, Hostil={sum(y==3)}"
@@ -451,21 +721,40 @@ def train_and_save_models(use_real_if_available: bool = True) -> Dict[str, Any]:
 
     os.makedirs(MODELS_DIR_STR, exist_ok=True)
 
-    # --- Isolation Forest on normal population (IFOREST_COLUMNS only) ---
+    # --- Isolation Forest on normal / baseline-heavy population ---
     print("Treinando Isolation Forest...")
     X_if = X_df[IFOREST_COLUMNS]
     X_normal = X_if[y == 0]
-    if len(X_normal) < 10:
+    if len(X_normal) < 30:
         X_normal = X_if
-    iforest = IsolationForest(n_estimators=200, contamination=0.1, random_state=42)
+    # Slightly lower contamination on real-rich sets (Gemini: less FP on benign)
+    contam = 0.08 if source.startswith("history") else 0.1
+    iforest = IsolationForest(
+        n_estimators=200,
+        contamination=contam,
+        random_state=42,
+        n_jobs=-1,
+    )
     iforest.fit(X_normal)
 
+    # Unified anomaly score everywhere: clip(0.5 - raw)  (Gemini consistency fix)
     raw_scores = iforest.decision_function(X_if)
     X_full = X_df.copy()
     X_full["anomaly_score"] = np.clip(0.5 - raw_scores, 0.0, 1.0)
+    # Re-label lightly with anomaly now available (geometry+anomaly)
+    y_relabel = np.array(
+        [
+            label_features_for_threat({**X_full.iloc[i].to_dict(), "anomaly_score": float(X_full.iloc[i]["anomaly_score"])})
+            for i in range(len(X_full))
+        ]
+    )
+    # Keep original if relabel collapses all to one class
+    if len(np.unique(y_relabel)) >= 2:
+        y = y_relabel
+
     X_xgb = X_full[XGB_COLUMNS]
 
-    # Stratified split for honest metrics
+    # Stratified split
     try:
         X_train, X_test, y_train, y_test = train_test_split(
             X_xgb, y, test_size=0.2, random_state=42, stratify=y
@@ -475,9 +764,13 @@ def train_and_save_models(use_real_if_available: bool = True) -> Dict[str, Any]:
             X_xgb, y, test_size=0.2, random_state=42
         )
 
-    print("Treinando XGBoost Classifier...")
+    # Asymmetric cost: higher weight on higher threat classes (Gemini ordinal spirit)
+    class_w = {0: 1.0, 1: 1.5, 2: 3.0, 3: 5.0}
+    sw_train = np.array([class_w.get(int(yi), 1.0) for yi in y_train])
+
+    print("Treinando XGBoost Classifier (sample weights assimétricos)...")
     xgb = XGBClassifier(
-        n_estimators=120,
+        n_estimators=140,
         max_depth=5,
         learning_rate=0.08,
         objective="multi:softprob",
@@ -487,7 +780,7 @@ def train_and_save_models(use_real_if_available: bool = True) -> Dict[str, Any]:
         random_state=42,
         eval_metric="mlogloss",
     )
-    xgb.fit(X_train, y_train)
+    xgb.fit(X_train, y_train, sample_weight=sw_train)
 
     proba_test = xgb.predict_proba(X_test)
     pred_test = np.argmax(proba_test, axis=1)
@@ -504,6 +797,10 @@ def train_and_save_models(use_real_if_available: bool = True) -> Dict[str, Any]:
     metrics = {
         "n_samples": int(len(X_df)),
         "n_features": int(X_xgb.shape[1]),
+        "training_source": source,
+        "iforest_contamination": contam,
+        "anomaly_score_formula": "clip(0.5 - decision_function)",
+        "sample_weights": class_w,
         "log_loss_test": ll,
         "accuracy_test": float(report.get("accuracy", 0.0)),
         "macro_f1": float(report.get("macro avg", {}).get("f1-score", 0.0)),
@@ -513,6 +810,13 @@ def train_and_save_models(use_real_if_available: bool = True) -> Dict[str, Any]:
         "classification_report": report,
         "feature_columns": XGB_COLUMNS,
         "iforest_columns": IFOREST_COLUMNS,
+        "gemini_coherent_fixes": [
+            "history_store_primary_training",
+            "geometry_in_features_and_labels",
+            "unified_anomaly_score",
+            "light_threat_boost_only",
+            "asymmetric_class_weights",
+        ],
     }
     print(f"Test accuracy={metrics['accuracy_test']:.3f}  log_loss={ll:.4f}  macro_F1={metrics['macro_f1']:.3f}")
 

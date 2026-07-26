@@ -105,14 +105,42 @@ def tool_get_close_approaches(
 
 
 def tool_get_space_weather() -> Dict[str, Any]:
-    """Stub NOAA-like snapshot (static demo values)."""
-    return {
-        "source": "demo-stub",
-        "f10_7": 145.0,
-        "ap_index": 12,
-        "kp": 3,
-        "note": "Arrasto LEO moderado; manobras naturais de station-keeping possíveis.",
-    }
+    """Live/historical space weather from local GFZ store (F10.7, Ap, Kp)."""
+    try:
+        from src.space_weather import lookup_space_weather, status as sw_status
+
+        sw = lookup_space_weather(None)
+        st = sw_status()
+        f107 = float(sw.get("f10_7", 120))
+        ap = float(sw.get("ap_index", 10))
+        if ap >= 50 or f107 >= 200:
+            note = "Alta atividade solar/geomagnética — arrasto LEO elevado (cuidado com falso positivo de manobra)."
+        elif ap >= 20 or f107 >= 150:
+            note = "Atividade moderada; station-keeping e arrasto natural possíveis."
+        else:
+            note = "Condições relativamente quietas."
+        rng = st.get("range") or []
+        return {
+            "source": "gfz_kp_f107",
+            "f10_7": f107,
+            "f10_7_adj": float(sw.get("f10_7_adj", f107)),
+            "ap_index": ap,
+            "kp": float(sw.get("kp_mean", 2)),
+            "f10_7_delta_7d": float(sw.get("f10_7_delta_7d", 0)),
+            "ap_max_7d": float(sw.get("ap_max_7d", ap)),
+            "geomagnetic_storm": float(sw.get("geomagnetic_storm", 0)),
+            "store_days": st.get("n_days"),
+            "store_range": f"{rng[0] if rng else '?'} → {rng[1] if len(rng)>1 else '?'}",
+            "note": note,
+        }
+    except Exception as e:
+        return {
+            "source": "fallback",
+            "f10_7": 120.0,
+            "ap_index": 10,
+            "kp": 2,
+            "note": f"Space weather indisponível ({e}); usando defaults quietos.",
+        }
 
 
 def tool_list_alerts(processed: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -298,7 +326,7 @@ def answer_operator_query(
             )
         weather = tool_get_space_weather()
         lines.append(
-            f"\nClima espacial (stub): F10.7={weather['f10_7']}, Ap={weather['ap_index']}. {weather['note']}"
+            f"\nClima espacial: F10.7={weather['f10_7']}, Ap={weather['ap_index']}. {weather['note']}"
         )
         return "\n".join(lines)
 

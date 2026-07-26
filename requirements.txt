@@ -12,9 +12,11 @@ joblib>=1.3
 requests>=2.31
 python-dotenv>=1.0
 ibm-watsonx-ai>=1.0
-# Optional (real data / topology)
+# Real TLE / HF ingest (anomaly monitor)
+datasets>=2.16
+pyarrow>=14.0
+# Optional (topology / Space-Track API)
 # spacetrack>=0.16
 # duckdb>=0.10
-# datasets>=2.16
 # ripser>=0.6
 # sgp4>=2.22

@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════
+   ATHENA-SDA design tokens — tactical C2, not “Orbit Veil”
+   High-contrast text on near-black / deep-space chrome
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  --athena-void: #000000;
+  --athena-space: #02040a;
+  --athena-panel: #06080c;
+  --athena-panel-elev: #0c0e12;
+  --athena-border: rgba(255, 255, 255, 0.12);
+  --athena-border-strong: rgba(255, 255, 255, 0.22);
+  --athena-text: #f4f4f5;
+  --athena-text-dim: #a1a1aa;
+  --athena-text-mute: #71717a;
+  --athena-accent: #34d399; /* emerald — ops / live */
+  --athena-warn: #fbbf24;
+  --athena-alert: #fb7185;
+  --athena-link: #e4e4e7; /* neutral highlight, not sky-blue UI */
+  --athena-slot-a: #5eead4; /* teal */
+  --athena-slot-b: #fb923c; /* orange */
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--athena-void);
+  color: var(--athena-text);
+}
+
+body {
+  font-family:
+    'IBM Plex Mono', 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Segoe UI Mono',
+    Menlo, Consolas, monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.01em;
+}
+
+canvas {
+  display: block;
+}
+
+/* Deep space + sparse stars behind chrome (UI layer, not the WebGL globe) */
+.athena-space-bg {
+  background-color: var(--athena-void);
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.55) 0, transparent 100%),
+    radial-gradient(1px 1px at 28% 72%, rgba(255, 255, 255, 0.35) 0, transparent 100%),
+    radial-gradient(1.2px 1.2px at 44% 32%, rgba(255, 255, 255, 0.45) 0, transparent 100%),
+    radial-gradient(1px 1px at 61% 81%, rgba(255, 255, 255, 0.3) 0, transparent 100%),
+    radial-gradient(1px 1px at 77% 22%, rgba(255, 255, 255, 0.5) 0, transparent 100%),
+    radial-gradient(1.1px 1.1px at 89% 58%, rgba(255, 255, 255, 0.28) 0, transparent 100%),
+    radial-gradient(1px 1px at 8% 90%, rgba(255, 255, 255, 0.22) 0, transparent 100%),
+    radial-gradient(1px 1px at 52% 8%, rgba(255, 255, 255, 0.4) 0, transparent 100%),
+    radial-gradient(120% 80% at 50% 120%, rgba(16, 40, 32, 0.35) 0%, transparent 55%),
+    radial-gradient(80% 50% at 80% 0%, rgba(30, 20, 10, 0.25) 0%, transparent 50%);
+}
+
+/* Solid tactical panel (readable text) */
+.athena-panel {
+  background: linear-gradient(180deg, rgba(8, 10, 14, 0.97) 0%, rgba(2, 3, 6, 0.98) 100%);
+  border: 1px solid var(--athena-border);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.8) inset,
+    0 12px 40px rgba(0, 0, 0, 0.65);
+  /* hard corners — not soft “glass app” */
+  border-radius: 2px;
+  position: relative;
+}
+
+/* Corner brackets (SDA HUD language) */
+.athena-panel::before,
+.athena-panel::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  z-index: 2;
+}
+.athena-panel::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid var(--athena-accent);
+  border-left: 2px solid var(--athena-accent);
+}
+.athena-panel::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid rgba(52, 211, 153, 0.55);
+  border-right: 2px solid rgba(52, 211, 153, 0.55);
+}
+
+.athena-panel-header {
+  border-bottom: 1px solid var(--athena-border);
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.athena-chip {
+  border: 1px solid var(--athena-border);
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 1px;
+}
+
+.athena-btn {
+  border: 1px solid var(--athena-border);
+  background: rgba(0, 0, 0, 0.65);
+  color: var(--athena-text-dim);
+  border-radius: 1px;
+  font-family: inherit;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.athena-btn:hover {
+  border-color: var(--athena-border-strong);
+  color: var(--athena-text);
+  background: rgba(255, 255, 255, 0.04);
+}
+.athena-btn-active {
+  border-color: rgba(52, 211, 153, 0.55);
+  background: rgba(52, 211, 153, 0.12);
+  color: #a7f3d0;
+}
+.athena-btn-warn {
+  border-color: rgba(251, 191, 36, 0.5);
+  background: rgba(251, 191, 36, 0.12);
+  color: #fde68a;
+}
+
+.athena-input {
+  border: 1px solid var(--athena-border);
+  background: rgba(0, 0, 0, 0.75);
+  color: var(--athena-text);
+  border-radius: 1px;
+  outline: none;
+}
+.athena-input::placeholder {
+  color: var(--athena-text-mute);
+}
+.athena-input:focus {
+  border-color: rgba(52, 211, 153, 0.45);
+  box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.15);
+}
+
+/* Scrollbars */
+aside::-webkit-scrollbar,
+aside *::-webkit-scrollbar,
+.athena-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+aside::-webkit-scrollbar-thumb,
+aside *::-webkit-scrollbar-thumb,
+.athena-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 0;
+}
+aside::-webkit-scrollbar-track,
+aside *::-webkit-scrollbar-track,
+.athena-scroll::-webkit-scrollbar-track {
+  background: #000;
+}
+
+/* Subtle scanline on panels (very light — readability first) */
+.athena-scanline::after {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 3px
+  );
+  opacity: 0.35;
+  z-index: 1;
+}

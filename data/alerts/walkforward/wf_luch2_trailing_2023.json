@@ -1,0 +1,1297 @@
+{
+  "event_id": "luch2_trailing_2023",
+  "type": "shadowing_geo_espionage",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past noise/regime). Target is scored at asof. Metrics test whether anomalous noise rises before public report anchors (t_peak), vs placebo baselines. Not a classified ground-truth claim.",
+  "t_start": "2023-04-01",
+  "t_peak": "2023-10-15",
+  "t_end": "2024-03-01",
+  "norad_ids": [
+    55841
+  ],
+  "pair_with": [],
+  "sources": [
+    "Launch Luch/Olymp-K 2 ~12 Mar 2023",
+    "Breaking Defense Oct 2023: second Luch trailing Western systems in GEO"
+  ],
+  "notes": "Segundo Luch — ruído pós-lançamento e antes/durante cobertura mid-late 2023.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 24,
+  "folds": [
+    {
+      "asof": "2023-04-01",
+      "cutoff": "2023-03-29",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.5509611127405984,
+          "window_end": "2023-03-31 16:42:42.544800",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_83h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 7.288182
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.1148051443393325,
+            "hurst_exponent_sma": 0.9095181212290514,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.47763245842361357,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 7.288182,
+            "f10_7": 125.3,
+            "ap_index": 14.0,
+            "kp_mean": 2.66675,
+            "f10_7_delta_7d": -35.000000000000014,
+            "ap_delta_7d": 3.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.029649,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.4699675007332693
+        }
+      }
+    },
+    {
+      "asof": "2023-04-15",
+      "cutoff": "2023-04-12",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.5245172060790221,
+          "window_end": "2023-04-14 15:54:03.639168",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_83h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 8.098989119999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.3372449392958774,
+            "hurst_exponent_sma": 0.8562431960969856,
+            "kolmogorov_proxy_7d": 0.3684210526315789,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9666144764021155,
+            "delta_sma_7d_km": -0.2764071960846195,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 8.098989119999999,
+            "f10_7": 175.8,
+            "ap_index": 7.0,
+            "kp_mean": 1.83325,
+            "f10_7_delta_7d": 39.900000000000006,
+            "ap_delta_7d": 1.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.054802,
+            "pair_risk": 0.3845,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.44750774273555993
+        }
+      }
+    },
+    {
+      "asof": "2023-04-29",
+      "cutoff": "2023-04-26",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.5345580434778622,
+          "window_end": "2023-04-28 17:49:34.461408",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_83h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 6.173760720000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.465255650113225,
+            "hurst_exponent_sma": 0.8894051728712654,
+            "kolmogorov_proxy_7d": 0.3684210526315789,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.3947616710652727,
+            "delta_sma_7d_km": 0.02018380539084319,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 6.173760720000001,
+            "f10_7": 155.8,
+            "ap_index": 20.0,
+            "kp_mean": 3.4165,
+            "f10_7_delta_7d": 14.600000000000023,
+            "ap_delta_7d": -8.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.009334,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.46258611956503803
+        }
+      }
+    },
+    {
+      "asof": "2023-05-13",
+      "cutoff": "2023-05-10",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.5206835661862889,
+          "window_end": "2023-05-12 19:20:50.767296",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_83h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.65256464
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4305946180235427,
+            "hurst_exponent_sma": 0.904402199260059,
+            "kolmogorov_proxy_7d": 0.3684210526315789,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.2580920020627673,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 4.65256464,
+            "f10_7": 143.8,
+            "ap_index": 11.0,
+            "kp_mean": 2.291625,
+            "f10_7_delta_7d": -8.0,
+            "ap_delta_7d": -4.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.004984,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.45634260478383004
+        }
+      }
+    },
+    {
+      "asof": "2023-05-27",
+      "cutoff": "2023-05-24",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.5039171395649483,
+          "window_end": "2023-05-26 21:23:20.901696",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_83h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.61086064
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.139835523706203,
+            "hurst_exponent_sma": 0.9531342681488599,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.22483046085835667,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.61086064,
+            "f10_7": 156.9,
+            "ap_index": 4.0,
+            "kp_mean": 0.833375,
+            "f10_7_delta_7d": -12.699999999999989,
+            "ap_delta_7d": -11.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.012354,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.44879771280422676
+        }
+      }
+    },
+    {
+      "asof": "2023-06-10",
+      "cutoff": "2023-06-07",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.4717356011706169,
+          "window_end": "2023-06-09 16:11:59.860032",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_83h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 7.80003888
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.8784775129881186,
+            "hurst_exponent_sma": 0.7551736427915858,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.007591860892646905,
+            "delta_sma_7d_km": -0.10624859806557652,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 7.80003888,
+            "f10_7": 161.2,
+            "ap_index": 4.0,
+            "kp_mean": 0.9165000000000001,
+            "f10_7_delta_7d": -3.4000000000000057,
+            "ap_delta_7d": -0.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.017648,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.43431602052677765
+        }
+      }
+    },
+    {
+      "asof": "2023-06-24",
+      "cutoff": "2023-06-21",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.48746156859729195,
+          "window_end": "2023-06-23 12:39:44.709120",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_83h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 11.3375808
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.720582776146014,
+            "hurst_exponent_sma": 0.7482845056267167,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.4659398116709781,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 11.3375808,
+            "f10_7": 160.8,
+            "ap_index": 16.0,
+            "kp_mean": 2.916625,
+            "f10_7_delta_7d": 2.700000000000017,
+            "ap_delta_7d": 6.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 7e-06,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.44139270586878143
+        }
+      }
+    },
+    {
+      "asof": "2023-07-08",
+      "cutoff": "2023-07-05",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.4516133248525321,
+          "window_end": "2023-07-06 13:44:15.728928",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_83h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 34.262297520000004
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6550505394177746,
+            "hurst_exponent_sma": 0.7964371389246867,
+            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7147528909846557,
+            "delta_sma_7d_km": 0.1864280264126137,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 34.262297520000004,
+            "f10_7": 160.5,
+            "ap_index": 6.0,
+            "kp_mean": 1.2915,
+            "f10_7_delta_7d": -5.0,
+            "ap_delta_7d": -0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.42526099618363944
+        }
+      }
+    },
+    {
+      "asof": "2023-07-22",
+      "cutoff": "2023-07-19",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.4872280333853303,
+          "window_end": "2023-07-21 13:15:12.086208",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_83h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 10.74664272
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8205898566665466,
+            "hurst_exponent_sma": 0.7285328191387532,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.19439108732390414,
+            "delta_sma_7d_km": -1.3584741746235522,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 10.74664272,
+            "f10_7": 174.4,
+            "ap_index": 8.0,
+            "kp_mean": 1.833375,
+            "f10_7_delta_7d": -4.099999999999994,
+            "ap_delta_7d": -2.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.44128761502339864
+        }
+      }
+    },
+    {
+      "asof": "2023-08-05",
+      "cutoff": "2023-08-02",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.5552486114340243,
+          "window_end": "2023-08-02 09:03:44.693568",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "tle_aging_63h",
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 62.93758512
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.465255650113225,
+            "hurst_exponent_sma": 0.8572114218063416,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 1.0672111625317484,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 62.93758512,
+            "f10_7": 175.8,
+            "ap_index": 33.0,
+            "kp_mean": 3.4583749999999998,
+            "f10_7_delta_7d": -2.799999999999983,
+            "ap_delta_7d": 21.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4718968751453109
+        }
+      }
+    },
+    {
+      "asof": "2023-08-19",
+      "cutoff": "2023-08-16",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.4749377039764702,
+          "window_end": "2023-08-18 08:37:32.346624",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 15.37434816
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.4832261969709113,
+            "hurst_exponent_sma": 0.6974783788703295,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.061577670660219554,
+            "delta_sma_7d_km": -5.047871499016765,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 15.37434816,
+            "f10_7": 150.6,
+            "ap_index": 7.0,
+            "kp_mean": 1.7081250000000001,
+            "f10_7_delta_7d": 2.299999999999983,
+            "ap_delta_7d": 1.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 6e-06,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4357569667894116
+        }
+      }
+    },
+    {
+      "asof": "2023-09-02",
+      "cutoff": "2023-08-30",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.5694779410513618,
+          "window_end": "2023-09-01 18:19:46.352352",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.670457679999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.2920717524577876,
+            "hurst_exponent_sma": 0.6976575679458743,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.05641217159018952,
+            "adf_pvalue": 0.48605182994065854,
+            "delta_sma_7d_km": 0.875495659893204,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 5.670457679999999,
+            "f10_7": 131.2,
+            "ap_index": 37.0,
+            "kp_mean": 4.499875,
+            "f10_7_delta_7d": -8.100000000000023,
+            "ap_delta_7d": 26.375,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4783000734731129
+        }
+      }
+    },
+    {
+      "asof": "2023-09-16",
+      "cutoff": "2023-09-13",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.46835451683929286,
+          "window_end": "2023-09-15 20:16:28.185024",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.72550416
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.582059910580258,
+            "hurst_exponent_sma": 0.8449800896906481,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.002538404623961568,
+            "delta_sma_7d_km": 0.1600664500365383,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 3.72550416,
+            "f10_7": 140.4,
+            "ap_index": 6.0,
+            "kp_mean": 1.291625,
+            "f10_7_delta_7d": -21.0,
+            "ap_delta_7d": -4.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 2e-06,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4327945325776818
+        }
+      }
+    },
+    {
+      "asof": "2023-09-30",
+      "cutoff": "2023-09-27",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.519329511248135,
+          "window_end": "2023-09-29 15:18:33.561216",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 8.69067744
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.1635402011210705,
+            "hurst_exponent_sma": 0.9113752944350094,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.44119321064850964,
+            "delta_sma_7d_km": 0.5357500150930719,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 8.69067744,
+            "f10_7": 159.1,
+            "ap_index": 8.0,
+            "kp_mean": 2.12475,
+            "f10_7_delta_7d": -13.900000000000006,
+            "ap_delta_7d": -6.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.895251,
+            "pair_risk": 0.0904,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.28341828006166075
+        }
+      }
+    },
+    {
+      "asof": "2023-10-14",
+      "cutoff": "2023-10-11",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.43897413355720766,
+          "window_end": "2023-10-13 16:20:40.668864",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 7.65536976
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.3372449392958774,
+            "hurst_exponent_sma": 0.8535446454249369,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.02416611000965947,
+            "delta_sma_7d_km": -0.25033557126880623,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 7.65536976,
+            "f10_7": 148.2,
+            "ap_index": 6.0,
+            "kp_mean": 1.4165,
+            "f10_7_delta_7d": -9.0,
+            "ap_delta_7d": 0.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.2588,
+            "pair_risk": 0.3131,
+            "risk_level": "LOW",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.36974336010074343
+        }
+      }
+    },
+    {
+      "asof": "2023-10-28",
+      "cutoff": "2023-10-25",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.5116014610973725,
+          "window_end": "2023-10-27 19:12:49.681728",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.78619952
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "hurst_exponent_sma": 0.9706812252473475,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7713444456163463,
+            "delta_sma_7d_km": -0.25370538351126015,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 4.78619952,
+            "f10_7": 128.0,
+            "ap_index": 17.0,
+            "kp_mean": 3.0001249999999997,
+            "f10_7_delta_7d": 5.400000000000006,
+            "ap_delta_7d": 6.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.235782,
+            "pair_risk": 0.3212,
+            "risk_level": "LOW",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.40688065749381763
+        }
+      }
+    },
+    {
+      "asof": "2023-11-11",
+      "cutoff": "2023-11-08",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.5012358324012205,
+          "window_end": "2023-11-10 20:04:48.762336",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.91978824
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.792586226369732,
+            "hurst_exponent_sma": 0.8816062214918143,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5186473952284354,
+            "delta_sma_7d_km": -0.21501405633898685,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.91978824,
+            "f10_7": 141.5,
+            "ap_index": 4.0,
+            "kp_mean": 0.958375,
+            "f10_7_delta_7d": -13.800000000000011,
+            "ap_delta_7d": -16.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.009239,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4475911245805492
+        }
+      }
+    },
+    {
+      "asof": "2023-11-25",
+      "cutoff": "2023-11-22",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.543228244066784,
+          "window_end": "2023-11-24 21:03:12.575232",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.9465068800000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.1148051443393325,
+            "hurst_exponent_sma": 0.904944433965859,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8349621772418412,
+            "delta_sma_7d_km": 0.527315207364154,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 2.9465068800000003,
+            "f10_7": 176.4,
+            "ap_index": 37.0,
+            "kp_mean": 4.29175,
+            "f10_7_delta_7d": 49.30000000000001,
+            "ap_delta_7d": 23.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.004624,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.46648770983005283
+        }
+      }
+    },
+    {
+      "asof": "2023-12-09",
+      "cutoff": "2023-12-06",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.5287067078206714,
+          "window_end": "2023-12-08 20:17:24.573120",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.7098408000000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.6107845483996805,
+            "hurst_exponent_sma": 0.9203325139793852,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -17.28159659971425,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 3.7098408000000003,
+            "f10_7": 127.9,
+            "ap_index": 1.0,
+            "kp_mean": 0.25,
+            "f10_7_delta_7d": -20.299999999999983,
+            "ap_delta_7d": -7.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.215005,
+            "pair_risk": 0.3285,
+            "risk_level": "LOW",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4185930185193022
+        }
+      }
+    },
+    {
+      "asof": "2023-12-23",
+      "cutoff": "2023-12-20",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.5188566285791266,
+          "window_end": "2023-12-22 21:13:38.499168",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.77263912
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.3605273114437084,
+            "hurst_exponent_sma": 0.6890650041379897,
+            "kolmogorov_proxy_7d": 0.8421052631578947,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.21116100438732338,
+            "delta_sma_7d_km": 0.1816622952974285,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 2.77263912,
+            "f10_7": 174.2,
+            "ap_index": 5.0,
+            "kp_mean": 1.208375,
+            "f10_7_delta_7d": 25.19999999999999,
+            "ap_delta_7d": -7.625,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.000151,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.455520482860607
+        }
+      }
+    },
+    {
+      "asof": "2024-01-06",
+      "cutoff": "2024-01-03",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.49306425403741483,
+          "window_end": "2024-01-05 07:57:33.007392",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 16.04083128
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.562688039303908,
+            "hurst_exponent_sma": 0.8060423206233541,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0015921457693512037,
+            "delta_sma_7d_km": 2.9795862130558817,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 16.04083128,
+            "f10_7": 159.4,
+            "ap_index": 2.0,
+            "kp_mean": 0.375,
+            "f10_7_delta_7d": 19.700000000000017,
+            "ap_delta_7d": -3.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.000125,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4439139143168367
+        }
+      }
+    },
+    {
+      "asof": "2024-01-20",
+      "cutoff": "2024-01-17",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.4730831133022232,
+          "window_end": "2024-01-19 21:28:42.712320",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.5214688
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.3372449392958774,
+            "hurst_exponent_sma": 0.9290392043464033,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6103391051074719,
+            "delta_sma_7d_km": 2.9097442654892802,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 2.5214688,
+            "f10_7": 166.3,
+            "ap_index": 6.0,
+            "kp_mean": 1.58325,
+            "f10_7_delta_7d": -19.099999999999994,
+            "ap_delta_7d": 1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 5.1e-05,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.43492240098600043
+        }
+      }
+    },
+    {
+      "asof": "2024-02-03",
+      "cutoff": "2024-01-31",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.47994121437479587,
+          "window_end": "2024-02-02 21:28:48.006048",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.51999832
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.0582770432263342,
+            "hurst_exponent_sma": 0.8268684933897523,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.03852362051512648,
+            "delta_sma_7d_km": -0.12671187539672246,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.51999832,
+            "f10_7": 156.4,
+            "ap_index": 2.0,
+            "kp_mean": 0.291625,
+            "f10_7_delta_7d": 8.300000000000011,
+            "ap_delta_7d": -2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 3.9e-05,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.43800854646865817
+        }
+      }
+    },
+    {
+      "asof": "2024-02-17",
+      "cutoff": "2024-02-14",
+      "n_train_ok": true,
+      "targets": {
+        "55841": {
+          "ok": true,
+          "anomaly_score": 0.48250405573428373,
+          "window_end": "2024-02-16 20:55:27.053760",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_104h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.0758183999999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.8240460500219926,
+            "hurst_exponent_sma": 0.9801251428078437,
+            "kolmogorov_proxy_7d": 0.8421052631578947,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8232784096202526,
+            "delta_sma_7d_km": 3.069779124445631,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 3.0758183999999997,
+            "f10_7": 169.9,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": -23.900000000000006,
+            "ap_delta_7d": -1.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 55841,
+          "object_name": "LUCH-5X (OLYMP-K 2)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.001361,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.43916182508042767
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "55841": {
+      "norad_id": 55841,
+      "object_name": "LUCH-5X (OLYMP-K 2)",
+      "n_folds_scored": 24,
+      "anomaly_score_mean": 0.5038008135656198,
+      "anomaly_score_max": 0.5694779410513618,
+      "anomaly_score_at_nearest_peak": 0.43897413355720766,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "n_hits_in_window": 5,
+      "lead_time_days": 197.0,
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 1.8975471750956363,
+          "late_mean": 1.7716286000851809
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.9025405915212442,
+          "late_mean": 0.8010071952733597
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.3578947368421052,
+          "late_mean": 0.5684210526315789
+        }
+      },
+      "pair_risk_max": 0.4037,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 15,
+        "pre_peak_anomaly_mean": 0.5039332009440656,
+        "pre_peak_anomaly_max": 0.5694779410513618,
+        "early_pre_peak_mean": 0.526927413609744,
+        "late_pre_peak_mean": 0.4942147613344935,
+        "noise_ramp": -0.03271265227525055,
+        "pre_peak_pair_risk_max": 0.4037,
+        "elevated_noise_before_peak": true
+      },
+      "is_placebo": false
+    }
+  }
+}

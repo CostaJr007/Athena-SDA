@@ -1,0 +1,130 @@
+{
+  "version": 2,
+  "updated": "2026-07-26",
+  "description": "Âncoras = datas de REPORTS / atividade documentada open-source. Walk-forward treina SÓ no passado e mede se o ruído matemático sobe ANTES de t_peak. Não é label classificado.",
+  "data_coverage_required": {
+    "min_start": "2014-01-01",
+    "note": "Seed HF years 2014–2026 for watchlist NORADs"
+  },
+  "events": [
+    {
+      "id": "luch1_intelsat_2015",
+      "norad_ids": [40258],
+      "pair_with": null,
+      "t_start": "2015-01-15",
+      "t_peak": "2015-09-15",
+      "t_end": "2016-03-01",
+      "type": "shadowing_geo_espionage",
+      "role_expected": "suspect",
+      "sources": [
+        "Gunter: Olymp-K moved ~Apr 2015 between Intelsat 7/901 at 18.1W",
+        "Gunter/open press: ~Sep 2015 near Intelsat 905 at 24.4–24.5W",
+        "CSIS Unusual Behavior in GEO: Olymp-K / Luch"
+      ],
+      "expected_signals": ["shannon", "cusum", "hurst", "anomaly_score", "maneuver_count"],
+      "notes": "Pico ~set/2015 (Intelsat 905). t_start cedo para medir rampa de ruído ANTES do report de colocação."
+    },
+    {
+      "id": "luch1_intelsat_mid2015",
+      "norad_ids": [40258],
+      "pair_with": null,
+      "t_start": "2014-10-01",
+      "t_peak": "2015-04-15",
+      "t_end": "2015-08-01",
+      "type": "shadowing_geo_espionage",
+      "role_expected": "suspect",
+      "sources": [
+        "Gunter: first colocation between Intelsat 7 and 901 ~April 2015"
+      ],
+      "expected_signals": ["shannon", "cusum", "anomaly_score"],
+      "notes": "Primeiro episódio Intelsat mid-2015 — validar detecção pré-abril/2015."
+    },
+    {
+      "id": "luch1_athena_fidus_2018",
+      "norad_ids": [40258],
+      "pair_with": null,
+      "t_start": "2018-01-01",
+      "t_peak": "2018-09-01",
+      "t_end": "2019-03-01",
+      "type": "shadowing_geo_espionage",
+      "role_expected": "suspect",
+      "sources": [
+        "Open press / Gunter: 2018 proximity concerns re Athena-Fidus (FR military comms)",
+        "French government space security statements (open reporting)"
+      ],
+      "expected_signals": ["shannon", "cusum", "hurst", "anomaly_score"],
+      "notes": "Âncora 2018 — manobras GEO Luch próximas a ativo aliado documentadas em open source."
+    },
+    {
+      "id": "sy12_geo_rpo_2021_22",
+      "norad_ids": [50321],
+      "pair_with": null,
+      "t_start": "2021-12-01",
+      "t_peak": "2022-06-15",
+      "t_end": "2022-12-01",
+      "type": "rpo_inspection",
+      "role_expected": "suspect",
+      "sources": [
+        "AMOS papers / open SSA: SY-12 01/02 GEO proximity with US objects",
+        "SWF Chinese Military RPO fact sheet (SY-12)"
+      ],
+      "expected_signals": ["shannon", "hurst", "cusum", "anomaly_score"],
+      "notes": "Shiyan-12 01 lançado fim/2021; RPO GEO reportado 2021–22."
+    },
+    {
+      "id": "luch2_trailing_2023",
+      "norad_ids": [55841],
+      "pair_with": null,
+      "t_start": "2023-04-01",
+      "t_peak": "2023-10-15",
+      "t_end": "2024-03-01",
+      "type": "shadowing_geo_espionage",
+      "role_expected": "suspect",
+      "sources": [
+        "Launch Luch/Olymp-K 2 ~12 Mar 2023",
+        "Breaking Defense Oct 2023: second Luch trailing Western systems in GEO"
+      ],
+      "expected_signals": ["shannon", "cusum", "anomaly_score"],
+      "notes": "Segundo Luch — ruído pós-lançamento e antes/durante cobertura mid-late 2023."
+    },
+    {
+      "id": "placebo_terra_2015",
+      "norad_ids": [25994],
+      "pair_with": null,
+      "t_start": "2015-01-15",
+      "t_peak": "2015-09-15",
+      "t_end": "2016-03-01",
+      "type": "placebo_baseline",
+      "role_expected": "baseline",
+      "sources": ["Control EO scientific same calendar as Luch Intelsat 2015"],
+      "expected_signals": [],
+      "notes": "Placebo: não deve mostrar rampa de anomalia como Luch no mesmo período."
+    },
+    {
+      "id": "placebo_terra_2018",
+      "norad_ids": [25994],
+      "pair_with": null,
+      "t_start": "2018-01-01",
+      "t_peak": "2018-09-01",
+      "t_end": "2019-03-01",
+      "type": "placebo_baseline",
+      "role_expected": "baseline",
+      "sources": ["Control same calendar as Athena-Fidus window"],
+      "expected_signals": [],
+      "notes": "Placebo 2018."
+    },
+    {
+      "id": "placebo_noaa20_2023",
+      "norad_ids": [43013],
+      "pair_with": null,
+      "t_start": "2023-04-01",
+      "t_peak": "2023-10-15",
+      "t_end": "2024-03-01",
+      "type": "placebo_baseline",
+      "role_expected": "baseline",
+      "sources": ["Control vs Luch-2 2023 window"],
+      "expected_signals": [],
+      "notes": "NOAA-20 existe desde 2017; controle 2023."
+    }
+  ]
+}

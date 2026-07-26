@@ -1,0 +1,1635 @@
+{
+  "event_id": "luch1_intelsat_2015",
+  "type": "shadowing_geo_espionage",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past noise/regime). Target is scored at asof. Metrics test whether anomalous noise rises before public report anchors (t_peak), vs placebo baselines. Not a classified ground-truth claim.",
+  "t_start": "2015-01-15",
+  "t_peak": "2015-09-15",
+  "t_end": "2016-03-01",
+  "norad_ids": [
+    40258
+  ],
+  "pair_with": [],
+  "sources": [
+    "Gunter: Olymp-K moved ~Apr 2015 between Intelsat 7/901 at 18.1W",
+    "Gunter/open press: ~Sep 2015 near Intelsat 905 at 24.4–24.5W",
+    "CSIS Unusual Behavior in GEO: Olymp-K / Luch"
+  ],
+  "notes": "Pico ~set/2015 (Intelsat 905). t_start cedo para medir rampa de ruído ANTES do report de colocação.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 30,
+  "folds": [
+    {
+      "asof": "2015-01-15",
+      "cutoff": "2015-01-12",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5374875060537689,
+          "window_end": "2015-01-12 02:40:59.489760",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "tle_aging_69h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 69.3168084
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.3605273114437084,
+            "hurst_exponent_sma": 0.9414925495302248,
+            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.001545345315539802,
+            "delta_sma_7d_km": 0.5371019448139123,
+            "maneuver_count_30d": 6.0,
+            "tle_age_hours": 69.3168084,
+            "f10_7": 131.4,
+            "ap_index": 5.0,
+            "kp_mean": 1.124875,
+            "f10_7_delta_7d": -25.799999999999983,
+            "ap_delta_7d": -2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.463904377724196
+        }
+      }
+    },
+    {
+      "asof": "2015-01-29",
+      "cutoff": "2015-01-26",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.4960415451400576,
+          "window_end": "2015-01-28 04:31:10.867008",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 19.48031472
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6100635408770727,
+            "hurst_exponent_sma": 0.9142187850663945,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.47339085442390755,
+            "delta_sma_7d_km": -0.13007631179061718,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 19.48031472,
+            "f10_7": 171.8,
+            "ap_index": 8.0,
+            "kp_mean": 1.8752499999999999,
+            "f10_7_delta_7d": 51.500000000000014,
+            "ap_delta_7d": -1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.004373,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.44525369531302594
+        }
+      }
+    },
+    {
+      "asof": "2015-02-12",
+      "cutoff": "2015-02-09",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5631298156759702,
+          "window_end": "2015-02-11 23:23:34.423008",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 0.6071047199999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.0345723658114663,
+            "hurst_exponent_sma": 0.9002685390114051,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9801477772761045,
+            "delta_sma_7d_km": 62.220418323944614,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 0.6071047199999999,
+            "f10_7": 127.6,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": -14.300000000000011,
+            "ap_delta_7d": -3.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.426609,
+            "pair_risk": 0.2544,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.39332841705418664
+        }
+      }
+    },
+    {
+      "asof": "2015-02-26",
+      "cutoff": "2015-02-23",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5307979862015118,
+          "window_end": "2015-02-25 17:21:56.818656",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 6.63421704
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.030087224632132,
+            "hurst_exponent_sma": 0.8978312398886708,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.1963202641201488,
+            "delta_sma_7d_km": 0.29998081849043956,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 6.63421704,
+            "f10_7": 111.3,
+            "ap_index": 4.0,
+            "kp_mean": 0.8748750000000001,
+            "f10_7_delta_7d": -7.400000000000006,
+            "ap_delta_7d": -5.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.013643,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4608940937906803
+        }
+      }
+    },
+    {
+      "asof": "2015-03-12",
+      "cutoff": "2015-03-09",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.47278824651812956,
+          "window_end": "2015-03-11 22:38:26.831040",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.3592136
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.4657904693384456,
+            "hurst_exponent_sma": 0.8942148970424922,
+            "kolmogorov_proxy_7d": 0.3157894736842105,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.8399357892225072,
+            "adf_pvalue": 0.48255833353557487,
+            "delta_sma_7d_km": 1.7379023524190416,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 1.3592136,
+            "f10_7": 126.7,
+            "ap_index": 8.0,
+            "kp_mean": 1.83325,
+            "f10_7_delta_7d": -13.499999999999986,
+            "ap_delta_7d": -1.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.142656,
+            "pair_risk": 0.3538,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4073447109331583
+        }
+      }
+    },
+    {
+      "asof": "2015-03-26",
+      "cutoff": "2015-03-23",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5191532839998719,
+          "window_end": "2015-03-25 12:25:48.215424",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 11.56994016
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.123478672569887,
+            "hurst_exponent_sma": 0.8523629736018582,
+            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.1330790920984144,
+            "adf_pvalue": 2.0114138343619903e-10,
+            "delta_sma_7d_km": 0.22878700296860188,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 11.56994016,
+            "f10_7": 136.1,
+            "ap_index": 8.0,
+            "kp_mean": 1.916625,
+            "f10_7_delta_7d": 26.799999999999997,
+            "ap_delta_7d": -8.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.189734,
+            "pair_risk": 0.3373,
+            "risk_level": "LOW",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4191339777999424
+        }
+      }
+    },
+    {
+      "asof": "2015-04-09",
+      "cutoff": "2015-04-06",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5451106646902956,
+          "window_end": "2015-04-08 20:11:04.838208",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.81532272
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.2920717524577876,
+            "hurst_exponent_sma": 0.7857922876178896,
+            "kolmogorov_proxy_7d": 0.42105263157894735,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 6.21864041899959e-05,
+            "delta_sma_7d_km": 13.986222404673754,
+            "maneuver_count_30d": 8.0,
+            "tle_age_hours": 3.81532272,
+            "f10_7": 111.3,
+            "ap_index": 11.0,
+            "kp_mean": 2.54175,
+            "f10_7_delta_7d": -10.0,
+            "ap_delta_7d": 3.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.012142,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.467334799110633
+        }
+      }
+    },
+    {
+      "asof": "2015-04-23",
+      "cutoff": "2015-04-20",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5606459185381466,
+          "window_end": "2015-04-21 15:44:55.394016",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 32.25127944
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.5055213905049438,
+            "hurst_exponent_sma": 0.8658502540764237,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.504972594441912,
+            "delta_sma_7d_km": -4.426831345146638,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 32.25127944,
+            "f10_7": 140.5,
+            "ap_index": 6.0,
+            "kp_mean": 1.25,
+            "f10_7_delta_7d": -9.699999999999989,
+            "ap_delta_7d": -10.25,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.223552,
+            "pair_risk": 0.3255,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.431315663342166
+        }
+      }
+    },
+    {
+      "asof": "2015-05-07",
+      "cutoff": "2015-05-04",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.48637933382034626,
+          "window_end": "2015-05-06 21:00:49.655808",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.98620672
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.9293092079167293,
+            "hurst_exponent_sma": 0.8820348937130309,
+            "kolmogorov_proxy_7d": 0.2631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.4904305742666409,
+            "delta_sma_7d_km": -0.9278831922929385,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 2.98620672,
+            "f10_7": 146.6,
+            "ap_index": 6.0,
+            "kp_mean": 1.5418749999999999,
+            "f10_7_delta_7d": 44.8,
+            "ap_delta_7d": -2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.240809,
+            "pair_risk": 0.3194,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.3945407002191559
+        }
+      }
+    },
+    {
+      "asof": "2015-05-21",
+      "cutoff": "2015-05-18",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5044236228878534,
+          "window_end": "2015-05-20 19:13:02.485344",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.7826429599999996
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "hurst_exponent_sma": 0.9391033032103453,
+            "kolmogorov_proxy_7d": 0.3684210526315789,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.996983658806771,
+            "delta_sma_7d_km": -9.661276726379583,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.7826429599999996,
+            "f10_7": 101.8,
+            "ap_index": 2.0,
+            "kp_mean": 0.45825,
+            "f10_7_delta_7d": -43.3,
+            "ap_delta_7d": -5.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.173427,
+            "pair_risk": 0.343,
+            "risk_level": "LOW",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.415640630299534
+        }
+      }
+    },
+    {
+      "asof": "2015-06-04",
+      "cutoff": "2015-06-01",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.51911934008731,
+          "window_end": "2015-06-03 20:20:39.825024",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.65560416
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.655050539417775,
+            "hurst_exponent_sma": 0.9027209263093082,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.44164297114627127,
+            "delta_sma_7d_km": -17.517537887746585,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.65560416,
+            "f10_7": 118.0,
+            "ap_index": 2.0,
+            "kp_mean": 0.333125,
+            "f10_7_delta_7d": 25.0,
+            "ap_delta_7d": -2.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.175411,
+            "pair_risk": 0.3423,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.42186870303928947
+        }
+      }
+    },
+    {
+      "asof": "2015-06-18",
+      "cutoff": "2015-06-15",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5337856001469736,
+          "window_end": "2015-06-16 07:30:07.096896",
+          "data_quality": {
+            "score": 0.44999999999999996,
+            "issues": [
+              "tle_aging_40h",
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": false,
+            "tle_age_hours": 40.49802864
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8397755396455087,
+            "hurst_exponent_sma": 0.9031881640495277,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.987780720553926,
+            "delta_sma_7d_km": -20.852692634929554,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 40.49802864,
+            "f10_7": 150.8,
+            "ap_index": 6.0,
+            "kp_mean": 1.5,
+            "f10_7_delta_7d": 10.900000000000006,
+            "ap_delta_7d": -4.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.774481,
+            "pair_risk": 0.1326,
+            "risk_level": "LOW",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.31313352006613815
+        }
+      }
+    },
+    {
+      "asof": "2015-07-02",
+      "cutoff": "2015-06-29",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5382260022345833,
+          "window_end": "2015-07-01 08:50:02.728032",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 15.16590888
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.9732285161344476,
+            "hurst_exponent_sma": 0.8933854099638902,
+            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.11269470413390081,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 15.16590888,
+            "f10_7": 113.8,
+            "ap_index": 2.0,
+            "kp_mean": 0.37475,
+            "f10_7_delta_7d": 12.0,
+            "ap_delta_7d": -7.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.96887,
+            "pair_risk": 0.0646,
+            "risk_level": "LOW",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.2777317010055625
+        }
+      }
+    },
+    {
+      "asof": "2015-07-16",
+      "cutoff": "2015-07-13",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5068217225091709,
+          "window_end": "2015-07-15 19:24:35.243136",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.590210239999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.8795064608120067,
+            "hurst_exponent_sma": 0.7930615305232824,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.04116369823167898,
+            "adf_pvalue": 0.000541843820538944,
+            "delta_sma_7d_km": 0.08578426980966469,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 4.590210239999999,
+            "f10_7": 99.6,
+            "ap_index": 7.0,
+            "kp_mean": 1.7085,
+            "f10_7_delta_7d": -22.30000000000001,
+            "ap_delta_7d": -5.375,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.561517,
+            "pair_risk": 0.2072,
+            "risk_level": "LOW",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.3420297751291269
+        }
+      }
+    },
+    {
+      "asof": "2015-07-30",
+      "cutoff": "2015-07-27",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5100943492616087,
+          "window_end": "2015-07-29 20:42:01.652832",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.29954088
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.0387607528626863,
+            "hurst_exponent_sma": 0.6831925214008359,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.2564573391856529,
+            "delta_sma_7d_km": 0.08269842737354338,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 3.29954088,
+            "f10_7": 102.0,
+            "ap_index": 12.0,
+            "kp_mean": 2.25,
+            "f10_7_delta_7d": 12.599999999999994,
+            "ap_delta_7d": 3.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.641929,
+            "pair_risk": 0.179,
+            "risk_level": "LOW",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.32799245716772396
+        }
+      }
+    },
+    {
+      "asof": "2015-08-13",
+      "cutoff": "2015-08-10",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.49005853733760985,
+          "window_end": "2015-08-12 05:01:18.603840",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 18.9781656
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4842551447947994,
+            "hurst_exponent_sma": 0.729966721247503,
+            "kolmogorov_proxy_7d": 0.42105263157894735,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9538060799233073,
+            "delta_sma_7d_km": -0.01682014702237211,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 18.9781656,
+            "f10_7": 94.8,
+            "ap_index": 10.0,
+            "kp_mean": 2.08325,
+            "f10_7_delta_7d": -26.799999999999997,
+            "ap_delta_7d": -0.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.5159,
+            "pair_risk": 0.2231,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.34323134180192444
+        }
+      }
+    },
+    {
+      "asof": "2015-08-27",
+      "cutoff": "2015-08-24",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5777044305900535,
+          "window_end": "2015-08-26 18:51:23.859648",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.143372319999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.839775539645508,
+            "hurst_exponent_sma": 0.5904261322009685,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 5.144801501136998e-06,
+            "delta_sma_7d_km": -0.5567416105550365,
+            "maneuver_count_30d": 6.0,
+            "tle_age_hours": 5.143372319999999,
+            "f10_7": 110.2,
+            "ap_index": 52.0,
+            "kp_mean": 4.958375,
+            "f10_7_delta_7d": 7.400000000000006,
+            "ap_delta_7d": 34.125,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.015222,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4820019937655241
+        }
+      }
+    },
+    {
+      "asof": "2015-09-10",
+      "cutoff": "2015-09-07",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.506904733784962,
+          "window_end": "2015-09-08 08:26:15.040608",
+          "data_quality": {
+            "score": 0.44999999999999996,
+            "issues": [
+              "tle_aging_40h",
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": false,
+            "tle_age_hours": 39.56248872
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.9732285161344478,
+            "hurst_exponent_sma": 0.8968786703901821,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0495869901964033,
+            "delta_sma_7d_km": -0.0653193586258567,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 39.56248872,
+            "f10_7": 83.5,
+            "ap_index": 12.0,
+            "kp_mean": 2.375,
+            "f10_7_delta_7d": -3.0,
+            "ap_delta_7d": -12.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 1e-06,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4501421302032329
+        }
+      }
+    },
+    {
+      "asof": "2015-09-24",
+      "cutoff": "2015-09-21",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.49188536387363435,
+          "window_end": "2015-09-23 20:38:15.279648",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.3624223200000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.1868085945630504,
+            "hurst_exponent_sma": 0.864243195593947,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.19746355689297101,
+            "adf_pvalue": 0.21173996185345678,
+            "delta_sma_7d_km": 0.06643914401502116,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 3.3624223200000003,
+            "f10_7": 106.8,
+            "ap_index": 7.0,
+            "kp_mean": 1.708375,
+            "f10_7_delta_7d": 0.0,
+            "ap_delta_7d": -7.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4433834137431355
+        }
+      }
+    },
+    {
+      "asof": "2015-10-08",
+      "cutoff": "2015-10-05",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5825929582651114,
+          "window_end": "2015-10-07 04:14:51.819360",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 19.752272400000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.865576855207248,
+            "hurst_exponent_sma": 0.9390956615882418,
+            "kolmogorov_proxy_7d": 0.3157894736842105,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9958200789799274,
+            "delta_sma_7d_km": -1.855237737261632,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 19.752272400000003,
+            "f10_7": 79.7,
+            "ap_index": 45.0,
+            "kp_mean": 4.875125000000001,
+            "f10_7_delta_7d": -40.0,
+            "ap_delta_7d": 19.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.094759,
+            "pair_risk": 0.3705,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4659418312193001
+        }
+      }
+    },
+    {
+      "asof": "2015-10-22",
+      "cutoff": "2015-10-19",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5033782165831597,
+          "window_end": "2015-10-21 06:15:55.941696",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 17.734460639999998
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.465255650113225,
+            "hurst_exponent_sma": 0.6829760149174544,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.05976415092907217,
+            "adf_pvalue": 0.0014559441295895546,
+            "delta_sma_7d_km": 0.28902627721981844,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 17.734460639999998,
+            "f10_7": 120.5,
+            "ap_index": 4.0,
+            "kp_mean": 1.16675,
+            "f10_7_delta_7d": 13.700000000000003,
+            "ap_delta_7d": -4.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.072162,
+            "pair_risk": 0.3784,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4346401974624219
+        }
+      }
+    },
+    {
+      "asof": "2015-11-05",
+      "cutoff": "2015-11-02",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5066197972036972,
+          "window_end": "2015-11-04 08:50:55.032864",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 15.15137976
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.9290929654978,
+            "hurst_exponent_sma": 0.8953769493067706,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8530426277486227,
+            "delta_sma_7d_km": 0.01457753854629118,
+            "maneuver_count_30d": 9.0,
+            "tle_age_hours": 15.15137976,
+            "f10_7": 109.9,
+            "ap_index": 16.0,
+            "kp_mean": 2.958375,
+            "f10_7_delta_7d": -3.0,
+            "ap_delta_7d": 2.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.090767,
+            "pair_risk": 0.3719,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4325239087416638
+        }
+      }
+    },
+    {
+      "asof": "2015-11-19",
+      "cutoff": "2015-11-16",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5083365201160827,
+          "window_end": "2015-11-18 12:22:18.063840",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 11.628315599999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.2363864108712896,
+            "hurst_exponent_sma": 0.9712822187256317,
+            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.6199803971590463,
+            "adf_pvalue": 0.025062254101343565,
+            "delta_sma_7d_km": 0.22987603050569305,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 11.628315599999999,
+            "f10_7": 108.1,
+            "ap_index": 8.0,
+            "kp_mean": 1.708375,
+            "f10_7_delta_7d": 4.599999999999994,
+            "ap_delta_7d": -1.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.041459,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4507864340522372
+        }
+      }
+    },
+    {
+      "asof": "2015-12-03",
+      "cutoff": "2015-11-30",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5084226695798311,
+          "window_end": "2015-12-02 12:38:00.354336",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 11.366568240000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.5239860659612985,
+            "hurst_exponent_sma": 0.7751949201775277,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.2246385466914042,
+            "delta_sma_7d_km": -0.8715729556715814,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 11.366568240000001,
+            "f10_7": 94.5,
+            "ap_index": 4.0,
+            "kp_mean": 0.8331250000000001,
+            "f10_7_delta_7d": -9.400000000000006,
+            "ap_delta_7d": -3.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.017585,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.45082520131092396
+        }
+      }
+    },
+    {
+      "asof": "2015-12-17",
+      "cutoff": "2015-12-14",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5118495413974018,
+          "window_end": "2015-12-16 18:03:57.197376",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.93411184
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.51005646035654,
+            "hurst_exponent_sma": 0.9332704048342481,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.4728537773906233,
+            "delta_sma_7d_km": -9.133007943535631,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.93411184,
+            "f10_7": 117.8,
+            "ap_index": 6.0,
+            "kp_mean": 1.374875,
+            "f10_7_delta_7d": 9.299999999999997,
+            "ap_delta_7d": -7.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.890233,
+            "pair_risk": 0.0921,
+            "risk_level": "LOW",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.2809872936288308
+        }
+      }
+    },
+    {
+      "asof": "2015-12-31",
+      "cutoff": "2015-12-28",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5993969560570622,
+          "window_end": "2015-12-30 19:39:29.344032",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.34184888
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.2319817814011402,
+            "hurst_exponent_sma": 0.9276214253967267,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.8519807992136487,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 17.631740598735632,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.34184888,
+            "f10_7": 96.2,
+            "ap_index": 35.0,
+            "kp_mean": 4.25,
+            "f10_7_delta_7d": -36.499999999999986,
+            "ap_delta_7d": 24.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.436068,
+            "pair_risk": 0.2511,
+            "risk_level": "LOW",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.407833630225678
+        }
+      }
+    },
+    {
+      "asof": "2016-01-14",
+      "cutoff": "2016-01-11",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5083453589332072,
+          "window_end": "2016-01-13 19:14:28.341888",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.7587939200000005
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.562688039303908,
+            "hurst_exponent_sma": 0.7177160710187253,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9920621227344867,
+            "delta_sma_7d_km": -0.06868612524704076,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 4.7587939200000005,
+            "f10_7": 103.2,
+            "ap_index": 7.0,
+            "kp_mean": 1.91675,
+            "f10_7_delta_7d": -0.20000000000000284,
+            "ap_delta_7d": -2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.628676,
+            "pair_risk": 0.1837,
+            "risk_level": "LOW",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.32979041151994326
+        }
+      }
+    },
+    {
+      "asof": "2016-01-28",
+      "cutoff": "2016-01-25",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5190922546827543,
+          "window_end": "2016-01-27 20:16:41.039616",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.72193344
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.030087224632132,
+            "hurst_exponent_sma": 0.7545151731968536,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.010894081973055216,
+            "delta_sma_7d_km": -0.4303123562349356,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 3.72193344,
+            "f10_7": 109.9,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": 5.900000000000006,
+            "ap_delta_7d": -6.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.410233,
+            "pair_risk": 0.2601,
+            "risk_level": "LOW",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.37664651460723947
+        }
+      }
+    },
+    {
+      "asof": "2016-02-11",
+      "cutoff": "2016-02-08",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.507770747231495,
+          "window_end": "2016-02-10 03:19:23.507328",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 20.676803519999996
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8205898566665466,
+            "hurst_exponent_sma": 0.5877819303428301,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.006293103608791914,
+            "delta_sma_7d_km": -0.19819784227001946,
+            "maneuver_count_30d": 8.0,
+            "tle_age_hours": 20.676803519999996,
+            "f10_7": 112.8,
+            "ap_index": 8.0,
+            "kp_mean": 2.041625,
+            "f10_7_delta_7d": -10.5,
+            "ap_delta_7d": -0.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.418421,
+            "pair_risk": 0.2573,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.3700118362541728
+        }
+      }
+    },
+    {
+      "asof": "2016-02-25",
+      "cutoff": "2016-02-22",
+      "n_train_ok": true,
+      "targets": {
+        "40258": {
+          "ok": true,
+          "anomaly_score": 0.5304843114726688,
+          "window_end": "2016-02-24 22:04:54.848928",
+          "data_quality": {
+            "score": 0.6,
+            "issues": [
+              "gap_73h",
+              "sma_jump"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.91809752
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.2319817814011402,
+            "hurst_exponent_sma": 0.8131190392552665,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.45331350612700194,
+            "adf_pvalue": 0.1741353863494149,
+            "delta_sma_7d_km": 0.6450553030517767,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.91809752,
+            "f10_7": 91.7,
+            "ap_index": 5.0,
+            "kp_mean": 1.2918749999999999,
+            "f10_7_delta_7d": -3.200000000000003,
+            "ap_delta_7d": -4.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 40258,
+          "object_name": "LUCH (OLYMP-K 1)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.07338,
+            "pair_risk": 0.378,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.446617940162701
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "40258": {
+      "norad_id": 40258,
+      "object_name": "LUCH (OLYMP-K 1)",
+      "n_folds_scored": 30,
+      "anomaly_score_mean": 0.5225615778291443,
+      "anomaly_score_max": 0.5993969560570622,
+      "anomaly_score_at_nearest_peak": 0.506904733784962,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "n_hits_in_window": 3,
+      "lead_time_days": 243.0,
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 1.9374199307787852,
+          "late_mean": 2.0314591550639824
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.9000648306901743,
+          "late_mean": 0.7644851642877771
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.5175438596491229,
+          "late_mean": 0.5701754385964911
+        }
+      },
+      "pair_risk_max": 0.4037,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 18,
+        "pre_peak_anomaly_mean": 0.5221484799710123,
+        "pre_peak_anomaly_max": 0.5777044305900535,
+        "early_pre_peak_mean": 0.5198997305982184,
+        "late_pre_peak_mean": 0.5216349626196647,
+        "noise_ramp": 0.0017352320214463202,
+        "pre_peak_pair_risk_max": 0.4037,
+        "elevated_noise_before_peak": true
+      },
+      "is_placebo": false
+    }
+  }
+}
