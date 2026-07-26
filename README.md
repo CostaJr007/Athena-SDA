@@ -96,59 +96,110 @@ Ricci (proxy), Homologia/TDA (proxy se sem `ripser`), Chern-Simons (desvio de \(
 ## Pipeline real (código) — DAG de micro-modelos
 
 ```
-TLE history (2y watchlist) + daily inject
+TLE history (watchlist 2014→hoje) + daily inject + space weather (GFZ)
         │
         ▼
 [1] Data quality (idade TLE, gaps, saltos)
         │
         ▼
-[2] Feature Extractor quant  (src/engine.py + src/models.py)
+[2] Feature Extractor quant + SW  (engine + models + space_weather)
         │
         ├──────────────────────────────┐
         ▼                              ▼
-Proximidade + Cointegração      Isolation Forest (baseline passado)
-(src/orbital.py, pipeline)             │
+Proximidade + Cointegração      Isolation Forest (baseline = SÉRIE passada)
+(pair_score / orbital)                 │
         │                              ▼
-        │                       anomaly_score
+        │                       anomaly_score (+ Δ vs ontem)
         │                              │
         └──────────────┬───────────────┘
                        ▼
                 XGBoost multi-class
                        │
                        ▼
-                Fuzzy Mamdani
-                       │
-                       ▼
-            Fuse + Kelly + report
+                Fuzzy Mamdani + Kelly + attention (0.45 anom + 0.55 pair)
                        │
                        ▼
          Bob (LLM) explica + recomenda
          UI: globo + mission board
+         Validação: walk-forward pré-report
 ```
 
 Isso espelha o **DAG de inferência** (patente de sensor correlation) e as **4 etapas** LLM+GIS (filtro → quant → texto → decisão).
 
 ### Watchlist militar-first (foco do treino)
 
-Não treinamos “o céu inteiro”. Treinamos e monitoramos uma **frota curada**:
+Não treinamos “o céu inteiro”. Treinamos e monitoramos uma **frota curada** (`data/catalog/watchlist.json`, **24 NORADs**):
 
 | Papel | Função |
 |-------|--------|
-| **Protected assets** | O que a doutrina “protege” (proximidade/Kelly) |
-| **Adversary / suspect** | Plataformas de interesse (manobra, shadowing) |
-| **Baseline control** | Poucos civis estáveis para ancorar o IF |
+| **asset** | Plataformas a proteger (proximidade / Kelly) |
+| **suspect** | Interesse (recon/SIGINT/RPO/shadowing) |
+| **baseline** | Civis estáveis — ancoram o Isolation Forest |
 
-Histórico ~**2 anos** (HF `space-track-tle-history` filtrado) + **injeção diária** (CelesTrak / HF latest) → anomalias e ruídos de aproximação/distância.  
-Ver: `scripts/run_anomaly_monitor.py`, `src/anomaly_monitor.py`, `src/tle_store.py`.
+### Dados: o que se baixa vs o que fica no repo
+
+O seed **baixa** o histórico TLE grande (Hugging Face) e **guarda só o filtro** da watchlist. Por isso o PC pode ter **vários GB em cache** e o GitHub só **dezenas de MB** de dados de ML — isso é intencional.
+
+```
+HF space-track-tle-history  (~0,5–1 GB/ano no cache; total cache ~7 GB típico)
+        │  filtro: só NORADs da watchlist
+        ▼
+data/history/epochs.parquet   (~13 MB, ~250k épocas, 2014→hoje)
+        +
+CelesTrak CATNR diário        → data/daily/ + append no history
+        +
+GFZ F10.7 / Ap / Kp           → data/space_weather/daily.parquet (~0,1 MB útil)
+        +
+modelos treinados             → models/*.joblib (~5 MB)
+```
+
+| Onde | Tamanho típico | O que é |
+|------|----------------|---------|
+| `~/.cache/huggingface/.../space-track-tle-history` | **vários GB** | download bruto (todos os objetos do ano) — **não** vai pro Git |
+| `data/history/epochs.parquet` | **~13 MB** | TLE reais **filtrados** (24 sats) — **sim**, no Git |
+| `data/space_weather/` | **~MB** | índices solares/geomagnéticos GFZ — **sim** |
+| `models/` | **~5 MB** | IF + XGB + RKHS já treinados — **sim** |
+| `data/alerts/walkforward/` | **~MB** | validação pré-report (Luch, SY-12, placebos) — **sim** |
+
+**Fontes (reais, públicas):**
+
+| Dado | Fonte | Uso |
+|------|--------|-----|
+| TLE histórico | HF [`juliensimon/space-track-tle-history`](https://huggingface.co/datasets/juliensimon/space-track-tle-history) (espelho tipo Space-Track) | série 2014+ |
+| TLE diário | [CelesTrak](https://celestrak.org) GP `CATNR` | ponta da série |
+| Clima espacial | [GFZ Potsdam](https://kp.gfz-potsdam.de/) Kp/Ap/F10.7 (+ NOAA F10.7 opcional) | features de arrasto vs manobra |
+| Eventos WF | Open source (Gunter, CSIS, imprensa) em `events_walkforward.json` | âncoras de report, **não** labels classificados |
+
+**Comandos de dados:**
+
+```bash
+# Histórico (1ª vez: baixa anos HF → cache GB → grava só watchlist)
+python scripts/run_anomaly_monitor.py seed-history --hf --start-year 2014
+
+# Clima solar/geomagnético
+python scripts/run_anomaly_monitor.py seed-space-weather --force --start-year 2014
+
+# Ciclo diário: ingest TLE → baseline no passado → score de hoje
+python scripts/run_anomaly_monitor.py run-daily
+
+# Walk-forward (predição pré-report, IF só no passado de cada asof)
+python scripts/run_walkforward.py run
+python scripts/run_walkforward.py summary
+```
+
+Docs: `docs/PROTOCOLO_DETECCAO_DIARIA.md`, `docs/references/space_weather_ml.md`,  
+`docs/RELATORIO_COMPLETO_ML_ATHENA_SDA.md`, `docs/RELATORIO_WALKFORWARD_PRE_REPORT_ML_NOVO.md`.
 
 ### Honestidade sobre escala
 
-| Camada | Demo / hackathon | Roadmap |
-|--------|------------------|---------|
-| Objetos | Watchlist ~15–25 (militar-first) | Expandir catálogo com mesma ontologia |
-| Histórico | 2 anos HF filtrado + daily | GP History / Space-Track API |
+| Camada | Demo / hackathon (estado atual) | Roadmap |
+|--------|----------------------------------|---------|
+| Objetos | Watchlist **24** militar-first | Expandir catálogo com mesma ontologia |
+| Histórico | **2014→hoje** HF filtrado + daily CelesTrak | Space-Track API oficial |
+| Clima | GFZ diário no vetor ML (12 features) | OMNI2 / validação cruzada NOAA |
 | Labels HOSTIL | Heurísticas + fuse (não “verdade absoluta”) | Labels fracos + validação analista |
-| Propagação | SGP4 no front; Kepler/aprox no backend demo | SGP4 unificado no score de par |
+| Validação | Walk-forward vs reports open-source + placebos | Mais eventos + conjunção física |
+| Propagação | SGP4 no front; Kepler/aprox no backend demo | SGP4 unificado no pair score |
 | Bob | Template / watsonx | Sempre **pós-quant** |
 
 ---
@@ -192,30 +243,35 @@ streamlit run app.py
 
 Abra `http://localhost:8501`.
 
-### Dados reais (opcional)
+### Dados reais (já versionados no clone)
+
+O repositório já inclui `data/history/epochs.parquet`, `data/space_weather/`, e `models/*.joblib`.  
+Para **re-seed** ou atualizar:
 
 ```bash
-# Seeds públicos CelesTrak + histórico aproximado
-python generate_astro_history.py
-
-# Space-Track (requer conta + .env)
-python download_spacetrack.py
+python scripts/run_anomaly_monitor.py seed-history --hf --start-year 2014
+python scripts/run_anomaly_monitor.py seed-space-weather --force
+python -c "from src.models import train_and_save_models; train_and_save_models()"
+python scripts/run_anomaly_monitor.py train-baseline --sample-mode hybrid
 ```
 
-Depois retreine: o treino **híbrido** usa CSV real se existir e aumenta com cenários sintéticos de ameaça.
+(Opcional) Space-Track oficial: conta + `.env` e `python download_spacetrack.py`.
 
 ### Monitor de anomalias (passado + diário)
 
 ```bash
-python scripts/run_anomaly_monitor.py seed-history          # CSV local (+ --hf para history HF)
-python scripts/run_anomaly_monitor.py ingest-daily          # TLE do dia (CelesTrak)
-python scripts/run_anomaly_monitor.py train-baseline        # IF no passado (holdout do dia)
-python scripts/run_anomaly_monitor.py score                 # score da janela mais recente
-python scripts/run_anomaly_monitor.py run-daily             # ingest + score (+ retrain se precisar)
+python scripts/run_anomaly_monitor.py seed-history --hf --start-year 2014
+python scripts/run_anomaly_monitor.py seed-space-weather
+python scripts/run_anomaly_monitor.py ingest-daily          # TLE do dia (CelesTrak CATNR)
+python scripts/run_anomaly_monitor.py train-baseline        # IF na SÉRIE (holdout = ontem)
+python scripts/run_anomaly_monitor.py score                 # compara última janela vs baseline
+python scripts/run_anomaly_monitor.py run-daily             # protocolo completo (retreina + score)
 python scripts/run_anomaly_monitor.py status
+python scripts/run_walkforward.py run                       # validação pré-report
 ```
 
-Alertas: `data/alerts/anomalies_latest.json`.
+Alertas: `data/alerts/anomalies_latest.json`.  
+WF: `data/alerts/walkforward/walkforward_latest.json`.
 
 Frontend tático (globo + board): `src/frontend` — `npm install && npm run dev`.
 
@@ -225,23 +281,27 @@ Frontend tático (globo + board): `src/frontend` — `npm install && npm run dev
 
 ```
 Athena-SDA/
-├── app.py                      # Dashboard Streamlit
-├── scripts/run_anomaly_monitor.py
+├── app.py                         # Dashboard Streamlit
+├── scripts/run_anomaly_monitor.py # seed / daily / SW / score
+├── scripts/run_walkforward.py     # validação past-only
 ├── src/
-│   ├── config.py               # Schema de features, paths
-│   ├── engine.py               # Teorias quantitativas (Shannon, Hurst, …)
-│   ├── models.py               # Extract / train / predict
-│   ├── pipeline.py             # DAG completo de inferência
-│   ├── anomaly_monitor.py      # Treino passado + score diário
-│   ├── tle_store.py            # Histórico unificado + ingest
-│   ├── orbital.py              # Proximidade / geometria
-│   ├── fuzzy.py                # Mamdani
-│   ├── bob.py                  # Copiloto + tools
-│   ├── frontend/               # UI tática (globo live)
-│   └── utils.py                # Mock TLE / shadowing
-├── models/                     # joblib + métricas
-├── data/history|daily|alerts/  # Store do monitor
-├── docs/references/            # Math + patentes (detalhe)
+│   ├── config.py                  # FEATURE_COLUMNS (+ space weather)
+│   ├── engine.py                  # Shannon, Hurst, CUSUM, …
+│   ├── models.py                  # extract / train / predict
+│   ├── space_weather.py           # GFZ F10.7/Ap/Kp
+│   ├── anomaly_monitor.py         # série=passado → score=hoje
+│   ├── walkforward.py             # pre-report
+│   ├── tle_store.py               # history + ingest
+│   ├── pair_score.py              # suspect × asset
+│   ├── orbital.py / fuzzy.py / bob.py
+│   └── frontend/                  # UI tática (globo)
+├── models/                        # IF, XGB, RKHS (treinados)
+├── data/
+│   ├── history/epochs.parquet     # TLE watchlist (~13 MB no Git)
+│   ├── space_weather/             # clima diário
+│   ├── catalog/                   # watchlist + events WF
+│   └── alerts/                    # score diário + walkforward
+├── docs/                          # relatórios ML, protocolo, WF
 └── .env.example
 ```
 
@@ -269,11 +329,14 @@ Athena-SDA/
 
 | Documento | Conteúdo |
 |-----------|----------|
-| `docs/references/patentes_palantir.md` | Patentes Palantir (Meta-Constellation, LLM+GIS, DAG, tiles, ontology) |
+| `docs/RELATORIO_COMPLETO_ML_ATHENA_SDA.md` | ML, bases, math, ponderação solar/rotas, IBM |
+| `docs/RELATORIO_WALKFORWARD_PRE_REPORT_ML_NOVO.md` | WF com ML atual: lead-time, features, placebos |
+| `docs/PROTOCOLO_DETECCAO_DIARIA.md` | Série=passado; hoje=comparação |
+| `docs/references/space_weather_ml.md` | F10.7/Ap/Kp no vetor |
+| `docs/references/patentes_palantir.md` | Patentes Palantir → módulos |
 | `docs/references/fundamentacao_matematica.md` | Formulação das teorias |
-| `docs/references/framework_matematico_completo.md` | Math + trechos de implementação |
-| `docs/references/sessions/.../arquitetura_patentes_palantir.md` | Leitura profunda das patentes |
+| `docs/SESSION_HANDOFF.md` | Estado da sessão / handoff |
 | `PROJETO.md` / `PROJETO_COMPLETO.md` | Documento mestre do desafio |
-| [juliensimon/space-datasets](https://github.com/juliensimon/space-datasets) | Pipelines HF de TLE/SATCAT (treino histórico) |
+| [juliensimon/space-datasets](https://github.com/juliensimon/space-datasets) | Pipelines HF de TLE/SATCAT |
 
-**Citar no pitch:** patentes como *inspiração arquitetural*; teorias como *instrumentos de medida*; Athena como *aplicação SDA militar-first com quant + ML + copiloto pós-quant*.
+**Citar no pitch:** patentes como *inspiração arquitetural*; teorias como *instrumentos de medida*; Athena como *aplicação SDA militar-first com quant + ML + copiloto pós-quant*. Dados: *TLE e clima reais; cache HF grande no PC; repo com store filtrado + modelos*.
