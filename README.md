@@ -34,7 +34,7 @@ A arquitetura **não inventa** o pipeline de inteligência do zero. Ela **traduz
 | **US 2023/0050870 A1** AI Meta-Constellation | DMP + AIP, micro-modelos, insight-first downlink | Micro-modelos IF/XGB/Fuzzy; alertas em vez de dump de TLE | Solo + watchlist militar; hot-swap de baseline diária/semanal |
 | **US 2024/0394296 A1** LLM + Geospatial | 4 etapas: filtro físico → ML quant → LLM descritivo → score | DQ → IF/XGB → Bob → fuse/report | SDA orbital (não real estate); Bob só explica scores já calculados |
 | **US 12,657,514 B2** Sensor correlation | Data API + Inference API + **DAG** | `pipeline.py` / `anomaly_monitor.py` | Cadeia TLE→features→ML→fuzzy→Kelly fixa e auditável |
-| **US 12,450,265 B2** Time-series geo | Trajetórias (espaço×tempo), compressão p/ UI | Histórico 2 anos + injeção diária + globo SGP4 | Foco em elementos Kepler + comportamento, não só lat/lon |
+| **US 12,450,265 B2** Time-series geo | Trajetórias (espaço×tempo), compressão p/ UI | Histórico **~12 anos (2014→hoje)** + injeção diária + globo SGP4 | Foco em elementos Kepler + comportamento, não só lat/lon |
 | **US 12,374,011 B2** Ontology map | Objetos de inteligência + filtros no mapa | Asset / suspect / baseline + threat board | Ontologia SDA (proteger vs caçar), não GIS genérico |
 
 Detalhes e figuras: `docs/references/patentes_palantir.md`.
@@ -142,24 +142,30 @@ O seed **baixa** o histórico TLE grande (Hugging Face) e **guarda só o filtro*
 
 ```
 HF space-track-tle-history  (~0,5–1 GB/ano no cache; total cache ~7 GB típico)
-        │  filtro: só NORADs da watchlist
+        │  filtro: só NORADs da watchlist (anos 2014, 2015, …)
         ▼
-data/history/epochs.parquet   (~13 MB, ~250k épocas, 2014→hoje)
+data/history/epochs.parquet   (~13 MB, ~250k épocas)
+        │  **NÃO são só 2 anos de treino**
+        │  cobertura real: **2014-01-01 → 2026-07** (~**12,5 anos**)
         +
 CelesTrak CATNR diário        → data/daily/ + append no history
         +
-GFZ F10.7 / Ap / Kp           → data/space_weather/daily.parquet (~0,1 MB útil)
+GFZ F10.7 / Ap / Kp           → data/space_weather/daily.parquet (mesmo range 2014+)
         +
 modelos treinados             → models/*.joblib (~5 MB)
+        │  IF monitor: amostragem **hybrid** na série longa (2014→ontem)
+        │  walk-forward: folds em eventos 2015–2023 com treino só no passado
 ```
 
 | Onde | Tamanho típico | O que é |
 |------|----------------|---------|
 | `~/.cache/huggingface/.../space-track-tle-history` | **vários GB** | download bruto (todos os objetos do ano) — **não** vai pro Git |
-| `data/history/epochs.parquet` | **~13 MB** | TLE reais **filtrados** (24 sats) — **sim**, no Git |
-| `data/space_weather/` | **~MB** | índices solares/geomagnéticos GFZ — **sim** |
-| `models/` | **~5 MB** | IF + XGB + RKHS já treinados — **sim** |
+| `data/history/epochs.parquet` | **~13 MB** | TLE reais **filtrados** (24 sats, **~12 anos**) — **sim**, no Git |
+| `data/space_weather/` | **~MB** | índices solares/geomagnéticos GFZ (2014+) — **sim** |
+| `models/` | **~5 MB** | IF + XGB + RKHS já treinados na série longa — **sim** |
 | `data/alerts/walkforward/` | **~MB** | validação pré-report (Luch, SY-12, placebos) — **sim** |
+
+> **Nota:** docs antigas falavam em “~2 anos (2024–2026)”. O seed atual e o treino usam **bem mais**: history store **2014→hoje**.
 
 **Fontes (reais, públicas):**
 
@@ -195,7 +201,7 @@ Docs: `docs/PROTOCOLO_DETECCAO_DIARIA.md`, `docs/references/space_weather_ml.md`
 | Camada | Demo / hackathon (estado atual) | Roadmap |
 |--------|----------------------------------|---------|
 | Objetos | Watchlist **24** militar-first | Expandir catálogo com mesma ontologia |
-| Histórico | **2014→hoje** HF filtrado + daily CelesTrak | Space-Track API oficial |
+| Histórico / treino | **~12 anos (2014→hoje)**, ~250k épocas filtradas + daily | Space-Track API oficial |
 | Clima | GFZ diário no vetor ML (12 features) | OMNI2 / validação cruzada NOAA |
 | Labels HOSTIL | Heurísticas + fuse (não “verdade absoluta”) | Labels fracos + validação analista |
 | Validação | Walk-forward vs reports open-source + placebos | Mais eventos + conjunção física |

@@ -19,7 +19,7 @@ Use este arquivo no início da próxima sessão: *“leia docs/SESSION_HANDOFF.m
 | **IA (Bob)** | Só **depois** do quant (etapas ③④ da patente LLM+GIS) — explica scores, não inventa ameaça |
 
 **Pitch em uma linha:**  
-Watchlist militar-first + 2 anos de TLE (HF) + injeção diária + Isolation Forest no passado + score no presente + pares (dist/coint/TCA) + Fuzzy/XGB/Kelly + Bob pós-quant.
+Watchlist militar-first + **~12 anos de TLE (HF 2014→hoje, filtrado)** + injeção diária + Isolation Forest no passado + score no presente + space weather + pares (dist/coint) + Fuzzy/XGB/Kelly + Bob pós-quant + walk-forward pré-report.
 
 ---
 
@@ -200,7 +200,7 @@ cd src/frontend && npm run dev
 
 ```text
 Leia docs/SESSION_HANDOFF.md e o README.md do Athena-SDA.
-Continue: seed-history --hf (2 anos, watchlist do catalog),
+Continue: seed-history --hf (2014+, watchlist do catalog) se precisar re-seed;
 train-baseline, score diário, depois score de pares
 (proximidade/cointegração/TCA). Não redesenhar o front até o JSON
 de risco estar estável. Foco: quant + ML + narrativa militar/Palantir.
