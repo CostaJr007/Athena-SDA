@@ -105,16 +105,16 @@ Ver lista completa: `python scripts/run_anomaly_monitor.py catalog -v`
 - [x] Ligar em tle_store / CLI / monitor / pipeline
 - [x] Ingest diário CATNR 24/24
 
-### B. Dados HF ~2 anos — **PRÓXIMO**
-- [ ] Estudo volumes/organograma: `docs/references/estudo_dados_ml_organograma.md` (**~0,05–0,3 GB úteis**; full HF ~12 GB **não** baixar)
-- [ ] `pip install datasets pyarrow`
-- [ ] Seed: streaming filtrado watchlist **ou** parquet 2024–2026 (~2,45 GB) + filtro local
-- [ ] `status` → ≥18/24 sats com ≥20 épocas; range ~2024→hoje
+### B. Dados HF ~12 anos — **FEITO** (não “só 2 anos”)
+- [x] Estudo volumes: cache HF multi-GB; store útil ~dezenas de MB
+- [x] Seed year-parquet 2014+ filtrado watchlist → `epochs.parquet` (~250k épocas)
+- [x] Range real: **2014-01-01 → 2026-07** (~12,5 anos), 24/24 sats
+- [x] Space weather GFZ no mesmo range
 
-### C. Treino + diário
-- [ ] `train-baseline --holdout-days 1` (ou 7)
-- [ ] `score` → `data/alerts/anomalies_latest.json` com role/country
-- [ ] `run-daily` como loop operacional
+### C. Treino + diário — **FEITO**
+- [x] `train-baseline --holdout-days 1 --sample-mode hybrid` (série longa)
+- [x] `score` → `data/alerts/anomalies_latest.json` com role/country + pairs
+- [x] `run-daily` protocolo série=passado / hoje=score
 
 ### D. Walk-forward + melhorias Gemini coerentes — **FEITO 2026-07-26**
 - [x] `events_walkforward.json` + `src/walkforward.py` + `scripts/run_walkforward.py`
