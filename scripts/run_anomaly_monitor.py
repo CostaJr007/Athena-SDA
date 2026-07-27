@@ -2,9 +2,9 @@
 """
 Athena-SDA — daily anomaly monitoring CLI
 
-  Past  → train Isolation Forest baseline
-  Daily → inject fresh TLEs into history
-  Score → flag distribution shifts vs baseline
+  Past  -> train Isolation Forest baseline
+  Daily -> inject fresh TLEs into history
+  Score -> flag distribution shifts vs baseline
 
 Examples:
   # 1) Seed history (local CSV and/or HF stream)
@@ -20,7 +20,7 @@ Examples:
   # 4) Score latest windows
   python scripts/run_anomaly_monitor.py score
 
-  # Full loop (ingest → train if missing → score)
+  # Full loop (ingest -> train if missing -> score)
   python scripts/run_anomaly_monitor.py run-daily
 """
 from __future__ import annotations
@@ -65,8 +65,8 @@ def cmd_seed_history(args: argparse.Namespace) -> None:
     print(f"History store: {len(hist)} epochs, {n_sats} sats")
     if len(hist):
         g = hist.groupby("norad_id").size()
-        print(f"Sats with ≥20 epochs: {int((g >= 20).sum())}/{n_sats}")
-        print(f"Range: {hist['timestamp'].min()} → {hist['timestamp'].max()}")
+        print(f"Sats with >=20 epochs: {int((g >= 20).sum())}/{n_sats}")
+        print(f"Range: {hist['timestamp'].min()} -> {hist['timestamp'].max()}")
 
 
 def cmd_ingest_daily(args: argparse.Namespace) -> None:
@@ -86,7 +86,7 @@ def cmd_ingest_daily(args: argparse.Namespace) -> None:
     frames = []
 
     if args.source in ("celestrak", "both"):
-        print("Fetching CelesTrak (CATNR + groups)…")
+        print("Fetching CelesTrak (CATNR + groups)...")
         try:
             df_c = fetch_celestrak_watchlist(
                 norad_ids=ids,
@@ -99,7 +99,7 @@ def cmd_ingest_daily(args: argparse.Namespace) -> None:
             print(f"  CelesTrak error: {e}")
 
     if args.source in ("hf", "both"):
-        print("Fetching HF constellation-tle-latest…")
+        print("Fetching HF constellation-tle-latest...")
         try:
             df_h = fetch_hf_constellation_latest()
             idset = set(ids)
@@ -120,13 +120,13 @@ def cmd_ingest_daily(args: argparse.Namespace) -> None:
     path = save_daily_snapshot(day_df)
     full, n_new = append_epochs(day_df)
     print(f"Snapshot: {path}")
-    print(f"Appended ~{n_new} new epoch rows → history total {len(full)}")
+    print(f"Appended ~{n_new} new epoch rows -> history total {len(full)}")
 
 
 def cmd_train(args: argparse.Namespace) -> None:
     from src.anomaly_monitor import train_baseline_from_history
 
-    print("=== train-baseline (série = passado; holdout fora) ===")
+    print("=== train-baseline (series = past; holdout excluded) ===")
     meta = train_baseline_from_history(
         holdout_days=args.holdout_days,
         contamination=args.contamination,
@@ -138,7 +138,7 @@ def cmd_train(args: argparse.Namespace) -> None:
 def cmd_score(args: argparse.Namespace) -> None:
     from src.anomaly_monitor import score_latest
 
-    print("=== score-latest (hoje vs série / baseline) ===")
+    print("=== score-latest (today vs series / baseline) ===")
     report = score_latest(
         anomaly_threshold=args.threshold,
         use_full_pipeline=not args.if_only,
@@ -150,7 +150,7 @@ def cmd_score(args: argparse.Namespace) -> None:
     for a in anoms[:20]:
         pair = a.get("pair") or {}
         dlt = a.get("score_delta_1d")
-        dlt_s = f"Δ1d={dlt:+.3f}" if dlt is not None else "Δ1d=n/a"
+        dlt_s = f"d1d={dlt:+.3f}" if dlt is not None else "d1d=n/a"
         print(
             f"  #{a['norad_id']:>5}  {a.get('object_name',''):<22}  "
             f"anom={a['anomaly_score']:.3f}  {dlt_s}  "
@@ -172,21 +172,21 @@ def cmd_score(args: argparse.Namespace) -> None:
             f"att={float(a.get('attention_score') or a.get('anomaly_score') or 0):.3f}  "
             f"anom={float(a.get('anomaly_score') or 0):.3f}  "
             f"{a.get('object_name','')[:20]:20}  "
-            f"pair→{pair.get('asset_name','-')[:18]} r={pair.get('pair_risk','-')}"
+            f"pair->{pair.get('asset_name','-')[:18]} r={pair.get('pair_risk','-')}"
         )
 
 
 def cmd_score_pairs(args: argparse.Namespace) -> None:
     from src.pair_score import score_all_pairs
 
-    print("=== score-pairs (suspect × asset) ===")
+    print("=== score-pairs (suspect x asset) ===")
     rep = score_all_pairs(top_k_per_suspect=args.top_k, max_pairs=args.max_pairs)
     print(f"pairs={rep['n_pairs_scored']} elevated={rep['n_elevated']}")
     for p in (rep.get("pairs") or [])[:15]:
         if p.get("error"):
             continue
         print(
-            f"  {p.get('suspect_name','')[:22]:22} → {p.get('asset_name','')[:20]:20}  "
+            f"  {p.get('suspect_name','')[:22]:22} -> {p.get('asset_name','')[:20]:20}  "
             f"dist={p.get('min_distance_km')} km  coint_p={p.get('cointegration_pvalue')}  "
             f"risk={p.get('pair_risk')} [{p.get('risk_level')}]"
         )
@@ -194,10 +194,10 @@ def cmd_score_pairs(args: argparse.Namespace) -> None:
 
 def cmd_run_daily(args: argparse.Namespace) -> None:
     """
-    Protocolo diário padrão:
-      1) ingest  → anexa TLE de hoje à série
-      2) train   → baseline = série até D−holdout (ontem e antes); hoje NÃO treina
-      3) score   → compara última janela com a série; alerta se desvio relevante
+    Standard daily protocol:
+      1) ingest  -> append today's TLE to history series
+      2) train   -> baseline = series up to D - holdout (past history); today NOT trained
+      3) score   -> compare latest window to baseline; alert on relevant shifts
     """
     from pathlib import Path
     from src.anomaly_monitor import IFOREST_MONITOR_PATH, train_baseline_from_history, score_latest
@@ -219,7 +219,7 @@ def cmd_run_daily(args: argparse.Namespace) -> None:
             sample_mode=getattr(args, "sample_mode", "hybrid"),
         )
     else:
-        print(f"Usando baseline existente (--skip-retrain): {model}")
+        print(f"Using existing baseline (--skip-retrain): {model}")
 
     score_latest(
         anomaly_threshold=args.threshold,
@@ -239,7 +239,7 @@ def cmd_status(args: argparse.Namespace) -> None:
     print(f"history rows: {len(hist)}")
     if len(hist):
         print(f"sats: {hist['norad_id'].nunique()}")
-        print(f"range: {hist['timestamp'].min()} → {hist['timestamp'].max()}")
+        print(f"range: {hist['timestamp'].min()} -> {hist['timestamp'].max()}")
         covered = set(int(x) for x in hist["norad_id"].unique())
     else:
         covered = set()
@@ -248,6 +248,7 @@ def cmd_status(args: argparse.Namespace) -> None:
     print(f"alerts dir: {ALERTS_DIR}")
     print(f"monitor IF: {IFOREST_MONITOR_PATH.exists()}")
     print(f"pipeline IF: {(MODELS_DIR / 'isolation_forest.joblib').exists()}")
+
     try:
         from src.space_weather import status as sw_status, lookup_space_weather
 
@@ -269,7 +270,7 @@ def cmd_status(args: argparse.Namespace) -> None:
     missing = [n for n in cat["norad_ids"] if n not in covered]
     print(f"history coverage: {cat['n_objects'] - len(missing)}/{cat['n_objects']} watchlist sats")
     if missing:
-        print(f"missing from history (need seed/ingest): {missing[:12]}{'…' if len(missing) > 12 else ''}")
+        print(f"missing from history (need seed/ingest): {missing[:12]}{'...' if len(missing) > 12 else ''}")
 
     if MONITOR_META_PATH.exists():
         print("=== monitor meta ===")
@@ -353,41 +354,41 @@ def main() -> None:
 
     s = sub.add_parser(
         "train-baseline",
-        help="Treina IF na SÉRIE (passado até D−holdout); hoje não entra no train",
+        help="Train IF on SERIES (past history up to D - holdout); today not included",
     )
-    s.add_argument("--holdout-days", type=int, default=1, help="Dias finais excluídos do train (1=ontem e antes)")
+    s.add_argument("--holdout-days", type=int, default=1, help="Final days excluded from train (1=yesterday and before)")
     s.add_argument("--contamination", type=float, default=0.08)
     s.add_argument(
         "--sample-mode",
         choices=["hybrid", "recent", "full"],
         default="hybrid",
-        help="Como amostrar a série: hybrid=longa+recente (padrão)",
+        help="Sampling mode: hybrid=long+recent (default)",
     )
     s.set_defaults(func=cmd_train)
 
     s = sub.add_parser(
         "score",
-        help="Compara última janela de cada sat com o baseline da série (+ pares)",
+        help="Compare latest window of each satellite against series baseline (+ pairs)",
     )
     s.add_argument("--threshold", type=float, default=0.55)
     s.add_argument(
         "--delta-relevance",
         type=float,
         default=0.08,
-        help="Δ anomaly_score vs ontem para marcar mudança relevante",
+        help="Delta anomaly_score vs yesterday to flag relevant shift",
     )
     s.add_argument("--if-only", action="store_true", help="Skip XGBoost layer")
-    s.add_argument("--no-pairs", action="store_true", help="Skip suspect×asset pair scoring")
+    s.add_argument("--no-pairs", action="store_true", help="Skip suspect x asset pair scoring")
     s.set_defaults(func=cmd_score)
 
-    s = sub.add_parser("score-pairs", help="Score suspect×asset proximity + cointegration only")
+    s = sub.add_parser("score-pairs", help="Score suspect x asset proximity + cointegration only")
     s.add_argument("--top-k", type=int, default=3, help="Top assets kept per suspect")
     s.add_argument("--max-pairs", type=int, default=80)
     s.set_defaults(func=cmd_score_pairs)
 
     s = sub.add_parser(
         "run-daily",
-        help="Protocolo diário: ingest → baseline na série (passado) → score do hoje",
+        help="Daily protocol: ingest -> baseline on series (past) -> score today",
     )
     s.add_argument("--source", choices=["celestrak", "hf", "both"], default="celestrak")
     s.add_argument("--groups", default="visual,stations,resource,weather,gps-ops")
@@ -395,7 +396,7 @@ def main() -> None:
     s.add_argument(
         "--skip-retrain",
         action="store_true",
-        help="Não retreina baseline (só score). Padrão é sempre retreinar no passado.",
+        help="Do not retrain baseline (score only). Default is to always retrain on past.",
     )
     s.add_argument("--holdout-days", type=int, default=1)
     s.add_argument("--contamination", type=float, default=0.08)
