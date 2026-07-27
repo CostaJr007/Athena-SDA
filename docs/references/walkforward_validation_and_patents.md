@@ -1,61 +1,64 @@
-# Walk-forward histórico + herança máxima das patentes Palantir
+# Walk-Forward Historical Validation & Palantir Patent Architecture Reference
 
-**Athena-SDA** · Validação temporal de manobras/RPO documentados · Arquitetura inspirada (não clone) de patentes públicas Palantir.
+**Athena-SDA** · Historical temporal validation of documented maneuvers/RPO · Architecture inspired by public Palantir patent publications.
 
-> Objetivo: provar que o **stack math → ML** detecta **assinaturas de comportamento** *antes ou durante* janelas publicamente reportadas — sem peeking no futuro, sem inventar label classificado.
+> **Objective:** Validate that the **Math → ML stack** detects behavioral anomaly signatures *prior to or during* publicly reported event windows — operating strictly without look-ahead leakage.
 
 ---
 
-## 1. Princípio (walk-forward / expanding window)
+## 1. Core Walk-Forward Methodology (Expanding Window)
 
 ```
-Tempo →
+Timeline →
 
-[===== TRAIN only past =====] | gap | [SCORE window] | [EVENT documented]
-                              ^                    ^
-                         train_cutoff          evaluation_end
+[===== TRAIN on past only =====] | gap | [SCORE window] | [EVENT documented]
+                                 ^                      ^
+                            train_cutoff            evaluation_end
 ```
 
-Regras:
+### Execution Rules:
 
-1. Em cada fold \(t\), o Isolation Forest (e qualquer calibragem) só vê dados com `timestamp < t_cutoff`.
-2. Features math (Shannon, Hurst, CUSUM, coint…) são calculadas **só com a série até o fim da janela de score** — nunca com TLE posteriores ao ponto de decisão.
-3. O “evento documentado” (report CSIS/SWF/SpaceNews) define **âncoras de tempo públicas**, não um label secreto de HOSTIL.
-4. Sucesso = scores / features **sobem de forma coerente** na vizinhança do evento (lead-time, magnitude, par suspect×asset), não accuracy 99% sintético.
-
-Isso é o mesmo espírito do monitor diário (`train on past → score present`), só que **replay** em datas históricas conhecidas.
+1. **Strict Holdout:** At each fold \(t\), Isolation Forest (and model calibration) observes data strictly prior to `timestamp < t_cutoff`.
+2. **Feature Isolation:** Mathematical features (Shannon, Hurst, CUSUM, cointegration) are computed using time series bounded by the score window — never using future TLE records.
+3. **Public Anchors:** Open-source reporting milestones (CSIS/SWF/SpaceNews) define temporal evaluation anchors.
+4. **Validation Criteria:** Successful detection is defined by coherent elevation in anomaly scores and mathematical features around event windows relative to placebo controls.
 
 ---
 
-## 2. O que validamos (hipóteses testáveis)
+## 2. Tested Hypotheses
 
-| ID | Hipótese | Sinais esperados (math) | ML / par |
-|----|----------|-------------------------|----------|
-| H1 | Manobra deliberada eleva desordem de \(\Delta a\) | Shannon↑, Kolmogorov↑, CUSUM change-point | anomaly_score↑ |
-| H2 | Low-thrust / drift persistente | Hurst \(> 0.5\) | anomaly vs baseline passivo |
-| H3 | Shadowing / “cola” temporal | **Cointegração** p-value↓ entre suspect e alvo | pair_score↑ |
-| H4 | RPO / inspeção | min distance↓, TCA, multi-dia | fuse + Kelly↑ |
-| H5 | Ruído de catálogo ≠ intenção | DQ score↓, TLE age↑ | **não** classificar HOSTIL |
-
-**Honestidade:** com TLE público não “provamos espionagem”. Provamos: *assinaturas compatíveis com comportamento que a literatura aberta já descreve como RPO/SIGINT/inspeção*.
+| ID | Hypothesis | Expected Math Signal | ML / Pair Score |
+|----|------------|----------------------|-----------------|
+| **H1** | Deliberate maneuver increases altitude disorder | Shannon↑, Kolmogorov↑, CUSUM change-point | anomaly_score↑ |
+| **H2** | Low-thrust / persistent drift | Hurst \(> 0.5\) | Anomaly vs passive baseline |
+| **H3** | Temporal shadowing / tracking | **Cointegration** p-value↓ between suspect & target | pair_score↑ |
+| **H4** | Rendezvous & Proximity Operations (RPO) | Min distance↓, TCA geometry | Fuse + Kelly attention↑ |
+| **H5** | Catalog noise / stale data | DQ score↓, TLE age↑ | Gate: do **not** classify as HOSTILE |
 
 ---
 
-## 3. Eventos-âncora (públicos) para walk-forward
+## 3. Documented Public Anchors for Walk-Forward Validation
 
-Datas aproximadas a partir de open source (CSIS, SWF, SpaceNews, Gunter, AMOS). Ajustar no JSON de eventos quando o HF history tiver cobertura.
+| Event Key | Object(s) | Public Window (approx.) | Type | Target / Context | Key Features |
+|-----------|-----------|-------------------------|------|------------------|--------------|
+| `luch1_intelsat_2015` | Luch/Olymp-K 1 (#40258) | 2015–2019 GEO maneuvers | GEO Shadowing | Intelsat / Commercial slots | Cointegration + Δlong + CUSUM |
+| `luch1_athena_fidus_2018` | Luch-1 | ~2018 | GEO Proximity | Athena-Fidus (FR) | Distance + maneuver count |
+| `luch2_geo_2023` | Luch-5X / Olymp-K 2 (#55841) | 2023–2025 | GEO Shadowing | Western GEO assets | Same as Luch-1 |
+| `sy12_usa_geo` | SY-12 01/02 (#50321/50322) | 2021–2022+ | GEO RPO | USA orbital objects | Pair distance + TCA |
 
-| Event key | Objeto(s) | Janela pública (aprox.) | Tipo | Alvo / contexto | Features-foco |
-|-----------|-----------|-------------------------|------|-----------------|---------------|
-| `luch1_intelsat_2015` | Luch/Olymp-K 1 (~40258) | 2015–2019 manobras GEO; picos mid-belt | shadowing GEO | Intelsat / slots comerciais | coint + Δlong/slot + CUSUM |
-| `luch1_athena_fidus_2018` | Luch-1 | ~2018 | proximity GEO | Athena-Fidus (FR) | dist + manobra |
-| `luch2_geo_2023` | Luch-5X / Olymp-K 2 (~55841) | 2023-03 launch → 2023–25 | shadowing GEO | Western GEO systems | same as Luch-1 |
-| `sj21_beidou_tow_2021` | SJ-21 | 2021-10 → 2022-01 | RPO + docking + tow | Beidou-2 G2 defunct | CUSUM, range, not pure LEO math |
-| `sy12_usa_geo` | SY-12 01/02 (50321/50322) | 2021–22+ | RPO GEO | USA objects (public studies) | pair + TCA |
-| `sj6_sy24c_2024` | SJ-6 / SY-24C cluster | 2024-03 → 2024-12 | multi-sat RPO (“dogfighting”) | mutual LEO | multi-object, dist series |
-| `sy7_sj15_2013` | SY-7 / SJ-15 | 2013–14 | RPO LEO | Chinese co-planar | classic inspector pattern |
+---
 
-**Watchlist Athena atual** já cobre vários IDs (Luch×2, SY-12 01, Yaogan, etc.). Eventos cujos NORADs não estão no catálogo entram como *extensions* no JSON de validação (sem poluir a watchlist operacional se não couber).
+## 4. Architectural Patent Alignment
+
+Athena-SDA leverages concepts mapped from public defense patents:
+
+1. **US 2023/0050870 A1 (AI Meta-Constellation):** Watchlist selection acts as an orbital tasking filter.
+2. **US 2024/0394296 A1 (LLM + GIS):** 4-stage decision pipeline (Physics → Quant ML → Descriptive LLM → Classifier).
+3. **US 12,450,265 B2 (Spatiotemporal Tiling):** 3D trajectory visualization and time-series RDP compression.
+4. **US 12,657,514 B2 (DAG & Sensor API):** Data API & Inference API separation.
+
+---
+*Athena-SDA Walk-forward & Patent Architecture Reference.*extensions* no JSON de validação (sem poluir a watchlist operacional se não couber).
 
 Arquivo alvo (a criar no código):
 

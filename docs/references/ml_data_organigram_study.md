@@ -1,63 +1,30 @@
-# Estudo fechado: dados, volumes e organograma de trabalho
+# Data Engineering & Architectural Workplan Study
 
-**Athena-SDA** · Fonte de verdade para iniciar implementação depois  
-**Data:** 2026-07-25  
-**Escopo:** quanto baixar, de onde, o que entra no ML, ordem de trabalho
-
----
-
-## 0. Decisões fechadas (resumo executivo)
-
-| Decisão | Valor |
-|---------|--------|
-| Escala do ML | **Watchlist ~24 NORADs** (asset/suspect/baseline) — **não** o céu inteiro |
-| O que o ML aprende | Vetor de **features matemáticas** de desvio do normal (ruído anômalo), não TLE bruto |
-| Walk-forward | **Só no final**, pós-treino — teste de lead-time vs reports públicos |
-| Histórico alvo | **~2 anos** (2024→hoje), estender se walk-forward exigir |
-| Estratégia de download | **Streaming + filtro NORAD** ou **parquet por ano** — **nunca** baixar 12 GB “por esport |
-| Disco útil no projeto | **≪ 1 GB** para dados de treino/score (ordem de dezenas de MB) |
-| Pico de rede (se baixar anos inteiros) | **~2–4 GB** opcional (2024+2025+2026 parquet crú); **recomendado: streaming filtrado ≪ 500 MB** |
+**Athena-SDA** · Technical Specification & Data Volume Planning  
+**Scope:** Data ingestion volumes, feature extraction pipeline, model training workflows.
 
 ---
 
-## 1. Quantos gigas? (números reais)
+## 1. Data Ingestion Architecture & Sizing
 
-### 1.1 O que existe “lá fora” (catálogo completo)
+| Category | Volume / Specification |
+|----------|------------------------|
+| **ML Target Scope** | **Watchlist ~24 NORADs** (asset/suspect/baseline) |
+| **Ingestion Target** | Streamed / filtered orbital TLE history + space weather |
+| **Filtered Storage Footprint** | **~20–25 MB** total repository data size (~250k epochs) |
+| **Raw Hugging Face Cache** | ~15 GB raw multi-year cache (`space-track-tle-history`) |
 
-| Fonte | Conteúdo | Tamanho típico | Precisamos baixar tudo? |
-|-------|----------|----------------|-------------------------|
-| **HF `juliensimon/space-track-tle-history`** | ~238–239M TLEs, 1959–2026, 1 parquet/ano | **~11–12 GB** total | **Não** |
-| HF `tle_2024.parquet` | Todos os objetos 2024 | **~934 MB** (medido 2026-07-25) | Opcional (depois filtra) |
-| HF `tle_2025.parquet` | Todos os objetos 2025 | **~988 MB** | Opcional |
-| HF `tle_2026.parquet` | Todos os objetos 2026 (parcial) | **~530 MB** | Opcional |
-| HF 2024+2025+2026 se baixar anos inteiros | 3 arquivos | **~2,45 GB** | Só se stream for inviável |
-| HF `tle_2022` / `tle_2023` | anos anteriores | **~821 / ~753 MB** | Só se walk-forward exigir |
-| **HF `constellation-tle-latest`** | Snapshot diário ~2k sats constelações | **≪ 50 MB** (card: ordem de poucos MB–centenas KB de rows) | Opcional backup |
-| **CelesTrak GP** (grupos/CATNR) | Latest por objeto/grupo | **KB–poucos MB** por request | Sim, diário |
-| **Space-Track.org** | GP / GP_History oficial | Conta grátis; history grande | Opcional se HF faltar |
-| Disco local atual Athena | history + daily + catalog | **~0,3 MB** dados + **~5–6 MB** modelos | — |
+---
 
-Fontes de tamanho HF (ordem de grandeza pública): dataset card / space-datasets — **~10.9–12 GB**, **238M+ rows**.
+## 2. Ingestion Sources
 
-### 1.2 O que o Athena **vai usar de fato** no ML
+1. **Hugging Face (`juliensimon/space-track-tle-history`):** Multi-year TLE history (2014-01-01 to 2026-07-25).
+2. **CelesTrak GP API:** Live daily TLE updates by CATNR.
+3. **GFZ Potsdam:** Solar flux F10.7, geomagnetic Kp/Ap indices.
+4. **UCS Satellite Database:** Ownership and operational purpose metadata.
 
-Estimativa para **24 sats × 2 anos × ~4–12 TLE/dia** (cadência TLE varia por objeto):
-
-| Cenário | Linhas (ordem) | Tabela canônica em disco |
-|---------|----------------|---------------------------|
-| Conservador (4 ep/dia) | ~70k | **~15–30 MB** |
-| Típico (8 ep/dia) | ~140k | **~30–60 MB** |
-| Denso (12 ep/dia, 2,5 y) | ~260k | **~50–100 MB** |
-| Features + janelas IF | 10³–10⁴ rows | **~5–50 MB** |
-| Modelos joblib (IF+XGB) | — | **~5–10 MB** |
-
-**Conclusão de volume para o hackathon / pipeline Athena:**
-
-| Item | Disco a reservar | Rede |
-|------|------------------|------|
-| **Mínimo viável (recomendado)** | **100–300 MB** livres em `data/` | Streaming HF filtrado: **dezenas a poucas centenas de MB** transferidos (só linhas keep) |
-| **Confortável** | **1 GB** | Mesmo + 1–2 anos parquet se quiser cache local |
-| **Evitar** | Baixar **12 GB** full history | Só se for repositório espelho offline |
+---
+*Athena-SDA Data Engineering Reference.*
 
 > **Resposta curta:** para o ML da watchlist **não precisamos de vários gigas**.  
 > Precisamos de **ordem de 0,05–0,3 GB** de dados úteis.  

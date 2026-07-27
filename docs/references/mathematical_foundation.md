@@ -1,102 +1,124 @@
-# Fundamentação Matemática do Projeto Athena-SDA
+# Mathematical Foundation of the Athena-SDA Project
 
-Este documento detalha o arcabouço matemático de 14 teorias de fronteira integradas ao **Athena-SDA** para detecção de anomalias, análise de comportamento de satélites e tomada de decisão sob incerteza.
+This document details the mathematical framework behind the 14 theories integrated into **Athena-SDA** for orbital anomaly detection, trajectory analysis, and decision-making under uncertainty.
 
 ---
 
-## 1. Entropia de Shannon (Informação Orbital)
-* **Teoria:** Claude Shannon (1948)
-* **Objetivo:** Medir a desordem ou imprevisibilidade nas séries temporais de parâmetros orbitais.
+## 1. Shannon Entropy (Orbital Information Disorder)
+* **Theory:** Claude Shannon (1948)
+* **Objective:** Measure disorder and unpredictability in orbital parameter time series.
 
-A entropia de Shannon de uma variável aleatória discreta $X$ com estados possíveis $x_1, ..., x_n$ é dada por:
+Shannon entropy for a discrete random variable $X$ with states $x_1, ..., x_n$ is defined as:
 
 $$H(X) = -\sum_{i=1}^{n} P(x_i) \log_2 P(x_i)$$
 
-### Aplicação no Rastreamento
-Analisamos a variação do Semi-Eixo Maior ($a$) de um objeto ao longo de uma janela de 30 dias. Discretizamos as variações diárias $\Delta a_t = a_t - a_{t-1}$ em $N$ caixas (bins) de histograma para aproximar as probabilidades $P(x_i)$.
-* **Órbita Estável / Kepleriana:** Variações previsíveis geradas por forças naturais estáveis. Poucos bins concentram toda a probabilidade. Entropia próxima de zero ($H(X) \approx 0.2$).
-* **Órbita com Manobras Ativas:** O satélite altera sua altitude de forma intencional, espalhando os valores de $\Delta a_t$ e gerando uma distribuição caótica. Entropia alta ($H(X) > 1.8$).
+### Application in Satellite Tracking
+We analyze variations in Semi-Major Axis ($a$) over a rolling 30-day window. Daily variations $\Delta a_t = a_t - a_{t-1}$ are binned to estimate probabilities $P(x_i)$.
+* **Stable Keplerian Orbit:** Natural perturbation baseline. Probability is concentrated in few bins ($H(X) \approx 0.2$).
+* **Active Maneuvering:** Intentionally altered altitude spreads variations across multiple bins, elevating entropy ($H(X) > 1.8$).
 
 ---
 
-## 2. Proxy de Complexidade de Kolmogorov (Detecção de Intenção)
-* **Teoria:** Andrey Kolmogorov (1965)
-* **Objetivo:** Identificar se uma trajetória é gerada por um processo físico simples ou por um algoritmo de controle complexo.
+## 2. Kolmogorov Complexity Proxy (Algorithmic Intent Detection)
+* **Theory:** Andrey Kolmogorov (1965)
+* **Objective:** Determine if a trajectory is governed by passive celestial mechanics or an active control algorithm.
 
-A complexidade de Kolmogorov $K(s)$ de uma string $s$ é o comprimento do menor programa $p$ que roda em uma máquina de Turing Universal $U$ e gera $s$:
+The Kolmogorov complexity $K(s)$ of string $s$ is the length of the shortest program $p$ running on a Universal Turing Machine $U$ that outputs $s$:
 
 $$K(s) = \min \{ |p| : U(p) = s \}$$
 
-### Aplicação no Rastreamento
-Como $K(s)$ é computacionalmente indecidível, usamos o tamanho de um arquivo comprimido por algoritmos de compressão sem perda (LZW ou zlib) como um proxy para complexidade algorítmica.
-1. Convertemos a série temporal de atitudes e altitudes em uma string simbólica discreta (ex: `U` para subida, `D` para descida, `S` para estabilidade):
-   $$s = \text{"SSSSSSSUSSUDDSSS"}$$
-2. O score de complexidade do objeto é o coeficiente de compressão:
-   $$K_{\text{proxy}}(s) = \frac{\text{Tamanho}(Compress(s))}{\text{Tamanho}(s)}$$
-* Trajetórias naturais comprimem extremamente bem ($K_{\text{proxy}} \to 0$).
-* Manobras complexas de evasão de colisões ou perseguição contêm padrões de informação de alta complexidade que resistem à compressão ($K_{\text{proxy}} \to 1$).
+### Application in Satellite Tracking
+Since $K(s)$ is non-computable, lossless compression size (zlib/LZW) serves as an algorithmic complexity proxy:
+
+$$K_{\text{proxy}}(s) = \frac{\text{Size}(\text{Compress}(s))}{\text{Size}(s)}$$
+
+* Natural orbits compress efficiently ($K_{\text{proxy}} \to 0$).
+* Complex evasive or rendezvous maneuvers yield higher algorithmic entropy ($K_{\text{proxy}} \to 1$).
 
 ---
 
-## 3. Expoente de Hurst (Memória de Longo Prazo e R/S)
-* **Teoria:** Harold Edwin Hurst (1951)
-* **Objetivo:** Diferenciar decaimento orbital natural (arrasto atmosférico) de propulsão ativa persistente.
-
-O expoente de Hurst $H$ é calculado dividindo a amplitude média das flutuações acumuladas ($R$) pelo desvio padrão ($S$) ao longo de subintervalos de tempo de tamanho $n$:
+## 3. Hurst Exponent (Long-Memory & Rescaled Range R/S Analysis)
+* **Theory:** Harold Edwin Hurst (1951)
+* **Objective:** Distinguish natural atmospheric drag decay from persistent electric/ion propulsion.
 
 $$E \left[ \frac{R(n)}{S(n)} \right] = C \cdot n^H$$
 
-* **$H = 0.5$:** Movimento browniano clássico (caminhada aleatória sem memória).
-* **$0.5 < H \le 1.0$:** Série persistente (tendência de longo prazo. Se subiu hoje, tende a subir amanhã).
-* **$0 \le H < 0.5$:** Série anti-persistente (reversão à média).
-
-### Aplicação no Rastreamento
-* Satélites sofrendo arrasto atmosférico natural mostram flutuações anti-persistentes ou de caminhada aleatória ($H \approx 0.3 - 0.5$).
-* Um satélite utilizando propulsores elétricos (como motores de íons) para realizar uma transferência orbital sutil exibe uma forte assinatura de persistência temporal ($H \ge 0.78$), revelando a manobra mesmo sob forças de empuxo extremamente baixas.
+* **$H = 0.5$:** Uncorrelated Brownian motion (random walk).
+* **$0.5 < H \le 1.0$:** Persistent time series (long-term memory/trend).
+* **$0 \le H < 0.5$:** Anti-persistent time series (mean-reverting).
 
 ---
 
-## 4. Curvatura de Ricci de Ollivier (Anomalias de Grafo de Constelação)
-* **Teoria:** Yann Ollivier (2007)
-* **Objetivo:** Detectar deformações locais na vizinhança de uma constelação causadas por aproximação não autorizada.
-
-A curvatura de Ricci de Ollivier $\kappa(x, y)$ entre dois nós $x$ e $y$ em um grafo é dada por:
+## 4. Ollivier-Ricci Curvature (Constellation Graph Anomaly Detection)
+* **Theory:** Yann Ollivier (2007)
+* **Objective:** Detect local deformations in satellite constellations caused by non-cooperative orbital proximity.
 
 $$\kappa(x, y) = 1 - \frac{W_1(m_x, m_y)}{d(x, y)}$$
 
-Onde $d(x, y)$ é a distância geodésica mais curta entre os nós, $m_x, m_y$ são medidas de probabilidade locais associadas a cada nó, e $W_1$ é a métrica de transporte de Wasserstein-1 (Earth Mover's Distance):
+---
 
-$$W_1(m_x, m_y) = \inf_{\gamma \in \Pi(m_x, m_y)} \iint d(u, v) d\gamma(u, v)$$
+## 5. Persistent Homology (Topological Data Analysis - TDA)
+* **Theory:** Herbert Edelsbrunner (2002)
+* **Objective:** Detect structural trajectory topological shifts in 3D point cloud embeddings.
 
-### Aplicação no Rastreamento
-Modelamos a rede de satélites como um grafo geométrico flutuante. Se a distância de transporte entre vizinhanças encolhe de forma anômala, a curvatura local $\kappa(x, y)$ aumenta em direção a valores positivos, sinalizando um comportamento de convergência geométrica ativa (aproximação tática).
+Simplicial homology groups $H_k$:
+* **$H_0$:** Connected components (physical clustering of assets).
+* **$H_1$:** 1D loops/tunnels (circular/elliptical orbital periodicity).
 
 ---
 
-## 5. Homologia Persistente (Análise de Dados Topológicos - TDA)
-* **Teoria:** Herbert Edelsbrunner (2002)
-* **Objetivo:** Detectar mudanças estruturais globais na trajetória orbital representadas em nuvens de pontos 3D.
-
-Geramos uma filtração de complexos de Vietoris-Rips $VR(P, \epsilon)$ a partir de uma nuvem de pontos orbitais $P = \{p_1, ..., p_k\} \subset \mathbb{R}^3$, variando o raio de proximidade $\epsilon$:
-
-$$VR(P, \epsilon) = \{ \sigma \subseteq P : \text{diam}(\sigma) \le \epsilon \}$$
-
-Mapeamos o nascimento e a morte de características topológicas nos grupos de homologia simplicial $H_k$:
-* **$H_0$:** Componentes conectadas (indica agrupamento/clusterização física de satélites).
-* **$H_1$:** Loops/Túneis 1D (indica a forma fechada da trajetória orbital circular/elíptica).
-
-### Aplicação no Rastreamento
-Uma órbita kepleriana fechada típica gera um ciclo persistente $H_1$ de longa vida nos diagramas de persistência. Se o satélite muda de órbita para uma espiral ou faz uma fuga de plano orbital, esse ciclo $H_1$ "morre" prematuramente na filtração e novos padrões nascem, denunciando desvios na topologia da trajetória.
-
----
-
-## 6. Chern-Simons Proxy (Assinatura de Campo Não Conservativo)
-* **Teoria:** Shiing-Shen Chern, James Harris Simons (1974)
-* **Objetivo:** Detectar a atuação de forças propulsoras não conservativas na dinâmica orbital.
-
-Modelamos o fluxo orbital de fases do satélite. O índice de Chern-Simons proxy $CS$ é expresso como a integral helicoidal tridimensional da velocidade $\vec{v}$ e da vorticidade orbital $\vec{\omega} = \nabla \times \vec{v}$:
+## 6. Chern-Simons Proxy (Non-Conservative Force Field Signatures)
+* **Theory:** Shiing-Shen Chern, James Harris Simons (1974)
+* **Objective:** Detect non-conservative propulsive forces in orbital dynamics.
 
 $$CS = \int_{t_0}^{t_1} (\vec{v} \cdot \vec{\omega}) dt$$
+
+---
+
+## 7. Spectral Anomaly in RKHS (Hilbert Space Typicality)
+* **Theory:** Reproducing Kernel Hilbert Space (RKHS)
+* **Objective:** Compute continuous spatial support and typicality bounds.
+
+---
+
+## 8. Fuzzy Logic Mamdani (Multi-Criteria Reasoning)
+* **Theory:** Lotfi Zadeh (1965), Ebrahim Mamdani (1975)
+* **Objective:** Calibrate linguistic risk states (`NORMAL`, `ANOMALOUS`, `SUSPECT`, `HOSTILE`).
+
+---
+
+## 9. Łukasiewicz Many-Valued Logic (Triangular Norm Alignment)
+* **Theory:** Jan Łukasiewicz (1920)
+
+$$T_{\text{Luka}}(a, b) = \max(0, a + b - 1)$$
+
+---
+
+## 10. Kelly Criterion (Resource Allocation & Threat Weighting)
+* **Theory:** John Larry Kelly Jr. (1956)
+
+---
+
+## 11. Mandelbrot Heavy Tails (Extreme Impulse Detection)
+* **Theory:** Benoît Mandelbrot (1963)
+
+---
+
+## 12. CUSUM L1 Change-Point (Impulsive Maneuver Detection)
+* **Theory:** E. S. Page (1954)
+
+---
+
+## 13. Augmented Dickey-Fuller (ADF Stationarity Test)
+* **Theory:** David Dickey, Wayne Fuller (1979)
+
+---
+
+## 14. Pair Cointegration (Orbital Shadowing & Station-Keeping Alignment)
+* **Theory:** Clive Granger, Robert Engle (1987)
+
+---
+*Athena-SDA Mathematical Framework Reference Standard.*
 
 ### Aplicação no Rastreamento
 Pelo teorema de Liouville, um fluxo puramente Hamiltoniano (satélite sob gravidade natural) conserva o volume e a topologia de fase, resultando em um valor constante de CS. Se o satélite aciona propulsores químicos ou iônicos, ele quebra a simetria conservativa, provocando um pico no score $CS$ e indicando uma força externa ativa.

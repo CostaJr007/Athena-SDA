@@ -1,63 +1,73 @@
-# Guia de Configuração e Inicialização no Linux (Fedora)
+# Linux Setup & Installation Guide (Fedora)
 
-Este documento contém o passo a passo completo para configurar o ambiente de desenvolvimento, instalar as ferramentas de Machine Learning e estruturar os próximos passos do **Projeto Athena-SDA** no Fedora Linux.
+This document provides step-by-step instructions for configuring the development environment, installing Machine Learning tools, and running **Athena-SDA** on Linux systems.
 
 ---
 
-## 1. Instalação de Pacotes do Sistema (dnf)
+## 1. System Package Installation (dnf)
 
-Abra o terminal do Fedora e execute os seguintes comandos para instalar os compiladores, bibliotecas de desenvolvimento do Python e utilitários de contêineres:
+Execute the following commands to install build tools, Python development headers, and system dependencies:
 
 ```bash
-# Atualizar a lista de pacotes
+# Update package repositories
 sudo dnf update -y
 
-# Instalar ferramentas de compilação (gcc, g++, make)
+# Install build essentials (gcc, g++, make)
 sudo dnf groupinstall "Development Tools" -y
 
-# Instalar bibliotecas de desenvolvimento Python e tkinter (necessário para Streamlit/Plotly local)
+# Install Python development packages and tkinter
 sudo dnf install python3-devel python3-pip python3-tkinter python3-virtualenv -y
 ```
 
-### Opcional: Aceleração por GPU
-* **Se você usa placa NVIDIA:** Habilite o repositório **RPM Fusion** e instale os drivers CUDA oficiais:
-  ```bash
-  sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora39/x86_64/cuda-fedora39.repo
-  sudo dnf clean all
-  sudo dnf install cuda-drivers cuda -y
-  ```
-* **Se você usa placa AMD:** Instale o suporte ROCm nativo no Fedora:
+### Optional: GPU Acceleration
+* **NVIDIA GPU:** Install CUDA drivers from the official NVIDIA RPM repository.
+* **AMD GPU:** Install native ROCm HIP support:
   ```bash
   sudo dnf install rocm-hip rocm-opencl -y
   ```
 
 ---
 
-## 2. Configurando o Ambiente Python (Virtualenv)
+## 2. Python Virtual Environment Setup
 
-No diretório compartilhado do seu drive `D:` (onde o projeto está salvo), execute:
+Navigate to your project folder and initialize the environment:
 
 ```bash
-# Navegar até a pasta do projeto (ajuste o ponto de montagem do drive D no Linux, ex: /run/media/usuario/...)
-cd /run/media/seu-usuario/D/Athena-SDA/
+cd Athena-SDA/
 
-# Criar o ambiente virtual Python
+# Create Python virtual environment
 python3 -m venv .venv
 
-# Ativar o ambiente virtual
+# Activate virtual environment
 source .venv/bin/activate
 
-# Atualizar gerenciadores de pacotes internos
+# Upgrade pip and build tools
 pip install --upgrade pip setuptools wheel
 ```
 
 ---
 
-## 3. Instalando a Stack de ML e IA (Pip)
+## 3. Installing Dependencies
 
-Com o ambiente virtual ativo (`(.venv)` no prompt), instale as bibliotecas necessárias para as 14 teorias e visualizações:
+With the virtual environment active (`(.venv)`), install the required dependencies:
 
 ```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 4. Operational Ingest & Verification
+
+```bash
+# Ingest TLE history and space weather data
+python scripts/run_anomaly_monitor.py seed-history --hf --start-year 2014
+python scripts/run_anomaly_monitor.py seed-space-weather --force --start-year 2014
+
+# Verify system status
+python scripts/run_anomaly_monitor.py status
+```
+
 # 1. Base Científica e Processamento de Dados
 pip install numpy pandas scipy pandas-ta jinja2
 

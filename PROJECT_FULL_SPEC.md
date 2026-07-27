@@ -1,103 +1,86 @@
-# ATHENA-SDA — Documento Mestre do Projeto
+# ATHENA-SDA — Master Project Specification
 
-> **Hackathon:** AI Builders Challenge — Agosto 2025
-> **Tema:** Advance Space Exploration with AI
-> **Stack:** Python + XGBoost + Isolation Forest + Fuzzy Logic + IBM Granite/Bob + Streamlit
-> **Última atualização:** 2026-07-14
-
----
-
-## ÍNDICE
-
-1. [Visão Geral do Projeto](#1-visão-geral-do-projeto)
-2. [Base Patentária (30+ patentes)](#2-base-patentária)
-3. [Dados Reais](#3-dados-reais)
-4. [Arquitetura do Sistema](#4-arquitetura-do-sistema)
-5. [Pipeline de Machine Learning](#5-pipeline-de-machine-learning)
-6. [Fundamentação Matemática (14 teorias)](#6-fundamentação-matemática)
-7. [Bob — O Copiloto de Inteligência](#7-bob--o-copiloto-de-inteligência)
-8. [Dashboard e Interface](#8-dashboard-e-interface)
-9. [Cenários de Demonstração](#9-cenários-de-demonstração)
-10. [Roadmap de Implementação](#10-roadmap-de-implementação)
-11. [Métricas para o Pitch](#11-métricas-para-o-pitch)
+> **Challenge:** AI Builders Challenge
+> **Theme:** Advance Space Exploration with AI
+> **Stack:** Python + XGBoost + Isolation Forest + Fuzzy Logic + IBM Granite / Bob + Streamlit + React 3D Globe
+> **Last Update:** 2026-07-26
 
 ---
 
-## 1. VISÃO GERAL DO PROJETO
+## TABLE OF CONTENTS
 
-### O que é
-
-**Athena-SDA** é um copiloto de **Space Domain Awareness (SDA)** que combina machine learning, lógica fuzzy, teoria da informação e IBM Granite/Bob para monitorar 30.000 objetos em órbita, classificar ameaças e gerar briefings táticos em linguagem natural.
-
-### Problema
-
-30.000 objetos rastreados. Operadores humanos não conseguem monitorar todos. Sistemas atuais geram alertas, mas não **explicam, priorizam, nem recomendam ações**.
-
-### Solução em 3 camadas
-
-```
-CAMADA 1 — ML + Matemática (olho):   Classifica 30.000 → ~15 alertas/dia
-CAMADA 2 — Bob/Granite (cérebro):    Explica, contextualiza, recomenda
-CAMADA 3 — Dashboard (tela):         Globo 3D + cards + chat
-```
-
-### Métrica principal
-
-> **De 30.000 objetos para 15 decisões por dia.**
+1. [Project Overview](#1-project-overview)
+2. [Patent Foundation (30+ patents)](#2-patent-foundation)
+3. [Real Orbital Data](#3-real-orbital-data)
+4. [System Architecture](#4-system-architecture)
+5. [Machine Learning Pipeline](#5-machine-learning-pipeline)
+6. [Mathematical Framework](#6-mathematical-framework)
+7. [Bob — Intelligence Analyst Copilot](#7-bob--intelligence-analyst-copilot)
+8. [Dashboard & User Interface](#8-dashboard--user-interface)
+9. [Demonstration Scenarios](#9-demonstration-scenarios)
+10. [Pitch Metrics](#10-pitch-metrics)
 
 ---
 
-## 2. BASE PATENTÁRIA
+## 1. PROJECT OVERVIEW
 
-### Patentes-âncora (arquitetura extraída)
+### Concept
 
-| Patente | Empresa | O que nos ensinou |
-|---------|---------|-------------------|
-| US 2023/0050870 A1 | Palantir | DMP+AIP: decompor missão → selecionar sensores → micro-modelos → insight-first downlink |
-| US 12,450,265 B2 | Palantir | 3D Tiles (X,Y,T) + RDP: simplificar séries temporais |
-| US 12,657,514 B2 | Palantir | Data API + Inference API + DAG dinâmico de modelos |
-| US 2024/0394296 A1 | Palantir | **LLM + GIS em 4 etapas** |
-| US 12,374,011 B2 | Palantir | Ontologia + UTF Grid + histogramas interativos |
+**Athena-SDA** is a **Space Domain Awareness (SDA)** copilot combining machine learning, fuzzy logic, information theory, and IBM Granite/Bob to monitor orbital assets, classify threats, and generate natural language tactical intelligence briefings.
 
-### Patentes de suporte
+### Challenge Statement
 
-| Fonte | Quantidade | Destaque |
-|-------|-----------|----------|
-| Palantir Technologies | 8 patentes | Meta-Constellation, Sensor Fusion, LLM+Geospatial, Ontology Map |
-| Lockheed Martin | 4 patentes | Deep NN sat, Detecção míssil, Discriminação decoy |
-| Raytheon / GD / L3Harris | 6 patentes | GAN SAR, RL tracking, Cripto, Phased array |
-| China CAST / CASC | 10+ patentes | Defesa ativa orbital, Perseguição-evasão, Anti-decepção, FDNN |
-| **TOTAL** | **30+ patentes** | Publicadas entre 2023 e Junho/2026 |
+Human operators cannot manually track thousands of objects. Legacy systems output raw alerts without **explaining, prioritizing, or recommending actions**.
+
+### 3-Layer Solution Architecture
+
+```
+LAYER 1 — ML + Math Engine (Perception): Filter thousands of objects → ~15 daily priority alerts
+LAYER 2 — Bob / Granite (Reasoning):    Explain, contextualize, and recommend operational actions
+LAYER 3 — Dashboard & Globe (UI):       Interactive 3D globe + risk cards + copilot chat
+```
+
+### Core Metric
+
+> **From 30,000 objects to 15 actionable operational decisions per day.**
 
 ---
 
-## 3. DADOS REAIS
+## 2. PATENT FOUNDATION
 
-### Fontes primárias
+### Anchor Patents (Architectural Extraction)
 
-| Fonte | O que fornece | Acesso | Custo |
-|-------|--------------|--------|-------|
-| CelesTrak.org | TLE de 30.000 objetos | `curl` público | Grátis |
-| Space-Track.org | TLE oficial US Space Force | Conta gratuita | Grátis |
-| N2YO.com | Posição em tempo real | API free tier | Grátis |
-| UCS Satellite Database | Propósito de cada satélite | Download CSV | Grátis |
-| NOAA Space Weather | F10.7, Ap index | API REST | Grátis |
+| Patent | Organization | Key Insight Extracted |
+|--------|--------------|-----------------------|
+| US 2023/0050870 A1 | Palantir | DMP+AIP: mission breakdown → sensor selection → micro-models → insight-first downlink |
+| US 12,450,265 B2 | Palantir | 3D Tiles (X,Y,T) + RDP: simplifying time series |
+| US 12,657,514 B2 | Palantir | Data API + Inference API + Dynamic Model DAG |
+| US 2024/0394296 A1 | Palantir | **4-Stage LLM + GIS Architecture** |
+| US 12,374,011 B2 | Palantir | Ontology + UTF Grid + interactive histograms |
 
-### Estrutura do TLE (Two-Line Element)
+### Supporting Patent Landscape
 
-```
-ISS (ZARYA)
-1 25544U 98067A   24195.55001157  .00001234  00000+0  23456-4 0  9992
-2 25544  51.6420 150.1234 0004567 100.1234 260.5678 15.50123456123456
-```
+| Source | Count | Highlights |
+|--------|-------|------------|
+| Palantir Technologies | 8 patents | Meta-Constellation, Sensor Fusion, LLM+Geospatial, Ontology Map |
+| Lockheed Martin | 4 patents | Deep NN for satellite tracking, Missile detection, Decoy discrimination |
+| Raytheon / GD / L3Harris | 6 patents | GAN SAR, RL tracking, Military Crypto, Phased Array |
+| China CAST / CASC | 10+ patents | Active orbital defense, Pursuit-evasion, Anti-deception |
 
-Parâmetros extraídos: inclinação, excentricidade, semi-eixo maior, RAAN, argumento do perigeu, anomalia média, movimento médio.
+---
 
-### Escopo temporal
+## 3. REAL ORBITAL DATA
 
-- **12 meses de histórico** para baseline de normalidade
-- **Atualização diária** para demo ao vivo
-- **~5.5 milhões de registros** (30k objetos × 365 dias, com amostragem)
+### Primary Data Ingestion
+
+| Source | Payload | Access | Cost |
+|--------|---------|--------|------|
+| CelesTrak.org | TLE orbital elements | Public API | Free |
+| Space-Track.org | Official US Space Force TLEs | REST API | Free |
+| UCS Satellite Database | Mission purpose & ownership | CSV Dataset | Free |
+| GFZ Potsdam / NOAA | Space weather (F10.7, Ap, Kp) | REST API | Free |
+
+---
 
 ---
 

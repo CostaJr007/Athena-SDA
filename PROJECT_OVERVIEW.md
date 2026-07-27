@@ -1,253 +1,143 @@
-# ATHENA-SDA — Documento do Projeto
+# ATHENA-SDA — Project Document
 
-> **Hackathon:** AI Builders Challenge — Agosto 2025
-> **Tema:** Advance Space Exploration with AI
-> **Equipe:** Athena-SDA
-> **Stack:** Python + XGBoost + IBM Granite/Bob + Streamlit
+> **Hackathon:** AI Builders Challenge
+> **Theme:** Advance Space Exploration with AI
+> **Team:** Athena-SDA
+> **Stack:** Python + XGBoost + IBM Granite / Bob + Streamlit + React 3D Globe
 
 ---
 
-## 1. O QUE É O ATHENA-SDA?
+## 1. WHAT IS ATHENA-SDA?
 
-### Elevator pitch (30 segundos)
+### Elevator Pitch (30 seconds)
 
-> *"Existem 30.000 objetos em órbita da Terra. Operadores humanos não conseguem monitorar todos. O Athena-SDA usa machine learning para classificar cada objeto em níveis de ameaça e o IBM Bob como analista de inteligência que explica, prioriza e recomenda ações em linguagem natural — como um copiloto Palantir para o espaço."*
+> *"There are over 30,000 objects in Earth's orbit. Human operators cannot monitor all of them manually. Athena-SDA uses machine learning to classify every object by threat tier, combined with IBM Bob as an AI intelligence analyst that explains, prioritizes, and recommends actions in natural language — acting as a space-domain intelligence copilot."*
 
-### Problema real
+### Real-World Challenge
 
-| Fato | Consequência |
+| Fact | Consequence |
 |------|-------------|
-| ~30.000 objetos rastreados (satélites ativos + debris) | Impossível monitorar manualmente |
-| Satélites militares chineses fazem manobras de aproximação | Space Force precisa detectar padrões |
-| Catálogo público (Space-Track) é gratuito mas bruto | Dado existe, inteligência não |
-| Sistemas atuais geram alertas | Mas não **explicam, priorizam, nem recomendam** |
+| ~30,000 tracked objects (active satellites + debris) | Impossible to monitor manually |
+| Non-cooperative military satellites perform stealth maneuvers | Space operators require pattern detection |
+| Public space catalogs (Space-Track/CelesTrak) are raw data | Raw data exists, operational intelligence does not |
+| Legacy tracking systems issue alerts | Legacy tools do not **explain, prioritize, or recommend** actions |
 
-### Solução
+### Solution Architecture
 
-Um sistema de 3 camadas:
-
-```
-CAMADA 1 — ML (olho):        Classifica 30.000 objetos em 🟢🟡🟠🔴
-CAMADA 2 — Bob (cérebro):    Explica OS ALERTAS (não todos) em linguagem natural
-CAMADA 3 — Dashboard (tela): Globo 3D + cards de ameaça + chat com Bob
-```
-
----
-
-## 2. EM QUE NOS BASEAMOS
-
-### 30+ patentes de fronteira mapeadas
-
-| Fonte | Quantidade | Destaque |
-|-------|-----------|----------|
-| 🟣 **Palantir Technologies** | 8 patentes | AI Meta-Constellation, Sensor Fusion, **LLM + Geospatial**, Ontology Map |
-| 🇺🇸 **Lockheed Martin** | 4 patentes | Deep NN para satélite, Detecção de míssil, Discriminação de decoy |
-| 🇺🇸 **Raytheon / GD / L3Harris** | 6 patentes | GAN SAR, RL tracking, Cripto militar, Phased array |
-| 🇨🇳 **China CAST / CASC** | 10 patentes | Defesa ativa orbital, Perseguição-evasão, Anti-decepção |
-
-### As 5 patentes-âncora (arquitetura extraída)
-
-| Patente | O que nos ensinou |
-|---------|-------------------|
-| **US 2023/0050870 A1** (Palantir) | Arquitetura DMP+AIP: decompor missão → selecionar sensores → micro-modelos → insight-first downlink |
-| **US 12,450,265 B2** (Palantir) | 3D Tiles (X,Y,T) + algoritmo RDP: simplificar séries temporais pra renderização rápida |
-| **US 12,657,514 B2** (Palantir) | Data API + Inference API + DAG dinâmico: pipeline reconfigurável de modelos |
-| **US 2024/0394296 A1** (Palantir) | **LLM + GIS em 4 etapas:** filtro físico → ML quantitativo → LLM descritivo → LLM classificador |
-| **US 12,374,011 B2** (Palantir) | Ontologia + UTF Grid + histogramas interativos: objetos de inteligência no mapa |
-
-### Por que essas patentes importam
-
-- Publicadas entre **2023 e Junho/2026** — tecnologia na fronteira
-- Palantir está construindo isso **agora** (contratos com Pentágono, Space Force)
-- China está patentendo defesa orbital ativa — é uma corrida real
-- **Nenhuma delas integra LLM como copiloto de decisão** — essa é a nossa lacuna
-
----
-
-## 3. QUAIS DADOS VAMOS USAR
-
-### Fonte primária: TLE do Space-Track / CelesTrak
-
-**O que é TLE (Two-Line Element):** Formato padrão que descreve a órbita de qualquer objeto no espaço. Duas linhas de 69 caracteres contêm: inclinação, excentricidade, altitude, movimento médio e outros parâmetros orbitais.
-
-**Exemplo real (ISS):**
-```
-ISS (ZARYA)
-1 25544U 98067A   24195.55001157  .00001234  00000+0  23456-4 0  9992
-2 25544  51.6420 150.1234 0004567 100.1234 260.5678 15.50123456123456
-```
-
-**Fontes:**
-
-| Fonte | Acesso | Custo | Latência |
-|-------|--------|-------|----------|
-| **CelesTrak.org** | `curl` público, sem conta | Grátis | Diário |
-| **Space-Track.org** | API REST com conta gratuita | Grátis | ~4h |
-| **N2YO.com** | API REST, free tier 1000/dia | Grátis | Tempo real |
-
-**O que baixamos:**
-- TLE de **todos os objetos ativos** (~10.000 satélites + fragmentos rastreáveis)
-- **12 meses de histórico** para estabelecer baseline de normalidade
-- **Atualização diária** para o demo ao vivo
-
-### Dados de contexto (enriquecem a análise)
-
-| Fonte | O que agrega |
-|-------|-------------|
-| **UCS Satellite Database** | Catálogo com **propósito** de cada satélite: militar, civil, comercial, científico |
-| **Space Weather (NOAA)** | Índice F10.7 (fluxo solar) e Ap (tempestade geomagnética) — afetam arrasto orbital |
-| **CelesTrak SATCAT** | Metadados: país de origem, data de lançamento, status |
-
-### Como os dados são usados
+A 3-layer intelligence system:
 
 ```
-TLE (12 meses) ──▶ Extração de features ──▶ Dataset de treino
-                     │
-                     ├── semi_major_axis_km
-                     ├── eccentricity
-                     ├── inclination_deg
-                     ├── mean_motion_rev_per_day
-                     ├── delta_sma_7d      (mudança em 7 dias)
-                     ├── delta_inc_30d     (mudança de inclinação em 30 dias)
-                     ├── maneuver_count_30d
-                     ├── min_distance_to_military_km
-                     └── country_purpose    (militar? civil?)
+LAYER 1 — ML Engine (Perception):   Classifies 30,000 objects into 🟢🟡🟠🔴 tiers
+LAYER 2 — Bob Analyst (Reasoning): Explains operational alerts in natural language
+LAYER 3 — Dashboard (Interface):    3D Globe + Risk Cards + Bob Analyst Chat
 ```
 
 ---
 
-## 4. COMO FUNCIONA
+## 2. FOUNDATIONAL RESEARCH & PATENTS
 
-### Arquitetura completa
+### 30+ Frontier Patents Mapped
+
+| Source | Count | Highlights |
+|--------|-------|------------|
+| 🟣 **Palantir Technologies** | 8 patents | AI Meta-Constellation, Sensor Fusion, **LLM + Geospatial**, Ontology Map |
+| 🇺🇸 **Lockheed Martin** | 4 patents | Deep NN for satellite tracking, Missile detection, Decoy discrimination |
+| 🇺🇸 **Raytheon / GD / L3Harris** | 6 patents | GAN SAR, RL tracking, Military crypto, Phased array |
+| 🇨🇳 **China CAST / CASC** | 10 patents | Active orbital defense, Pursuit-evasion, Anti-deception |
+
+### 5 Anchor Patents (Architectural Extraction)
+
+| Patent | Key Concept Extracted |
+|--------|-----------------------|
+| **US 2023/0050870 A1** (Palantir) | DMP+AIP Architecture: task decomposition → sensor selection → micro-models → insight-first downlink |
+| **US 12,450,265 B2** (Palantir) | 3D Tiles (X,Y,T) + RDP algorithm: simplifying time series for rapid visualization |
+| **US 12,657,514 B2** (Palantir) | Data API + Inference API + Dynamic DAG: reconfigurable model pipeline |
+| **US 2024/0394296 A1** (Palantir) | **4-Stage LLM + GIS:** physical filter → quantitative ML → descriptive LLM → classifier LLM |
+| **US 12,374,011 B2** (Palantir) | Ontology + UTF Grid + interactive histograms: geospatial intelligence objects |
+
+---
+
+## 3. DATA ARCHITECTURE
+
+### Primary Source: TLE Data (Space-Track / CelesTrak)
+
+**What is TLE (Two-Line Element):** Standardized format describing satellite orbital elements. Two 69-character lines contain inclination, eccentricity, mean motion, right ascension, and altitude parameters.
+
+**Data Ingest:**
+- TLE records for watchlist objects (~250k epochs, 2014–2026)
+- **Space Weather (GFZ Potsdam / NOAA):** F10.7 solar flux and geomagnetic Kp/Ap indices
+- **UCS Satellite Database & SATCAT:** Country of origin, mission purpose, launch dates
+
+```
+TLE Time Series ──▶ Feature Extractor ──▶ ML Training Dataset
+                        │
+                        ├── semi_major_axis_km
+                        ├── eccentricity
+                        ├── inclination_deg
+                        ├── delta_sma_7d
+                        ├── delta_inc_30d
+                        ├── maneuver_count_30d
+                        ├── min_distance_to_military_km
+                        └── country_purpose (military / civil)
+```
+
+---
+
+## 4. HOW IT WORKS
+
+### Complete Pipeline Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                       ATHENA-SDA                              │
-│                                                                  │
-│ ① DATA INGEST                                                    │
-│   CelesTrak ──▶ TLE bruto                                        │
-│   NOAA ──────▶ clima espacial                                    │
-│   UCS DB ────▶ catálogo de propósito                             │
-│                         │                                        │
-│                         ▼                                        │
-│ ② FEATURE EXTRACTOR                                              │
-│   TLE → 15 features orbitais + temporais + contexto              │
-│   + baseline de 12 meses (média, desvio padrão)                  │
-│                         │                                        │
-│                         ▼                                        │
-│ ③ ANOMALY DETECTOR (Isolation Forest)                            │
-│   "Este objeto está se comportando diferente do normal?"         │
-│   Output: anomaly_score (0.0 = normal, 1.0 = muito anômalo)      │
-│                         │                                        │
-│                         ▼                                        │
-│ ④ THREAT CLASSIFIER (XGBoost)                                    │
-│   "Se está anômalo, qual o nível de ameaça?"                     │
-│   Output: 🟢NORMAL | 🟡ANÔMALO | 🟠SUSPEITO | 🔴HOSTIL           │
-│                         │                                        │
-│              (só alertas 🟠🔴 seguem)                             │
-│                         │                                        │
-│                         ▼                                        │
-│ ⑤ BOB ANALYST (IBM Granite)                                      │
-│   Pipeline LLM+Geospatial (4 etapas, baseado na patente          │
-│   Palantir US 2024/0394296):                                     │
-│                                                                  │
-│   Etapa 1: Filtra alertas relevantes (elimina falsos positivos)  │
-│   Etapa 2: XGBoost → score quantitativo (0.0 - 1.0)              │
-│   Etapa 3: Granite → descrição qualitativa contextual             │
-│   Etapa 4: Granite → classificação final + recomendação          │
-│                         │                                        │
-│                         ▼                                        │
-│ ⑥ DASHBOARD (Streamlit)                                          │
-│   🌍 Globo 3D com objetos orbitais                               │
-│   📊 Cards de ameaça com prioridade                              │
-│   💬 Chat com Bob (briefing, Q&A, comandos)                      │
-│   📈 Histogramas interativos (drill-down por país, classe, risco)│
+│                       ATHENA-SDA ENGINE                         │
+│                                                                 │
+│ ① DATA INGEST                                                   │
+│   CelesTrak ──▶ Raw TLE History                                 │
+│   GFZ Potsdam ─▶ Space Weather (F10.7, Ap, Kp)                   │
+│   UCS Database ▶ Purpose & Ownership Catalog                     │
+│                         │                                       │
+│                         ▼                                       │
+│ ② FEATURE EXTRACTOR                                             │
+│   TLE → 34 Orbital + Topological + Space Weather Features        │
+│   + Multi-Year Historical Baseline                              │
+│                         │                                       │
+│                         ▼                                       │
+│ ③ ANOMALY DETECTOR (Isolation Forest)                           │
+│   "Is this object deviating from its historical baseline?"       │
+│   Output: anomaly_score (0.0 = normal, 1.0 = highly anomalous)   │
+│                         │                                       │
+│                         ▼                                       │
+│ ④ THREAT CLASSIFIER (XGBoost + Fuzzy Mamdani + Kelly)           │
+│   "What is the operational risk level?"                         │
+│   Output: 🟢NORMAL | 🟡ANOMALOUS | 🟠SUSPECT | 🔴HOSTILE          │
+│                         │                                       │
+│                         ▼                                       │
+│ ⑤ BOB ANALYST (IBM Granite Copilot)                             │
+│   4-Stage LLM + GIS Pipeline (Palantir Patent US 2024/0394296):  │
+│   Stage 1: Filters relevant alerts (eliminates false positives) │
+│   Stage 2: ML Engine → quantitative score                       │
+│   Stage 3: IBM Granite → contextual qualitative description      │
+│   Stage 4: IBM Granite → final classification & recommendation  │
+│                         │                                       │
+│                         ▼                                       │
+│ ⑥ DASHBOARD & FRONTEND                                          │
+│   🌍 3D Interactive Globe with Orbital Traces                    │
+│   📊 Prioritized Risk Cards                                     │
+│   💬 Intelligence Analyst Chat (Briefing & Q&A)                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Fluxo de uma análise completa
-
-```
-1. DADOS ENTRAM
-   CelesTrak: 10.000 TLEs do dia
-   Baseline: 12 meses de histórico
-
-2. ML PROCESSA (2 segundos)
-   10.000 objetos → 15 features cada → Isolation Forest → XGBoost
-   Resultado: 9.950 🟢 NORMAL, 35 🟡 ANÔMALO, 12 🟠 SUSPEITO, 3 🔴 HOSTIL
-
-3. BOB ANALISA OS 15 ALERTAS (5 segundos)
-   Para CADA alerta 🟠🔴:
-   ├── Consulta APIs (clima espacial, UCS database)
-   ├── Gera descrição contextual
-   ├── Classifica com confiança
-   └── Recomenda ação
-
-4. OPERADOR VÊ NO DASHBOARD
-   3 cards vermelhos no topo (prioridade)
-   Clica em um → Bob explica: "Objeto #44231 mudou órbita 3x.
-   Aproximou-se do satélite militar US #22988. Confiança: 87%."
-   Chat: "Bob, mostre a trajetória desse objeto nos últimos 7 dias"
-```
-
 ---
 
-## 5. O PAPEL DO BOB NO SISTEMA
+## 5. MACHINE LEARNING ENGINE
 
-### Bob NÃO É um gerador de relatório
-
-Bob é um **analista de inteligência artificial** que participa do pipeline de decisão em 4 etapas:
-
-### O que Bob faz (específico)
-
-| Função | Exemplo |
-|--------|---------|
-| **Contextualizar** | "O objeto #44231 é um satélite chinês da série Yaogan (reconhecimento militar). Está em órbita desde 2019. Normalmente opera a 500km." |
-| **Explicar anomalia** | "Em 7 dias, alterou altitude 3 vezes (+2.3, -1.1, +0.8 km). Isso é 12× mais que seu desvio padrão histórico de 0.2 km." |
-| **Cruzar inteligência** | "Aproximou-se do satélite militar US #22988 a 15.2 km às 02:14 UTC. A 15 km, é possível imagear com resolução de 0.5m." |
-| **Classificar ameaça** | "Classificação: 🟠 SUSPEITO. Confiança: 87%. Padrão consistente com reconhecimento orbital." |
-| **Recomendar ação** | "1) Notificar USSF SDA cell. 2) Solicitar tasking óptico (próximo overpass: 06:30 UTC). 3) Monitorar próximas 24h com threshold de 10 km." |
-| **Responder perguntas** | Operador: "Bob, esse satélite já fez isso antes?" Bob: "Sim. Padrão similar em Março/2024 sobre o Pacífico. Naquela ocasião, imageou um porta-aviões." |
-| **Priorizar** | "Dos 15 alertas ativos, este é prioridade 1. Os outros 14 são manobras de manutenção rotineiras." |
-
-### Tool Calling do Bob (APIs que ele consulta)
-
-```python
-ferramentas_do_bob = {
-    "get_object_history": "Consulta 12 meses de TLE de um objeto",
-    "get_close_approaches": "Lista aproximações <50km nas próximas 48h",
-    "get_space_weather": "Clima espacial atual (arrasto, tempestade)",
-    "get_object_metadata": "País, propósito, data de lançamento (UCS DB)",
-    "get_past_maneuvers": "Histórico de manobras similares deste objeto",
-}
-```
-
-### Por que isso é diferente de um dashboard tradicional
-
-| Dashboard tradicional | Athena-SDA com Bob |
-|----------------------|----------------------|
-| Tabela: 10.000 linhas | 15 cards priorizados |
-| "Obj #44231: ΔSMA=2.3km" | "Objeto #44231: 3 manobras em 24h. Consistente com reconhecimento orbital. Recomendo tasking." |
-| Operador precisa interpretar | Operador recebe análise pronta |
-| Silencioso até o humano perguntar | Bob é **proativo**: alerta quando detecta |
+| Component | Model | Type | Input | Output |
+|-----------|-------|------|-------|--------|
+| Anomaly Detector | Isolation Forest | Unsupervised | 34 noise & Kepler features | anomaly_score (0–1) |
+| Threat Classifier | XGBoost | Supervised | 38 features + anomaly_score | 🟢🟡🟠🔴 Tiers |
+| Risk Calibration | Mamdani Fuzzy | Rule Engine | Distance, Cointegration, Anomaly | Operational Risk |
 
 ---
-
-## 6. O TREINAMENTO DO MACHINE LEARNING
-
-### O que treinamos
-
-| Modelo | Algoritmo | Tipo | Input | Output |
-|--------|-----------|------|-------|--------|
-| Anomaly Detector | Isolation Forest | Não-supervisionado | 15 features orbitais | anomaly_score (0-1) |
-| Threat Classifier | XGBoost | Supervisionado | 15 features + anomaly_score | 🟢🟡🟠🔴 |
-
-### Features extraídas de cada TLE
-
-```python
-features = {
-    # Parâmetros orbitais instantâneos
-    "semi_major_axis_km": 6878.0,       # altitude média
     "eccentricity": 0.001,              # quão circular é a órbita
     "inclination_deg": 51.6,            # ângulo em relação ao equador
     "raan_deg": 150.1,                  # orientação do plano orbital
