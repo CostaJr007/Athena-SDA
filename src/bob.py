@@ -267,31 +267,31 @@ ANÁLISE QUANTITATIVA:
 - **Kolmogorov K={kolmogorov:.2f}:** {"trajetória de alta complexidade (controle ativo)" if kolmogorov > 0.5 else "dinâmica compressível / Kepleriana"}.
 - **ADF p={adf:.4f} | CUSUM L1={l1_cusum:.2f}:** quebra estrutural {"detectada" if (adf > 0.05 or l1_cusum > 0.5) else "não dominante"}.
 - **ΔSMA 7d = {delta_sma:.4f} km** | TLE age **{tle_age:.1f} h**
-- **Proximidade militar: {min_dist_mil:.2f} km** | Ricci≈{ricci:.2f} | RKHS≈{rkhs:.2f}
+- **Military Proximity: {min_dist_mil:.2f} km** | Ricci≈{ricci:.2f} | RKHS≈{rkhs:.2f}
 {shadow}
 """
 
-    if classification == "HOSTIL":
-        actions = """AÇÕES RECOMENDADAS (prioridade Kelly alta):
-1. 🔴 Notificar célula SDA / USSF e registrar conjunção de emergência.
-2. 📡 Tasking óptico/radar no próximo overpass; verificar payload e atitudes.
-3. 🛡️ Preparar plano de queima evasiva se distância < conjunction box (10 km).
-4. 📋 Gerar relatório formal para JSpOC / catálogo de ameaças."""
-    elif classification == "SUSPEITO":
-        actions = """AÇÕES RECOMENDADAS:
-1. 🟠 Incluir no watchlist 24h com threshold de 25–50 km.
-2. 📡 Aumentar taxa de atualização TLE (Space-Track / sensores).
-3. 📊 Monitorar cointegração e Hurst nas próximas 6 órbitas.
-4. 📝 Briefing parcial ao comando se distância cair abaixo de 25 km."""
-    elif classification == "ANÔMALO":
-        actions = """AÇÕES RECOMENDADAS:
-1. 🟡 Manter observação passiva; correlacionar com clima espacial (F10.7/Ap).
-2. 📡 Aguardar TLE fresco se idade > 48h (incerteza elevada).
-3. 📊 Reprocessar features após próxima atualização de catálogo."""
+    if classification in ("HOSTILE", "HOSTIL"):
+        actions = """RECOMMENDED ACTIONS (High Kelly Priority):
+1. 🔴 Notify SDA cell / Space Command and log emergency conjunction notice.
+2. 📡 Optical/Radar sensor tasking on next overpass; verify payload status.
+3. 🛡️ Prepare evasive maneuver plan if distance < conjunction threshold (10 km).
+4. 📋 Generate formal intelligence report for space threat catalog."""
+    elif classification in ("SUSPECT", "SUSPEITO"):
+        actions = """RECOMMENDED ACTIONS:
+1. 🟠 Add to 24h high-priority watchlist with 25–50 km threshold.
+2. 📡 Increase TLE ingest frequency (Space-Track / CelesTrak).
+3. 📊 Monitor cointegration and Hurst exponent across next 6 orbits.
+4. 📝 Provide partial briefing to command if distance drops below 25 km."""
+    elif classification in ("ANOMALOUS", "ANÔMALO", "ANOMALO"):
+        actions = """RECOMMENDED ACTIONS:
+1. 🟡 Maintain passive tracking; correlate with space weather (F10.7/Ap indices).
+2. 📡 Await fresh TLE if data age > 48h (elevated uncertainty).
+3. 📊 Reprocess feature metrics upon next catalog update."""
     else:
-        actions = """AÇÕES RECOMENDADAS:
-1. 🟢 Manter varredura padrão de catálogo.
-2. Comportamento consistente com station-keeping / arrasto natural."""
+        actions = """RECOMMENDED ACTIONS:
+1. 🟢 Maintain standard catalog sweep.
+2. 🟢 Behavior consistent with normal station-keeping or natural atmospheric decay."""
 
     return (body + "\n" + actions).strip()
 
@@ -313,11 +313,11 @@ def answer_operator_query(
     low = text.lower()
 
     # Intent: list alerts / status
-    if any(k in low for k in ("alerta", "alertas", "status", "resumo", "overview", "hostil", "suspeito", "prioridade")):
+    if any(k in low for k in ("alerta", "alertas", "status", "resumo", "overview", "hostil", "suspeito", "alert", "alerts", "threat", "threats")):
         alerts = tool_list_alerts(processed)
         if not alerts:
-            return "Nenhum alerta ativo no momento. Catálogo dentro da baseline de normalidade."
-        lines = ["**Alertas ativos (ordenados por Kelly):**"]
+            return "No active threat alerts at this time. Catalog within normal baseline."
+        lines = ["**Active Threat Alerts (Ordered by Kelly Priority):**"]
         for a in alerts:
             lines.append(
                 f"- #{a['id']} {a['name']}: **{a['classification']}** | "

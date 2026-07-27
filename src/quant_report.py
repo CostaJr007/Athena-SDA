@@ -74,7 +74,7 @@ def _feature_rows(fs: Dict[str, Any]) -> List[Dict[str, str]]:
         ),
         (
             "kolmogorov_proxy_7d",
-            "Proxy de Kolmogorov",
+            "Kolmogorov Proxy",
             "Complexity of the up/down pattern. Active control patterns are less “simple”.",
         ),
         (
@@ -89,7 +89,7 @@ def _feature_rows(fs: Dict[str, Any]) -> List[Dict[str, str]]:
         ),
         (
             "min_distance_to_military_km",
-            "Distance a asset (km)",
+            "Distance to asset (km)",
             "How close the object gets to a protected watchlist asset.",
         ),
         (
@@ -109,12 +109,12 @@ def _feature_rows(fs: Dict[str, Any]) -> List[Dict[str, str]]:
         ),
         (
             "geomagnetic_storm",
-            "Tempestade (flag)",
+            "Storm Flag",
             "1 = stormy climate — cross-check with Δ altitude before calling a burn.",
         ),
         (
             "tle_age_hours",
-            "Idade do TLE (h)",
+            "TLE Age (hours)",
             "How fresh the data is. Stale TLE lowers confidence; it does not prove a threat.",
         ),
     ]
@@ -140,7 +140,7 @@ def _plain_summary(entry: Dict[str, Any], tier: str) -> Dict[str, Any]:
     onset = entry.get("anomaly_onset") or {}
     dq = entry.get("data_quality") or {}
     role = str(entry.get("role") or "—")
-    name = str(entry.get("object_name") or "objeto")
+    name = str(entry.get("object_name") or "object")
 
     if tier == "HOSTILE":
         headline = (
@@ -209,7 +209,7 @@ def _plain_summary(entry: Dict[str, Any], tier: str) -> Dict[str, Any]:
             )
         elif h is not None and float(h) <= 0.4:
             points.append(
-                f"A altitude <strong>mean-reverts</strong> (Hurst ≈ {float(h):.2f}): "
+                f"Altitude <strong>mean-reverts</strong> (Hurst ≈ {float(h):.2f}): "
                 "more station-keeping than continuous drift."
             )
     except (TypeError, ValueError):

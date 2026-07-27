@@ -203,15 +203,15 @@ def cmd_run_daily(args: argparse.Namespace) -> None:
     from src.anomaly_monitor import IFOREST_MONITOR_PATH, train_baseline_from_history, score_latest
     from src.config import MODELS_DIR
 
-    print("=== run-daily (série → baseline; hoje → comparação) ===")
+    print("=== run-daily (history -> baseline; present -> comparison) ===")
     cmd_ingest_daily(args)
 
     model = IFOREST_MONITOR_PATH if IFOREST_MONITOR_PATH.exists() else MODELS_DIR / "isolation_forest.joblib"
-    # Padrão: SEMPRE retreina o baseline no passado (holdout), a menos que --skip-retrain
+    # Always retrain baseline on historical series (holdout), unless --skip-retrain
     do_train = not getattr(args, "skip_retrain", False)
     if do_train or not model.exists():
         print(
-            f"Atualizando baseline na SÉRIE (passado, holdout={args.holdout_days}d)…"
+            f"Updating baseline on historical series (holdout={args.holdout_days}d)..."
         )
         train_baseline_from_history(
             holdout_days=args.holdout_days,

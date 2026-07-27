@@ -273,11 +273,11 @@ def extract_satellite_features(
 def label_features_for_threat(features: Dict[str, float], min_dist_mil: Optional[float] = None) -> int:
     """
     Doctrine-based weak labels for supervised training (public SDA heuristics).
-    0=NORMAL, 1=ANÔMALO, 2=SUSPEITO, 3=HOSTIL
+    0=NORMAL, 1=ANOMALOUS, 2=SUSPECT, 3=HOSTILE
 
     Geometry (dist / coint) is first-class — coherent with statistical audit:
     labels that use proximity must match features seen by XGBoost.
-    Conservative so passive drag does not flood SUSPEITO.
+    Conservative so passive drag does not flood SUSPECT.
     """
     dist = features.get("min_distance_to_military_km", min_dist_mil if min_dist_mil is not None else 500.0)
     delta = abs(features.get("delta_sma_7d_km", 0.0))
@@ -700,11 +700,11 @@ def train_and_save_models(
             X_df = pd.concat([X_df, boost_X], ignore_index=True)
             y = np.concatenate([y, boost_y])
             source = "history_store+threat_boost"
-            print(f"Threat boost sintético leve: +{len(boost_y)} janelas (HOSTIL/SUSPEITO raros no real).")
+            print(f"Light synthetic threat boost: +{len(boost_y)} windows (rare HOSTILE/SUSPECT in real data).")
         else:
-            print("Treino predominante em history real (sem diluir com sintético full).")
+            print("Training predominantly on real history data.")
     else:
-        print("Gerando dataset sintético de treino (cenários SDA)...")
+        print("Generating synthetic training dataset (SDA scenarios)...")
         X_df, y = _build_synthetic_training_set()
 
     # Ensure all feature columns exist
@@ -713,16 +713,16 @@ def train_and_save_models(
             X_df[col] = 0.0
     X_df = X_df[FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], 0.0).fillna(0.0)
 
-    print(f"Dataset: {X_df.shape[0]} amostras, {X_df.shape[1]} features. source={source}")
+    print(f"Dataset: {X_df.shape[0]} samples, {X_df.shape[1]} features. source={source}")
     print(
-        f"Classes: Normal={sum(y==0)}, Anômalo={sum(y==1)}, "
-        f"Suspeito={sum(y==2)}, Hostil={sum(y==3)}"
+        f"Classes: Normal={sum(y==0)}, Anomalous={sum(y==1)}, "
+        f"Suspect={sum(y==2)}, Hostile={sum(y==3)}"
     )
 
     os.makedirs(MODELS_DIR_STR, exist_ok=True)
 
     # --- Isolation Forest on normal / baseline-heavy population ---
-    print("Treinando Isolation Forest...")
+    print("Training Isolation Forest...")
     X_if = X_df[IFOREST_COLUMNS]
     X_normal = X_if[y == 0]
     if len(X_normal) < 30:

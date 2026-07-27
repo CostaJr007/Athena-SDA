@@ -44,48 +44,48 @@ def setup_fuzzy_system():
     hurst['ruido'] = fuzz.trimf(hurst.universe, [0.4, 0.5, 0.6])
     hurst['tendencia'] = fuzz.trapmf(hurst.universe, [0.5, 0.7, 1.0, 1.0])
 
-    # === CONSEQUENTE (Saída) ===
-    # Nível de Ameaça Final [0, 1.0]
+    # === CONSEQUENT (Output) ===
+    # Final Threat Level [0, 1.0]
     threat = ctrl.Consequent(np.arange(0, 1.01, 0.01), 'threat')
     threat['normal']   = fuzz.trapmf(threat.universe, [0, 0, 0.2, 0.35])
     threat['anomalo']  = fuzz.trimf(threat.universe, [0.2, 0.4, 0.55])
     threat['suspeito'] = fuzz.trimf(threat.universe, [0.4, 0.6, 0.8])
     threat['hostil']   = fuzz.trapmf(threat.universe, [0.65, 0.8, 1.0, 1.0])
 
-    # === BASE DE REGRAS FUZZY ===
+    # === FUZZY RULE BASE ===
     rules = [
-        # R1: Anomalia baixa + entropia previsível = NORMAL
+        # R1: Low anomaly + predictable entropy = NORMAL
         ctrl.Rule(anomaly['baixo'] & entropy_orb['previsivel'], threat['normal']),
-        # R2: Anomalia média com TLE degradado/vencido = ANÔMALO (baixa confiança)
+        # R2: Medium anomaly + degraded TLE = ANOMALOUS (low confidence)
         ctrl.Rule(anomaly['medio'] & tle_age['vencido'], threat['anomalo']),
-        # R3: Anomalia alta + TLE fresco + perto de militar + tendencia = HOSTIL
+        # R3: High anomaly + fresh TLE + military proximity + trend = HOSTILE
         ctrl.Rule(anomaly['alto'] & tle_age['fresco'] & dist_mil['critico'] & hurst['tendencia'], threat['hostil']),
-        # R4: Órbita caótica + complexidade alta + tendencia = SUSPEITO
+        # R4: Chaotic orbit + high complexity + trend = SUSPECT
         ctrl.Rule(entropy_orb['caotico'] & kolmogorov['complexo'] & hurst['tendencia'], threat['suspeito']),
-        # R5: Entropia alta + TLE fresco + distância perto = SUSPEITO
+        # R5: High entropy + fresh TLE + close proximity = SUSPECT
         ctrl.Rule(entropy_orb['caotico'] & tle_age['fresco'] & dist_mil['perto'], threat['suspeito']),
-        # R6: Kolmogorov complexo + anomalia alta = HOSTIL (alta sofisticação)
+        # R6: Complex Kolmogorov + high anomaly = HOSTILE (high sophistication)
         ctrl.Rule(kolmogorov['complexo'] & anomaly['alto'], threat['hostil']),
-        # R7: TLE vencido sozinho atenua ameaça para ANÔMALO (aumenta incerteza)
+        # R7: Stale TLE alone attenuates threat to ANOMALOUS
         ctrl.Rule(tle_age['vencido'], threat['anomalo']),
-        # R8: Distância crítica = SUSPEITO
+        # R8: Critical proximity = SUSPECT
         ctrl.Rule(dist_mil['critico'], threat['suspeito']),
-        # R9: Anomalia baixa + Kolmogorov simples = NORMAL
+        # R9: Low anomaly + simple Kolmogorov = NORMAL
         ctrl.Rule(anomaly['baixo'] & kolmogorov['simples'], threat['normal']),
-        # R10: Caótico + Complexo + Crítico + Fresco = HOSTIL
+        # R10: Chaotic + Complex + Critical + Fresh = HOSTILE
         ctrl.Rule(entropy_orb['caotico'] & kolmogorov['complexo'] & dist_mil['critico'] & tle_age['fresco'], threat['hostil']),
     ]
 
     system = ctrl.ControlSystem(rules)
     return system, threat
 
-# Inicializa o sistema uma vez para economia de processamento
+# Initialize system once for performance
 _fuzzy_system, _threat_var = setup_fuzzy_system()
 
 def fuzzy_inference_threat(features, min_dist_mil):
     """
-    Executa a inferência fuzzy para estimar o nível de ameaça,
-    a classificação qualitativa, a confiança e a ambiguidade.
+    Executes fuzzy inference to estimate threat level,
+    qualitative classification, confidence, and ambiguity.
     """
     sim = ctrl.ControlSystemSimulation(_fuzzy_system)
     
@@ -98,29 +98,29 @@ def fuzzy_inference_threat(features, min_dist_mil):
     sim.input['hurst'] = float(np.clip(features.get('hurst_exponent_sma', 0.5), 0.0, 1.0))
     
     try:
-        # Executa inferência fuzzy
+        # Compute fuzzy inference
         sim.compute()
         crisp_threat = float(sim.output['threat'])
     except Exception:
         # Fail-safe: uncertain/anomalous — never silent NORMAL (0.0)
         crisp_threat = 0.5
         
-    # Classificação baseada em limites de defuzzificação
+    # Classification based on defuzzification thresholds
     if crisp_threat < 0.35:
         classification = "NORMAL"
     elif crisp_threat < 0.55:
-        classification = "ANÔMALO"
+        classification = "ANOMALOUS"
     elif crisp_threat < 0.8:
-        classification = "SUSPEITO"
+        classification = "SUSPECT"
     else:
-        classification = "HOSTIL"
+        classification = "HOSTILE"
         
-    # Confiança: avalia o grau de pertinência na curva final
+    # Membership evaluation
     memberships = {
         'NORMAL': float(fuzz.interp_membership(_threat_var.universe, _threat_var['normal'].mf, crisp_threat)),
-        'ANÔMALO': float(fuzz.interp_membership(_threat_var.universe, _threat_var['anomalo'].mf, crisp_threat)),
-        'SUSPEITO': float(fuzz.interp_membership(_threat_var.universe, _threat_var['suspeito'].mf, crisp_threat)),
-        'HOSTIL': float(fuzz.interp_membership(_threat_var.universe, _threat_var['hostil'].mf, crisp_threat)),
+        'ANOMALOUS': float(fuzz.interp_membership(_threat_var.universe, _threat_var['anomalo'].mf, crisp_threat)),
+        'SUSPECT': float(fuzz.interp_membership(_threat_var.universe, _threat_var['suspeito'].mf, crisp_threat)),
+        'HOSTILE': float(fuzz.interp_membership(_threat_var.universe, _threat_var['hostil'].mf, crisp_threat)),
     }
     
     confidence = memberships[classification]

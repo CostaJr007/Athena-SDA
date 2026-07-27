@@ -1,7 +1,7 @@
 {
   "version": 2,
   "updated": "2026-07-26",
-  "description": "Âncoras = datas de REPORTS / atividade documentada open-source. Walk-forward treina SÓ no passado e mede se o ruído matemático sobe ANTES de t_peak. Não é label classificado.",
+  "description": "Anchors = Dates of open-source report publications and documented events. Walk-forward evaluates model predictions strictly using historical data prior to t_peak.",
   "data_coverage_required": {
     "min_start": "2014-01-01",
     "note": "Seed HF years 2014–2026 for watchlist NORADs"
@@ -22,7 +22,7 @@
         "CSIS Unusual Behavior in GEO: Olymp-K / Luch"
       ],
       "expected_signals": ["shannon", "cusum", "hurst", "anomaly_score", "maneuver_count"],
-      "notes": "Pico ~set/2015 (Intelsat 905). t_start cedo para medir rampa de ruído ANTES do report de colocação."
+      "notes": "Peak ~Sep 2015 (Intelsat 905). Early t_start to measure noise ramp prior to report."
     },
     {
       "id": "luch1_intelsat_mid2015",
@@ -37,7 +37,7 @@
         "Gunter: first colocation between Intelsat 7 and 901 ~April 2015"
       ],
       "expected_signals": ["shannon", "cusum", "anomaly_score"],
-      "notes": "Primeiro episódio Intelsat mid-2015 — validar detecção pré-abril/2015."
+      "notes": "First Intelsat episode mid-2015 — validate pre-April 2015 detection."
     },
     {
       "id": "luch1_athena_fidus_2018",
@@ -53,7 +53,7 @@
         "French government space security statements (open reporting)"
       ],
       "expected_signals": ["shannon", "cusum", "hurst", "anomaly_score"],
-      "notes": "Âncora 2018 — manobras GEO Luch próximas a ativo aliado documentadas em open source."
+      "notes": "2018 anchor — GEO Luch maneuvers near allied asset documented in open sources."
     },
     {
       "id": "sy12_geo_rpo_2021_22",
@@ -69,7 +69,7 @@
         "SWF Chinese Military RPO fact sheet (SY-12)"
       ],
       "expected_signals": ["shannon", "hurst", "cusum", "anomaly_score"],
-      "notes": "Shiyan-12 01 lançado fim/2021; RPO GEO reportado 2021–22."
+      "notes": "Shiyan-12 01 launched late 2021; GEO RPO reported 2021–22."
     },
     {
       "id": "luch2_trailing_2023",
@@ -85,7 +85,7 @@
         "Breaking Defense Oct 2023: second Luch trailing Western systems in GEO"
       ],
       "expected_signals": ["shannon", "cusum", "anomaly_score"],
-      "notes": "Segundo Luch — ruído pós-lançamento e antes/durante cobertura mid-late 2023."
+      "notes": "Second Luch satellite — post-launch noise window prior to/during late 2023 coverage."
     },
     {
       "id": "placebo_terra_2015",
@@ -98,7 +98,7 @@
       "role_expected": "baseline",
       "sources": ["Control EO scientific same calendar as Luch Intelsat 2015"],
       "expected_signals": [],
-      "notes": "Placebo: não deve mostrar rampa de anomalia como Luch no mesmo período."
+      "notes": "Placebo control: should remain within normal baseline."
     },
     {
       "id": "placebo_terra_2018",
@@ -111,7 +111,7 @@
       "role_expected": "baseline",
       "sources": ["Control same calendar as Athena-Fidus window"],
       "expected_signals": [],
-      "notes": "Placebo 2018."
+      "notes": "Placebo control 2018."
     },
     {
       "id": "placebo_noaa20_2023",
@@ -124,7 +124,7 @@
       "role_expected": "baseline",
       "sources": ["Control vs Luch-2 2023 window"],
       "expected_signals": [],
-      "notes": "NOAA-20 existe desde 2017; controle 2023."
+      "notes": "NOAA-20 active since 2017; control 2023."
     }
   ]
 }

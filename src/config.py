@@ -86,11 +86,20 @@ XGB_COLUMNS = FEATURE_COLUMNS + ["anomaly_score"]
 
 CLASS_NAMES = {
     0: "NORMAL",
-    1: "ANÔMALO",
-    2: "SUSPEITO",
-    3: "HOSTIL",
+    1: "ANOMALOUS",
+    2: "SUSPECT",
+    3: "HOSTILE",
 }
-CLASS_TO_ID = {v: k for k, v in CLASS_NAMES.items()}
+CLASS_TO_ID = {
+    "NORMAL": 0,
+    "ANOMALOUS": 1,
+    "ANÔMALO": 1,
+    "ANOMALO": 1,
+    "SUSPECT": 2,
+    "SUSPEITO": 2,
+    "HOSTILE": 3,
+    "HOSTIL": 3,
+}
 
 # High-value assets treated as "military protected" for proximity.
 # Prefer data/catalog/watchlist.json (role=asset); fallback keeps old demo IDs.
