@@ -1,70 +1,70 @@
-# Relatório completo — ML, bases de dados, matemática e ponderação  
+# Full ML Report — Machine Learning, Databases, Mathematics & Weighting  
 ## Athena-SDA (Space Domain Awareness)
 
-**Versão:** 2026-07-26  
-**Escopo:** como o machine learning foi construído, de onde vêm os dados, como o ruído orbital é detectado, como clima solar e “rotas” (geometria/pares) são ponderados, e o que **não** foi feito (incl. estudos IBM).
+**Version:** 2026-07-26  
+**Scope:** Architecture of the machine learning pipeline, data provenance, orbital noise detection methodology, space weather and relative geometry weighting, and explicit boundaries.
 
 ---
 
-## 0. Resumo executivo (1 página)
+## 0. Executive Summary
 
-Athena-SDA **não prevê o futuro** e **não inventa o céu**. Ele:
+Athena-SDA **does not predict the future** and **does not invent space tracking data**. It operates as follows:
 
-1. **Ingere TLE reais** de objetos públicos (watchlist militar-first, 24 NORADs).  
-2. **Extrai um vetor matemático de ruído** (Shannon, Hurst, Kolmogorov, CUSUM, Mandelbrot, ADF, RKHS, topologia, etc.) sobre janelas da **série** de cada satélite.  
-3. **Injeta clima espacial real** (F10.7, Ap, Kp, SN + rolling 7d) no mesmo vetor, no **dia da janela**, para separar arrasto solar de manobra.  
-4. **Treina Isolation Forest no passado da série** (holdout: o dia de hoje não entra no baseline).  
-5. **Compara a última janela** (dado novo) com esse baseline → `anomaly_score`.  
-6. **Pondera atenção operacional** com pares suspect×asset (distância + cointegração) e, em paralelo, classifica com XGBoost + fuzzy + Kelly (camada de doutrina, labels fracos).  
-7. **Valida lead-time** com walk-forward em âncoras de reports open-source (ex. Luch/Olymp-K), sem treinar “olhando o futuro”.
+1. **Ingests real TLE data** from public objects (military-first watchlist, 24 NORAD IDs).  
+2. **Extracts a mathematical noise vector** (Shannon, Hurst, Kolmogorov proxy, CUSUM, Mandelbrot tail, ADF, RKHS, topology, etc.) over sliding windows of each satellite's time series.  
+3. **Injects real space weather metrics** (F10.7, Ap, Kp, SN + rolling 7d) into the feature vector at window timestamps to distinguish solar drag from intentional maneuvers.  
+4. **Trains Isolation Forest on past series history** (holdout: today's data is excluded from the baseline).  
+5. **Evaluates the latest window** against the past baseline → yields `anomaly_score`.  
+6. **Weights operational attention** using suspect×asset pairs (distance + cointegration) and, in parallel, classifies using XGBoost + Mamdani Fuzzy + Kelly Criterion (doctrine layer, weak labels).  
+7. **Validates lead-time** via walk-forward analysis against open-source report anchors (e.g. Luch/Olymp-K), without look-ahead leakage.
 
-| Afirmação para banca | Status |
-|----------------------|--------|
-| Dados de órbita são reais | **Sim** (TLE history + CelesTrak) |
-| Clima solar/geomagnético é real | **Sim** (GFZ + NOAA opcional) |
-| Detecção = desvio na série | **Sim** (IF past-train / present-score) |
-| Labels HOSTIL = verdade de inteligência | **Não** — heurística / doutrina |
-| Paper IBM de ruído foi a base do motor | **Não** (ver §11) |
+| Statement for Evaluation | Status |
+|--------------------------|--------|
+| Orbital data is authentic | **Yes** (TLE history + CelesTrak) |
+| Solar/geomagnetic weather is authentic | **Yes** (GFZ Potsdam + NOAA optional) |
+| Anomaly detection = series deviation | **Yes** (IF past-train / present-score) |
+| HOSTILE labels = ground-truth intelligence | **No** — heuristic / operational doctrine |
+| Engine core derived from IBM noise paper | **No** (see §11) |
 
 ---
 
-## 1. Arquitetura do pipeline ML
+## 1. Machine Learning Pipeline Architecture
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│  FONTES DE DADOS                                                         │
-│  TLE history (HF space-track mirror) + CelesTrak CATNR diário            │
+│  DATA SOURCES                                                            │
+│  TLE history (HF space-track mirror) + Daily CelesTrak CATNR             │
 │  Space weather GFZ (F10.7/Ap/Kp/SN) ± NOAA F10.7                         │
-│  Catalog watchlist (roles asset/suspect/baseline)                        │
+│  Catalog watchlist (roles: asset / suspect / baseline)                   │
 └────────────────────────────┬─────────────────────────────────────────────┘
                              ▼
 ┌──────────────────────────────────────────────────────────────────────────┐
-│  JANELA DE 20 ÉPOCAS por satélite (série temporal Kepleriana)            │
+│  20-EPOCH WINDOW per satellite (Keplerian time series)                   │
 │  extract_satellite_features()                                            │
-│    • Kepler + Δa/Δi + contagem de manobras (CUSUM spikes)                │
+│    • Kepler + Δa/Δi + maneuver counts (CUSUM spikes)                     │
 │    • Math: Shannon, Kolmogorov, Hurst, Mandelbrot, ADF, L1-CUSUM…        │
-│    • Geometria: dist. a assets, cointegração, Łukasiewicz                │
-│    • Space weather no timestamp da janela (12 features)                  │
+│    • Geometry: distance to assets, cointegration, Łukasiewicz            │
+│    • Space weather at window timestamp (12 features)                     │
 └────────────────────────────┬─────────────────────────────────────────────┘
                              ▼
         ┌────────────────────┴────────────────────┐
         ▼                                         ▼
- Isolation Forest (34 dim)                 XGBoost (38 dim)
-  baseline = PASSADO da série               + anomaly_score
-  score = ÚLTIMA janela                     classes 0–3 (labels fracos)
-  anomaly_score ∈ [0,1]                     pesos assimétricos HOSTIL↑
+ Isolation Forest (34-dim)                 XGBoost (38-dim)
+  baseline = PAST series                    + anomaly_score
+  score = LATEST window                     classes 0–3 (weak labels)
+  anomaly_score ∈ [0,1]                     asymmetric weights HOSTILE↑
         │                                         │
         └────────────────────┬────────────────────┘
                              ▼
-              Pares suspect×asset + Fuzzy Mamdani + Kelly
+              Suspect×Asset Pairs + Fuzzy Mamdani + Kelly Criterion
               attention = 0.45·anom + 0.55·pair_risk
-              DQ gate: TLE ruim → UNRELIABLE (não vira HOSTIL)
+              DQ gate: Stale TLE → UNRELIABLE (does not escalate to HOSTILE)
                              ▼
-              Alerts JSON/CSV + risk board + walk-forward (validação)
+              Alerts JSON/CSV + risk board + walk-forward validation
 ```
 
-**Princípio de design (math-first):**  
-o ML **não** “aprende o TLE bruto”. Ele aprende a **distribuição de vetores de ruído** que o motor matemático produz a partir de TLE reais. O Isolation Forest responde: *“esta janela se parece com o normal desta série (e deste clima)?”*
+**Design Principle (Math-First):**  
+Machine Learning does **not** train directly on raw TLE parameters. It learns the **joint distribution of noise feature vectors** extracted by the mathematical engine from real TLE series. Isolation Forest computes: *“Does this current window conform to the historical baseline of this series and space weather environment?”*
 
 ---
 

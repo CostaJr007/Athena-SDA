@@ -11,8 +11,8 @@
 | **Training history** | **~12.5 years** (2014-01-01 → 2026-07-25) |
 
 > Session handoff: [`docs/SESSION_HANDOFF.md`](docs/SESSION_HANDOFF.md)  
-> Full ML report: [`docs/RELATORIO_COMPLETO_ML_ATHENA_SDA.md`](docs/RELATORIO_COMPLETO_ML_ATHENA_SDA.md)  
-> Walk-forward pre-report: [`docs/RELATORIO_WALKFORWARD_PRE_REPORT_ML_NOVO.md`](docs/RELATORIO_WALKFORWARD_PRE_REPORT_ML_NOVO.md)
+> Full ML report: [`docs/FULL_ML_REPORT_ATHENA_SDA.md`](docs/FULL_ML_REPORT_ATHENA_SDA.md)  
+> Walk-forward pre-report: [`docs/WALKFORWARD_PRE_REPORT_ML.md`](docs/WALKFORWARD_PRE_REPORT_ML.md)
 
 ---
 
@@ -40,7 +40,7 @@ Public sources (TLE + GFZ)
          Walk-forward validates lead-time vs open-source reports
 ```
 
-**Daily protocol:** train “normal” only with the **series through yesterday**; **today’s data** is only compared (no day leakage into training). See [`docs/PROTOCOLO_DETECCAO_DIARIA.md`](docs/PROTOCOLO_DETECCAO_DIARIA.md).
+**Daily protocol:** train “normal” only with the **series through yesterday**; **today’s data** is only compared (no day leakage into training). See [`docs/DAILY_DETECTION_PROTOCOL.md`](docs/DAILY_DETECTION_PROTOCOL.md).
 
 ---
 
@@ -116,7 +116,7 @@ Each tool produces a **feature** (or auxiliary score). Isolation Forest learns t
 | Proximity + cointegration | RPO / shadowing |
 | F10.7 / Ap / Kp | Drag vs maneuver context |
 
-Detail: `docs/references/fundamentacao_matematica.md` (PT historical docs may remain; code/UI in English).
+Detail: `docs/references/mathematical_foundation.md` (English documentation standard).
 
 ---
 
