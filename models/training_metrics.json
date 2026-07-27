@@ -134,7 +134,7 @@
     "geomagnetic_storm",
     "space_weather_available"
   ],
-  "gemini_coherent_fixes": [
+  "statistically_coherent_fixes": [
     "history_store_primary_training",
     "geometry_in_features_and_labels",
     "unified_anomaly_score",

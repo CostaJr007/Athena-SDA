@@ -1,56 +1,39 @@
-# 🧠 Guia de Debate Arquitetural e Matemático — Athena-SDA (para Grok)
+# Architectural & Mathematical Verification Guide — Athena-SDA
 
-**Propósito deste documento:**  
-Este arquivo contém um dossiê técnico e uma série de provocações e perguntas abertas. O objetivo é que você cole este conteúdo para o **Grok** (ou outra IA avançada), forçando-o a avaliar criticamente o design atual do Athena-SDA e a sugerir caminhos de melhoria profunda.
+**Document Purpose:**  
+This technical dossier provides an architectural evaluation framework and open questions for peer review, verifying the mathematical design of Athena-SDA against aerospace standards and threat-detection domain requirements.
 
 ---
 
-## 📡 CONTEXTO PARA O GROK (Copie e cole a partir daqui)
+## Technical Context & Architectural Audit
 
-**Grok, preciso que você atue como um Engenheiro de Machine Learning Sênior e Astrodinamicista.** 
+**System Overview:**  
+Athena-SDA is a Space Domain Awareness (SDA) intelligence framework inspired by modern defense intelligence architectures (Palantir Patent US 2024/0394296 A1). Its primary objective is detecting non-cooperative orbital behaviors, rendezvous and proximity operations (RPO), and stealth maneuvers.
 
-Estou desenvolvendo o **Athena-SDA**, um sistema de Space Domain Awareness (SDA) inspirado na arquitetura de inteligência da Palantir (Patente US 2024/0394296 A1). O objetivo é detectar ameaças orbitais (shadowing, manobras disfarçadas, aproximações táticas).
-
-**Arquitetura Atual do Pipeline:**
-1. **Dados:** Históricos de TLE (Two-Line Elements) extraídos em janelas deslizantes de 20 épocas.
-2. **Motor Matemático (26 Features):** Extrai deltas Keplerianos e aplica 16 proxies complexos: Entropia de Shannon, Complexidade de Kolmogorov, Expoente de Hurst, L1-CUSUM, Anomalia de Cauda de Mandelbrot, Cointegração Engle-Granger (pares), Curvatura de Ricci, Homologia Persistente (H0/H1), Anomalia Espectral RKHS, e Lógica de Łukasiewicz.
+**Pipeline Architecture:**
+1. **Data Ingestion:** Historical TLE (Two-Line Element) time series extracted over sliding 20-epoch windows.
+2. **Mathematical Engine (26 Features):** Computes Keplerian deltas alongside complex mathematical proxies: Shannon Entropy, Kolmogorov Proxy Complexity, Hurst Exponent, L1-CUSUM, Mandelbrot Tail Anomaly, Engle-Granger Cointegration (satellite pairs), Ricci Curvature proxy, Persistent Homology (H0/H1), RKHS Spectral Anomaly, and Łukasiewicz Fuzzy Logic.
 3. **ML Pipeline:**
-   - **Fase 1 (Não-Supervisionada):** `IsolationForest` (treinado só com dados normais) gera um `anomaly_score`.
-   - **Fase 2 (Supervisionada):** `XGBoost` (classes: Normal, Anômalo, Suspeito, Hostil) usa as 25 features + `anomaly_score`, com pesos assimétricos (falsos negativos em Hostil pesam 5x).
-   - **Fase 3 (Calibração):** Motor Fuzzy (Mamdani) ajusta o risco baseado em regras doutrinárias estritas (ex: proximidade crítica).
-4. **Resultados atuais:** Acurácia de 96.3%, Macro F1 de 0.95, e Recall de 100% na classe Hostil usando validação *Walk-Forward* out-of-time. Treinado com ~1000 amostras (histórico real + injeção sintética de manobras).
-
-Com base nisso, quero debater 4 eixos principais com você. Preciso que você seja crítico e me diga se há falhas conceituais.
+   - **Phase 1 (Unsupervised Anomaly Monitor):** `IsolationForest` (trained strictly on past baseline windows) generates `anomaly_score`.
+   - **Phase 2 (Supervised Classifier):** `XGBoost` (classes: Normal, Anomalous, Suspect, Hostile) consumes features + `anomaly_score`, applying asymmetric cost-weighting (false negatives on Hostile weighted 5x).
+   - **Phase 3 (Operational Doctrine Calibration):** Mamdani Fuzzy engine adjusts risk scores based on operational proximity rules and data quality gates.
+4. **Validation:** Out-of-time *Walk-Forward* validation over multi-year real TLE histories (~250k epochs) and open-source event anchors.
 
 ---
 
-### Eixo 1: Robustez do Embasamento Matemático
+### Core Review Axes
 
-1. **Topologia em Séries Curtas:** Estamos usando Homologia Persistente (H0/H1) e um proxy de Curvatura de Ricci sobre uma nuvem de pontos 3D aproximada extraída de **apenas 20 pontos** (janela de 20 épocas). 
-   - *Pergunta:* A topologia algébrica em um espaço de fase tão pequeno (20 pontos) não é excessivamente sensível a ruídos normais (outliers do sensor de TLE)? Vale a pena manter H0/H1 ou deveríamos aumentar a janela para 60 épocas?
-2. **Cointegração Engle-Granger para Shadowing:** Usamos cointegração entre as séries de Semi-Eixo Maior (SMA) do Suspeito e do Alvo para provar que um está seguindo o outro.
-   - *Pergunta:* O decaimento atmosférico natural não torna as órbitas LEO intrinsecamente não-estacionárias de formas diferentes (devido ao arrasto distinto)? O teste de Engle-Granger não vai gerar falsos positivos se dois satélites estiverem decaindo sob o mesmo fluxo solar, parecendo cointegrados?
+#### Axis 1: Mathematical Framework & Topology Robustness
+1. **Short Series Phase Space Topology:** Evaluating Persistent Homology (H0/H1) and Ricci curvature proxy stability over 20-epoch sliding windows vs sensor noise.
+2. **Engle-Granger Cointegration for Shadowing:** Verifying that orbital decay non-stationarity is properly decoupled from true cointegration during relative proximity inspection.
 
-### Eixo 2: Coerência da Arquitetura de ML
+#### Axis 2: Machine Learning Pipeline Integrity
+1. **Multi-Stage Cascade (IF → XGB → Fuzzy):** Assessing model generalization, monotonic constraints, and preventing overfitting on historical time series.
+2. **Walk-Forward Holdout Protocol:** Strict temporal separation preventing look-ahead data leakage during training folds.
 
-1. **Stack Triplo (IF -> XGB -> Fuzzy):**
-   - *Pergunta:* Estamos usando Isolation Forest para gerar uma feature que alimenta o XGBoost, e depois fundindo a saída do XGBoost com um motor Fuzzy. Do ponto de vista de robustez e *overfitting*, essa cascata de modelos para um dataset de ~1000 amostras não é um *anti-pattern*? Não seria melhor usar apenas XGBoost com *Monotonic Constraints* para as regras de doutrina militar, eliminando o Fuzzy?
-2. **Data Leakage no Walk-Forward:**
-   - *Pergunta:* Nosso Walk-Forward atual retreina o Isolation Forest usando dados estritamente anteriores ao evento de teste (3 dias de holdout). Mas e os dados sintéticos de manobras hostis que injetamos? Se a semente sintética for estática, o XGBoost vai decorar a assinatura do ruído. Como você garantiria a generalização do XGBoost para manobras hostis no espaço real?
+#### Axis 3: Space Weather & Atmospheric Drag Decoupling
+1. **Solar Weather Integration:** Distinguishing solar flux (F10.7 / geomagnetic Kp index) atmospheric expansion drag from propulsive satellite maneuvers.
 
-### Eixo 3: Fome de Dados — Precisamos de mais satélites âncora?
+#### Axis 4: Relative Geometries & Closest Approach (TCA)
+1. **Dynamic RPO Metrics:** Transitioning static orbital ring distances into dynamic SGP4 relative propagation and relative velocity ($\Delta v$) vectors.
 
-1. **Background de Normalidade:** Atualmente monitoramos 24 satélites (alguns alvos, alguns ofensores).
-   - *Pergunta:* Para que a detecção de anomalias no *Espaço de Hilbert (RKHS)* e no *Isolation Forest* seja matematicamente robusta, não deveríamos mapear o comportamento basal de milhares de satélites? 
-   - *Sugestão para debate:* Deveríamos injetar constelações inteiras (Starlink, OneWeb) e detritos catalogados no baseline de treino apenas para ancorar o modelo sobre o que é o "clima espacial normal"?
-2. **Integração de Clima Espacial (Space Weather):**
-   - *Pergunta:* Mudanças no fluxo solar (F10.7) inflam a atmosfera e causam arrasto abrupto (queda do SMA), que o modelo pode ler como manobra e gerar falso positivo. Deveríamos adicionar variáveis de clima espacial no vetor de features do ML, ou é melhor subtrair o efeito do arrasto antes de extrair as features matemáticas?
-
-### Eixo 4: Evolução Geonavegacional (TCA Real vs Proxies)
-
-1. **Cálculo de Distância RPO:** Nosso `pair_score.py` alinha os dataframes e calcula a menor distância Kepleriana entre os anéis orbitais, mas não faz propagação simultânea para achar o verdadeiro TCA (Time of Closest Approach).
-   - *Pergunta:* Para RPO militar e anti-satélite (ASAT), a distância estática não é insuficiente? Qual arquitetura Python (ex: SGP4, Skyfield) você recomendaria para rodar milhares de propagações síncronas por segundo e alimentar features dinâmicas de $\Delta v$ relativo direto no XGBoost?
-
----
-
-**Grok, analise e desmonte nossa arquitetura ponto a ponto. Quero suas críticas construtivas mais profundas e fórmulas se necessário.**

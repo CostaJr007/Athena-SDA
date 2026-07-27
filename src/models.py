@@ -275,7 +275,7 @@ def label_features_for_threat(features: Dict[str, float], min_dist_mil: Optional
     Doctrine-based weak labels for supervised training (public SDA heuristics).
     0=NORMAL, 1=ANÔMALO, 2=SUSPEITO, 3=HOSTIL
 
-    Geometry (dist / coint) is first-class — coherent with Gemini audit:
+    Geometry (dist / coint) is first-class — coherent with statistical audit:
     labels that use proximity must match features seen by XGBoost.
     Conservative so passive drag does not flood SUSPEITO.
     """
@@ -461,7 +461,7 @@ def _try_load_history_store_training(
     """
     Preferred real training source: data/history/epochs (HF seed + daily).
     Injects catalog country/purpose and approximate min_distance to assets
-    so XGBoost sees the same geometry used in labels (Gemini fix).
+    so XGBoost sees the same geometry used in labels (statistical alignment).
     """
     try:
         from src.tle_store import history_as_sat_histories, load_history
@@ -623,7 +623,7 @@ def _try_load_real_training() -> Optional[Tuple[pd.DataFrame, np.ndarray]]:
 def _synth_threat_boost() -> Tuple[pd.DataFrame, np.ndarray]:
     """
     Small synthetic set ONLY for rare HOSTIL/SUSPEITO geometry — not full sky.
-    Used when real history is almost all NORMAL (Gemini: don't drown real in synth).
+    Used when real history is almost all NORMAL (prevents drowning real data in synthetic data).
     """
     data_rows: List[Dict[str, float]] = []
     labels: List[int] = []
@@ -683,7 +683,7 @@ def train_and_save_models(
     """
     Train Isolation Forest + XGBoost.
 
-    Priority (Gemini-coherent):
+    Priority (Statistical Baseline Alignment):
       1) history store (watchlist real TLE)
       2) light synthetic boost for rare HOSTIL/SUSPEITO only
       3) full synthetic fallback if no real data
@@ -727,7 +727,7 @@ def train_and_save_models(
     X_normal = X_if[y == 0]
     if len(X_normal) < 30:
         X_normal = X_if
-    # Slightly lower contamination on real-rich sets (Gemini: less FP on benign)
+    # Slightly lower contamination on real-rich sets (reduces false positives on benign objects)
     contam = 0.08 if source.startswith("history") else 0.1
     iforest = IsolationForest(
         n_estimators=200,
@@ -737,7 +737,7 @@ def train_and_save_models(
     )
     iforest.fit(X_normal)
 
-    # Unified anomaly score everywhere: clip(0.5 - raw)  (Gemini consistency fix)
+    # Unified anomaly score everywhere: clip(0.5 - raw)  (statistical consistency fix)
     raw_scores = iforest.decision_function(X_if)
     X_full = X_df.copy()
     X_full["anomaly_score"] = np.clip(0.5 - raw_scores, 0.0, 1.0)
@@ -764,7 +764,7 @@ def train_and_save_models(
             X_xgb, y, test_size=0.2, random_state=42
         )
 
-    # Asymmetric cost: higher weight on higher threat classes (Gemini ordinal spirit)
+    # Asymmetric cost: higher weight on higher threat classes (threat ordinal loss)
     class_w = {0: 1.0, 1: 1.5, 2: 3.0, 3: 5.0}
     sw_train = np.array([class_w.get(int(yi), 1.0) for yi in y_train])
 
@@ -810,7 +810,7 @@ def train_and_save_models(
         "classification_report": report,
         "feature_columns": XGB_COLUMNS,
         "iforest_columns": IFOREST_COLUMNS,
-        "gemini_coherent_fixes": [
+        "statistically_coherent_fixes": [
             "history_store_primary_training",
             "geometry_in_features_and_labels",
             "unified_anomaly_score",

@@ -38,7 +38,7 @@ Use at session start: *“read docs/SESSION_HANDOFF.md and continue”*.
 - Catalog + roles wired through tle_store / monitor / pipeline
 - History ~12.5 years (2014→), 24 sats, space weather GFZ
 - Daily protocol series=past / today=score
-- Walk-forward past-only + Gemini-coherent fixes
+- Walk-forward past-only + statistical validation fixes
 - Pair score + risk_report v1
 - Frontend: Mission board, Track intel, Catalog focus (all/watchlist/military), country flags, quant HTML reports
 - Anomaly onset estimate on board
