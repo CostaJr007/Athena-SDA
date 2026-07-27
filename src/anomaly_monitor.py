@@ -1,21 +1,21 @@
 """
 Anomaly monitoring loop for Athena-SDA — standard daily protocol.
 
-  SERIES (past)  ──train──►  baseline Isolation Forest  (= "normal" do objeto)
-  NEW DATA (D0)   ──score───►  janela mais recente vs baseline
-  RELEVANCE       ──alerta──►  strong deviation OR day-over-day jump (Δ score)
+  SERIES (past)   --train--->  baseline Isolation Forest  (= object "normal")
+  NEW DATA (D0)   --score--->  latest window vs baseline
+  RELEVANCE       --alert--->  strong deviation OR day-over-day jump (delta score)
 
-Ciclo operacional (D = hoje UTC):
-  1) ingest-daily     → append fresh TLEs to the series (direita do histórico)
-  2) train-baseline   → trains ONLY on windows que terminam ANTES de D−holdout
-                        (padrão holdout=1: "ontem e antes" = normal; "hoje" não entra)
-  3) score            → scores the LATEST window de cada sat vs esse baseline
-  4) relevância       → anomaly_score ≥ thr  e/ou  Δscore vs relatório de ontem
+Operational Cycle (D = today UTC):
+  1) ingest-daily     -> append fresh TLEs to history series
+  2) train-baseline   -> trains ONLY on windows ending BEFORE D - holdout
+                         (default holdout=1: "yesterday and before" = normal; "today" excluded)
+  3) score            -> scores LATEST window per satellite against baseline
+  4) relevance        -> anomaly_score >= thr  and/or  delta_score vs yesterday's report
 
 Design:
-  - A série é a memória; o modelo não "memoriza o dia de hoje" no train
-  - Comparação é distribuiçãoal (IF) + contextual (SW, pares, DQ)
-  - Alerta só com dado confiável (data quality gate)
+  - Series is the memory; model does not "memorize today" in training.
+  - Evaluation is distributional (IF) + contextual (SW, pairs, DQ).
+  - Alerts are filtered through Data Quality gates.
 """
 from __future__ import annotations
 
@@ -71,7 +71,7 @@ MONITOR_META_PATH = MODELS_DIR / "anomaly_monitor_meta.json"
 WINDOW = 20  # epochs required by extract_satellite_features
 
 
-# ── Data quality (light gate) ───────────────────────────────────────────────
+# -- Data quality (light gate) -----------------------------------------------
 
 def data_quality_score(
     hist: pd.DataFrame,
@@ -80,7 +80,7 @@ def data_quality_score(
 ) -> Dict[str, Any]:
     """
     Simple DQ metrics for the latest state of a history series.
-    Low score → do not treat anomaly as HOSTIL; mark UNRELIABLE.
+    Low score -> do not treat anomaly as HOSTILE; mark UNRELIABLE.
 
     tle_age is recomputed vs reference_time (asof) or UTC now — never trusts
     frozen 0.0 placeholders from parquet ingest.
@@ -141,7 +141,7 @@ def data_quality_score(
     }
 
 
-# ── Feature windows from history ────────────────────────────────────────────
+# -- Feature windows from history --------------------------------------------
 
 def _select_window_ends(
     ends: List[int],
@@ -151,9 +151,9 @@ def _select_window_ends(
 ) -> List[int]:
     """
     sample_mode:
-      recent  — só as últimas N (regime atual)
-      full    — N janelas espaçadas por toda a série
-      hybrid  — metade série longa + metade recente (padrão operacional)
+      recent  -- only last N (current regime)
+      full    -- N windows spaced across full series
+      hybrid  -- half long-series + half recent (operational default)
     """
     if not ends or max_windows <= 0:
         return []
@@ -200,11 +200,11 @@ def build_feature_windows(
     names: Optional[Dict[int, str]] = None,
 ) -> Tuple[pd.DataFrame, List[Dict[str, Any]]]:
     """
-    Sliding windows of length WINDOW → feature rows for IF training / scoring.
+    Sliding windows of length WINDOW -> feature rows for IF training / scoring.
 
     end_before: only use windows whose last epoch is < end_before (past train)
     end_after: only windows with last epoch >= end_after (recent score set)
-    sample_mode: hybrid | recent | full — how to subsample the series
+    sample_mode: hybrid | recent | full -- how to subsample the series
     """
     names = names or {}
     rows: List[Dict[str, float]] = []
@@ -268,7 +268,7 @@ def build_feature_windows(
     return X, meta
 
 
-# ── Train baseline on the past ──────────────────────────────────────────────
+# -- Train baseline on the past ----------------------------------------------
 
 def train_baseline_from_history(
     *,
@@ -282,9 +282,9 @@ def train_baseline_from_history(
     """
     Fit Isolation Forest on feature windows that end BEFORE (now - holdout_days).
 
-    Protocolo: a série até "ontem" (holdout=1) define o normal.
-    O dado de hoje NÃO entra no train — só no score (comparação).
-    sample_mode=hybrid: cobre a série longa + ponta recente.
+    Protocol: series up to yesterday (holdout=1) defines normal.
+    Today's data is NOT included in training — only in scoring.
+    sample_mode=hybrid: covers long history + recent tip.
     """
     ensure_dirs()
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
@@ -298,7 +298,7 @@ def train_baseline_from_history(
         hists = history_as_sat_histories(min_epochs=WINDOW)
     if not hists:
         raise RuntimeError(
-            "Sem histórico suficiente. Rode: seed-history e/ou ingest-daily antes do train."
+            "Insufficient history. Run: seed-history and/or ingest-daily before training."
         )
 
     cutoff = pd.Timestamp.now(tz="UTC") - timedelta(days=holdout_days)
@@ -312,7 +312,7 @@ def train_baseline_from_history(
     )
     if len(X) < 30:
         # relax: train on all available past windows without cutoff
-        print("Poucas janelas com holdout — treinando em todo o histórico disponível.")
+        print("Few windows with holdout -- training on all available history.")
         X, meta = build_feature_windows(
             hists,
             step=2,
@@ -321,19 +321,19 @@ def train_baseline_from_history(
             names=names,
         )
     if len(X) < 15:
-        raise RuntimeError(f"Apenas {len(X)} janelas de features — colete mais histórico.")
+        raise RuntimeError(f"Only {len(X)} feature windows -- collect more history.")
 
-    # cobertura temporal das janelas de train (a "série" do baseline)
+    # temporal coverage of training windows
     win_ts = pd.to_datetime([m["window_end"] for m in meta], utc=True, errors="coerce")
     win_min = str(win_ts.min()) if win_ts.notna().any() else None
     win_max = str(win_ts.max()) if win_ts.notna().any() else None
 
     print(
-        f"Treino IF (série=passado): {len(X)} janelas, {X.shape[1]} features, "
+        f"IF Training (series=past): {len(X)} windows, {X.shape[1]} features, "
         f"cutoff={cutoff.date()} sample={sample_mode}"
     )
     if win_min and win_max:
-        print(f"  window_end coverage: {win_min[:10]} → {win_max[:10]}")
+        print(f"  window_end coverage: {win_min[:10]} -> {win_max[:10]}")
     iforest = IsolationForest(
         n_estimators=n_estimators,
         contamination=contamination,
@@ -351,9 +351,9 @@ def train_baseline_from_history(
     meta_out = {
         "protocol": "series_past_train__latest_score",
         "description": (
-            "Baseline = janelas da série com fim < cutoff (passado). "
-            "Score diário = última janela vs esse baseline. "
-            "holdout_days=1 ⇒ ontem e antes treinam; hoje só compara."
+            "Baseline = series windows with end < cutoff (past). "
+            "Daily score = latest window vs baseline. "
+            "holdout_days=1 => yesterday and before train; today compares."
         ),
         "trained_at": datetime.now(timezone.utc).isoformat(),
         "n_windows": int(len(X)),
@@ -376,13 +376,13 @@ def train_baseline_from_history(
     X.assign(**{k: [m[k] for m in meta] for k in ("norad_id", "window_end")}).to_csv(
         feat_path, index=False
     )
-    print(f"Modelo salvo: {IFOREST_MONITOR_PATH}")
-    print(f"Features de train: {feat_path}")
+    print(f"Model saved: {IFOREST_MONITOR_PATH}")
+    print(f"Train features: {feat_path}")
     return meta_out
 
 
 def _load_previous_day_scores(day: str) -> Dict[int, float]:
-    """Map norad_id → anomaly_score do relatório do dia anterior (para Δ relevância)."""
+    """Map norad_id -> anomaly_score from yesterday's report (for delta relevance)."""
     try:
         d = datetime.strptime(day, "%Y-%m-%d").replace(tzinfo=timezone.utc)
     except Exception:
@@ -390,7 +390,6 @@ def _load_previous_day_scores(day: str) -> Dict[int, float]:
     prev = (d - timedelta(days=1)).strftime("%Y-%m-%d")
     path = ALERTS_DIR / f"anomalies_{prev}.json"
     if not path.exists():
-        # tenta latest se for o mesmo "ontem" implícito
         return {}
     try:
         rep = json.loads(path.read_text(encoding="utf-8"))
@@ -415,7 +414,7 @@ def _load_monitor_iforest() -> IsolationForest:
     return joblib.load(path)
 
 
-# ── Anomaly onset (when noise first rose on the series) ─────────────────────
+# -- Anomaly onset (when noise first rose on the series) ---------------------
 
 def _sma_series_onset(
     hist: pd.DataFrame,
@@ -424,7 +423,7 @@ def _sma_series_onset(
     z_threshold: float = 3.0,
 ) -> Optional[str]:
     """
-    First epoch where |SMA − rolling median| / MAD exceeds z_threshold.
+    First epoch where |SMA - rolling median| / MAD exceeds z_threshold.
     Lightweight change-point proxy (not intent date).
     """
     h = hist.sort_values("timestamp").reset_index(drop=True)
@@ -461,13 +460,10 @@ def estimate_anomaly_onset(
     Estimate when anomalous noise *first* rose on this object's series.
 
     Method:
-      - Score spaced feature windows with the *current* monitor IF
-        (baseline = past-trained model; points are past windows).
-      - first_elevated_at = first window_end with score ≥ threshold that is
-        followed by (sustained-1) consecutive elevated (soft thr) samples.
-      - sma_change_at = first large SMA z-score break (CUSUM-like proxy).
-
-    Honest limits: TLE epoch / window end, not manoeuvre clock or intent.
+      - Score spaced feature windows with current monitor IF.
+      - first_elevated_at = first window_end with score >= threshold that is
+        followed by (sustained-1) consecutive elevated samples.
+      - sma_change_at = first large SMA z-score break.
     """
     out: Dict[str, Any] = {
         "first_elevated_at": None,
@@ -479,8 +475,7 @@ def estimate_anomaly_onset(
         "max_score_in_scan": None,
         "sma_change_at": None,
         "note": (
-            "Estimativa: fim de janela TLE / época — não é data de intenção "
-            "nem relógio de manobra."
+            "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
         ),
     }
     sma_at = _sma_series_onset(hist)
@@ -496,7 +491,6 @@ def estimate_anomaly_onset(
     # Spaced windows across the series (chronological)
     ends = list(range(WINDOW, len(h) + 1, max(1, step)))
     if len(ends) > max_windows:
-        # keep span: uniform sample of ends
         idx = np.linspace(0, len(ends) - 1, num=max_windows, dtype=int)
         ends = [ends[i] for i in sorted(set(int(i) for i in idx))]
 
@@ -569,7 +563,7 @@ def estimate_anomaly_onset(
     return out
 
 
-# ── Score daily / latest ────────────────────────────────────────────────────
+# -- Score daily / latest ----------------------------------------------------
 
 def score_latest(
     *,
@@ -580,11 +574,11 @@ def score_latest(
     delta_relevance: float = 0.08,
 ) -> Dict[str, Any]:
     """
-    Compara a **última janela** de cada sat com o baseline treinado na série (passado).
+    Compares latest window of each satellite against series baseline.
 
-    Relevância (alerta):
-      - anomaly_score ≥ threshold  (desvio vs distribuição da série), ou
-      - Δscore vs relatório de ontem ≥ delta_relevance  (mudança dia-a-dia relevante)
+    Relevance (alert):
+      - anomaly_score >= threshold  (distributional shift vs series), OR
+      - delta_score vs yesterday's report >= delta_relevance
 
     Writes data/alerts/anomalies_YYYY-MM-DD.json
     """
@@ -594,7 +588,7 @@ def score_latest(
     if not hists:
         hists = history_as_sat_histories(min_epochs=WINDOW)
     if not hists:
-        raise RuntimeError("No satellites with history ≥ 20 epochs for scoring.")
+        raise RuntimeError("No satellites with history >= 20 epochs for scoring.")
 
     iforest = _load_monitor_iforest()
     mon_meta = {}
@@ -607,13 +601,12 @@ def score_latest(
     if use_full_pipeline:
         try:
             iforest_full, xgb, rkhs, _ = load_models()
-            # Prefer monitor IF for anomaly channel; keep xgb for class
             _ = iforest_full
         except Exception as e:
             print(f"Full pipeline models not loaded ({e}); IF-only scoring.")
             use_full_pipeline = False
 
-    # Precompute best proximity to protected assets (for feature context)
+    # Precompute best proximity to protected assets
     asset_hists: Dict[int, pd.DataFrame] = {}
     try:
         from src.catalog import asset_ids
@@ -624,7 +617,6 @@ def score_latest(
     except Exception:
         pass
     if not asset_hists:
-        # fallback: any sat marked military in DEFAULT names — use empty
         asset_hists = {}
 
     from src.orbital import min_distance_to_assets as _min_dist_assets
@@ -640,7 +632,6 @@ def score_latest(
         sub = hist.iloc[-WINDOW:]
         win_end = pd.to_datetime(sub["timestamp"].iloc[-1], utc=True, errors="coerce")
         ref_t = win_end if pd.notnull(win_end) else None
-        # Live score: age vs now (None → now). Prefer last epoch only if far future? Use now for ops.
         dq = data_quality_score(hist, reference_time=None)
         cat = _watchlist_meta(int(sid))
         name = cat.get("name") or DEFAULT_WATCHLIST.get(int(sid), str(sid))
@@ -696,18 +687,17 @@ def score_latest(
             )
             continue
 
-        # Isolation Forest anomaly — comparação ponto atual vs série (baseline)
+        # Isolation Forest anomaly score vs baseline
         row = pd.DataFrame([{c: float(feats.get(c, 0.0)) for c in IFOREST_COLUMNS}])
         row = row.replace([np.inf, -np.inf], 0.0).fillna(0.0)
         try:
             raw = float(iforest.decision_function(row)[0])
         except Exception:
-            # column mismatch fallback
             raw = float(iforest.decision_function(row.values)[0])
         anomaly_score = float(np.clip(0.5 - raw, 0.0, 1.0))
         feats["anomaly_score"] = anomaly_score
 
-        # Δ vs ontem = relevância temporal (algo mudou de um dia pro outro?)
+        # Delta vs yesterday = day-over-day shift
         prev = prev_scores.get(int(sid))
         score_delta = float(anomaly_score - prev) if prev is not None else None
         changed_relevant = bool(
@@ -779,7 +769,7 @@ def score_latest(
             except Exception as e:
                 rec["xgb_error"] = str(e)
 
-        # Onset of anomalous noise on the series (always scan — pairs may elevate without high IF)
+        # Onset of anomalous noise on the series
         try:
             rec["anomaly_onset"] = estimate_anomaly_onset(
                 hist,
@@ -808,7 +798,7 @@ def score_latest(
             "point": "latest WINDOW epochs per sat (includes today's inject)",
             "relevance": (
                 f"anomaly_score>={anomaly_threshold} OR "
-                f"Δscore_1d>={delta_relevance} with elevated level"
+                f"delta_score_1d>={delta_relevance} with elevated level"
             ),
             "prev_day_scores_loaded": len(prev_scores),
             "delta_relevance": delta_relevance,
@@ -824,7 +814,7 @@ def score_latest(
         "alerts": alerts,
     }
 
-    # Pair layer (suspect × asset) + unified risk report
+    # Pair layer (suspect x asset) + unified risk report
     pair_report = None
     if with_pairs:
         try:
@@ -834,13 +824,13 @@ def score_latest(
                 score_all_pairs,
             )
 
-            print("Scoring suspect×asset pairs…")
+            print("Scoring suspect x asset pairs...")
             pair_report = score_all_pairs()
             report = merge_pairs_into_alerts(report, pair_report)
             risk = build_risk_report(report, pair_report)
             print(
                 f"Pairs: {pair_report.get('n_pairs_scored')} scored, "
-                f"elevated={pair_report.get('n_elevated')} → risk_report_latest.json"
+                f"elevated={pair_report.get('n_elevated')} -> risk_report_latest.json"
             )
             print(f"Risk report day={risk.get('day')} board={len(risk.get('board') or [])}")
         except Exception as e:
@@ -881,9 +871,9 @@ def score_latest(
     pd.DataFrame(flat).to_csv(ALERTS_DIR / f"anomalies_{day}.csv", index=False)
 
     print(
-        f"Scored {report['n_scored']} sats → anomalies={report['n_anomalies']} "
+        f"Scored {report['n_scored']} sats -> anomalies={report['n_anomalies']} "
         f"(series_outliers={report.get('n_series_outliers')} "
-        f"Δ1d_relevant={report.get('n_day_over_day_relevant')}) "
+        f"delta_1d_relevant={report.get('n_day_over_day_relevant')}) "
         f"unreliable={report['n_unreliable']}"
     )
     print(f"Report: {out_path}")
