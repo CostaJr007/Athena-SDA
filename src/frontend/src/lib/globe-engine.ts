@@ -16,6 +16,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
+import { CITIES, latLonToUnit } from '@/lib/cities'
 
 export interface EngineCallbacks {
   getSimTime: () => number // ms epoch (simulated)
@@ -167,6 +168,52 @@ function makeRingTexture(): THREE.Texture {
   return tex
 }
 
+/** Soft pin head for city markers. */
+function makeCityPinTexture(): THREE.Texture {
+  const c = document.createElement('canvas')
+  c.width = c.height = 64
+  const ctx = c.getContext('2d')!
+  const g = ctx.createRadialGradient(32, 32, 2, 32, 32, 28)
+  // Tighter core so scaled sprites stay sharp, not bloated glow
+  g.addColorStop(0, 'rgba(236, 253, 245, 0.95)')
+  g.addColorStop(0.4, 'rgba(52, 211, 153, 0.7)')
+  g.addColorStop(0.75, 'rgba(52, 211, 153, 0.2)')
+  g.addColorStop(1, 'rgba(52, 211, 153, 0)')
+  ctx.fillStyle = g
+  ctx.beginPath()
+  ctx.arc(32, 32, 18, 0, Math.PI * 2)
+  ctx.fill()
+  const tex = new THREE.CanvasTexture(c)
+  tex.colorSpace = THREE.SRGBColorSpace
+  return tex
+}
+
+function makeCityLabelTexture(name: string): THREE.Texture {
+  const c = document.createElement('canvas')
+  c.width = 256
+  c.height = 48
+  const ctx = c.getContext('2d')!
+  ctx.clearRect(0, 0, c.width, c.height)
+  ctx.font = '600 22px "IBM Plex Sans", system-ui, sans-serif'
+  ctx.textAlign = 'left'
+  ctx.textBaseline = 'middle'
+  // soft shadow for readability on bright oceans
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.55)'
+  ctx.fillText(name, 10, 26)
+  ctx.fillStyle = 'rgba(228, 228, 231, 0.88)'
+  ctx.fillText(name, 9, 25)
+  const tex = new THREE.CanvasTexture(c)
+  tex.colorSpace = THREE.SRGBColorSpace
+  return tex
+}
+
+interface CityMarker {
+  pin: THREE.Sprite
+  label: THREE.Sprite
+  local: THREE.Vector3
+  tier: number
+}
+
 export class GlobeEngine {
   private container: HTMLElement
   private cb: EngineCallbacks
@@ -178,6 +225,9 @@ export class GlobeEngine {
   private bloom: UnrealBloomPass
   private earth: THREE.Mesh
   private earthMat: THREE.ShaderMaterial
+  private cityLayer: THREE.Group
+  private cityMarkers: CityMarker[] = []
+  private cityPinTex: THREE.Texture | null = null
   private groups: GroupRuntime[] = []
   /** hidden replacement set during a dataset swap (old groups keep rendering) */
   private replacement: GroupRuntime[] | null = null
@@ -219,12 +269,17 @@ export class GlobeEngine {
   private showOrbit = true
   private showFoot = true
   private follow = false
+  /** Desired auto-rotate when the user is not holding the globe. */
+  private autoRotateEnabled = true
+  /** True while a pointer button is down on the canvas (drag / hold). */
+  private pointerHolding = false
   private lastOrbitReal = 0
   private lastOrbitSim = -1e15
   private lastFootReal = 0
   private disposed = false
   private tmpV = new THREE.Vector3()
   private tmpV2 = new THREE.Vector3()
+  private tmpM = new THREE.Matrix4()
   private downPos = { x: 0, y: 0 }
   private lastHoverCheck = 0
   private frameTimes: number[] = []
@@ -259,6 +314,7 @@ export class GlobeEngine {
     this.controls.dampingFactor = 0.08
     this.controls.minDistance = 1.35
     this.controls.maxDistance = 30
+    this.autoRotateEnabled = true
     this.controls.autoRotate = true
     this.controls.autoRotateSpeed = 0.25
 
@@ -284,6 +340,16 @@ export class GlobeEngine {
     })
     this.earth = new THREE.Mesh(geo, this.earthMat)
     this.scene.add(this.earth)
+
+    // City pins (Earth-fixed — child of earth so they rotate with GMST)
+    try {
+      this.cityLayer = this.buildCityLayer()
+      this.earth.add(this.cityLayer)
+    } catch (err) {
+      console.warn('City layer disabled:', err)
+      this.cityLayer = new THREE.Group()
+      this.cityMarkers = []
+    }
 
     // --- narrow atmospheric rim (may bloom; Earth must not) ---
     const atmo = new THREE.Mesh(
@@ -482,6 +548,8 @@ export class GlobeEngine {
     const el = this.renderer.domElement
     el.addEventListener('pointerdown', this.onPointerDown)
     el.addEventListener('pointerup', this.onPointerUp)
+    el.addEventListener('pointercancel', this.onPointerUp)
+    el.addEventListener('lostpointercapture', this.onPointerUp)
     el.addEventListener('pointermove', this.onPointerMove)
     el.addEventListener('webglcontextlost', this.onContextLost, false)
     el.addEventListener('webglcontextrestored', this.onContextRestored, false)
@@ -491,6 +559,95 @@ export class GlobeEngine {
     document.addEventListener('visibilitychange', this.onVisibility)
 
     this.loop()
+  }
+
+  private buildCityLayer(): THREE.Group {
+    const layer = new THREE.Group()
+    layer.name = 'city-layer'
+    this.cityPinTex = makeCityPinTexture()
+    const pinMatBase = new THREE.SpriteMaterial({
+      map: this.cityPinTex,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      blending: THREE.AdditiveBlending,
+      opacity: 0.85,
+    })
+
+    const PIN_R = 1.004
+    const LABEL_R = 1.012
+
+    for (const city of CITIES) {
+      const [x, y, z] = latLonToUnit(city.lat, city.lon)
+      const local = new THREE.Vector3(x, y, z)
+
+      const pin = new THREE.Sprite(pinMatBase.clone())
+      pin.position.copy(local).multiplyScalar(PIN_R)
+      // Small discreet dots (tier-1 slightly larger)
+      pin.scale.setScalar(city.tier === 1 ? 0.014 : 0.011)
+      pin.renderOrder = 2
+      layer.add(pin)
+
+      const labelTex = makeCityLabelTexture(city.name)
+      const label = new THREE.Sprite(
+        new THREE.SpriteMaterial({
+          map: labelTex,
+          transparent: true,
+          depthWrite: false,
+          depthTest: true,
+          opacity: 0.82,
+        }),
+      )
+      // Offset label slightly "east" in local tangent so it sits next to the pin
+      const east = new THREE.Vector3(-local.y, local.x, 0)
+      if (east.lengthSq() < 1e-8) east.set(0, 1, 0)
+      east.normalize().multiplyScalar(0.018)
+      label.position.copy(local).multiplyScalar(LABEL_R).add(east)
+      const lw = 0.11 + Math.min(city.name.length, 14) * 0.006
+      label.scale.set(lw, lw * 0.22, 1)
+      label.renderOrder = 3
+      layer.add(label)
+
+      this.cityMarkers.push({
+        pin,
+        label,
+        local: local.clone(),
+        tier: city.tier ?? 2,
+      })
+    }
+    return layer
+  }
+
+  /** Hide far-side cities; show labels only when camera is reasonably close. */
+  private updateCityVisibility() {
+    if (!this.cityMarkers.length) return
+    try {
+      const cam = this.camera.position
+      const camLen = cam.length()
+      // Earth-fixed camera dir: undo earth spin for front-face test
+      this.earth.updateMatrixWorld(true)
+      this.tmpM.copy(this.earth.matrixWorld).invert()
+      const camLocal = this.tmpV2.copy(cam).applyMatrix4(this.tmpM).normalize()
+
+      const showLabels = camLen < 5.5
+      const showPins = camLen < 14
+
+      for (const m of this.cityMarkers) {
+        const facing = m.local.dot(camLocal)
+        const onFront = facing > 0.08
+        m.pin.visible = showPins && onFront
+        // Tier-1 labels earlier; secondary only when closer
+        const labelOk =
+          showLabels && onFront && (m.tier === 1 || camLen < 4.2)
+        m.label.visible = labelOk
+        if (labelOk) {
+          const mat = m.label.material as THREE.SpriteMaterial
+          mat.opacity = THREE.MathUtils.clamp((facing - 0.08) / 0.35, 0.15, 0.88)
+        }
+      }
+    } catch {
+      /* never break the render loop */
+    }
   }
 
   private makeStars(): THREE.Points {
@@ -981,12 +1138,38 @@ export class GlobeEngine {
     return best
   }
 
+  private syncAutoRotate() {
+    // Pause camera orbit while holding / dragging; resume previous state on release.
+    this.controls.autoRotate = this.autoRotateEnabled && !this.pointerHolding
+  }
+
   private onPointerDown = (e: PointerEvent) => {
+    if (e.button !== 0 && e.pointerType === 'mouse') return
     this.downPos = { x: e.clientX, y: e.clientY }
-    this.controls.autoRotate = false
+    this.pointerHolding = true
+    this.syncAutoRotate()
+    try {
+      this.renderer.domElement.setPointerCapture(e.pointerId)
+    } catch {
+      /* ignore — capture optional */
+    }
   }
 
   private onPointerUp = (e: PointerEvent) => {
+    this.pointerHolding = false
+    this.syncAutoRotate()
+
+    // Selection only on a real pointerup click (not cancel / lost capture)
+    if (e.type !== 'pointerup') return
+
+    try {
+      if (this.renderer.domElement.hasPointerCapture?.(e.pointerId)) {
+        this.renderer.domElement.releasePointerCapture(e.pointerId)
+      }
+    } catch {
+      /* ignore */
+    }
+
     const moved = Math.hypot(e.clientX - this.downPos.x, e.clientY - this.downPos.y)
     if (moved > 5) return // globe drag — never a selection
     const idx = this.pick(e.clientX, e.clientY, 12)
@@ -1068,15 +1251,17 @@ export class GlobeEngine {
     this.raf = requestAnimationFrame(this.loop)
     const simMs = this.cb.getSimTime()
     const simS = simMs / 1000
+    const nowMs = performance.now()
 
     this.earth.rotation.z = satellite.gstime(new Date(simMs))
     this.updateSun(simMs)
+    this.updateCityVisibility()
 
     const uS = Math.min(Math.max(simS - this.t0, 0), Math.max(this.t1 - this.t0, 0.001))
     for (const g of this.groups) g.mat.uniforms.uS.value = uS
 
     // Live markers for dual-compare (or single selection)
-    const pulse = 0.045 + 0.01 * Math.sin(performance.now() * 0.005)
+    const pulse = 0.045 + 0.01 * Math.sin(nowMs * 0.005)
     if (this.compareIdxA !== null) {
       const pA = this.eciPosition(this.compareIdxA, this.tmpV)
       if (pA) {
@@ -1169,6 +1354,8 @@ export class GlobeEngine {
     const el = this.renderer.domElement
     el.removeEventListener('pointerdown', this.onPointerDown)
     el.removeEventListener('pointerup', this.onPointerUp)
+    el.removeEventListener('pointercancel', this.onPointerUp)
+    el.removeEventListener('lostpointercapture', this.onPointerUp)
     el.removeEventListener('pointermove', this.onPointerMove)
     el.removeEventListener('webglcontextlost', this.onContextLost)
     el.removeEventListener('webglcontextrestored', this.onContextRestored)

@@ -16,10 +16,10 @@ export default function TimeController({ clock }: TimeControllerProps) {
           <button
             key={s}
             onClick={() => clock.setSpeed(s)}
-            className={`shrink-0 px-2 py-1.5 text-[11px] tabular-nums transition-colors ${
+            className={`shrink-0 px-2 py-1.5 text-[14px] tabular-nums transition-colors ${
               active
                 ? 'bg-emerald-400/20 text-emerald-200'
-                : 'text-zinc-500 hover:bg-white/5 hover:text-zinc-200'
+                : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'
             }`}
           >
             {s > 0 ? `+${s}×` : `${s}×`}
@@ -44,7 +44,7 @@ export default function TimeController({ clock }: TimeControllerProps) {
       </button>
       <button
         onClick={() => clock.goNow()}
-        className={`ml-0.5 flex shrink-0 items-center gap-1.5 px-2.5 py-1.5 text-[11px] tracking-wider transition-colors ${
+        className={`ml-0.5 flex shrink-0 items-center gap-1.5 px-2.5 py-1.5 text-[14px] tracking-wider transition-colors ${
           live
             ? 'bg-emerald-400 text-black'
             : 'border border-emerald-400/40 text-emerald-300 hover:bg-emerald-400/10'

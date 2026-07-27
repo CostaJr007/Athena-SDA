@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-26T04:22:53.392350+00:00",
-  "day": "2026-07-26",
+  "generated_at": "2026-07-27T01:21:43.909183+00:00",
+  "day": "2026-07-27",
   "protocol": "series_past_train__latest_score",
   "compare": {
     "baseline": "IF on series windows ending before cutoff (past / D-holdout)",
     "point": "latest WINDOW epochs per sat (includes today's inject)",
     "relevance": "anomaly_score>=0.55 OR Δscore_1d>=0.08 with elevated level",
-    "prev_day_scores_loaded": 0,
+    "prev_day_scores_loaded": 24,
     "delta_relevance": 0.08
   },
   "n_scored": 24,
@@ -79,8 +79,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 15:13:18.240096",
       "anomaly_score": 0.36584946977218163,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.36584946977218163,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": true,
@@ -90,7 +90,7 @@
           "gap_96h"
         ],
         "reliable": true,
-        "tle_age_hours": 13.1596525575
+        "tle_age_hours": 34.13925492222222
       },
       "min_distance_to_asset_km": 44.170882709476246,
       "closest_asset_norad": 31598,
@@ -101,7 +101,7 @@
         "hurst_exponent_sma": 0.907034286645318,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 13.159662435,
+        "tle_age_hours": 34.13926496722222,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -116,6 +116,25 @@
         "cointegration_pvalue": 0.0006581632062768092
       },
       "status": "PAIR_ELEVATED",
+      "xgb_class": "SUSPEITO",
+      "xgb_confidence": 0.999395489692688,
+      "xgb_proba": {
+        "NORMAL": 0.00024414408835582435,
+        "ANÔMALO": 6.519551970995963e-05,
+        "SUSPEITO": 0.999395489692688,
+        "HOSTIL": 0.00029515361529774964
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2015-12-03 18:14:56.358528",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.48155786208658413,
+        "sma_change_at": "2016-01-02 21:49:09.266592+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": {
         "asset_norad": 31598,
         "asset_name": "COSMO-SKYMED 1",
@@ -135,8 +154,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 14:07:45.535008",
       "anomaly_score": 0.3812958018280172,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.3812958018280172,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": true,
@@ -146,7 +165,7 @@
           "gap_100h"
         ],
         "reliable": true,
-        "tle_age_hours": 14.252084236111111
+        "tle_age_hours": 35.23180294666666
       },
       "min_distance_to_asset_km": 91.42019397700915,
       "closest_asset_norad": 35951,
@@ -157,7 +176,7 @@
         "hurst_exponent_sma": 0.5887016712682269,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 14.252094444722223,
+        "tle_age_hours": 35.231812581111114,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -172,6 +191,25 @@
         "cointegration_pvalue": 0.06884320014659549
       },
       "status": "PAIR_ELEVATED",
+      "xgb_class": "SUSPEITO",
+      "xgb_confidence": 0.6660071611404419,
+      "xgb_proba": {
+        "NORMAL": 0.32483503222465515,
+        "ANÔMALO": 0.0018953010439872742,
+        "SUSPEITO": 0.6660071611404419,
+        "HOSTIL": 0.007262525614351034
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2016-08-14 02:12:32.956704",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.5182087224156428,
+        "sma_change_at": "2016-09-03 21:44:02.343552+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": {
         "asset_norad": 35951,
         "asset_name": "DMSP 5D-3 F18 (USA 210)",
@@ -191,8 +229,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 14:03:06.532992",
       "anomaly_score": 0.35742012498714665,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.35742012498714665,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": true,
@@ -202,7 +240,7 @@
           "gap_94h"
         ],
         "reliable": true,
-        "tle_age_hours": 14.329481625833333
+        "tle_age_hours": 35.308225120555555
       },
       "min_distance_to_asset_km": 19.727673461326958,
       "closest_asset_norad": 31598,
@@ -213,7 +251,7 @@
         "hurst_exponent_sma": 0.9351315342085345,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 14.329491503611113,
+        "tle_age_hours": 35.308234757777775,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -228,6 +266,25 @@
         "cointegration_pvalue": 0.35796483754677244
       },
       "status": "PAIR_ELEVATED",
+      "xgb_class": "HOSTIL",
+      "xgb_confidence": 0.9724386930465698,
+      "xgb_proba": {
+        "NORMAL": 0.0010910937562584877,
+        "ANÔMALO": 0.00020892475731670856,
+        "SUSPEITO": 0.026261301711201668,
+        "HOSTIL": 0.9724386930465698
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2024-11-03 11:22:14.782080",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.4524500194194821,
+        "sma_change_at": "2014-02-11 21:45:01.512000+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": {
         "asset_norad": 31598,
         "asset_name": "COSMO-SKYMED 1",
@@ -247,8 +304,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 14:56:57.192288",
       "anomaly_score": 0.3664387012723102,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.3664387012723102,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": true,
@@ -258,7 +315,7 @@
           "gap_101h"
         ],
         "reliable": true,
-        "tle_age_hours": 13.432115999722221
+        "tle_age_hours": 34.41123009722222
       },
       "min_distance_to_asset_km": 64.95890030263308,
       "closest_asset_norad": 31598,
@@ -269,7 +326,7 @@
         "hurst_exponent_sma": 0.8232545723839421,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 13.43212581888889,
+        "tle_age_hours": 34.411239907222225,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -284,6 +341,25 @@
         "cointegration_pvalue": 0.5913715374820615
       },
       "status": "PAIR_ELEVATED",
+      "xgb_class": "SUSPEITO",
+      "xgb_confidence": 0.9994582533836365,
+      "xgb_proba": {
+        "NORMAL": 0.00022094494488555938,
+        "ANÔMALO": 5.8786106819752604e-05,
+        "SUSPEITO": 0.9994582533836365,
+        "HOSTIL": 0.0002620684972498566
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2024-03-30 14:02:31.157376",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.45036358087108547,
+        "sma_change_at": "2014-01-28 04:47:21.701472+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": {
         "asset_norad": 31598,
         "asset_name": "COSMO-SKYMED 1",
@@ -303,18 +379,19 @@
       "orbit_class": "MEO",
       "window_end": "2026-07-25 01:48:16.960320",
       "anomaly_score": 0.49963582321351163,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.49963582321351163,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
-        "score": 0.85,
+        "score": 0.7,
         "issues": [
+          "tle_aging_48h",
           "gap_156h"
         ],
         "reliable": true,
-        "tle_age_hours": 26.576638390555555
+        "tle_age_hours": 47.55587326361111
       },
       "min_distance_to_asset_km": 1.0,
       "closest_asset_norad": 28874,
@@ -325,7 +402,7 @@
         "hurst_exponent_sma": 0.7008187471184121,
         "kolmogorov_proxy_7d": 0.5263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 26.576647048611115,
+        "tle_age_hours": 47.55588115138889,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -340,6 +417,25 @@
         "cointegration_pvalue": 7.759226119068094e-19
       },
       "status": "NOMINAL",
+      "xgb_class": "HOSTIL",
+      "xgb_confidence": 0.999290943145752,
+      "xgb_proba": {
+        "NORMAL": 0.00024026763276197016,
+        "ANÔMALO": 9.271201997762546e-05,
+        "SUSPEITO": 0.00037601045914925635,
+        "HOSTIL": 0.999290943145752
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2014-08-28 11:06:58.311360",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.5047139757098358,
+        "sma_change_at": "2014-02-08 12:51:08.757792+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -351,18 +447,19 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 10:29:30.366528",
       "anomaly_score": 0.348389377218284,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.348389377218284,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
-        "score": 0.7,
+        "score": 0.55,
         "issues": [
+          "tle_aging_39h",
           "gap_381h"
         ],
         "reliable": true,
-        "tle_age_hours": 17.889593709722224
+        "tle_age_hours": 38.868944443611106
       },
       "min_distance_to_asset_km": 78.31272231186631,
       "closest_asset_norad": 31598,
@@ -373,7 +470,7 @@
         "hurst_exponent_sma": 0.9065578598214156,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 17.889603570555554,
+        "tle_age_hours": 38.868954260555554,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -388,6 +485,25 @@
         "cointegration_pvalue": 0.7226763554952403
       },
       "status": "NOMINAL",
+      "xgb_class": "SUSPEITO",
+      "xgb_confidence": 0.9991815686225891,
+      "xgb_proba": {
+        "NORMAL": 0.00044061028165742755,
+        "ANÔMALO": 6.495798152172938e-05,
+        "SUSPEITO": 0.9991815686225891,
+        "HOSTIL": 0.0003128709504380822
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2014-01-13 10:42:16.731072+00:00",
+        "method": "sma_change_fallback",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.44776195903063537,
+        "sma_change_at": "2014-01-13 10:42:16.731072+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": {
         "asset_norad": 31598,
         "asset_name": "COSMO-SKYMED 1",
@@ -407,19 +523,19 @@
       "orbit_class": "MEO",
       "window_end": "2026-07-23 05:51:51.216192",
       "anomaly_score": 0.4752010437682333,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.4752010437682333,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
-        "score": 0.7,
+        "score": 0.5,
         "issues": [
-          "tle_aging_71h",
+          "tle_stale_91h",
           "gap_167h"
         ],
         "reliable": true,
-        "tle_age_hours": 70.51703339527778
+        "tle_age_hours": 91.49541016361111
       },
       "min_distance_to_asset_km": 1.0,
       "closest_asset_norad": 39166,
@@ -430,7 +546,7 @@
         "hurst_exponent_sma": 0.9449889380420642,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 70.5170413486111,
+        "tle_age_hours": 91.49541803694444,
         "f10_7": 148.0,
         "f10_7_adj": 152.3,
         "ap_index": 24.0,
@@ -445,6 +561,25 @@
         "cointegration_pvalue": 0.9771261000493239
       },
       "status": "NOMINAL",
+      "xgb_class": "HOSTIL",
+      "xgb_confidence": 0.9996664524078369,
+      "xgb_proba": {
+        "NORMAL": 0.0001173261262010783,
+        "ANÔMALO": 2.9049586373730563e-05,
+        "SUSPEITO": 0.00018713665485847741,
+        "HOSTIL": 0.9996664524078369
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2014-01-20 11:00:07.639200",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.5441112128812667,
+        "sma_change_at": "2014-02-11 06:48:30.320064+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -456,19 +591,20 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 02:22:51.590208",
       "anomaly_score": 0.44416439643516314,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.44416439643516314,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
-        "score": 0.44999999999999996,
+        "score": 0.30000000000000004,
         "issues": [
+          "tle_aging_47h",
           "gap_423h",
           "sma_jump"
         ],
         "reliable": false,
-        "tle_age_hours": 26.0004809825
+        "tle_age_hours": 46.980942113333334
       },
       "min_distance_to_asset_km": 2000.0,
       "closest_asset_norad": null,
@@ -479,7 +615,7 @@
         "hurst_exponent_sma": 0.9625952436339339,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 26.000486909166668,
+        "tle_age_hours": 46.98094817722222,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -494,6 +630,25 @@
         "cointegration_pvalue": 1.0
       },
       "status": "UNRELIABLE_DATA",
+      "xgb_class": "SUSPEITO",
+      "xgb_confidence": 0.9874395728111267,
+      "xgb_proba": {
+        "NORMAL": 0.010435139760375023,
+        "ANÔMALO": 0.0010053638834506273,
+        "SUSPEITO": 0.9874395728111267,
+        "HOSTIL": 0.0011199291329830885
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2022-01-03 16:44:42.804096",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.6240335992480883,
+        "sma_change_at": "2022-01-07 11:38:43.948896+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": {
         "asset_norad": 28054,
         "asset_name": "DMSP 5D-3 F16 (USA 172)",
@@ -513,20 +668,20 @@
       "orbit_class": "GEO",
       "window_end": "2026-07-23 19:41:07.369152",
       "anomaly_score": 0.4382394091152107,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.4382394091152107,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
-        "score": 0.30000000000000004,
+        "score": 0.10000000000000003,
         "issues": [
-          "tle_aging_57h",
+          "tle_stale_78h",
           "gap_420h",
           "sma_jump"
         ],
         "reliable": false,
-        "tle_age_hours": 56.69599541583334
+        "tle_age_hours": 77.67547947416668
       },
       "min_distance_to_asset_km": 2000.0,
       "closest_asset_norad": null,
@@ -537,7 +692,7 @@
         "hurst_exponent_sma": 0.9170086842748756,
         "kolmogorov_proxy_7d": 0.3157894736842105,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 56.696001765,
+        "tle_age_hours": 77.67548588749999,
         "f10_7": 148.0,
         "f10_7_adj": 152.3,
         "ap_index": 24.0,
@@ -552,6 +707,25 @@
         "cointegration_pvalue": 1.0
       },
       "status": "UNRELIABLE_DATA",
+      "xgb_class": "NORMAL",
+      "xgb_confidence": 0.9992964267730713,
+      "xgb_proba": {
+        "NORMAL": 0.9992964267730713,
+        "ANÔMALO": 0.00011593610543059185,
+        "SUSPEITO": 0.0004214547807350755,
+        "HOSTIL": 0.00016613368643447757
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2014-10-11 13:51:29.803392",
+        "method": "if_sustained",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.6249854278636666,
+        "sma_change_at": "2014-11-26 03:17:40.216128+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": {
         "asset_norad": 31698,
         "asset_name": "TERRASAR-X",
@@ -571,19 +745,19 @@
       "orbit_class": "MEO",
       "window_end": "2026-07-24 15:08:54.339072",
       "anomaly_score": 0.43965992022445377,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.43965992022445377,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
         "score": 0.7,
         "issues": [
-          "tle_aging_37h",
+          "tle_aging_58h",
           "gap_168h"
         ],
         "reliable": true,
-        "tle_age_hours": 37.2329996675
+        "tle_age_hours": 58.21296901083333
       },
       "min_distance_to_asset_km": 1346.1963379355002,
       "closest_asset_norad": 28874,
@@ -594,7 +768,7 @@
         "hurst_exponent_sma": 0.7664755983389415,
         "kolmogorov_proxy_7d": 0.42105263157894735,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 37.23300813111111,
+        "tle_age_hours": 58.21297772083334,
         "f10_7": 153.0,
         "f10_7_adj": 154.9,
         "ap_index": 7.0,
@@ -609,6 +783,25 @@
         "cointegration_pvalue": 1.702659163725543e-21
       },
       "status": "NOMINAL",
+      "xgb_class": "NORMAL",
+      "xgb_confidence": 0.9989352822303772,
+      "xgb_proba": {
+        "NORMAL": 0.9989352822303772,
+        "ANÔMALO": 0.00024016537645366043,
+        "SUSPEITO": 0.00062901945784688,
+        "HOSTIL": 0.0001955672778422013
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2018-09-05 15:41:11.051232",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.5688323010907288,
+        "sma_change_at": "2018-09-27 12:18:17.592768+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": {
         "asset_norad": 28874,
         "asset_name": "GPS BIIRM-1 (PRN 17)",
@@ -628,8 +821,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 15:02:55.112928",
       "anomaly_score": 0.3834481700821103,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.3834481700821103,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
@@ -639,7 +832,7 @@
           "gap_232h"
         ],
         "reliable": true,
-        "tle_age_hours": 13.3328230925
+        "tle_age_hours": 34.31316489861111
       },
       "min_distance_to_asset_km": 348.6539727295644,
       "closest_asset_norad": 31598,
@@ -650,7 +843,7 @@
         "hurst_exponent_sma": 0.9288588422331261,
         "kolmogorov_proxy_7d": 0.2631578947368421,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 13.33283218,
+        "tle_age_hours": 34.31317415666667,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -665,6 +858,25 @@
         "cointegration_pvalue": 0.6778165397154069
       },
       "status": "NOMINAL",
+      "xgb_class": "NORMAL",
+      "xgb_confidence": 0.9993448853492737,
+      "xgb_proba": {
+        "NORMAL": 0.9993448853492737,
+        "ANÔMALO": 4.158422598266043e-05,
+        "SUSPEITO": 0.0004204603028483689,
+        "HOSTIL": 0.00019304032321088016
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2021-06-29 20:57:31.019616",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.5924364607790511,
+        "sma_change_at": "2021-07-12 20:14:38.200416+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": {
         "asset_norad": 31698,
         "asset_name": "TERRASAR-X",
@@ -684,18 +896,19 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 11:40:13.821312",
       "anomaly_score": 0.4262873856045386,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.4262873856045386,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
-        "score": 0.85,
+        "score": 0.7,
         "issues": [
+          "tle_aging_38h",
           "gap_84h"
         ],
         "reliable": true,
-        "tle_age_hours": 16.710933474166666
+        "tle_age_hours": 37.69102143138889
       },
       "min_distance_to_asset_km": 15.936379252443658,
       "closest_asset_norad": 25544,
@@ -706,7 +919,7 @@
         "hurst_exponent_sma": 0.9104692461776832,
         "kolmogorov_proxy_7d": 0.2631578947368421,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 16.71094262,
+        "tle_age_hours": 37.69103039972222,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -721,6 +934,25 @@
         "cointegration_pvalue": 0.9823494284325479
       },
       "status": "NOMINAL",
+      "xgb_class": "HOSTIL",
+      "xgb_confidence": 0.9465389847755432,
+      "xgb_proba": {
+        "NORMAL": 0.005650336388498545,
+        "ANÔMALO": 0.00104512891266495,
+        "SUSPEITO": 0.046765536069869995,
+        "HOSTIL": 0.9465389847755432
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2019-11-23 14:00:01.000224",
+        "method": "if_sustained",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.5762469321567658,
+        "sma_change_at": "2019-12-12 22:00:00.999936+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -732,18 +964,19 @@
       "orbit_class": "GEO",
       "window_end": "2026-07-25 02:55:05.833056",
       "anomaly_score": 0.4494197294536342,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.4494197294536342,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
-        "score": 0.7,
+        "score": 0.55,
         "issues": [
+          "tle_aging_46h",
           "gap_420h"
         ],
         "reliable": true,
-        "tle_age_hours": 25.463200798333332
+        "tle_age_hours": 46.44378037305555
       },
       "min_distance_to_asset_km": 2000.0,
       "closest_asset_norad": null,
@@ -754,7 +987,7 @@
         "hurst_exponent_sma": 0.7788614099040018,
         "kolmogorov_proxy_7d": 0.5789473684210527,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 25.46320688,
+        "tle_age_hours": 46.443786366666664,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -769,6 +1002,25 @@
         "cointegration_pvalue": 1.0
       },
       "status": "NOMINAL",
+      "xgb_class": "ANÔMALO",
+      "xgb_confidence": 0.6032691597938538,
+      "xgb_proba": {
+        "NORMAL": 0.06594037264585495,
+        "ANÔMALO": 0.6032691597938538,
+        "SUSPEITO": 0.32198193669319153,
+        "HOSTIL": 0.008808494545519352
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2023-03-21 17:50:42.707904",
+        "method": "if_sustained",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.6115508812374961,
+        "sma_change_at": "2023-03-28 21:54:52.727328+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": {
         "asset_norad": 25544,
         "asset_name": "ISS (ZARYA)",
@@ -788,18 +1040,19 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-24 16:48:58.098816",
       "anomaly_score": 0.4161739235207101,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.4161739235207101,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
-        "score": 0.85,
+        "score": 0.7,
         "issues": [
+          "tle_aging_57h",
           "gap_95h"
         ],
         "reliable": true,
-        "tle_age_hours": 35.565313592222225
+        "tle_age_hours": 56.545521005
       },
       "min_distance_to_asset_km": 239.1775045820094,
       "closest_asset_norad": 25544,
@@ -810,7 +1063,7 @@
         "hurst_exponent_sma": 0.8531849291852758,
         "kolmogorov_proxy_7d": 0.5789473684210527,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 35.56532270694444,
+        "tle_age_hours": 56.54553078916667,
         "f10_7": 153.0,
         "f10_7_adj": 154.9,
         "ap_index": 7.0,
@@ -825,6 +1078,25 @@
         "cointegration_pvalue": 0.8228190269164097
       },
       "status": "NOMINAL",
+      "xgb_class": "NORMAL",
+      "xgb_confidence": 0.9979137778282166,
+      "xgb_proba": {
+        "NORMAL": 0.9979137778282166,
+        "ANÔMALO": 0.0002257107407785952,
+        "SUSPEITO": 0.0016088607953861356,
+        "HOSTIL": 0.00025160241057164967
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2021-05-06 14:11:31.884000",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.5495240034010537,
+        "sma_change_at": "2021-05-10 10:01:22.010304+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": {
         "asset_norad": 31698,
         "asset_name": "TERRASAR-X",
@@ -844,18 +1116,19 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 10:38:14.228736",
       "anomaly_score": 0.4038807859583913,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.4038807859583913,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
-        "score": 0.85,
+        "score": 0.7,
         "issues": [
+          "tle_aging_39h",
           "gap_163h"
         ],
         "reliable": true,
-        "tle_age_hours": 17.743873891388887
+        "tle_age_hours": 38.72164090055555
       },
       "min_distance_to_asset_km": 904.4210699394739,
       "closest_asset_norad": 31698,
@@ -866,7 +1139,7 @@
         "hurst_exponent_sma": 0.9380505696416578,
         "kolmogorov_proxy_7d": 0.3157894736842105,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 17.74388350861111,
+        "tle_age_hours": 38.72165075555555,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -881,6 +1154,25 @@
         "cointegration_pvalue": 0.031652043614987274
       },
       "status": "NOMINAL",
+      "xgb_class": "NORMAL",
+      "xgb_confidence": 0.9986359477043152,
+      "xgb_proba": {
+        "NORMAL": 0.9986359477043152,
+        "ANÔMALO": 0.00022182005341164768,
+        "SUSPEITO": 0.0008802569354884326,
+        "HOSTIL": 0.0002619583101477474
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2018-09-06 13:50:43.139616",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.4859488041970418,
+        "sma_change_at": "2014-01-18 00:46:38.000064+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -892,18 +1184,19 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 11:04:07.684320",
       "anomaly_score": 0.38333479720898556,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.38333479720898556,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
-        "score": 0.7,
+        "score": 0.55,
         "issues": [
+          "tle_aging_38h",
           "gap_262h"
         ],
         "reliable": true,
-        "tle_age_hours": 17.312483050277777
+        "tle_age_hours": 38.2911089675
       },
       "min_distance_to_asset_km": 66.9531896437029,
       "closest_asset_norad": 31598,
@@ -914,7 +1207,7 @@
         "hurst_exponent_sma": 0.8706520250067011,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 17.312491408333333,
+        "tle_age_hours": 38.29111739222222,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -929,6 +1222,25 @@
         "cointegration_pvalue": 0.00013362760584832153
       },
       "status": "NOMINAL",
+      "xgb_class": "SUSPEITO",
+      "xgb_confidence": 0.9957811832427979,
+      "xgb_proba": {
+        "NORMAL": 0.003095852443948388,
+        "ANÔMALO": 0.00020447929273359478,
+        "SUSPEITO": 0.9957811832427979,
+        "HOSTIL": 0.0009185396484099329
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2024-08-21 10:46:47.755776",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.48225012021064406,
+        "sma_change_at": "2014-01-26 19:57:27.290304+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -940,8 +1252,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 14:57:29.030688",
       "anomaly_score": 0.3538799976283838,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.3538799976283838,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
@@ -951,7 +1263,7 @@
           "gap_191h"
         ],
         "reliable": true,
-        "tle_age_hours": 13.42318271
+        "tle_age_hours": 34.40144011361111
       },
       "min_distance_to_asset_km": 2.5529883680965213,
       "closest_asset_norad": 28054,
@@ -962,7 +1274,7 @@
         "hurst_exponent_sma": 0.9399942250920417,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 13.42319239611111,
+        "tle_age_hours": 34.401450132499996,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -977,6 +1289,25 @@
         "cointegration_pvalue": 0.8717726093792706
       },
       "status": "NOMINAL",
+      "xgb_class": "HOSTIL",
+      "xgb_confidence": 0.9994091987609863,
+      "xgb_proba": {
+        "NORMAL": 0.00027227422106079757,
+        "ANÔMALO": 3.488298534648493e-05,
+        "SUSPEITO": 0.0002836990461219102,
+        "HOSTIL": 0.9994091987609863
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2024-10-10 04:21:21.593952",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.561379092431685,
+        "sma_change_at": "2014-02-08 12:08:20.554080+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -988,8 +1319,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 13:32:24.263808",
       "anomaly_score": 0.35164116217124003,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.35164116217124003,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
@@ -999,7 +1330,7 @@
           "gap_81h"
         ],
         "reliable": true,
-        "tle_age_hours": 14.841198440277777
+        "tle_age_hours": 35.819692035833334
       },
       "min_distance_to_asset_km": 66.9531896437029,
       "closest_asset_norad": 31698,
@@ -1010,7 +1341,7 @@
         "hurst_exponent_sma": 0.9298994015880185,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 14.841207248055555,
+        "tle_age_hours": 35.81970073361111,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1025,6 +1356,25 @@
         "cointegration_pvalue": 0.8474946544032851
       },
       "status": "NOMINAL",
+      "xgb_class": "SUSPEITO",
+      "xgb_confidence": 0.9987504482269287,
+      "xgb_proba": {
+        "NORMAL": 0.0007681013084948063,
+        "ANÔMALO": 8.957898535300046e-05,
+        "SUSPEITO": 0.9987504482269287,
+        "HOSTIL": 0.0003918745496775955
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2014-01-12 03:01:46.758432+00:00",
+        "method": "sma_change_fallback",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.4300090824294557,
+        "sma_change_at": "2014-01-12 03:01:46.758432+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -1036,8 +1386,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 14:48:51.281280",
       "anomaly_score": 0.35072964838812704,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.35072964838812704,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
@@ -1047,7 +1397,7 @@
           "gap_457h"
         ],
         "reliable": true,
-        "tle_age_hours": 13.567077750555555
+        "tle_age_hours": 34.54607591166667
       },
       "min_distance_to_asset_km": 127.21055745562626,
       "closest_asset_norad": 31598,
@@ -1058,7 +1408,7 @@
         "hurst_exponent_sma": 0.8905552176089127,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 13.56708755,
+        "tle_age_hours": 34.54608548777778,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1073,6 +1423,25 @@
         "cointegration_pvalue": 0.6366348222088763
       },
       "status": "NOMINAL",
+      "xgb_class": "SUSPEITO",
+      "xgb_confidence": 0.6530629396438599,
+      "xgb_proba": {
+        "NORMAL": 0.3452621102333069,
+        "ANÔMALO": 0.0003208163834642619,
+        "SUSPEITO": 0.6530629396438599,
+        "HOSTIL": 0.0013541486114263535
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2016-05-08 19:57:52.876800",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.5037226363008683,
+        "sma_change_at": "2014-03-02 16:28:46.331040+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -1084,8 +1453,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 13:22:30.428832",
       "anomaly_score": 0.3506156108740225,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.3506156108740225,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
@@ -1095,7 +1464,7 @@
           "gap_86h"
         ],
         "reliable": true,
-        "tle_age_hours": 15.006294349166666
+        "tle_age_hours": 35.98613220833333
       },
       "min_distance_to_asset_km": 15.611453249322949,
       "closest_asset_norad": 35951,
@@ -1106,7 +1475,7 @@
         "hurst_exponent_sma": 0.9149793346351569,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 15.006304332222221,
+        "tle_age_hours": 35.986142145277775,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1121,6 +1490,25 @@
         "cointegration_pvalue": 0.47002045926536584
       },
       "status": "NOMINAL",
+      "xgb_class": "HOSTIL",
+      "xgb_confidence": 0.9959024786949158,
+      "xgb_proba": {
+        "NORMAL": 0.0014467600267380476,
+        "ANÔMALO": 0.00017524464055895805,
+        "SUSPEITO": 0.0024755632039159536,
+        "HOSTIL": 0.9959024786949158
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2017-11-25 21:48:58.506336",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.5542252262999735,
+        "sma_change_at": "2017-12-12 19:09:49.701888+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -1132,8 +1520,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 14:38:51.232416",
       "anomaly_score": 0.34958724646908546,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.34958724646908546,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
@@ -1143,7 +1531,7 @@
           "gap_85h"
         ],
         "reliable": true,
-        "tle_age_hours": 13.733745313333333
+        "tle_age_hours": 34.712609551388894
       },
       "min_distance_to_asset_km": 1.4691821277165218,
       "closest_asset_norad": 28054,
@@ -1154,7 +1542,7 @@
         "hurst_exponent_sma": 0.9175671997676773,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 13.7337541775,
+        "tle_age_hours": 34.71261845222222,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1169,6 +1557,25 @@
         "cointegration_pvalue": 0.8983405698685607
       },
       "status": "NOMINAL",
+      "xgb_class": "HOSTIL",
+      "xgb_confidence": 0.9993383288383484,
+      "xgb_proba": {
+        "NORMAL": 0.0002165281621273607,
+        "ANÔMALO": 4.507352423388511e-05,
+        "SUSPEITO": 0.00040009053191170096,
+        "HOSTIL": 0.9993383288383484
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2025-11-12 05:51:53.767584",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.511601323685193,
+        "sma_change_at": "2018-05-28 21:39:01.761408+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -1180,18 +1587,19 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 12:34:24.265344",
       "anomaly_score": 0.348596195377091,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.348596195377091,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
       "data_quality": {
-        "score": 0.85,
+        "score": 0.7,
         "issues": [
+          "tle_aging_37h",
           "gap_86h"
         ],
         "reliable": true,
-        "tle_age_hours": 15.807826684722222
+        "tle_age_hours": 36.785963429722216
       },
       "min_distance_to_asset_km": 1.4691821277165218,
       "closest_asset_norad": 35951,
@@ -1202,7 +1610,7 @@
         "hurst_exponent_sma": 0.9017448800162418,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 15.807835987222223,
+        "tle_age_hours": 36.78597250083334,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1217,6 +1625,25 @@
         "cointegration_pvalue": 0.6276809331082037
       },
       "status": "NOMINAL",
+      "xgb_class": "HOSTIL",
+      "xgb_confidence": 0.9996675252914429,
+      "xgb_proba": {
+        "NORMAL": 0.00010953282617265359,
+        "ANÔMALO": 2.5695677322801203e-05,
+        "SUSPEITO": 0.00019722622528206557,
+        "HOSTIL": 0.9996675252914429
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2024-05-17 12:41:42.010080",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.49218299089447803,
+        "sma_change_at": "2018-04-24 21:21:44.957952+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -1228,8 +1655,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 14:12:12.837600",
       "anomaly_score": 0.34623781406828197,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.34623781406828197,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
@@ -1239,7 +1666,7 @@
           "gap_133h"
         ],
         "reliable": true,
-        "tle_age_hours": 14.1776377425
+        "tle_age_hours": 35.15552281833333
       },
       "min_distance_to_asset_km": 114.18358994077425,
       "closest_asset_norad": 31598,
@@ -1250,7 +1677,7 @@
         "hurst_exponent_sma": 0.9370339678732675,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 14.177649455277777,
+        "tle_age_hours": 35.15553267666667,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1265,6 +1692,25 @@
         "cointegration_pvalue": 0.6633353534570727
       },
       "status": "NOMINAL",
+      "xgb_class": "SUSPEITO",
+      "xgb_confidence": 0.6265372037887573,
+      "xgb_proba": {
+        "NORMAL": 0.37157124280929565,
+        "ANÔMALO": 0.0003480086743365973,
+        "SUSPEITO": 0.6265372037887573,
+        "HOSTIL": 0.001543546561151743
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2024-10-31 15:05:32.877600",
+        "method": "if_first_soft",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.45644637741827543,
+        "sma_change_at": "2014-01-24 12:19:50.517696+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     },
     {
@@ -1276,8 +1722,8 @@
       "orbit_class": "LEO",
       "window_end": "2026-07-25 14:17:04.035840",
       "anomaly_score": 0.3437675371671194,
-      "score_prev_day": null,
-      "score_delta_1d": null,
+      "score_prev_day": 0.3437675371671194,
+      "score_delta_1d": 0.0,
       "series_outlier": false,
       "day_over_day_relevant": false,
       "is_anomaly": false,
@@ -1287,7 +1733,7 @@
           "gap_190h"
         ],
         "reliable": true,
-        "tle_age_hours": 14.096765740555556
+        "tle_age_hours": 35.07477099888889
       },
       "min_distance_to_asset_km": 110.92553906739067,
       "closest_asset_norad": 31598,
@@ -1298,7 +1744,7 @@
         "hurst_exponent_sma": 0.9183371018171411,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 14.096775650555555,
+        "tle_age_hours": 35.0747809425,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1313,6 +1759,25 @@
         "cointegration_pvalue": 0.697318316454249
       },
       "status": "NOMINAL",
+      "xgb_class": "SUSPEITO",
+      "xgb_confidence": 0.5244104862213135,
+      "xgb_proba": {
+        "NORMAL": 0.47352996468544006,
+        "ANÔMALO": 0.0003827744221780449,
+        "SUSPEITO": 0.5244104862213135,
+        "HOSTIL": 0.0016767160268500447
+      },
+      "anomaly_onset": {
+        "first_elevated_at": "2014-02-26 10:54:44.102304+00:00",
+        "method": "sma_change_fallback",
+        "threshold": 0.55,
+        "soft_threshold": 0.45000000000000007,
+        "sustained": 2,
+        "n_windows_scored": 32,
+        "max_score_in_scan": 0.4389785815142016,
+        "sma_change_at": "2014-02-26 10:54:44.102304+00:00",
+        "note": "Estimativa: fim de janela TLE / época — não é data de intenção nem relógio de manobra."
+      },
       "pair": null
     }
   ],

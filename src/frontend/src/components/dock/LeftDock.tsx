@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react'
 import SidePanel from './SidePanel'
-import LayerPanel from '@/components/hud/LayerPanel'
-import WalkforwardPanel from '@/components/hud/WalkforwardPanel'
 import {
   boardThreat,
   sortedBoard,
@@ -10,7 +8,8 @@ import {
   type RiskReport,
   type Threat,
 } from '@/lib/risk-report'
-import type { WalkforwardSummary } from '@/lib/walkforward'
+import { countryLabel } from '@/lib/country-flag'
+import CountryFlag from '@/components/hud/CountryFlag'
 
 const THREAT_STYLE: Record<
   Threat,
@@ -47,30 +46,20 @@ const THREAT_STYLE: Record<
 }
 
 interface LeftDockProps {
-  counts: number[]
-  groupVisible: boolean[]
-  onToggleGroup: (index: number) => void
   selectedNorad: number | null
   onSelectNorad: (norad: number) => void
   report: RiskReport | null
   reportStatus: 'loading' | 'ready' | 'error'
   reportError?: string | null
-  walkforward?: WalkforwardSummary | null
-  walkforwardStatus?: 'loading' | 'ready' | 'error'
   extra?: ReactNode
 }
 
 export default function LeftDock({
-  counts,
-  groupVisible,
-  onToggleGroup,
   selectedNorad,
   onSelectNorad,
   report,
   reportStatus,
   reportError,
-  walkforward = null,
-  walkforwardStatus = 'error',
   extra,
 }: LeftDockProps) {
   const board = sortedBoard(report)
@@ -90,7 +79,7 @@ export default function LeftDock({
           : 'Fusion scores · priority objects'
       }
       footer={
-        <div className="grid grid-cols-4 gap-1.5 text-[10px]">
+        <div className="grid grid-cols-4 gap-1.5 text-[13px]">
           <StatChip label="HST" value={hostiles} tone="text-rose-300" />
           <StatChip label="SUS" value={suspects} tone="text-amber-300" />
           <StatChip label="ANM" value={anomalies} tone="text-orange-300" />
@@ -103,17 +92,17 @@ export default function LeftDock({
 
         {report && (
           <section className="border border-white/10 bg-black/50 px-2.5 py-2">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+            <div className="text-[13px] uppercase tracking-[0.2em] text-zinc-400">
               Risk report
             </div>
-            <div className="mt-1.5 grid grid-cols-2 gap-1.5 text-[11px]">
+            <div className="mt-1.5 grid grid-cols-2 gap-1.5 text-[14px]">
               <Meta k="Anomalies" v={String(report.summary.n_anomalies)} />
               <Meta k="Pairs" v={String(report.summary.n_pairs)} />
               <Meta k="Elevated" v={String(report.summary.n_pair_elevated)} />
               <Meta k="Thr" v={report.summary.threshold.toFixed(2)} />
             </div>
             {report.top_pairs?.[0] && (
-              <p className="mt-2 text-[10px] leading-relaxed text-zinc-400">
+              <p className="mt-2 text-[13px] leading-relaxed text-zinc-400">
                 Top pair:{' '}
                 <span className="text-zinc-200">
                   {report.top_pairs[0].suspect_name}
@@ -123,7 +112,7 @@ export default function LeftDock({
                 {report.top_pairs[0].risk_level}
               </p>
             )}
-            <div className="mt-2 flex flex-wrap gap-x-2 gap-y-1 border-t border-white/10 pt-2 text-[9px] text-zinc-500">
+            <div className="mt-2 flex flex-wrap gap-x-2 gap-y-1 border-t border-white/10 pt-2 text-[12px] text-zinc-400">
               {(
                 [
                   ['HOSTILE', THREAT_HEX.HOSTILE],
@@ -146,29 +135,18 @@ export default function LeftDock({
         )}
 
         <section>
-          <div className="mb-2 text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-            Validation · lead-time
-          </div>
-          <WalkforwardPanel
-            summary={walkforward}
-            status={walkforwardStatus}
-            onSelectNorad={onSelectNorad}
-          />
-        </section>
-
-        <section>
-          <div className="mb-2 text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+          <div className="mb-2 text-[13px] uppercase tracking-[0.2em] text-zinc-400">
             Priority tracks
           </div>
 
           {reportStatus === 'loading' && (
-            <div className="border border-dashed border-white/15 px-3 py-4 text-center text-[11px] text-zinc-500">
+            <div className="border border-dashed border-white/15 px-3 py-4 text-center text-[14px] text-zinc-400">
               Loading risk_report…
             </div>
           )}
 
           {reportStatus === 'error' && (
-            <div className="border border-rose-400/30 bg-rose-500/10 px-3 py-3 text-[11px] text-rose-200">
+            <div className="border border-rose-400/30 bg-rose-500/10 px-3 py-3 text-[14px] text-rose-200">
               Risk report unavailable
               {reportError ? `: ${reportError}` : ''}. Run{' '}
               <code className="text-rose-100">scripts/sync_frontend_data.sh</code>
@@ -176,7 +154,7 @@ export default function LeftDock({
           )}
 
           {reportStatus === 'ready' && board.length === 0 && (
-            <div className="border border-dashed border-white/15 px-3 py-4 text-center text-[11px] text-zinc-500">
+            <div className="border border-dashed border-white/15 px-3 py-4 text-center text-[14px] text-zinc-400">
               Empty board
             </div>
           )}
@@ -199,29 +177,42 @@ export default function LeftDock({
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-semibold text-zinc-100">
+                    <span className="text-[14px] font-semibold text-zinc-100">
                       #{t.norad_id}
                     </span>
                     <span
-                      className={`border px-1.5 py-0.5 text-[9px] tracking-wider ${style.border} ${style.color}`}
+                      className={`border px-1.5 py-0.5 text-[12px] tracking-wider ${style.border} ${style.color}`}
                     >
                       {style.label}
                     </span>
                   </div>
-                  <div className="mt-0.5 truncate text-xs text-zinc-300">
-                    {t.object_name}
+                  <div className="mt-0.5 flex min-w-0 items-center gap-2">
+                    <CountryFlag code={t.country} size={18} />
+                    <span className="min-w-0 flex-1 truncate text-sm text-zinc-300">
+                      {t.object_name}
+                    </span>
+                    <a
+                      href={`${import.meta.env.BASE_URL}reports/quant_${t.norad_id}_latest.html`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="shrink-0 border border-emerald-400/30 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-emerald-300/90 hover:bg-emerald-400/10"
+                      title="Quant report (new tab)"
+                    >
+                      Quant
+                    </a>
                   </div>
-                  <div className="mt-1.5 flex items-center justify-between text-[10px] text-zinc-500">
+                  <div className="mt-1.5 flex items-center justify-between text-[13px] text-zinc-400">
                     <span>
                       att {t.attention_score.toFixed(2)} · anom{' '}
                       {t.anomaly_score.toFixed(2)}
                     </span>
                     <span className="text-zinc-400">
-                      {t.role} · {t.country}
+                      {t.role} · {countryLabel(t.country)}
                     </span>
                   </div>
                   {t.pair && (
-                    <div className="mt-1 truncate text-[10px] text-zinc-500">
+                    <div className="mt-1 truncate text-[13px] text-zinc-400">
                       → {t.pair.asset_name} · {t.pair.min_distance_km.toFixed(0)} km ·{' '}
                       {t.pair.risk_level}
                     </div>
@@ -235,20 +226,6 @@ export default function LeftDock({
                 </button>
               )
             })}
-          </div>
-        </section>
-
-        <section>
-          <div className="mb-2 text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-            Catalog layers
-          </div>
-          <div className="border border-white/10 bg-black/50 px-1 py-1.5">
-            <LayerPanel
-              counts={counts}
-              visible={groupVisible}
-              onToggle={onToggleGroup}
-              variant="bare"
-            />
           </div>
         </section>
       </div>
@@ -267,7 +244,7 @@ function StatChip({
 }) {
   return (
     <div className="border border-white/10 bg-black/60 px-1.5 py-1.5 text-center">
-      <div className="text-zinc-500">{label}</div>
+      <div className="text-zinc-400">{label}</div>
       <div className={`mt-0.5 text-sm tabular-nums ${tone}`}>{value}</div>
     </div>
   )
@@ -276,7 +253,7 @@ function StatChip({
 function Meta({ k, v }: { k: string; v: string }) {
   return (
     <div className="border border-white/10 bg-black/40 px-2 py-1">
-      <div className="text-[9px] uppercase tracking-wider text-zinc-500">{k}</div>
+      <div className="text-[12px] uppercase tracking-wider text-zinc-400">{k}</div>
       <div className="tabular-nums text-zinc-100">{v}</div>
     </div>
   )

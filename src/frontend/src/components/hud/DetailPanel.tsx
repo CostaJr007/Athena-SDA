@@ -61,7 +61,7 @@ export default function DetailPanel({
       <div className="flex items-start justify-between gap-2 px-4 pt-4">
         <div className="min-w-0">
           <div
-            className="font-mono text-[10px] uppercase tracking-[0.25em]"
+            className="font-mono text-[13px] uppercase tracking-[0.25em]"
             style={{ color: group?.color ?? '#9aa7bd' }}
           >
             {group?.label ?? 'Unknown'}
@@ -69,7 +69,7 @@ export default function DetailPanel({
           <div className="mt-1 truncate font-mono text-base font-semibold tracking-wide text-white">
             {sat.name}
           </div>
-          <div className="mt-0.5 font-mono text-[11px] text-slate-500">
+          <div className="mt-0.5 font-mono text-[14px] text-slate-500">
             NORAD {sat.norad}
           </div>
         </div>
@@ -88,7 +88,7 @@ export default function DetailPanel({
         <div className="mt-3 grid grid-cols-2 gap-1.5 px-4">
           {metrics.map(([k, v]) => (
             <div key={k} className="rounded-lg border border-white/[0.07] bg-white/[0.03] px-2.5 py-2">
-              <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-slate-500">
+              <div className="font-mono text-[12px] uppercase tracking-[0.18em] text-slate-500">
                 {k}
               </div>
               <div className="mt-0.5 font-mono text-[13px] tabular-nums text-slate-100">
@@ -98,12 +98,12 @@ export default function DetailPanel({
           ))}
         </div>
       ) : (
-        <div className="mt-3 px-4 text-xs text-slate-500">
+        <div className="mt-3 px-4 text-sm text-slate-500">
           Propagation unavailable for this object.
         </div>
       )}
 
-      <div className="mt-2 px-4 font-mono text-[10px] tracking-wider text-slate-600">
+      <div className="mt-2 px-4 font-mono text-[13px] tracking-wider text-slate-600">
         TLE {sat.epochMs ? formatUtc(sat.epochMs) : 'unknown'}
       </div>
 
@@ -118,7 +118,7 @@ export default function DetailPanel({
           <button
             key={label}
             onClick={fn}
-            className={`flex-1 rounded-lg border px-2 py-1.5 font-mono text-[10px] tracking-wider transition-colors ${
+            className={`flex-1 rounded-lg border px-2 py-1.5 font-mono text-[13px] tracking-wider transition-colors ${
               val
                 ? 'border-sky-400/40 bg-sky-400/15 text-sky-200'
                 : 'border-white/10 text-slate-400 hover:bg-white/5'

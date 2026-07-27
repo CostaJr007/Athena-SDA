@@ -27,8 +27,8 @@ export default function LayerPanel({
             className="h-[7px] w-[7px] shrink-0"
             style={{ background: g.color, boxShadow: `0 0 5px ${g.color}66` }}
           />
-          <span className="flex-1 truncate text-xs text-zinc-300">{g.label}</span>
-          <span className="text-[11px] tabular-nums text-zinc-500">
+          <span className="flex-1 truncate text-sm text-zinc-300">{g.label}</span>
+          <span className="text-[14px] tabular-nums text-zinc-400">
             {(counts[i] ?? 0).toLocaleString()}
           </span>
         </button>
@@ -40,7 +40,7 @@ export default function LayerPanel({
 
   return (
     <div className="athena-panel pointer-events-auto w-[248px] px-3 py-3 max-md:w-full">
-      <div className="mb-2 text-[10px] uppercase tracking-[0.2em] text-zinc-500">Layers</div>
+      <div className="mb-2 text-[13px] uppercase tracking-[0.2em] text-zinc-400">Layers</div>
       {list}
     </div>
   )

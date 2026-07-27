@@ -44,6 +44,19 @@ export interface FeaturesSnapshot {
   [key: string]: number | undefined
 }
 
+export interface AnomalyOnset {
+  first_elevated_at?: string | null
+  method?: string
+  threshold?: number
+  soft_threshold?: number
+  sustained?: number
+  n_windows_scored?: number
+  max_score_in_scan?: number | null
+  sma_change_at?: string | null
+  note?: string
+  error?: string
+}
+
 export interface BoardEntry {
   norad_id: number
   object_name: string
@@ -59,6 +72,10 @@ export interface BoardEntry {
   data_quality: DataQuality
   features_snapshot: FeaturesSnapshot
   pair: PairInfo | null
+  /** When anomalous noise first rose on the series (estimate). */
+  anomaly_onset?: AnomalyOnset | null
+  window_end?: string | null
+  score_delta_1d?: number | null
 }
 
 export interface TopPair {
@@ -156,6 +173,18 @@ export function sortedBoard(report: RiskReport | null): BoardEntry[] {
   })
 }
 
+/** Format onset ISO/timestamp to short date for UI. */
+export function formatOnsetDate(raw?: string | null): string | null {
+  if (!raw) return null
+  const d = new Date(raw)
+  if (!Number.isNaN(d.getTime())) {
+    return d.toISOString().slice(0, 10)
+  }
+  // already date-like
+  const m = String(raw).match(/\d{4}-\d{2}-\d{2}/)
+  return m ? m[0] : String(raw).slice(0, 16)
+}
+
 /** Local stub briefing — explains scores already computed (no invented threat). */
 export function bobBrief(b: BoardEntry): string {
   const threat = boardThreat(b)
@@ -163,16 +192,23 @@ export function bobBrief(b: BoardEntry): string {
     `${b.object_name} (NORAD ${b.norad_id}) · role ${b.role} · ${threat}.`,
     `attention=${b.attention_score.toFixed(3)} · anomaly=${b.anomaly_score.toFixed(3)} · status=${b.status}.`,
   ]
+  const onset = b.anomaly_onset
+  const since = formatOnsetDate(onset?.first_elevated_at)
+  if (since) {
+    parts.push(
+      `Series noise elevated since ~${since} (method ${onset?.method ?? 'onset'}; TLE-window estimate).`,
+    )
+  }
   const fs = b.features_snapshot ?? {}
   if (fs.hurst_exponent_sma != null) {
-    parts.push(`Hurst=${fs.hurst_exponent_sma.toFixed(2)} (persistência da série).`)
+    parts.push(`Hurst=${fs.hurst_exponent_sma.toFixed(2)} (series persistence).`)
   }
   if (fs.shannon_entropy_sma_30d != null) {
     parts.push(`Shannon H(Δa)=${fs.shannon_entropy_sma_30d.toFixed(2)}.`)
   }
   if (b.pair) {
     parts.push(
-      `Par vs ${b.pair.asset_name} (#${b.pair.asset_norad}): dist ${b.pair.min_distance_km.toFixed(1)} km · pair_risk ${b.pair.pair_risk.toFixed(2)} (${b.pair.risk_level}).`,
+      `Pair vs ${b.pair.asset_name} (#${b.pair.asset_norad}): dist ${b.pair.min_distance_km.toFixed(1)} km · pair_risk ${b.pair.pair_risk.toFixed(2)} (${b.pair.risk_level}).`,
     )
   }
   if (!b.data_quality?.reliable) {
@@ -180,7 +216,7 @@ export function bobBrief(b: BoardEntry): string {
   } else if (b.data_quality?.issues?.length) {
     parts.push(`DQ issues: ${b.data_quality.issues.join(', ')}.`)
   }
-  parts.push('Scores pré-calculados pelo monitor (IF + pares); Bob não inventa ameaça.')
+  parts.push('Scores precomputed by the monitor (IF + pairs); Bob does not invent threats.')
   return parts.join(' ')
 }
 

@@ -13,15 +13,21 @@
   --athena-panel-elev: #0c0e12;
   --athena-border: rgba(255, 255, 255, 0.12);
   --athena-border-strong: rgba(255, 255, 255, 0.22);
-  --athena-text: #f4f4f5;
-  --athena-text-dim: #a1a1aa;
-  --athena-text-mute: #71717a;
+  --athena-text: #fafafa;
+  --athena-text-dim: #d4d4d8; /* was zinc-400 — stronger for labels */
+  --athena-text-mute: #a1a1aa; /* was zinc-500 — still secondary, not tiny grey */
   --athena-accent: #34d399; /* emerald — ops / live */
   --athena-warn: #fbbf24;
   --athena-alert: #fb7185;
   --athena-link: #e4e4e7; /* neutral highlight, not sky-blue UI */
   --athena-slot-a: #5eead4; /* teal */
   --athena-slot-b: #fb923c; /* orange */
+}
+
+html {
+  /* Base scale — 16px+ keeps rem/Tailwind defaults readable on HUD */
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
 }
 
 html,
@@ -35,12 +41,24 @@ body,
 }
 
 body {
+  /* Sans for UI copy; mono reserved for codes/scores via .tabular / mono classes */
   font-family:
-    'IBM Plex Mono', 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Segoe UI Mono',
-    Menlo, Consolas, monospace;
+    'IBM Plex Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: 0.01em;
+  font-weight: 400;
+}
+
+/* Monospace for NORAD IDs, scores, clocks */
+.font-mono,
+.tabular-nums {
+  font-family:
+    'IBM Plex Mono', 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Segoe UI Mono',
+    Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 canvas {
@@ -63,16 +81,17 @@ canvas {
     radial-gradient(80% 50% at 80% 0%, rgba(30, 20, 10, 0.25) 0%, transparent 50%);
 }
 
-/* Solid tactical panel (readable text) */
+/* Solid tactical panel — readable base size */
 .athena-panel {
   background: linear-gradient(180deg, rgba(8, 10, 14, 0.97) 0%, rgba(2, 3, 6, 0.98) 100%);
   border: 1px solid var(--athena-border);
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.8) inset,
     0 12px 40px rgba(0, 0, 0, 0.65);
-  /* hard corners — not soft “glass app” */
   border-radius: 2px;
   position: relative;
+  font-size: 14px;
+  line-height: 1.45;
 }
 
 /* Corner brackets (SDA HUD language) */
@@ -115,7 +134,8 @@ canvas {
   color: var(--athena-text-dim);
   border-radius: 1px;
   font-family: inherit;
-  letter-spacing: 0.12em;
+  font-size: 12px;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   transition: border-color 0.15s, color 0.15s, background 0.15s;
 }
@@ -141,6 +161,8 @@ canvas {
   color: var(--athena-text);
   border-radius: 1px;
   outline: none;
+  font-size: 14px;
+  line-height: 1.4;
 }
 .athena-input::placeholder {
   color: var(--athena-text-mute);

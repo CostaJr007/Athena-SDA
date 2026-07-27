@@ -7,7 +7,6 @@ import { useSimClock } from '@/hooks/useSimClock'
 import { useTleData } from '@/hooks/useTleData'
 import { usePropagator } from '@/hooks/usePropagator'
 import { useRiskReport } from '@/hooks/useRiskReport'
-import { useWalkforward } from '@/hooks/useWalkforward'
 import {
   boardByNorad,
   boardColor,
@@ -21,6 +20,8 @@ import type { Telemetry } from '@/components/hud/DetailPanel'
 import FallbackTable from '@/components/FallbackTable'
 import LeftDock from '@/components/dock/LeftDock'
 import RightDock from '@/components/dock/RightDock'
+import CatalogPanel from '@/components/hud/CatalogPanel'
+import type { CatalogFocus } from '@/components/hud/CatalogPanel'
 import CrossRoutePanel from '@/components/hud/CrossRoutePanel'
 import type { CompareSlot } from '@/components/hud/CrossRoutePanel'
 import {
@@ -66,10 +67,6 @@ export default function Home() {
     report: riskReport,
     error: riskError,
   } = useRiskReport()
-  const {
-    status: walkforwardStatus,
-    summary: walkforwardSummary,
-  } = useWalkforward()
   const boardMap = useMemo(() => boardByNorad(riskReport), [riskReport])
 
   const [webglOk] = useState(detectWebGL)
@@ -87,6 +84,8 @@ export default function Home() {
   const [fps, setFps] = useState(0)
   const [leftOpen, setLeftOpen] = useState(true)
   const [rightOpen, setRightOpen] = useState(true)
+  const [catalogOpen, setCatalogOpen] = useState(false)
+  const [catalogFocus, setCatalogFocus] = useState<CatalogFocus>('all')
 
   // Dual-route compare
   const [compareOn, setCompareOn] = useState(false)
@@ -238,19 +237,26 @@ export default function Home() {
   // ---- engine lifecycle (created once) ----
   useEffect(() => {
     if (!webglOk || !mountRef.current) return
-    const engine = new GlobeEngine(mountRef.current, {
-      getSimTime: clock.getTime,
-      onSelect: (idx) => selectSat(idx),
-      onHover: (idx, x, y) => setHover(idx !== null ? { index: idx, x, y } : null),
-      onContextLost: () => setCtxLost(true),
-      onContextRestored: () => setCtxLost(false),
-      onFps: (v) => setFps(v),
-      orbitProvider,
-      footprintProvider,
-    })
-    engineRef.current = engine
+    let engine: GlobeEngine | null = null
+    try {
+      engine = new GlobeEngine(mountRef.current, {
+        getSimTime: clock.getTime,
+        onSelect: (idx) => selectSat(idx),
+        onHover: (idx, x, y) =>
+          setHover(idx !== null ? { index: idx, x, y } : null),
+        onContextLost: () => setCtxLost(true),
+        onContextRestored: () => setCtxLost(false),
+        onFps: (v) => setFps(v),
+        orbitProvider,
+        footprintProvider,
+      })
+      engineRef.current = engine
+    } catch (err) {
+      console.error('GlobeEngine init failed', err)
+      setCtxLost(true)
+    }
     return () => {
-      engine.dispose()
+      engine?.dispose()
       engineRef.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -310,21 +316,51 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataset])
 
-  // Paint watchlist sats with risk/role colors after catalog + risk load
+  // Paint watchlist sats + optional focus filter (watchlist / military only)
   useEffect(() => {
-    if (!dataset || !riskReport) return
+    if (!dataset) return
     const colors = new Map<number, string>()
     const sizes = new Map<number, number>()
-    for (const b of riskReport.board) {
-      const idx = noradMapRef.current.get(b.norad_id)
-      if (idx === undefined) continue
-      colors.set(idx, boardColor(b))
-      const threat = boardThreat(b)
-      const boost =
-        threat === 'HOSTILE' ? 3.4 : threat === 'SUSPECT' ? 2.8 : threat === 'ANOMALY' ? 2.4 : 2.0
-      sizes.set(idx, boost)
+
+    const focusNorads = new Set<number>()
+    if (riskReport) {
+      for (const b of riskReport.board) {
+        if (catalogFocus === 'military') {
+          if (b.role === 'asset' || b.role === 'suspect') focusNorads.add(b.norad_id)
+        } else if (catalogFocus === 'watchlist') {
+          focusNorads.add(b.norad_id)
+        }
+      }
     }
-    // apply after revealReplacement may have swapped groups (next frames)
+
+    // Hide non-focus sats when not "all"
+    if (catalogFocus !== 'all' && focusNorads.size > 0) {
+      dataset.sats.forEach((s, i) => {
+        if (!focusNorads.has(s.norad)) sizes.set(i, 0)
+      })
+    }
+
+    if (riskReport) {
+      for (const b of riskReport.board) {
+        if (catalogFocus === 'military' && b.role !== 'asset' && b.role !== 'suspect') {
+          continue
+        }
+        const idx = noradMapRef.current.get(b.norad_id)
+        if (idx === undefined) continue
+        colors.set(idx, boardColor(b))
+        const threat = boardThreat(b)
+        const boost =
+          threat === 'HOSTILE'
+            ? 3.4
+            : threat === 'SUSPECT'
+              ? 2.8
+              : threat === 'ANOMALY'
+                ? 2.4
+                : 2.0
+        sizes.set(idx, boost)
+      }
+    }
+
     const apply = () => engineRef.current?.applyIndexColors(colors, sizes)
     apply()
     const t = window.setTimeout(apply, 400)
@@ -333,7 +369,7 @@ export default function Home() {
       clearTimeout(t)
       clearTimeout(t2)
     }
-  }, [dataset, riskReport])
+  }, [dataset, riskReport, catalogFocus])
 
   const { degraded } = usePropagator(dataset, engineRef, clock)
 
@@ -682,7 +718,7 @@ export default function Home() {
                 : UI_GROUPS[hoverSat.group]?.color,
             }}
           />
-          <span className="truncate text-[11px] text-zinc-100">
+          <span className="truncate text-[14px] text-zinc-100">
             {hoverSat.name}
             {boardMap.has(hoverSat.norad) && (
               <span className="text-zinc-400">
@@ -706,15 +742,32 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setLeftOpen((v) => !v)}
-              className="athena-btn hidden px-2.5 py-1.5 text-[10px] md:inline-flex"
+              className="athena-btn hidden px-2.5 py-1.5 text-[13px] md:inline-flex"
               title="Toggle mission board"
             >
               {leftOpen ? '⟨ Board' : 'Board ⟩'}
             </button>
             <button
               type="button"
+              onClick={() => setCatalogOpen((v) => !v)}
+              className={`px-2.5 py-1.5 text-[13px] ${
+                catalogOpen || catalogFocus !== 'all'
+                  ? 'athena-btn athena-btn-active'
+                  : 'athena-btn'
+              }`}
+              title="Catalog layers and watchlist / military focus"
+            >
+              Catalog{catalogFocus !== 'all' ? ' ·' : ''}
+              {catalogFocus === 'watchlist'
+                ? ' WL'
+                : catalogFocus === 'military'
+                  ? ' MIL'
+                  : ''}
+            </button>
+            <button
+              type="button"
               onClick={() => toggleCompare(!compareOn)}
-              className={`px-2.5 py-1.5 text-[10px] ${
+              className={`px-2.5 py-1.5 text-[13px] ${
                 compareOn ? 'athena-btn athena-btn-warn' : 'athena-btn'
               }`}
               title="Conjunction lab — two-orbit compare"
@@ -728,7 +781,7 @@ export default function Home() {
           <ClockCard clock={clock} />
         </div>
 
-        <div className="pointer-events-auto flex w-[min(300px,42vw)] flex-col items-end gap-2">
+        <div className="pointer-events-auto flex w-[min(340px,46vw)] flex-col items-end gap-2">
           <div className="flex w-full items-center gap-2">
             <div className="min-w-0 flex-1">
               <SearchBox sats={sats} onSelect={selectSat} />
@@ -736,7 +789,7 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setRightOpen((v) => !v)}
-              className="athena-btn hidden shrink-0 px-2.5 py-1.5 text-[10px] md:inline-flex"
+              className="athena-btn hidden shrink-0 px-2.5 py-1.5 text-[13px] md:inline-flex"
               title="Toggle track intel"
             >
               {rightOpen ? 'Intel ⟩' : '⟨ Intel'}
@@ -750,38 +803,69 @@ export default function Home() {
         <button
           type="button"
           onClick={() => setLeftOpen((v) => !v)}
-          className="athena-btn px-3 py-2 text-[10px]"
+          className="athena-btn px-3 py-2 text-[13px]"
         >
           Board
         </button>
         <button
           type="button"
+          onClick={() => setCatalogOpen((v) => !v)}
+          className={`athena-btn px-3 py-2 text-[13px] ${
+            catalogFocus !== 'all' ? 'athena-btn-active' : ''
+          }`}
+        >
+          Catalog
+        </button>
+        <button
+          type="button"
           onClick={() => setRightOpen((v) => !v)}
-          className="athena-btn px-3 py-2 text-[10px]"
+          className="athena-btn px-3 py-2 text-[13px]"
         >
           Intel
         </button>
       </div>
 
+      {/* Floating catalog (layers + focus) — not buried under board scroll */}
+      <div
+        className={`absolute bottom-[78px] left-3 z-30 transition-opacity duration-200 md:left-4 ${
+          catalogOpen
+            ? 'pointer-events-auto opacity-100'
+            : 'pointer-events-none opacity-0'
+        } ${leftOpen ? 'md:left-[calc(1rem+340px+0.75rem)]' : ''}`}
+      >
+        <CatalogPanel
+          open={catalogOpen}
+          onClose={() => setCatalogOpen(false)}
+          counts={dataset?.counts ?? UI_GROUPS.map(() => 0)}
+          groupVisible={groupVisible}
+          onToggleGroup={toggleGroup}
+          focus={catalogFocus}
+          onFocusChange={setCatalogFocus}
+          watchlistN={riskReport?.summary.n_scored ?? boardMap.size}
+          militaryN={
+            riskReport
+              ? riskReport.board.filter(
+                  (b) => b.role === 'asset' || b.role === 'suspect',
+                ).length
+              : 0
+          }
+        />
+      </div>
+
       {/* ── Left dock ── */}
       <div
-        className={`absolute bottom-[78px] left-3 top-[76px] z-20 w-[min(300px,calc(100vw-1.5rem))] transition-transform duration-300 ease-out md:left-4 md:w-[300px] ${
+        className={`absolute bottom-[78px] left-3 top-[148px] z-20 w-[min(340px,calc(100vw-1.5rem))] transition-transform duration-300 ease-out md:left-4 md:top-[158px] md:w-[340px] ${
           leftOpen
             ? 'translate-x-0'
             : 'pointer-events-none -translate-x-[110%]'
         }`}
       >
         <LeftDock
-          counts={dataset?.counts ?? UI_GROUPS.map(() => 0)}
-          groupVisible={groupVisible}
-          onToggleGroup={toggleGroup}
           selectedNorad={selectedNorad}
           onSelectNorad={selectByNorad}
           report={riskReport}
           reportStatus={riskStatus}
           reportError={riskError}
-          walkforward={walkforwardSummary}
-          walkforwardStatus={walkforwardStatus}
           extra={
             <CrossRoutePanel
               enabled={compareOn}
@@ -804,7 +888,7 @@ export default function Home() {
 
       {/* ── Right dock ── */}
       <div
-        className={`absolute bottom-[78px] right-3 top-[76px] z-20 w-[min(320px,calc(100vw-1.5rem))] transition-transform duration-300 ease-out md:right-4 md:w-[320px] ${
+        className={`absolute bottom-[78px] right-3 top-[100px] z-20 w-[min(360px,calc(100vw-1.5rem))] transition-transform duration-300 ease-out md:right-4 md:top-[110px] md:w-[360px] ${
           rightOpen
             ? 'translate-x-0'
             : 'pointer-events-none translate-x-[110%]'
@@ -832,13 +916,13 @@ export default function Home() {
         <TimeController clock={clock} />
       </div>
 
-      <div className="pointer-events-none absolute bottom-1 left-1/2 z-10 hidden -translate-x-1/2 text-[10px] tracking-wider text-zinc-600 md:block">
+      <div className="pointer-events-none absolute bottom-1 left-1/2 z-10 hidden -translate-x-1/2 text-[13px] tracking-wider text-zinc-500 md:block">
         ATHENA-SDA · live TLE · SGP4 · risk_report
         {riskReport ? ` · ${riskReport.day}` : ''} · conjunction lab
       </div>
 
       {degraded && (
-        <div className="absolute bottom-[92px] left-1/2 z-20 -translate-x-1/2 border border-amber-400/40 bg-black/90 px-3 py-1.5 text-[11px] text-amber-200">
+        <div className="absolute bottom-[92px] left-1/2 z-20 -translate-x-1/2 border border-amber-400/40 bg-black/90 px-3 py-1.5 text-[14px] text-amber-200">
           Live propagation degraded: {degraded}
         </div>
       )}
@@ -849,7 +933,7 @@ export default function Home() {
             <div className="text-sm text-zinc-200">Graphics context lost</div>
             <button
               onClick={() => window.location.reload()}
-              className="athena-btn athena-btn-active mt-3 px-3 py-1 text-xs"
+              className="athena-btn athena-btn-active mt-3 px-3 py-1 text-sm"
             >
               Reload
             </button>
@@ -862,11 +946,11 @@ export default function Home() {
           <div className="text-xl font-semibold tracking-[0.24em] text-zinc-50">
             ATHENA<span className="text-emerald-400">-SDA</span>
           </div>
-          <div className="mt-2 text-[10px] uppercase tracking-[0.3em] text-zinc-500">
+          <div className="mt-2 text-[13px] uppercase tracking-[0.3em] text-zinc-400">
             Space Domain Awareness
           </div>
           <div className="mt-8 h-7 w-7 animate-spin rounded-full border-2 border-emerald-400/20 border-t-emerald-400" />
-          <div className="mt-4 text-xs text-zinc-400">Ingesting live orbital elements…</div>
+          <div className="mt-4 text-sm text-zinc-400">Ingesting live orbital elements…</div>
         </div>
       )}
 
@@ -880,7 +964,7 @@ export default function Home() {
           </div>
           <button
             onClick={() => window.location.reload()}
-            className="athena-btn mt-4 border-rose-400/40 px-3 py-1 text-xs text-rose-200"
+            className="athena-btn mt-4 border-rose-400/40 px-3 py-1 text-sm text-rose-200"
           >
             Retry
           </button>

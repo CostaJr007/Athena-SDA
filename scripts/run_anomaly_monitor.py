@@ -353,9 +353,9 @@ def main() -> None:
 
     s = sub.add_parser(
         "train-baseline",
-        help="Treina IF na SÉRIE (passado até D−holdout); hoje não entra no treino",
+        help="Treina IF na SÉRIE (passado até D−holdout); hoje não entra no train",
     )
-    s.add_argument("--holdout-days", type=int, default=1, help="Dias finais excluídos do treino (1=ontem e antes)")
+    s.add_argument("--holdout-days", type=int, default=1, help="Dias finais excluídos do train (1=ontem e antes)")
     s.add_argument("--contamination", type=float, default=0.08)
     s.add_argument(
         "--sample-mode",

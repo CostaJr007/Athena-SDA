@@ -21,4 +21,13 @@ copy_if "risk_report_latest.json"
 copy_if "anomalies_latest.json"
 copy_if "proximity_latest.json"
 copy_if "walkforward_summary.json"
+
+# Quant HTML reports (if generated)
+RDIR="$ROOT/data/alerts/reports"
+RDST="$ROOT/src/frontend/public/reports"
+if [[ -d "$RDIR" ]]; then
+  mkdir -p "$RDST"
+  rsync -a "$RDIR/" "$RDST/" 2>/dev/null || cp -f "$RDIR"/* "$RDST/" 2>/dev/null || true
+  echo "  + reports/ ($(ls -1 "$RDST" 2>/dev/null | wc -l) files)"
+fi
 echo "Done."

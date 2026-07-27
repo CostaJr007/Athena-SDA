@@ -373,6 +373,9 @@ def build_risk_report(
                 "data_quality": a.get("data_quality"),
                 "features_snapshot": a.get("features_snapshot"),
                 "pair": a.get("pair"),
+                "anomaly_onset": a.get("anomaly_onset"),
+                "window_end": a.get("window_end"),
+                "score_delta_1d": a.get("score_delta_1d"),
             }
         )
 
@@ -400,4 +403,11 @@ def build_risk_report(
     (ALERTS_DIR / "risk_report_latest.json").write_text(
         json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8"
     )
+    # HTML quant rationale (new tab) for every board entry
+    try:
+        from src.quant_report import write_all_quant_reports
+
+        write_all_quant_reports(also_public=True)
+    except Exception as e:
+        print(f"Quant HTML reports skipped: {e}")
     return report

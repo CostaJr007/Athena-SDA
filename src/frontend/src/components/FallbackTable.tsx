@@ -73,14 +73,14 @@ export default function FallbackTable({ dataset }: { dataset: Dataset | null }) 
           <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
             {UI_GROUPS.map((g, i) => (
               <div key={g.key} className="rounded-lg border border-white/10 px-3 py-2">
-                <div className="text-[11px] text-slate-500">{g.label}</div>
+                <div className="text-[14px] text-slate-500">{g.label}</div>
                 <div className="text-lg tabular-nums text-slate-100">
                   {(dataset.counts[i] ?? 0).toLocaleString()}
                 </div>
               </div>
             ))}
             <div className="rounded-lg border border-white/10 px-3 py-2">
-              <div className="text-[11px] text-slate-500">Total objects</div>
+              <div className="text-[14px] text-slate-500">Total objects</div>
               <div className="text-lg tabular-nums text-slate-100">
                 {dataset.total.toLocaleString()}
               </div>

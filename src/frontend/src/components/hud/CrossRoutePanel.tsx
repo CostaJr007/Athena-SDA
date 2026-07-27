@@ -40,17 +40,17 @@ export default function CrossRoutePanel({
     <section className="border border-white/12 bg-black/55 p-2.5">
       <div className="flex items-center justify-between gap-2">
         <div>
-          <div className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">
+          <div className="text-[13px] uppercase tracking-[0.2em] text-zinc-400">
             Conjunction lab
           </div>
-          <div className="mt-0.5 text-[11px] text-zinc-400">
+          <div className="mt-0.5 text-[14px] text-zinc-400">
             Two tracks · orbit path + TCA
           </div>
         </div>
         <button
           type="button"
           onClick={() => onToggle(!enabled)}
-          className={`px-2.5 py-1 text-[10px] tracking-wider ${
+          className={`px-2.5 py-1 text-[13px] tracking-wider ${
             enabled ? 'athena-btn athena-btn-warn' : 'athena-btn'
           }`}
         >
@@ -79,7 +79,7 @@ export default function CrossRoutePanel({
             />
           </div>
 
-          <p className="text-[10px] leading-relaxed text-zinc-500">
+          <p className="text-[13px] leading-relaxed text-zinc-400">
             Click globe / search to fill{' '}
             <span className={pickSlot === 'A' ? 'text-teal-300' : 'text-orange-300'}>
               slot {pickSlot}
@@ -92,7 +92,7 @@ export default function CrossRoutePanel({
               type="button"
               disabled={!hasPrimarySelection}
               onClick={() => onUseSelectedAs('A')}
-              className="athena-btn px-2 py-1 text-[10px] disabled:opacity-30"
+              className="athena-btn px-2 py-1 text-[13px] disabled:opacity-30"
             >
               Sel → A
             </button>
@@ -100,22 +100,22 @@ export default function CrossRoutePanel({
               type="button"
               disabled={!hasPrimarySelection}
               onClick={() => onUseSelectedAs('B')}
-              className="athena-btn px-2 py-1 text-[10px] disabled:opacity-30"
+              className="athena-btn px-2 py-1 text-[13px] disabled:opacity-30"
             >
               Sel → B
             </button>
-            <button type="button" onClick={onClearAll} className="athena-btn px-2 py-1 text-[10px]">
+            <button type="button" onClick={onClearAll} className="athena-btn px-2 py-1 text-[13px]">
               Clear
             </button>
           </div>
 
           {computing && (
-            <div className="text-[10px] text-amber-200/90">Computing closest approach…</div>
+            <div className="text-[13px] text-amber-200/90">Computing closest approach…</div>
           )}
 
           {analysis && satA && satB && !computing && (
             <div className="space-y-2 border-t border-white/10 pt-2">
-              <div className="text-[10px] uppercase tracking-[0.18em] text-zinc-500">
+              <div className="text-[13px] uppercase tracking-[0.18em] text-zinc-400">
                 Results
               </div>
 
@@ -127,7 +127,7 @@ export default function CrossRoutePanel({
                   secondary={
                     <>
                       {formatEta(analysis.temporal.tcaMs, nowMs)}
-                      <span className="text-zinc-600"> · </span>
+                      <span className="text-zinc-500"> · </span>
                       {new Date(analysis.temporal.tcaMs)
                         .toISOString()
                         .replace('T', ' ')
@@ -155,7 +155,7 @@ export default function CrossRoutePanel({
                 />
               )}
 
-              <div className="flex items-center gap-3 text-[9px] text-zinc-500">
+              <div className="flex items-center gap-3 text-[12px] text-zinc-400">
                 <LegendDot color="#5eead4" label="Orbit A" />
                 <LegendDot color="#fb923c" label="Orbit B" />
                 <LegendDot color="#fbbf24" label="TCA" />
@@ -164,7 +164,7 @@ export default function CrossRoutePanel({
           )}
 
           {enabled && satA && satB && !analysis && !computing && (
-            <div className="text-[11px] text-rose-300/90">
+            <div className="text-[14px] text-rose-300/90">
               Could not propagate one or both objects (decayed TLE?).
             </div>
           )}
@@ -205,7 +205,7 @@ function SlotButton({
         <button
           type="button"
           onClick={onPick}
-          className={`text-[10px] font-semibold tracking-wider ${label}`}
+          className={`text-[13px] font-semibold tracking-wider ${label}`}
         >
           {slot} {active ? '◀' : ''}
         </button>
@@ -213,7 +213,7 @@ function SlotButton({
           <button
             type="button"
             onClick={onClear}
-            className="text-[9px] text-zinc-500 hover:text-zinc-200"
+            className="text-[12px] text-zinc-400 hover:text-zinc-200"
           >
             ✕
           </button>
@@ -221,11 +221,11 @@ function SlotButton({
       </div>
       {sat ? (
         <div className="mt-1 min-w-0">
-          <div className="truncate text-[11px] text-zinc-100">{sat.name}</div>
-          <div className="text-[10px] text-zinc-500">NORAD {sat.norad}</div>
+          <div className="truncate text-[14px] text-zinc-100">{sat.name}</div>
+          <div className="text-[13px] text-zinc-400">NORAD {sat.norad}</div>
         </div>
       ) : (
-        <div className="mt-1 text-[10px] text-zinc-600">empty</div>
+        <div className="mt-1 text-[13px] text-zinc-500">empty</div>
       )}
     </div>
   )
@@ -255,10 +255,10 @@ function ResultCard({
 
   return (
     <div className="border border-white/10 bg-black/50 px-2.5 py-2">
-      <div className="text-[9px] uppercase tracking-[0.16em] text-zinc-500">{title}</div>
+      <div className="text-[12px] uppercase tracking-[0.16em] text-zinc-400">{title}</div>
       <div className={`mt-0.5 text-lg tabular-nums ${primaryColor}`}>{primary}</div>
-      <div className="mt-0.5 text-[10px] text-zinc-400">{secondary}</div>
-      <div className="mt-1 text-[9px] text-zinc-600">{subtitle}</div>
+      <div className="mt-0.5 text-[13px] text-zinc-400">{secondary}</div>
+      <div className="mt-1 text-[12px] text-zinc-500">{subtitle}</div>
     </div>
   )
 }

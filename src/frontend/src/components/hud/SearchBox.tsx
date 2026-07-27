@@ -78,7 +78,7 @@ export default function SearchBox({ sats, onSelect }: SearchBoxProps) {
           }
         }}
         placeholder="NORAD / name…"
-        className="athena-input w-full py-2.5 pl-9 pr-3 text-xs tracking-wide"
+        className="athena-input w-full py-2.5 pl-9 pr-3 text-sm tracking-wide"
       />
       {open && results.length > 0 && (
         <div className="athena-panel absolute left-0 right-0 top-full z-30 mt-1 overflow-hidden">
@@ -88,8 +88,8 @@ export default function SearchBox({ sats, onSelect }: SearchBoxProps) {
               onClick={() => choose(i)}
               className="flex min-h-[36px] w-full items-center justify-between gap-2 border-b border-white/5 px-3 py-1.5 text-left last:border-0 hover:bg-white/[0.06]"
             >
-              <span className="truncate text-xs text-zinc-100">{sats[i].name}</span>
-              <span className="shrink-0 text-[10px] tabular-nums text-zinc-500">
+              <span className="truncate text-sm text-zinc-100">{sats[i].name}</span>
+              <span className="shrink-0 text-[13px] tabular-nums text-zinc-400">
                 #{sats[i].norad}
               </span>
             </button>

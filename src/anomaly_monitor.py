@@ -1,19 +1,19 @@
 """
-Anomaly monitoring loop for Athena-SDA — protocolo diário padronizado.
+Anomaly monitoring loop for Athena-SDA — standard daily protocol.
 
-  SÉRIE (passado)  ──treino──►  baseline Isolation Forest  (= "normal" do objeto)
-  DADO NOVO (D0)   ──score───►  janela mais recente vs baseline
-  RELEVÂNCIA       ──alerta──►  desvio forte OU salto dia-a-dia (Δ score)
+  SERIES (past)  ──train──►  baseline Isolation Forest  (= "normal" do objeto)
+  NEW DATA (D0)   ──score───►  janela mais recente vs baseline
+  RELEVANCE       ──alerta──►  strong deviation OR day-over-day jump (Δ score)
 
 Ciclo operacional (D = hoje UTC):
-  1) ingest-daily     → anexa TLE frescos à série (direita do histórico)
-  2) train-baseline   → treina SÓ com janelas que terminam ANTES de D−holdout
+  1) ingest-daily     → append fresh TLEs to the series (direita do histórico)
+  2) train-baseline   → trains ONLY on windows que terminam ANTES de D−holdout
                         (padrão holdout=1: "ontem e antes" = normal; "hoje" não entra)
-  3) score            → pontua a ÚLTIMA janela de cada sat vs esse baseline
+  3) score            → scores the LATEST window de cada sat vs esse baseline
   4) relevância       → anomaly_score ≥ thr  e/ou  Δscore vs relatório de ontem
 
 Design:
-  - A série é a memória; o modelo não "memoriza o dia de hoje" no treino
+  - A série é a memória; o modelo não "memoriza o dia de hoje" no train
   - Comparação é distribuiçãoal (IF) + contextual (SW, pares, DQ)
   - Alerta só com dado confiável (data quality gate)
 """
@@ -283,7 +283,7 @@ def train_baseline_from_history(
     Fit Isolation Forest on feature windows that end BEFORE (now - holdout_days).
 
     Protocolo: a série até "ontem" (holdout=1) define o normal.
-    O dado de hoje NÃO entra no treino — só no score (comparação).
+    O dado de hoje NÃO entra no train — só no score (comparação).
     sample_mode=hybrid: cobre a série longa + ponta recente.
     """
     ensure_dirs()
@@ -298,7 +298,7 @@ def train_baseline_from_history(
         hists = history_as_sat_histories(min_epochs=WINDOW)
     if not hists:
         raise RuntimeError(
-            "Sem histórico suficiente. Rode: seed-history e/ou ingest-daily antes do treino."
+            "Sem histórico suficiente. Rode: seed-history e/ou ingest-daily antes do train."
         )
 
     cutoff = pd.Timestamp.now(tz="UTC") - timedelta(days=holdout_days)
@@ -323,7 +323,7 @@ def train_baseline_from_history(
     if len(X) < 15:
         raise RuntimeError(f"Apenas {len(X)} janelas de features — colete mais histórico.")
 
-    # cobertura temporal das janelas de treino (a "série" do baseline)
+    # cobertura temporal das janelas de train (a "série" do baseline)
     win_ts = pd.to_datetime([m["window_end"] for m in meta], utc=True, errors="coerce")
     win_min = str(win_ts.min()) if win_ts.notna().any() else None
     win_max = str(win_ts.max()) if win_ts.notna().any() else None
@@ -333,7 +333,7 @@ def train_baseline_from_history(
         f"cutoff={cutoff.date()} sample={sample_mode}"
     )
     if win_min and win_max:
-        print(f"  cobertura window_end: {win_min[:10]} → {win_max[:10]}")
+        print(f"  window_end coverage: {win_min[:10]} → {win_max[:10]}")
     iforest = IsolationForest(
         n_estimators=n_estimators,
         contamination=contamination,
@@ -377,7 +377,7 @@ def train_baseline_from_history(
         feat_path, index=False
     )
     print(f"Modelo salvo: {IFOREST_MONITOR_PATH}")
-    print(f"Features de treino: {feat_path}")
+    print(f"Features de train: {feat_path}")
     return meta_out
 
 
@@ -410,9 +410,163 @@ def _load_monitor_iforest() -> IsolationForest:
         path = MODELS_DIR / "isolation_forest.joblib"
     if not path.exists():
         raise FileNotFoundError(
-            "Nenhum Isolation Forest de monitor. Rode train-baseline primeiro."
+            "No monitor Isolation Forest. Run train-baseline first."
         )
     return joblib.load(path)
+
+
+# ── Anomaly onset (when noise first rose on the series) ─────────────────────
+
+def _sma_series_onset(
+    hist: pd.DataFrame,
+    *,
+    window: int = 30,
+    z_threshold: float = 3.0,
+) -> Optional[str]:
+    """
+    First epoch where |SMA − rolling median| / MAD exceeds z_threshold.
+    Lightweight change-point proxy (not intent date).
+    """
+    h = hist.sort_values("timestamp").reset_index(drop=True)
+    if len(h) < window + 2:
+        return None
+    sma = h["semi_major_axis_km"].astype(float).values
+    ts = pd.to_datetime(h["timestamp"], utc=True, errors="coerce")
+    for i in range(window, len(sma)):
+        base = sma[i - window : i]
+        med = float(np.median(base))
+        mad = float(np.median(np.abs(base - med)))
+        if mad < 1e-9:
+            mad = 1e-6
+        z = abs(float(sma[i]) - med) / mad
+        if z >= z_threshold:
+            t = ts.iloc[i]
+            if pd.notnull(t):
+                return str(t)
+    return None
+
+
+def estimate_anomaly_onset(
+    hist: pd.DataFrame,
+    iforest: IsolationForest,
+    *,
+    norad_id: int = 0,
+    threshold: float = 0.55,
+    soft_threshold: float = 0.45,
+    sustained: int = 2,
+    max_windows: int = 40,
+    step: int = 6,
+) -> Dict[str, Any]:
+    """
+    Estimate when anomalous noise *first* rose on this object's series.
+
+    Method:
+      - Score spaced feature windows with the *current* monitor IF
+        (baseline = past-trained model; points are past windows).
+      - first_elevated_at = first window_end with score ≥ threshold that is
+        followed by (sustained-1) consecutive elevated (soft thr) samples.
+      - sma_change_at = first large SMA z-score break (CUSUM-like proxy).
+
+    Honest limits: TLE epoch / window end, not manoeuvre clock or intent.
+    """
+    out: Dict[str, Any] = {
+        "first_elevated_at": None,
+        "method": "if_sustained",
+        "threshold": float(threshold),
+        "soft_threshold": float(soft_threshold),
+        "sustained": int(sustained),
+        "n_windows_scored": 0,
+        "max_score_in_scan": None,
+        "sma_change_at": None,
+        "note": (
+            "Estimativa: fim de janela TLE / época — não é data de intenção "
+            "nem relógio de manobra."
+        ),
+    }
+    sma_at = _sma_series_onset(hist)
+    out["sma_change_at"] = sma_at
+
+    h = hist.sort_values("timestamp").reset_index(drop=True)
+    if len(h) < WINDOW + step:
+        out["method"] = "sma_only" if sma_at else "insufficient_history"
+        if sma_at:
+            out["first_elevated_at"] = sma_at
+        return out
+
+    # Spaced windows across the series (chronological)
+    ends = list(range(WINDOW, len(h) + 1, max(1, step)))
+    if len(ends) > max_windows:
+        # keep span: uniform sample of ends
+        idx = np.linspace(0, len(ends) - 1, num=max_windows, dtype=int)
+        ends = [ends[i] for i in sorted(set(int(i) for i in idx))]
+
+    scores: List[Tuple[str, float]] = []
+    cat = _watchlist_meta(int(norad_id))
+    for e in ends:
+        sub = h.iloc[e - WINDOW : e]
+        try:
+            win_end = pd.to_datetime(sub["timestamp"].iloc[-1], utc=True, errors="coerce")
+            feats = extract_satellite_features(
+                sub,
+                country=str(cat.get("country") or "UNKNOWN"),
+                purpose=str(cat.get("purpose") or "unknown"),
+                orbit_class=str(
+                    cat.get("orbit_class")
+                    or (
+                        "LEO"
+                        if float(sub["semi_major_axis_km"].iloc[-1]) < 8000
+                        else "MEO"
+                    )
+                ),
+                min_distance_to_military_km=500.0,
+                reference_time=win_end if pd.notnull(win_end) else None,
+            )
+            row = pd.DataFrame([{c: float(feats.get(c, 0.0)) for c in IFOREST_COLUMNS}])
+            row = row.replace([np.inf, -np.inf], 0.0).fillna(0.0)
+            raw = float(iforest.decision_function(row)[0])
+            score = float(np.clip(0.5 - raw, 0.0, 1.0))
+            scores.append((str(sub["timestamp"].iloc[-1]), score))
+        except Exception:
+            continue
+
+    out["n_windows_scored"] = len(scores)
+    if scores:
+        out["max_score_in_scan"] = float(max(s for _, s in scores))
+
+    # First sustained elevation at hard threshold
+    first: Optional[str] = None
+    need = max(1, sustained)
+    for i, (t, sc) in enumerate(scores):
+        if sc < threshold:
+            continue
+        ok = True
+        for j in range(1, need):
+            if i + j >= len(scores):
+                ok = False
+                break
+            if scores[i + j][1] < soft_threshold:
+                ok = False
+                break
+        if ok:
+            first = t
+            break
+
+    if first is None:
+        # Soft: first single breach of soft thr if scan peaked high
+        for t, sc in scores:
+            if sc >= soft_threshold:
+                first = t
+                out["method"] = "if_first_soft"
+                break
+
+    out["first_elevated_at"] = first
+    if first is None and sma_at:
+        out["first_elevated_at"] = sma_at
+        out["method"] = "sma_change_fallback"
+    elif first is None:
+        out["method"] = "no_onset_detected"
+
+    return out
 
 
 # ── Score daily / latest ────────────────────────────────────────────────────
@@ -440,7 +594,7 @@ def score_latest(
     if not hists:
         hists = history_as_sat_histories(min_epochs=WINDOW)
     if not hists:
-        raise RuntimeError("Sem satélites com histórico ≥ 20 épocas para scoring.")
+        raise RuntimeError("No satellites with history ≥ 20 epochs for scoring.")
 
     iforest = _load_monitor_iforest()
     mon_meta = {}
@@ -624,6 +778,21 @@ def score_latest(
                 rec["xgb_proba"] = ml["xgb_proba"]
             except Exception as e:
                 rec["xgb_error"] = str(e)
+
+        # Onset of anomalous noise on the series (always scan — pairs may elevate without high IF)
+        try:
+            rec["anomaly_onset"] = estimate_anomaly_onset(
+                hist,
+                iforest,
+                norad_id=int(sid),
+                threshold=float(anomaly_threshold),
+                soft_threshold=float(max(0.40, anomaly_threshold - 0.10)),
+                sustained=2,
+                max_windows=32,
+                step=7,
+            )
+        except Exception as e:
+            rec["anomaly_onset"] = {"error": str(e), "method": "onset_error"}
 
         alerts.append(rec)
 
