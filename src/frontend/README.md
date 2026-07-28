@@ -47,7 +47,3 @@ Docks can be toggled with **Board** / **Intel** buttons.
 1. Color globe points by Athena threat class
 2. Wire Bob chat to `src/bob.py` / watsonx
 3. Live scores from the Python pipeline instead of static tracks
-
-## Backup
-
-Previous Lovable frontend: `src/frontend-lovable-backup/`

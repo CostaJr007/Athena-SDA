@@ -189,9 +189,9 @@ def process_constellation(
         target_name = None
         if closest_asset is not None and closest_asset in all_sats:
             target_name = all_sats[closest_asset]["metadata"]["name"]
-        if final_class in ("HOSTIL", "SUSPEITO") and min_dist < 100:
+        if final_class in ("HOSTILE", "HOSTIL", "SUSPECT", "SUSPEITO") and min_dist < 100:
             if target_name is None:
-                target_name = "Ativo militar de alto valor"
+                target_name = "High-value military asset"
 
         processed.append({
             "id": sat_id,
@@ -231,21 +231,33 @@ def fuse_xgb_fuzzy(
     Combine quantitative XGBoost output with fuzzy Mamdani calibration.
 
     XGBoost is the primary classifier; fuzzy can raise severity when
-    geometry (proximity) supports it, but cannot alone mark HOSTIL if
+    geometry (proximity) supports it, but cannot alone mark HOSTILE if
     the object is far from protected assets and XGB says NORMAL.
     """
-    rank = {"NORMAL": 0, "ANÔMALO": 1, "SUSPEITO": 2, "HOSTIL": 3}
-    inv = {v: k for k, v in rank.items()}
+    # Canonical English labels (+ legacy PT aliases for old artifacts)
+    rank = {
+        "NORMAL": 0,
+        "ANOMALOUS": 1, "ANÔMALO": 1, "ANOMALO": 1,
+        "SUSPECT": 2, "SUSPEITO": 2,
+        "HOSTILE": 3, "HOSTIL": 3,
+    }
+    inv = {0: "NORMAL", 1: "ANOMALOUS", 2: "SUSPECT", 3: "HOSTILE"}
 
     r_x = rank.get(xgb_class, 0)
     r_f = rank.get(fuzzy_res["classification"], 0)
     near = min_dist_mil < 50.0
     critical = min_dist_mil < 15.0
 
+    def _p(*keys: str) -> float:
+        for k in keys:
+            if k in xgb_proba:
+                return float(xgb_proba[k])
+        return 0.0
+
     threat_x = float(
-        xgb_proba.get("HOSTIL", 0) * 1.0
-        + xgb_proba.get("SUSPEITO", 0) * 0.7
-        + xgb_proba.get("ANÔMALO", 0) * 0.4
+        _p("HOSTILE", "HOSTIL") * 1.0
+        + _p("SUSPECT", "SUSPEITO") * 0.7
+        + _p("ANOMALOUS", "ANÔMALO", "ANOMALO") * 0.4
     )
     threat_f = float(fuzzy_res["threat_level"])
     # Weight fuzzy higher only when geometry is tactically relevant
@@ -258,7 +270,7 @@ def fuse_xgb_fuzzy(
     if r_f > r_x and fuzzy_res["confidence"] > 0.35:
         if near or r_f <= 2:
             final_rank = min(r_x + 1, r_f)
-        # Far + fuzzy HOSTIL alone → cap at ANÔMALO unless XGB already elevated
+        # Far + fuzzy HOSTILE alone → cap at ANOMALOUS unless XGB already elevated
         if not near and r_f >= 3 and r_x == 0:
             final_rank = 1
 

@@ -68,232 +68,232 @@ Machine Learning does **not** train directly on raw TLE parameters. It learns th
 
 ---
 
-## 2. Bases de dados — proveniência e tamanho
+## 2. Databases — Provenance and Size
 
-### 2.1 Órbita (TLE / elementos)
+### 2.1 Orbit (TLE / elements)
 
-| Item | Valor |
+| Item | Value |
 |------|--------|
 | Store | `data/history/epochs.parquet` (+ CSV) |
-| Volume | **~249 558** épocas |
-| Objetos | **24** NORADs (watchlist) |
-| Intervalo | **2014-01-01 → 2026-07-25** (UTC) |
-| Campos | `norad_id`, `timestamp`, SMA, e, i, RAAN, n, bstar, `tle_age_hours`, `source` |
+| Volume | **~249,558** epochs |
+| Objects | **24** NORADs (watchlist) |
+| Interval | **2014-01-01 → 2026-07-25** (UTC) |
+| Fields | `norad_id`, `timestamp`, SMA, e, i, RAAN, n, bstar, `tle_age_hours`, `source` |
 
-**Cadeia de origem:**
+**Provenance chain:**
 
-1. **Seed histórico** — dataset Hugging Face  
+1. **Historical seed** — Hugging Face dataset  
    `juliensimon/space-track-tle-history`  
-   (parquets anuais filtrados por watchlist; progresso em `data/history/seed_progress.json`).  
-   Natureza: repositório público de TLE no estilo **Space-Track / 18 SPCS** (espelho de pesquisa, não a API classificada).
+   (annual parquets filtered by watchlist; progress in `data/history/seed_progress.json`).  
+   Nature: public TLE repository in the style of **Space-Track / 18 SPCS** (research mirror, not the classified API).
 
-2. **Ingest diário** — **CelesTrak** GP por `CATNR`  
+2. **Daily ingest** — **CelesTrak** GP by `CATNR`  
    `https://celestrak.org/NORAD/elements/gp.php?CATNR=…&FORMAT=csv`  
-   Anexa a direita da série (dado “de hoje”).
+   Appends to the right of the series (“today’s” data).
 
-3. **Catálogo** — `data/catalog/watchlist.json`  
-   NORADs validados em GP CelesTrak; roles **asset / suspect / baseline** são **doutrina do projeto**, não label oficial de ameaça.
+3. **Catalog** — `data/catalog/watchlist.json`  
+   NORADs validated on CelesTrak GP; roles **asset / suspect / baseline** are **project doctrine**, not an official threat label.
 
-**Física:** SMA ~6 650–42 500 km, mean motion ~1–16 rev/dia — coerente com LEO→GEO reais, não com séries mock.
+**Physics:** SMA ~6,650–42,500 km, mean motion ~1–16 rev/day — consistent with real LEO→GEO, not mock series.
 
-### 2.2 Clima espacial (solar / geomagnético)
+### 2.2 Space weather (solar / geomagnetic)
 
-| Item | Valor |
+| Item | Value |
 |------|--------|
 | Store | `data/space_weather/daily.parquet` |
-| Volume | **~4 589** dias (recorte 2014–2026; arquivo GFZ vai a 1932) |
-| Fonte primária | **GFZ Potsdam** — `Kp_ap_Ap_SN_F107_since_1932.txt` |
-| Fonte auxiliar | **NOAA SWPC** JSON F10.7 (refresh recente) |
-| Módulo | `src/space_weather.py` |
+| Volume | **~4,589** days (slice 2014–2026; GFZ archive goes back to 1932) |
+| Primary source | **GFZ Potsdam** — `Kp_ap_Ap_SN_F107_since_1932.txt` |
+| Auxiliary source | **NOAA SWPC** JSON F10.7 (recent refresh) |
+| Module | `src/space_weather.py` |
 
-Índices diários: F10.7 obs/adj, Ap, Kp médio, sunspot number + features rolling 7 dias.
+Daily indices: F10.7 obs/adj, Ap, mean Kp, sunspot number + 7-day rolling features.
 
-### 2.3 Eventos de validação (não são labels de treino)
+### 2.3 Validation events (not training labels)
 
-`data/catalog/events_walkforward.json` — âncoras de **reports open-source** (Gunter, CSIS, imprensa) para Luch/Olymp-K, Shiyan, placebos (ex. TERRA).  
-Usados só no **walk-forward**, nunca como “y_true” de treino do XGBoost.
+`data/catalog/events_walkforward.json` — anchors from **open-source reports** (Gunter, CSIS, press) for Luch/Olymp-K, Shiyan, placebos (e.g. TERRA).  
+Used only in **walk-forward**, never as XGBoost training `y_true`.
 
-### 2.4 O que **não** entra como “base de verdade”
+### 2.4 What does **not** count as ground truth
 
-| Artefato | Natureza |
-|----------|----------|
-| Labels NORMAL…HOSTIL | Heurísticas em `label_features_for_threat` |
-| Roles da watchlist | Priorização operacional Athena |
-| Accuracy ~95% do XGB | Consistência com heurística, **não** ground-truth de espionagem |
-| Sintético (`generate_mock_tle_history`) | Fallback / boost raro; treino atual = **`history_store`** |
+| Artifact | Nature |
+|----------|--------|
+| Labels NORMAL…HOSTILE | Heuristics in `label_features_for_threat` |
+| Watchlist roles | Athena operational prioritization |
+| XGB accuracy ~95% | Consistency with the heuristic, **not** espionage ground truth |
+| Synthetic (`generate_mock_tle_history`) | Fallback / rare boost; current training = **`history_store`** |
 
 ---
 
-## 3. Vetor de features — tamanho e composição
+## 3. Feature Vector — Size and Composition
 
-### 3.1 Dimensões
+### 3.1 Dimensions
 
-| Conjunto | Dimensão | Conteúdo |
-|----------|----------|----------|
-| `FEATURE_COLUMNS` | **37** | Kepler + math + SW + multi-objeto |
+| Set | Dimension | Content |
+|-----|-----------|---------|
+| `FEATURE_COLUMNS` | **37** | Kepler + math + SW + multi-object |
 | `IFOREST_COLUMNS` | **34** | 37 − {dist, coint, Łukasiewicz} |
 | `XGB_COLUMNS` | **38** | 37 + `anomaly_score` |
-| Space weather | **12** | ~35% do IF — clima é first-class |
+| Space weather | **12** | ~35% of IF — weather is first-class |
 
-### 3.2 Blocos do vetor
+### 3.2 Vector blocks
 
-**A. Kepler instantâneo (5)**  
+**A. Instantaneous Kepler (5)**  
 `semi_major_axis_km`, `eccentricity`, `inclination_deg`, `raan_deg`, `mean_motion_rev_per_day`
 
-**B. Dinâmica temporal (4)**  
+**B. Temporal dynamics (4)**  
 `delta_sma_7d_km`, `delta_sma_30d_km`, `delta_inc_30d_deg`, `maneuver_count_30d`  
-(manobras ≈ picos de L1-CUSUM em subjanelas)
+(maneuvers ≈ L1-CUSUM peaks in sub-windows)
 
-**C. Motor matemático de ruído (12)**  
-Shannon, Kolmogorov proxy, Hurst, Mandelbrot tail, ADF p-value, Williams threat, L1-CUSUM, spectral RKHS, Chern–Simons proxy, Ricci mean, H0/H1 persistentes, `tle_age_hours`
+**C. Mathematical noise engine (12)**  
+Shannon, Kolmogorov proxy, Hurst, Mandelbrot tail, ADF p-value, Williams threat, L1-CUSUM, spectral RKHS, Chern–Simons proxy, Ricci mean, H0/H1 persistence, `tle_age_hours`
 
-**D. Space weather (12)** — ver §6  
+**D. Space weather (12)** — see §6  
 `f10_7`, `f10_7_adj`, `ap_index`, `kp_mean`, `sunspot_number`, rolling 7d, `geomagnetic_storm`, `space_weather_available`
 
-**E. Multi-objeto / “rotas” (3)** — só XGB no treino full  
+**E. Multi-object / “routes” (3)** — XGB only in full training  
 `min_distance_to_military_km`, `cointegration_pvalue`, `lukasiewicz_implication`
 
 ---
 
-## 4. Modelos matemáticos — como o ruído é descrito
+## 4. Mathematical Models — How Noise Is Described
 
-Implementação: `src/engine.py`. Fundamentação: `docs/references/fundamentacao_matematica.md` e `framework_matematico_completo.md`.
+Implementation: `src/engine.py`. Foundation: `docs/references/mathematical_foundation.md` and `docs/references/full_mathematical_framework.md`.
 
-### 4.1 Por que “ruído” e não “posição”
+### 4.1 Why “noise” rather than “position”
 
-TLE já é um estado filtrado/publicado. O sinal tático de interesse é a **mudança de regime** da série: manobra, shadowing, station-keeping atípico, ou arrasto. Cada proxy responde a um **tipo** de ruído:
+TLE is already a filtered/published state. The tactical signal of interest is a **regime change** in the series: maneuver, shadowing, atypical station-keeping, or drag. Each proxy responds to a **type** of noise:
 
-| Proxy | Ideia | Interpretação orbital |
-|-------|--------|------------------------|
-| **Entropia de Shannon** (1948) | Desordem de \(\Delta a\) em bins | Manobra/controle espalha \(\Delta a\); Kepler estável concentra |
-| **Kolmogorov proxy** (1965) | Compressão zlib de tokens U/D/S | Trajetória “simples” comprime; controle complexo resiste |
-| **Hurst** R/S (1951) | Persistência de longo prazo | \(H>0.5\): tendência (baixo empuxo); \(H\approx0.5\): ruído; \(H<0.5\): reversão (SK) |
-| **L1-CUSUM kernelizado** | Quando a série quebra | Localiza *mudança de regime* no tempo |
-| **Mandelbrot (cauda)** | Extremos / leis de potência | Saltos raros vs ruído gaussiano |
-| **ADF** | Estacionariedade | Quebra de estacionariedade ⇒ processo mudou |
-| **RKHS espectral** | Distância em kernel RBF vs referência | Anomalia no espaço de features embutidas |
-| **Ricci (Ollivier proxy)** | Curvatura local entre vizinhanças | Aproximação geométrica tática |
-| **Homologia H0/H1** | Topologia da nuvem 3D | Órbita fechada vs fuga/espiral |
-| **Chern–Simons proxy** | Helicidade \(\mathbf{v}\cdot\boldsymbol{\omega}\) | Força não conservativa (propulsão) |
-| **Cointegração Engle–Granger** | Acoplamento de duas SMAs | Shadowing / perseguição em par |
-| **Łukasiewicz** | Implicação fuzzy \(p\to q\) | Lógica de “se próximo então ameaça…” |
+| Proxy | Idea | Orbital interpretation |
+|-------|------|------------------------|
+| **Shannon entropy** (1948) | Disorder of \(\Delta a\) in bins | Maneuver/control spreads \(\Delta a\); stable Kepler concentrates |
+| **Kolmogorov proxy** (1965) | zlib compression of U/D/S tokens | “Simple” trajectory compresses; complex control resists |
+| **Hurst** R/S (1951) | Long-range persistence | \(H>0.5\): trend (low thrust); \(H\approx0.5\): noise; \(H<0.5\): reversion (SK) |
+| **Kernelized L1-CUSUM** | When the series breaks | Localizes *regime change* in time |
+| **Mandelbrot (tail)** | Extremes / power laws | Rare jumps vs Gaussian noise |
+| **ADF** | Stationarity | Break in stationarity ⇒ process changed |
+| **Spectral RKHS** | RBF kernel distance vs reference | Anomaly in embedded feature space |
+| **Ricci (Ollivier proxy)** | Local curvature between neighborhoods | Geometric tactical approximation |
+| **Homology H0/H1** | Topology of the 3D cloud | Closed orbit vs escape/spiral |
+| **Chern–Simons proxy** | Helicity \(\mathbf{v}\cdot\boldsymbol{\omega}\) | Non-conservative force (propulsion) |
+| **Engle–Granger cointegration** | Coupling of two SMAs | Shadowing / pair pursuit |
+| **Łukasiewicz** | Fuzzy implication \(p\to q\) | Logic of “if close then threat…” |
 
-### 4.2 Detecção de ruído em camadas (não um único número)
+### 4.2 Layered noise detection (not a single number)
 
-1. **Descrição** — features math transformam a janela em um “perfil de ruído”.  
-2. **Distribuição** — Isolation Forest aprende o envelope de perfis **normais no passado**.  
-3. **Ponto atual** — última janela vira `anomaly_score = clip(0.5 − decision_function)`.  
-4. **Relevância temporal** — \(\Delta\) score vs relatório de ontem (mudança dia-a-dia).  
-5. **Geometria de rota** — pair_risk (distância + coint) eleva atenção mesmo se IF for só “médio”.  
-6. **Clima** — SW no vetor + soft-suppress de HOSTIL sob tempestade com \(\Delta a\) leve.  
-7. **DQ** — TLE stale/gap/jump absurdo ⇒ `UNRELIABLE_DATA` (ruído de catálogo ≠ tática).
+1. **Description** — math features turn the window into a “noise profile”.  
+2. **Distribution** — Isolation Forest learns the envelope of **historically normal** profiles.  
+3. **Current point** — latest window becomes `anomaly_score = clip(0.5 − decision_function)`.  
+4. **Temporal relevance** — \(\Delta\) score vs yesterday’s report (day-to-day change).  
+5. **Route geometry** — pair_risk (distance + coint) raises attention even if IF is only “medium”.  
+6. **Weather** — SW in the vector + soft-suppress of HOSTILE under storm with light \(\Delta a\).  
+7. **DQ** — stale/gap/absurd TLE jump ⇒ `UNRELIABLE_DATA` (catalog noise ≠ tactics).
 
-### 4.3 Protocolo diário (série vs hoje)
+### 4.3 Daily protocol (series vs today)
 
 ```
-SÉRIE até D−holdout  ──treino──►  baseline IF  (= normal + clima histórico)
-ÚLTIMA janela (D0)   ──score───►  anomaly_score
-Δ vs ontem           ──filtro──►  CHANGE_RELEVANT se salto relevante
+SERIES up to D−holdout  ──train──►  IF baseline  (= normal + historical weather)
+LATEST window (D0)      ──score──►  anomaly_score
+Δ vs yesterday          ──filter─►  CHANGE_RELEVANT if jump is relevant
 ```
 
-- `holdout_days=1` (padrão): **ontem e o passado treinam; hoje só compara.**  
-- Amostragem **hybrid**: metade da série longa + metade ponta recente (cobertura ~2014→2026 no último treino monitor).  
-- Doc: `docs/PROTOCOLO_DETECCAO_DIARIA.md`.
+- `holdout_days=1` (default): **yesterday and the past train; today only compares.**  
+- **Hybrid** sampling: half long series + half recent tip (coverage ~2014→2026 on last monitor train).  
+- Doc: `docs/DAILY_DETECTION_PROTOCOL.md`.
 
 ---
 
-## 5. Modelos de machine learning
+## 5. Machine Learning Models
 
-### 5.1 Isolation Forest (canal principal de “ruído vs normal”)
+### 5.1 Isolation Forest (primary “noise vs normal” channel)
 
-| Aspecto | Pipeline principal | Monitor diário |
-|---------|--------------------|----------------|
-| Arquivo | `models/isolation_forest.joblib` | `isolation_forest_monitor.joblib` |
+| Aspect | Main pipeline | Daily monitor |
+|--------|---------------|---------------|
+| File | `models/isolation_forest.joblib` | `isolation_forest_monitor.joblib` |
 | Features | 34 (IFOREST) | 34 (IFOREST) |
-| Contaminação | 0.08 | 0.08 |
+| Contamination | 0.08 | 0.08 |
 | Estimators | 200 | 200 |
-| Treino | ~960 janelas history_store | ~1440 janelas hybrid, cutoff D−1 |
-| Score | `clip(0.5 − decision_function)` | idem |
+| Training | ~960 history_store windows | ~1440 hybrid windows, cutoff D−1 |
+| Score | `clip(0.5 − decision_function)` | same |
 
-**Ideia:** isola pontos raros no espaço de features sem precisar de label HOSTIL.  
-O “normal” inclui variação Kepleriana **e** climas solares já vistos no passado.
+**Idea:** isolate rare points in feature space without needing a HOSTILE label.  
+“Normal” includes Keplerian variation **and** solar climates already seen in the past.
 
-### 5.2 XGBoost (camada de classificação operacional)
+### 5.2 XGBoost (operational classification layer)
 
-| Aspecto | Valor |
-|---------|--------|
-| Classes | 0 NORMAL, 1 ANÔMALO, 2 SUSPEITO, 3 HOSTIL |
-| Features | 38 (vetor + anomaly_score) |
-| Hiperparâmetros | 140 trees, depth 5, lr 0.08, multi:softprob |
-| Sample weights | {0:1, 1:1.5, 2:3, 3:5} — erro em HOSTIL custa mais |
-| Labels | `label_features_for_threat` (dist, Δa, Hurst, coint, anomaly, **clima**) |
-| Métricas internas (último treino) | acc ≈ 0.95, macro-F1 ≈ 0.87, logloss ≈ 0.15 |
-| Fonte de treino | **`history_store`** (não full synthetic) |
+| Aspect | Value |
+|--------|--------|
+| Classes | 0 NORMAL, 1 ANOMALOUS, 2 SUSPECT, 3 HOSTILE |
+| Features | 38 (vector + anomaly_score) |
+| Hyperparameters | 140 trees, depth 5, lr 0.08, multi:softprob |
+| Sample weights | {0:1, 1:1.5, 2:3, 3:5} — HOSTILE errors cost more |
+| Labels | `label_features_for_threat` (dist, Δa, Hurst, coint, anomaly, **weather**) |
+| Internal metrics (last train) | acc ≈ 0.95, macro-F1 ≈ 0.87, logloss ≈ 0.15 |
+| Training source | **`history_store`** (not full synthetic) |
 
-**Limitação explícita:** métricas de test set medem acordo com a **heurística**, não com ground-truth classificado. Para banca, o canal honesto de detecção é o **IF + walk-forward**, não o accuracy do XGB.
+**Explicit limitation:** test-set metrics measure agreement with the **heuristic**, not classified ground truth. For evaluation, the honest detection channel is **IF + walk-forward**, not XGB accuracy.
 
 ### 5.3 Fuzzy Mamdani + Kelly
 
-- **Fuzzy** (`src/fuzzy.py`): funde distância, anomaly, propósito em escore linguístico (NORMAL…HOSTIL), com clamp e fallback 0.5 se regra não disparar.  
-- **Kelly** (`engine.calculate_kelly_allocation`): aloca “atenção/orçamento de análise” \(f^* \propto\) probabilidade × severidade do propósito.
+- **Fuzzy** (`src/fuzzy.py`): fuses distance, anomaly, purpose into a linguistic score (NORMAL…HOSTILE), with clamp and 0.5 fallback if no rule fires.  
+- **Kelly** (`engine.calculate_kelly_allocation`): allocates “attention/analysis budget” \(f^* \propto\) probability × purpose severity.
 
-### 5.4 Pares e “rotas” (geometria operacional)
+### 5.4 Pairs and “routes” (operational geometry)
 
 `src/pair_score.py` + `src/orbital.py`:
 
-- Distância mínima aproximada suspect→asset (proxy Kepler, **não** TCA SGP4 completo).  
-- Cointegração das SMAs alinhadas (`merge_asof` / caudas).  
-- `pair_risk` funde geometria + acoplamento temporal.  
-- **Atenção final:**  
+- Approximate minimum distance suspect→asset (Kepler proxy, **not** full SGP4 TCA).  
+- Cointegration of aligned SMAs (`merge_asof` / tails).  
+- `pair_risk` fuses geometry + temporal coupling.  
+- **Final attention:**  
   \[
   \text{attention} = 0.45\cdot\text{anomaly\_score} + 0.55\cdot\text{pair\_risk}
   \]
-- Par CRITICAL / ELEVATED forte pode marcar `PAIR_ELEVATED` mesmo se IF sozinho não passar do thr 0.55.
+- Strong CRITICAL / ELEVATED pair can mark `PAIR_ELEVATED` even if IF alone does not pass thr 0.55.
 
-Isso é a ponderação **rota/proximidade vs ruído de série**.
+This is the **route/proximity vs series noise** weighting.
 
 ---
 
-## 6. Ponderação clima solar vs órbita / rotas
+## 6. Weighting Solar Weather vs Orbit / Routes
 
-### 6.1 Por que solar entra no mesmo vetor
+### 6.1 Why solar enters the same vector
 
-Arrasto em LEO sobe com **F10.7** e tempestades **Ap/Kp**. Sem SW, \(\Delta a\) + Shannon + CUSUM sob tempestade parecem manobra. Com SW, o IF vê o **mesmo \(\Delta a\) em climas diferentes** e aprende regimes.
+LEO drag rises with **F10.7** and **Ap/Kp** storms. Without SW, \(\Delta a\) + Shannon + CUSUM under a storm look like a maneuver. With SW, IF sees the **same \(\Delta a\) under different climates** and learns regimes.
 
-### 6.2 As 12 features solares/geomagnéticas
+### 6.2 The 12 solar/geomagnetic features
 
-| Feature | Papel na ponderação implícita |
-|---------|--------------------------------|
-| `f10_7`, `f10_7_adj` | Nível de atividade solar (densidade termosfera) |
-| `ap_index`, `kp_mean` | Tempestade geomagnética no dia |
-| `sunspot_number` | Contexto de ciclo |
-| `*_delta_7d`, `*_mean_7d`, `ap_max_7d` | Dinâmica recente (não só snapshot) |
+| Feature | Role in implicit weighting |
+|---------|----------------------------|
+| `f10_7`, `f10_7_adj` | Solar activity level (thermospheric density) |
+| `ap_index`, `kp_mean` | Geomagnetic storm of the day |
+| `sunspot_number` | Cycle context |
+| `*_delta_7d`, `*_mean_7d`, `ap_max_7d` | Recent dynamics (not only a snapshot) |
 | `geomagnetic_storm` | Flag Ap_max_7d ≥ 30 |
-| `space_weather_available` | 1 = clima real; 0 = defaults quietos |
+| `space_weather_available` | 1 = real weather; 0 = quiet defaults |
 
-Lookup: **data UTC da janela** (`reference_time` no walk-forward; now no live).
+Lookup: **UTC date of the window** (`reference_time` in walk-forward; now in live).
 
-### 6.3 Ponderação **explícita** nas labels (doutrina)
+### 6.3 **Explicit** weighting in labels (doctrine)
 
-Em `label_features_for_threat`:
+In `label_features_for_threat`:
 
-- Se `geomagnetic_storm` ou Ap≥30 ou F10.7≥180 (**high_drag_climate**):  
-  - limiares de Δa para HOSTIL/SUSPEITO/ANÔMALO **sobem**;  
-  - Δa leve + distante de assets → tende a **NORMAL** (arrasto).  
-- Geometria crítica (dist < 25 km + coint / anomaly) **ainda pode** ser HOSTIL — o clima não “absolve” RPO óbvio.
+- If `geomagnetic_storm` or Ap≥30 or F10.7≥180 (**high_drag_climate**):  
+  - Δa thresholds for HOSTILE/SUSPECT/ANOMALOUS **rise**;  
+  - light Δa + far from assets → tends to **NORMAL** (drag).  
+- Critical geometry (dist < 25 km + coint / anomaly) **can still** be HOSTILE — weather does not “absolve” obvious RPO.
 
-### 6.4 Ponderação **implícita** no IF/XGB
+### 6.4 **Implicit** weighting in IF/XGB
 
-Não há peso manual “30% solar / 70% Kepler”. Os modelos **aprendem** importâncias a partir dos dados. O desenho garante que:
+There is no manual weight “30% solar / 70% Kepler”. Models **learn** importances from data. The design ensures:
 
-- IF **inclui** SW (clima faz parte do normal);  
-- IF **exclui** dist/coint (para não treinar “sempre perto = anômalo” sem contexto multi-objeto no baseline univariado);  
-- XGB **inclui** SW + geometria + anomaly (classificação operacional completa).
+- IF **includes** SW (weather is part of normal);  
+- IF **excludes** dist/coint (so baseline is not “always near = anomalous” without multi-object context);  
+- XGB **includes** SW + geometry + anomaly (full operational classification).
 
-### 6.5 Diagrama de fusão de atenção
+### 6.5 Attention fusion diagram
 
 ```
-anomaly_score (série + math + SW)     pair_risk (rota/proximidade)
+anomaly_score (series + math + SW)     pair_risk (route/proximity)
               0.45                              0.55
                  \                              /
                   \_____ attention_score ______/
@@ -305,175 +305,175 @@ anomaly_score (série + math + SW)     pair_risk (rota/proximidade)
 
 ---
 
-## 7. Como o treino foi feito (números)
+## 7. How Training Was Done (Numbers)
 
-### 7.1 Pipeline IF + XGB (`train_and_save_models`)
+### 7.1 IF + XGB pipeline (`train_and_save_models`)
 
-1. Carrega history store → janelas de 20 épocas, step 5, últimas ~40/sat.  
-2. Injeta país/propósito do catálogo, dist a assets, coint, **SW do dia**.  
-3. Labels fracos; se quase sem HOSTIL, threat boost sintético leve (no último run: **não** diluiu — history basta).  
-4. Fit IF em janelas “normais”; gera `anomaly_score` unificado.  
-5. Relabel leve com anomaly; fit XGB com pesos de classe.  
-6. Salva `models/*.joblib` + `training_metrics.json`.
+1. Load history store → 20-epoch windows, step 5, last ~40/sat.  
+2. Inject catalog country/purpose, dist to assets, coint, **day SW**.  
+3. Weak labels; if almost no HOSTILE, light synthetic threat boost (last run: **did not** dilute — history sufficed).  
+4. Fit IF on “normal” windows; produce unified `anomaly_score`.  
+5. Light relabel with anomaly; fit XGB with class weights.  
+6. Save `models/*.joblib` + `training_metrics.json`.
 
-**Último estado:** n_samples=960, n_features=38, `training_source=history_store`.
+**Last state:** n_samples=960, n_features=38, `training_source=history_store`.
 
 ### 7.2 Monitor (`train-baseline` + `score`)
 
-1. Cutoff = now − 1 dia.  
-2. Amostra hybrid na série → IF.  
-3. Score só última janela; Δ vs `anomalies_{ontem}.json`.  
-4. Pares + relatório `data/alerts/anomalies_YYYY-MM-DD.json`.
+1. Cutoff = now − 1 day.  
+2. Hybrid sample on the series → IF.  
+3. Score only latest window; Δ vs `anomalies_{yesterday}.json`.  
+4. Pairs + report `data/alerts/anomalies_YYYY-MM-DD.json`.
 
-**Último estado:** 1440 janelas, cobertura window_end **2014-01-04 → 2026-07-25**.
+**Last state:** 1440 windows, window_end coverage **2014-01-04 → 2026-07-25**.
 
 ### 7.3 Walk-forward (`src/walkforward.py`)
 
-Em cada `asof` ao longo de um evento:
+At each `asof` along an event:
 
-- IF treinado **só** com janelas com fim < asof − holdout;  
-- score do alvo;  
-- hit se score elevado **antes** de `t_peak` do report;  
-- placebos (ex. TERRA) controlam falso positivo genérico.
+- IF trained **only** on windows ending < asof − holdout;  
+- score the target;  
+- hit if score is elevated **before** the report `t_peak`;  
+- placebos (e.g. TERRA) control generic false positives.
 
-Isso responde “detectamos ruído **antes** do report?” sem contaminar o treino.
-
----
-
-## 8. Fluxo de detecção ponta a ponta (exemplo conceitual)
-
-1. **Série** do YAOGAN-29 com milhares de TLEs reais 2014–2026.  
-2. **Baseline** aprende perfis de Shannon/Hurst/Δa sob vários F10.7/Ap.  
-3. **Hoje** entra novo TLE CelesTrak → última janela de 20 épocas.  
-4. Features: se Δa sobe **com** Ap alto, SW contextualiza; se Δa sobe **com** clima quieto e Hurst alto, IF eleva score.  
-5. **Par** vs COSMO-SkyMed: dist baixa + coint → pair_risk alto.  
-6. **attention** sobe; status pode ser ANOMALY ou PAIR_ELEVATED.  
-7. Analista vê board — não é “prova em tribunal”, é **prioridade SDA embasada em dado público**.
+This answers “did we detect noise **before** the report?” without contaminating training.
 
 ---
 
-## 9. O que é simulado e o que não é (transparência)
+## 8. End-to-End Detection Flow (Conceptual Example)
 
-| Componente | Real? |
-|------------|-------|
-| TLE history + daily | **Real** (fontes públicas) |
+1. **Series** for YAOGAN-29 with thousands of real TLEs 2014–2026.  
+2. **Baseline** learns Shannon/Hurst/Δa profiles under various F10.7/Ap.  
+3. **Today** a new CelesTrak TLE arrives → latest 20-epoch window.  
+4. Features: if Δa rises **with** high Ap, SW contextualizes; if Δa rises **with** quiet weather and high Hurst, IF raises score.  
+5. **Pair** vs COSMO-SkyMed: low dist + coint → high pair_risk.  
+6. **attention** rises; status may be ANOMALY or PAIR_ELEVATED.  
+7. Analyst sees the board — not “courtroom proof”, but **SDA priority grounded in public data**.
+
+---
+
+## 9. What Is Simulated and What Is Not (Transparency)
+
+| Component | Real? |
+|-----------|-------|
+| TLE history + daily | **Real** (public sources) |
 | F10.7 / Ap / Kp | **Real** (GFZ) |
-| Features math | **Derivadas** de dados reais (não inventadas) |
-| IF anomaly | **Modelo** treinado em dados reais |
-| Labels XGB | **Heurística** |
-| Roles watchlist | **Doutrina** |
-| Mock TLE | Só se faltar history (não é o path atual) |
-| Pair distance | **Proxy** (não TCA oficial) |
+| Math features | **Derived** from real data (not invented) |
+| IF anomaly | **Model** trained on real data |
+| XGB labels | **Heuristic** |
+| Watchlist roles | **Doctrine** |
+| Mock TLE | Only if history missing (not the current path) |
+| Pair distance | **Proxy** (not official TCA) |
 
 ---
 
-## 10. Como apresentar aos jurados (script curto)
+## 10. How to Present to Judges (Short Script)
 
-> “Usamos elementos orbitais públicos reais (histórico tipo Space-Track + CelesTrak) e índices solares/geomagnéticos do GFZ.  
-> Transformamos cada janela da série em um vetor de ruído matemático (Shannon, Hurst, CUSUM, etc.) **mais** o clima daquele dia.  
-> O Isolation Forest aprende o normal **no passado**; o ponto de hoje é comparado — não re-treinado no próprio dia.  
-> Proximidade a ativos (rotas) e clima solar entram na ponderação de atenção e nas regras de arrasto vs manobra.  
-> Não afirmamos ground-truth classificado de intenção hostil: afirmamos **detecção de desvio embasada em dados reais** e validação walk-forward em casos open-source como Luch.”
-
----
-
-## 11. Estudos IBM, ruído e o que foi (ou não) pesquisado
-
-### 11.1 Resposta direta
-
-| Pergunta | Resposta |
-|----------|----------|
-| O motor Athena foi **implementado a partir** de papers IBM de ruído? | **Não.** |
-| Havia menção a IBM no planejamento do projeto? | **Sim, como item opcional de reforço teórico** (bloco 0.6 no organograma de dados/ML), **não como base do código.** |
-| Foi feita nesta sessão uma revisão profunda da literatura IBM sobre ruído orbital? | **Não como eixo do design.** Foi feito um **mapeamento pontual** do que a IBM publicou em SSA open-source (abaixo). |
-| Há trabalho IBM **relevante** para o tema SDA/ML? | **Sim** — linha Space Tech SSA (com Moriba Jah / UT Austin), open-source `IBM/spacetech-ssa`. |
-
-### 11.2 O que a IBM tem em SSA (contexto externo)
-
-- Projeto open-source **IBM Space Tech – SSA** (`ibm.github.io/spacetech-ssa`, GitHub `IBM/spacetech-ssa`): playground de ML para SSA em LEO (predição de trajetórias ASO, conjunções, etc.), em parceria histórica com pesquisa de Moriba Jah.  
-- Foco típico IBM SSA: **predizer onde objetos estão / vão**, conjunções, pipeline experimental ML — **não** o mesmo stack math-first (Shannon–Hurst–CUSUM–RKHS–TDA) do Athena.  
-- Anúncios open-source SSA + KubeSat (~2020) para “democratizar” space tech.
-
-### 11.3 De onde **veio** a fundação teórica do Athena
-
-| Linha | Origem no projeto |
-|-------|-------------------|
-| Shannon, Kolmogorov, Hurst, Mandelbrot, CUSUM, ADF, cointegração | Literatura clássica + `docs/references/fundamentacao_matematica.md` |
-| RKHS / Ricci / homologia / Chern–Simons proxies | Framework quant do projeto (proxies implementáveis, não papers IBM) |
-| Arquitetura multi-estágio / COP / DAG | Inspiração **Palantir** (patentes mapeadas em `docs/references/patentes_palantir.md`) — **não** produto Palantir |
-| SSA + ML genérico | Estado da arte (surveys SSA/ML, práticas de anomaly detection) |
-| IBM | Listado como **bibliografia futura opcional** no organograma; **não** citação fundante do `engine.py` |
-
-### 11.4 Honestidade acadêmica recomendada
-
-Se o jurado perguntar “vocês usaram os estudos da IBM?”:
-
-> “Conhecemos a linha IBM Space Tech SSA (open-source com foco em predição de trajetória/LEO).  
-> Nosso núcleo é **outro**: features de informação/estocástica/topologia sobre séries TLE reais + Isolation Forest past-train, com clima GFZ e pares geométricos.  
-> IBM SSA e Athena são **complementares**, não o mesmo paper reimplementado.  
-> Papers IBM/quant/fractal estavam no backlog de reforço teórico (item 0.6), não no caminho crítico de implementação.”
-
-### 11.5 Se quiser aproximar IBM no futuro (opcional)
-
-- Benchmark de predição/erro orbital no estilo spacetech-ssa vs nosso detector de **mudança**.  
-- Citar Jah / SSA literature em slide de “estado da arte”.  
-- **Não** substituir o math stack por caixa-preta só porque é IBM.
+> “We use real public orbital elements (Space-Track-style history + CelesTrak) and solar/geomagnetic indices from GFZ.  
+> We transform each series window into a mathematical noise vector (Shannon, Hurst, CUSUM, etc.) **plus** that day’s weather.  
+> Isolation Forest learns normal **in the past**; today’s point is compared — not re-trained on the same day.  
+> Asset proximity (routes) and solar weather enter attention weighting and drag-vs-maneuver rules.  
+> We do not claim classified ground-truth of hostile intent: we claim **deviation detection grounded in real data** and walk-forward validation on open-source cases such as Luch.”
 
 ---
 
-## 12. Arquivos-chave do repositório
+## 11. IBM Studies, Noise, and What Was (or Was Not) Researched
 
-| Área | Path |
+### 11.1 Direct answers
+
+| Question | Answer |
+|----------|--------|
+| Was the Athena engine **implemented from** IBM noise papers? | **No.** |
+| Was IBM mentioned in project planning? | **Yes, as an optional theoretical reinforcement item** (block 0.6 in the data/ML organigram), **not as the code base.** |
+| Was a deep review of IBM orbital-noise literature done in this session? | **Not as a design axis.** A **targeted mapping** of IBM’s open-source SSA work was done (below). |
+| Is there IBM work **relevant** to SDA/ML? | **Yes** — Space Tech SSA line (with Moriba Jah / UT Austin), open-source `IBM/spacetech-ssa`. |
+
+### 11.2 What IBM has in SSA (external context)
+
+- Open-source project **IBM Space Tech – SSA** (`ibm.github.io/spacetech-ssa`, GitHub `IBM/spacetech-ssa`): ML playground for LEO SSA (ASO trajectory prediction, conjunctions, etc.), historically partnered with Moriba Jah research.  
+- Typical IBM SSA focus: **predict where objects are / will be**, conjunctions, experimental ML pipeline — **not** Athena’s math-first stack (Shannon–Hurst–CUSUM–RKHS–TDA).  
+- Open-source SSA + KubeSat announcements (~2020) to “democratize” space tech.
+
+### 11.3 Where Athena’s theoretical foundation **came from**
+
+| Line | Origin in the project |
+|------|------------------------|
+| Shannon, Kolmogorov, Hurst, Mandelbrot, CUSUM, ADF, cointegration | Classical literature + `docs/references/mathematical_foundation.md` |
+| RKHS / Ricci / homology / Chern–Simons proxies | Project quant framework (implementable proxies, not IBM papers) |
+| Multi-stage / COP / DAG architecture | **Palantir** inspiration (patents mapped in `docs/references/palantir_patents.md`) — **not** a Palantir product |
+| Generic SSA + ML | State of the art (SSA/ML surveys, anomaly detection practice) |
+| IBM | Listed as **optional future bibliography** in the organigram; **not** a founding citation of `engine.py` |
+
+### 11.4 Recommended academic honesty
+
+If a judge asks “did you use IBM’s studies?”:
+
+> “We know the IBM Space Tech SSA line (open-source focused on LEO trajectory prediction).  
+> Our core is **different**: information/stochastic/topology features on real TLE series + past-train Isolation Forest, with GFZ weather and geometric pairs.  
+> IBM SSA and Athena are **complementary**, not the same paper reimplemented.  
+> IBM/quant/fractal papers were in the theoretical reinforcement backlog (item 0.6), not on the critical implementation path.”
+
+### 11.5 If you want to approach IBM later (optional)
+
+- Benchmark prediction/orbital error in the spacetech-ssa style vs our **change** detector.  
+- Cite Jah / SSA literature on a “state of the art” slide.  
+- **Do not** replace the math stack with a black box just because it is IBM.
+
+---
+
+## 12. Key Repository Files
+
+| Area | Path |
 |------|------|
-| Features math | `src/engine.py` |
+| Math features | `src/engine.py` |
 | Extract + train + labels | `src/models.py` |
-| Schema features | `src/config.py` |
+| Feature schema | `src/config.py` |
 | Space weather | `src/space_weather.py` |
-| Monitor diário | `src/anomaly_monitor.py` |
-| Pares / rotas | `src/pair_score.py`, `src/orbital.py` |
+| Daily monitor | `src/anomaly_monitor.py` |
+| Pairs / routes | `src/pair_score.py`, `src/orbital.py` |
 | Walk-forward | `src/walkforward.py` |
 | TLE store | `src/tle_store.py` |
 | Fuzzy / Kelly | `src/fuzzy.py` |
 | CLI | `scripts/run_anomaly_monitor.py` |
-| Math docs | `docs/references/fundamentacao_matematica.md` |
-| Protocolo diário | `docs/PROTOCOLO_DETECCAO_DIARIA.md` |
-| Pre-report demo | `docs/DEMOSTRACAO_PREVISAO_PRE_REPORT.md` |
-| SW no ML | `docs/references/space_weather_ml.md` |
-| Este relatório | `docs/RELATORIO_COMPLETO_ML_ATHENA_SDA.md` |
+| Math docs | `docs/references/mathematical_foundation.md` |
+| Daily protocol | `docs/DAILY_DETECTION_PROTOCOL.md` |
+| Pre-report demo | `docs/PRE_REPORT_PREDICTION_DEMO.md` |
+| SW in ML | `docs/references/space_weather_ml.md` |
+| This report | `docs/FULL_ML_REPORT_ATHENA_SDA.md` |
 
 ---
 
-## 13. Comandos de reprodução
+## 13. Reproduction Commands
 
 ```bash
-# Clima (GFZ)
+# Weather (GFZ)
 python scripts/run_anomaly_monitor.py seed-space-weather --force --start-year 2014
 
-# Baseline na série (passado) + score do hoje
+# Baseline on the series (past) + score today
 python scripts/run_anomaly_monitor.py train-baseline --holdout-days 1 --sample-mode hybrid
 python scripts/run_anomaly_monitor.py score
 
-# Ciclo diário completo
+# Full daily cycle
 python scripts/run_anomaly_monitor.py run-daily
 
-# Retreino IF+XGB pipeline
+# Retrain IF+XGB pipeline
 python -c "from src.models import train_and_save_models; train_and_save_models()"
 
-# Walk-forward (validação pre-report)
+# Walk-forward (pre-report validation)
 python scripts/run_walkforward.py
 ```
 
 ---
 
-## 14. Conclusões
+## 14. Conclusions
 
-1. **Bases:** orbitais e solares **reais e rastreáveis**; doutrina e labels **explícitos e fracos**.  
-2. **ML:** math-first → IF (ruído vs normal na série) → XGB/fuzzy/Kelly (prioridade) → pares (rotas).  
-3. **Ruído:** multi-proxy clássico + distribuição IF + Δ diário + DQ.  
-4. **Solar vs rotas:** SW no vetor e nas labels de arrasto; rotas via pair_risk com peso 0.55 na attention.  
-5. **IBM:** relevante no ecossistema SSA open-source, **não** foi a fundação implementada do motor de ruído Athena; backlog teórico opcional.  
-6. **Para jurados:** vender **detecção de desvio em dados públicos**, não “accuracy de guerra espacial”.
+1. **Data:** orbital and solar sources are **real and traceable**; doctrine and labels are **explicit and weak**.  
+2. **ML:** math-first → IF (noise vs normal on the series) → XGB/fuzzy/Kelly (priority) → pairs (routes).  
+3. **Noise:** multi-proxy classical + IF distribution + daily Δ + DQ.  
+4. **Solar vs routes:** SW in the vector and in drag labels; routes via pair_risk with weight 0.55 on attention.  
+5. **IBM:** relevant in the open-source SSA ecosystem, **not** the implemented foundation of Athena’s noise engine; optional theoretical backlog.  
+6. **For judges:** sell **deviation detection on public data**, not “space warfare accuracy”.
 
 ---
 
-*Documento gerado para o projeto Athena-SDA. Pode ser anexado ao pitch, ao repositório e ao handoff de sessão.*
+*Document generated for the Athena-SDA project. Suitable for pitch, repository, and session handoff.*

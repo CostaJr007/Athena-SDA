@@ -8,14 +8,14 @@ This document details the mathematical framework behind the 14 theories integrat
 * **Theory:** Claude Shannon (1948)
 * **Objective:** Measure disorder and unpredictability in orbital parameter time series.
 
-Shannon entropy for a discrete random variable $X$ with states $x_1, ..., x_n$ is defined as:
+Shannon entropy for a discrete random variable \(X\) with states \(x_1, ..., x_n\) is defined as:
 
 $$H(X) = -\sum_{i=1}^{n} P(x_i) \log_2 P(x_i)$$
 
 ### Application in Satellite Tracking
-We analyze variations in Semi-Major Axis ($a$) over a rolling 30-day window. Daily variations $\Delta a_t = a_t - a_{t-1}$ are binned to estimate probabilities $P(x_i)$.
-* **Stable Keplerian Orbit:** Natural perturbation baseline. Probability is concentrated in few bins ($H(X) \approx 0.2$).
-* **Active Maneuvering:** Intentionally altered altitude spreads variations across multiple bins, elevating entropy ($H(X) > 1.8$).
+We analyze variations in Semi-Major Axis (\(a\)) over a rolling 30-day window. Daily variations \(\Delta a_t = a_t - a_{t-1}\) are binned to estimate probabilities \(P(x_i)\).
+* **Stable Keplerian Orbit:** Natural perturbation baseline. Probability is concentrated in few bins (\(H(X) \approx 0.2\)).
+* **Active Maneuvering:** Intentionally altered altitude spreads variations across multiple bins, elevating entropy (\(H(X) > 1.8\)).
 
 ---
 
@@ -23,17 +23,17 @@ We analyze variations in Semi-Major Axis ($a$) over a rolling 30-day window. Dai
 * **Theory:** Andrey Kolmogorov (1965)
 * **Objective:** Determine if a trajectory is governed by passive celestial mechanics or an active control algorithm.
 
-The Kolmogorov complexity $K(s)$ of string $s$ is the length of the shortest program $p$ running on a Universal Turing Machine $U$ that outputs $s$:
+The Kolmogorov complexity \(K(s)\) of string \(s\) is the length of the shortest program \(p\) running on a Universal Turing Machine \(U\) that outputs \(s\):
 
 $$K(s) = \min \{ |p| : U(p) = s \}$$
 
 ### Application in Satellite Tracking
-Since $K(s)$ is non-computable, lossless compression size (zlib/LZW) serves as an algorithmic complexity proxy:
+Since \(K(s)\) is non-computable, lossless compression size (zlib/LZW) serves as an algorithmic complexity proxy:
 
 $$K_{\text{proxy}}(s) = \frac{\text{Size}(\text{Compress}(s))}{\text{Size}(s)}$$
 
-* Natural orbits compress efficiently ($K_{\text{proxy}} \to 0$).
-* Complex evasive or rendezvous maneuvers yield higher algorithmic entropy ($K_{\text{proxy}} \to 1$).
+* Natural orbits compress efficiently (\(K_{\text{proxy}} \to 0\)).
+* Complex evasive or rendezvous maneuvers yield higher algorithmic entropy (\(K_{\text{proxy}} \to 1\)).
 
 ---
 
@@ -43,9 +43,9 @@ $$K_{\text{proxy}}(s) = \frac{\text{Size}(\text{Compress}(s))}{\text{Size}(s)}$$
 
 $$E \left[ \frac{R(n)}{S(n)} \right] = C \cdot n^H$$
 
-* **$H = 0.5$:** Uncorrelated Brownian motion (random walk).
-* **$0.5 < H \le 1.0$:** Persistent time series (long-term memory/trend).
-* **$0 \le H < 0.5$:** Anti-persistent time series (mean-reverting).
+* **\(H = 0.5\):** Uncorrelated Brownian motion (random walk).
+* **\(0.5 < H \le 1.0\):** Persistent time series (long-term memory/trend).
+* **\(0 \le H < 0.5\):** Anti-persistent time series (mean-reverting).
 
 ---
 
@@ -61,9 +61,9 @@ $$\kappa(x, y) = 1 - \frac{W_1(m_x, m_y)}{d(x, y)}$$
 * **Theory:** Herbert Edelsbrunner (2002)
 * **Objective:** Detect structural trajectory topological shifts in 3D point cloud embeddings.
 
-Simplicial homology groups $H_k$:
-* **$H_0$:** Connected components (physical clustering of assets).
-* **$H_1$:** 1D loops/tunnels (circular/elliptical orbital periodicity).
+Simplicial homology groups \(H_k\):
+* **\(H_0\):** Connected components (physical clustering of assets).
+* **\(H_1\):** 1D loops/tunnels (circular/elliptical orbital periodicity).
 
 ---
 
@@ -73,164 +73,121 @@ Simplicial homology groups $H_k$:
 
 $$CS = \int_{t_0}^{t_1} (\vec{v} \cdot \vec{\omega}) dt$$
 
----
-
-## 7. Spectral Anomaly in RKHS (Hilbert Space Typicality)
-* **Theory:** Reproducing Kernel Hilbert Space (RKHS)
-* **Objective:** Compute continuous spatial support and typicality bounds.
+### Application in Tracking
+By Liouville's theorem, a purely Hamiltonian flow (satellite under natural gravity) conserves phase-space volume and topology, yielding a constant CS value. If the satellite fires chemical or ion thrusters, it breaks conservative symmetry, causing a peak in the \(CS\) score and indicating an active external force.
 
 ---
 
-## 8. Fuzzy Logic Mamdani (Multi-Criteria Reasoning)
-* **Theory:** Lotfi Zadeh (1965), Ebrahim Mamdani (1975)
-* **Objective:** Calibrate linguistic risk states (`NORMAL`, `ANOMALOUS`, `SUSPECT`, `HOSTILE`).
+## 7. Spectral Anomaly in Hilbert Spaces (RKHS)
+* **Theory:** David Hilbert (~1900)
+* **Objective:** Project orbital trajectories into infinite-dimensional spaces to detect instantaneous distribution changes.
 
----
-
-## 9. Łukasiewicz Many-Valued Logic (Triangular Norm Alignment)
-* **Theory:** Jan Łukasiewicz (1920)
-
-$$T_{\text{Luka}}(a, b) = \max(0, a + b - 1)$$
-
----
-
-## 10. Kelly Criterion (Resource Allocation & Threat Weighting)
-* **Theory:** John Larry Kelly Jr. (1956)
-
----
-
-## 11. Mandelbrot Heavy Tails (Extreme Impulse Detection)
-* **Theory:** Benoît Mandelbrot (1963)
-
----
-
-## 12. CUSUM L1 Change-Point (Impulsive Maneuver Detection)
-* **Theory:** E. S. Page (1954)
-
----
-
-## 13. Augmented Dickey-Fuller (ADF Stationarity Test)
-* **Theory:** David Dickey, Wayne Fuller (1979)
-
----
-
-## 14. Pair Cointegration (Orbital Shadowing & Station-Keeping Alignment)
-* **Theory:** Clive Granger, Robert Engle (1987)
-
----
-*Athena-SDA Mathematical Framework Reference Standard.*
-
-### Aplicação no Rastreamento
-Pelo teorema de Liouville, um fluxo puramente Hamiltoniano (satélite sob gravidade natural) conserva o volume e a topologia de fase, resultando em um valor constante de CS. Se o satélite aciona propulsores químicos ou iônicos, ele quebra a simetria conservativa, provocando um pico no score $CS$ e indicando uma força externa ativa.
-
----
-
-## 7. Anomalia Espectral em Espaços de Hilbert (RKHS)
-* **Teoria:** David Hilbert (~1900)
-* **Objetivo:** Projetar trajetórias orbitais em espaços de dimensão infinita para detectar mudanças de distribuição instantâneas.
-
-Mapeamos o vetor de estados orbitais $x_t \in \mathbb{R}^d$ para um Espaço de Hilbert de Kernel Reprodutor $\mathcal{H}_k$ através de uma função de mapeamento de características $\Phi(x_t) = k(x_t, \cdot)$, onde usamos o kernel Gaussiano RBF:
+We map the orbital state vector \(x_t \in \mathbb{R}^d\) into a Reproducing Kernel Hilbert Space \(\mathcal{H}_k\) via a feature map \(\Phi(x_t) = k(x_t, \cdot)\), using the Gaussian RBF kernel:
 
 $$k(x, y) = \exp\left(-\gamma \|x - y\|^2\right)$$
 
-A anomalia espectral é medida calculando os autovalores da matriz de Gram $K_{ij} = k(x_i, x_j)$ em uma janela móvel para computar a divergência de densidade espectral. Um desvio nas frequências dominantes indica alteração nos coeficientes harmônicos orbitais.
+Spectral anomaly is measured by computing eigenvalues of the Gram matrix \(K_{ij} = k(x_i, x_j)\) in a rolling window to compute spectral density divergence. A shift in dominant frequencies indicates alteration of orbital harmonic coefficients.
 
 ---
 
-## 8. Lógica Fuzzy de Mamdani (Inferência sob Incerteza)
-* **Teoria:** Lotfi A. Zadeh (1965), Ebrahim Mamdani (1975)
-* **Objetivo:** Combinar diferentes features anômalas sob incerteza de medição para gerar uma classificação final.
+## 8. Mamdani Fuzzy Logic (Inference under Uncertainty)
+* **Theory:** Lotfi A. Zadeh (1965), Ebrahim Mamdani (1975)
+* **Objective:** Combine multiple anomalous features under measurement uncertainty to produce a final classification.
 
-Utilizamos funções de pertinência trapezoidais e triangulares $\mu_A(x) \in [0, 1]$ para traduzir variáveis contínuas em termos linguísticos:
-* **Entradas:** `Maneuver Magnitude` ($\Delta SMA$), `Target Proximity` ($Dist$), `TLE Age` ($Age$).
-* **Fuzzy Rules:** 
-  $$\text{SE } \Delta SMA \text{ é ALTO } \text{ E } \text{ Proximity é PERTO } \text{ E } \text{ TLE Age é NOVO } \rightarrow \text{ Threat é RED (HOSTIL)}$$
+We use trapezoidal and triangular membership functions \(\mu_A(x) \in [0, 1]\) to translate continuous variables into linguistic terms:
+* **Inputs:** `Maneuver Magnitude` (\(\Delta SMA\)), `Target Proximity` (\(Dist\)), `TLE Age` (\(Age\)).
+* **Fuzzy Rules:**
+  $$\text{IF } \Delta SMA \text{ is HIGH } \text{ AND } \text{ Proximity is CLOSE } \text{ AND } \text{ TLE Age is NEW } \rightarrow \text{ Threat is RED (HOSTILE)}$$
 
-### Mecanismo de Inferência
-1. **Fuzzificação:** Calcula os graus de pertinência $\mu_i(x)$ para as entradas.
-2. **Operador Fuzzy (AND):** Usa o mínimo $\mu_{A \cap B}(x) = \min(\mu_A(x), \mu_B(x))$.
-3. **Defuzzificação:** Calcula o centroide da área agregada resultante das regras de Mamdani para encontrar o valor numérico nítido:
+### Inference Mechanism
+1. **Fuzzification:** Compute membership degrees \(\mu_i(x)\) for inputs.
+2. **Fuzzy Operator (AND):** Use minimum \(\mu_{A \cap B}(x) = \min(\mu_A(x), \mu_B(x))\).
+3. **Defuzzification:** Compute the centroid of the aggregated area from Mamdani rules to obtain the crisp numeric value:
    $$z^* = \frac{\int z \cdot \mu_C(z) dz}{\int \mu_C(z) dz}$$
 
 ---
 
-## 9. Lógica Łukasiewicz (Validação Lógica de Hipóteses)
-* **Teoria:** Jan Łukasiewicz (1920)
-* **Objetivo:** Avaliar a consistência lógica de suposições de ameaça operando em valores de verdade fracionários $v(A) \in [0, 1]$.
+## 9. Łukasiewicz Logic (Logical Hypothesis Validation)
+* **Theory:** Jan Łukasiewicz (1920)
+* **Objective:** Evaluate logical consistency of threat assumptions operating on fractional truth values \(v(A) \in [0, 1]\).
 
-A implicação lógica de Łukasiewicz $I(p, q)$ é definida como:
+The Łukasiewicz implication \(I(p, q)\) is defined as:
 
 $$v(p \rightarrow q) = \min(1, 1 - v(p) + v(q))$$
 
-Utilizamos isso para calcular a consistência de premissas complexas de SDA. Por exemplo:
-* Se $p$ = *"Objeto manobrou"* ($v(p) = 0.85$ via Hurst) e $q$ = *"Objeto é ativo/controlado"* ($v(q) = 0.90$ via Kolmogorov).
-* A verdade da implicação $v(p \rightarrow q)$ será $\min(1, 1 - 0.85 + 0.90) = 1.0$, validando a integridade lógica da hipótese de manobra controlada.
+We use this to compute consistency of complex SDA premises. For example:
+* If \(p\) = *"Object maneuvered"* (\(v(p) = 0.85\) via Hurst) and \(q\) = *"Object is active/controlled"* (\(v(q) = 0.90\) via Kolmogorov).
+* The truth of the implication \(v(p \rightarrow q)\) is \(\min(1, 1 - 0.85 + 0.90) = 1.0\), validating the logical integrity of the controlled-maneuver hypothesis.
 
 ---
 
-## 10. Critério de Kelly (Priorização de Recursos de Busca)
-* **Teoria:** John Larry Kelly, Jr. (1956)
-* **Objetivo:** Otimizar a alocação de tempo de sensores terrestres (radares e telescópios) para rastreamento de alvos prioritários.
+## 10. Kelly Criterion (Search Resource Prioritization)
+* **Theory:** John Larry Kelly, Jr. (1956)
+* **Objective:** Optimize allocation of ground sensor time (radars and telescopes) for tracking priority targets.
 
-A fração ideal de recursos $f^*$ a ser alocada a uma determinada ameaça é dada por:
+The ideal resource fraction \(f^*\) to allocate to a given threat is:
 
 $$f^* = \frac{b \cdot p - q}{b}$$
 
-Onde:
-* $f^*$ é a fração da capacidade de processamento/tempo do sensor terrestre a ser alocada.
-* $p$ é a probabilidade da ameaça (fornecida pelo XGBoost + Fuzzy).
-* $q = 1 - p$ é a probabilidade do objeto ser inofensivo.
-* $b$ representa a criticidade relativa do satélite alvo ameaçado (odds de perda estratégica).
+Where:
+* \(f^*\) is the fraction of ground sensor processing/time capacity to allocate.
+* \(p\) is the threat probability (from XGBoost + Fuzzy).
+* \(q = 1 - p\) is the probability the object is benign.
+* \(b\) represents the relative criticality of the threatened target satellite (strategic-loss odds).
 
-Isso impede o desperdício de recursos críticos de rastreamento em alarmes falsos de alta incerteza.
+This prevents wasting critical tracking resources on high-uncertainty false alarms.
 
 ---
 
-## 11. Valor Intrínseco de Williams (Pesagem de Vulnerabilidade)
-* **Teoria:** John Burr Williams (1938)
-* **Objetivo:** Pesar a relevância estratégica de satélites no espaço baseando-se em sua utilidade residual futura.
+## 11. Williams Intrinsic Value (Vulnerability Weighting)
+* **Theory:** John Burr Williams (1938)
+* **Objective:** Weight the strategic relevance of satellites in space based on residual future utility.
 
-Adaptamos a fórmula clássica de dividendos descontados para calcular o *Valor Estratégico Intrínseco* $V$ de um satélite alvo sob monitoramento:
+We adapt the classic discounted-dividend formula to compute the *Strategic Intrinsic Value* \(V\) of a target satellite under monitoring:
 
 $$V = \sum_{t=1}^{T} \frac{U_t}{(1 + r)^t}$$
 
-Onde:
-* $U_t$ é o índice de utilidade/importância do satélite no instante $t$ (militar, comunicações, GPS).
-* $r$ é a taxa de obsolescência tecnológica ou decaimento orbital anual.
-* $T$ é a expectativa de vida útil restante do satélite.
+Where:
+* \(U_t\) is the utility/importance index of the satellite at time \(t\) (military, communications, GPS).
+* \(r\) is the annual technological obsolescence or orbital decay rate.
+* \(T\) is the remaining expected useful life of the satellite.
 
 ---
 
-## 12. Regressão de Kernel (Suavização de Trajetórias)
-* **Teoria:** Andrew W. Lo, Harry Mamaysky, A. Craig MacKinlay (2000)
-* **Objetivo:** Eliminar ruído e flutuações harmônicas secundárias das séries de telemetria orbital.
+## 12. Kernel Regression (Trajectory Smoothing)
+* **Theory:** Andrew W. Lo, Harry Mamaysky, A. Craig MacKinlay (2000)
+* **Objective:** Remove noise and secondary harmonic fluctuations from orbital telemetry series.
 
-Estimamos uma versão suavizada da órbita $m(t)$ a partir das medições ruidosas $Y_i$ usando o estimador Nadaraya-Watson:
+We estimate a smoothed version of the orbit \(m(t)\) from noisy measurements \(Y_i\) using the Nadaraya–Watson estimator:
 
 $$\hat{m}(t) = \frac{\sum_{i=1}^n K_h(t - t_i) Y_i}{\sum_{i=1}^n K_h(t - t_i)}$$
 
-Onde $K_h(u) = \frac{1}{h} K\left(\frac{u}{h}\right)$ é um kernel gaussiano de largura de banda $h$ que filtra frequências espúrias, permitindo isolar a verdadeira curva de transição orbital.
+Where \(K_h(u) = \frac{1}{h} K\left(\frac{u}{h}\right)\) is a Gaussian kernel of bandwidth \(h\) that filters spurious frequencies, isolating the true orbital transition curve.
 
 ---
 
-## 13. Algoritmo L1-CUSUM Kernelizado (Detecção de Início de Manobra)
-* **Objetivo:** Detectar o instante exato de início de uma manobra de baixíssimo empuxo.
+## 13. Kernelized L1-CUSUM Algorithm (Maneuver Onset Detection)
+* **Objective:** Detect the exact onset of a very-low-thrust maneuver.
 
-Monitoramos a soma cumulativa em um Espaço de Hilbert para detectar quebras estruturais na distribuição temporal dos elementos orbitais:
+We monitor a cumulative sum in Hilbert space to detect structural breaks in the temporal distribution of orbital elements:
 
 $$S_k = \max\left(0, S_{k-1} + \ln \frac{p_{\theta_1}(\Phi(x_k))}{p_{\theta_0}(\Phi(x_k))}\right)$$
 
-Quando a estatística $S_k$ ultrapassa um limite crítico $h_{\text{thr}}$, determinamos que houve um ponto de mudança (*change-point*) e marcamos o início imediato de uma ignição de propulsão ativa do satélite.
+When the statistic \(S_k\) exceeds a critical threshold \(h_{\text{thr}}\), we determine that a change-point occurred and mark the immediate onset of active satellite propulsion ignition.
 
 ---
 
-## 14. Teoria de Distribuições de Caudas Pesadas (Discriminação de Ruído)
-* **Teoria:** Benoit Mandelbrot (1963)
-* **Objetivo:** Diferenciar perturbações orbitais naturais de distúrbios artificiais baseado no peso das caudas da distribuição de erros.
+## 14. Heavy-Tail Distribution Theory (Noise Discrimination)
+* **Theory:** Benoit Mandelbrot (1963)
+* **Objective:** Differentiate natural orbital perturbations from artificial disturbances based on the weight of the error distribution tails.
 
-Analisamos se as variações de aceleração orbital seguem uma distribuição estável Alpha-Estável de Lévy com parâmetro de cauda $\alpha \in (0, 2]$:
+We analyze whether orbital acceleration variations follow a Lévy Alpha-Stable distribution with tail parameter \(\alpha \in (0, 2]\):
 
 $$P(X > x) \sim x^{-\alpha} \quad (x \to \infty)$$
 
-* **$\alpha = 2$ (Distribuição Normal):** Indica flutuações orbitais geradas pela soma de micro-impactos naturais (arrasto térmico, ventos solares estáveis).
-* **$\alpha < 1.5$ (Caudas Pesadas de Mandelbrot):** Indica picos extremos isolados incompatíveis com fenômenos estocásticos normais, caracterizando disparos de propulsores de alta energia em curtos espaços de tempo.
+* **\(\alpha = 2\) (Normal distribution):** Indicates orbital fluctuations generated by the sum of natural micro-impacts (thermal drag, stable solar winds).
+* **\(\alpha < 1.5\) (Mandelbrot heavy tails):** Indicates isolated extreme peaks incompatible with normal stochastic phenomena, characterizing high-energy thruster firings over short timescales.
+
+---
+
+*Athena-SDA Mathematical Framework Reference Standard.*

@@ -1,7 +1,7 @@
 """
-Copiloto Bob — IBM Granite / watsonx.ai
+Bob copilot — IBM Granite / watsonx.ai
 
-Implements the qualitative stages of Palantir-style LLM + Geospatial pipeline
+Implements the qualitative stages of a Palantir-style LLM + Geospatial pipeline
 (US 2024/0394296 A1):
   1. Filter / context (tools)
   2. Quantitative scores (from ML pipeline)
@@ -16,21 +16,24 @@ from typing import Any, Dict, List, Optional
 
 import numpy as np
 
-WATSONX_DISPONIVEL = False
+WATSONX_AVAILABLE = False
 try:
     from ibm_watsonx_ai.foundation_models import Model
     from ibm_watsonx_ai import Credentials
 
-    WATSONX_DISPONIVEL = True
+    WATSONX_AVAILABLE = True
 except ImportError:
-    WATSONX_DISPONIVEL = False
+    WATSONX_AVAILABLE = False
+
+# Backward-compatible alias
+WATSONX_DISPONIVEL = WATSONX_AVAILABLE
 
 
 def get_watsonx_model():
     api_key = os.environ.get("WATSONX_APIKEY")
     project_id = os.environ.get("WATSONX_PROJECT_ID")
     wx_url = os.environ.get("WATSONX_URL", "https://us-south.ml.cloud.ibm.com")
-    if not WATSONX_DISPONIVEL or not api_key or not project_id:
+    if not WATSONX_AVAILABLE or not api_key or not project_id:
         return None
     try:
         credentials = Credentials(url=wx_url, api_key=api_key)
@@ -56,7 +59,7 @@ def get_watsonx_model():
                 continue
         return None
     except Exception as e:
-        print(f"Erro ao inicializar watsonx.ai: {e}")
+        print(f"Failed to initialize watsonx.ai: {e}")
         return None
 
 
@@ -67,14 +70,14 @@ def get_watsonx_model():
 def tool_get_object_metadata(norad_id: int, catalog: Dict[int, Dict[str, Any]]) -> Dict[str, Any]:
     sat = catalog.get(norad_id)
     if not sat:
-        return {"error": f"NORAD {norad_id} não encontrado no catálogo ativo."}
+        return {"error": f"NORAD {norad_id} not found in the active catalog."}
     return dict(sat["metadata"])
 
 
 def tool_get_object_history(norad_id: int, catalog: Dict[int, Dict[str, Any]], days: int = 7) -> Dict[str, Any]:
     sat = catalog.get(norad_id)
     if not sat:
-        return {"error": f"NORAD {norad_id} não encontrado."}
+        return {"error": f"NORAD {norad_id} not found."}
     hist = sat["history"]
     tail = hist.tail(max(days, 1))
     return {
@@ -94,7 +97,7 @@ def tool_get_close_approaches(
 ) -> Dict[str, Any]:
     row = processed_by_id.get(norad_id)
     if not row:
-        return {"error": f"NORAD {norad_id} sem análise."}
+        return {"error": f"NORAD {norad_id} has no analysis yet."}
     return {
         "norad_id": norad_id,
         "min_distance_to_military_km": row.get("min_dist_mil"),
@@ -114,11 +117,11 @@ def tool_get_space_weather() -> Dict[str, Any]:
         f107 = float(sw.get("f10_7", 120))
         ap = float(sw.get("ap_index", 10))
         if ap >= 50 or f107 >= 200:
-            note = "Alta atividade solar/geomagnética — arrasto LEO elevado (cuidado com falso positivo de manobra)."
+            note = "High solar/geomagnetic activity — elevated LEO drag (watch for false-positive maneuver flags)."
         elif ap >= 20 or f107 >= 150:
-            note = "Atividade moderada; station-keeping e arrasto natural possíveis."
+            note = "Moderate activity; station-keeping and natural drag remain plausible."
         else:
-            note = "Condições relativamente quietas."
+            note = "Relatively quiet conditions."
         rng = st.get("range") or []
         return {
             "source": "gfz_kp_f107",
@@ -139,7 +142,7 @@ def tool_get_space_weather() -> Dict[str, Any]:
             "f10_7": 120.0,
             "ap_index": 10,
             "kp": 2,
-            "note": f"Space weather indisponível ({e}); usando defaults quietos.",
+            "note": f"Space weather unavailable ({e}); using quiet defaults.",
         }
 
 
@@ -171,8 +174,8 @@ def generate_bob_briefing(
     if sat_metadata is None:
         sat_metadata = {
             "name": f"OBJ-{norad_id}",
-            "country": "Desconhecido",
-            "purpose": "Militar / Reconhecimento" if min_dist_mil < 50 else "Comercial",
+            "country": "Unknown",
+            "purpose": "Military / Reconnaissance" if min_dist_mil < 50 else "Commercial",
         }
 
     threat_level = float(fuzzy_result.get("threat_level", 0))
@@ -199,26 +202,26 @@ def generate_bob_briefing(
             f"anomaly_score={float(ml_context.get('anomaly_score', 0)):.3f}\n"
         )
 
-    prompt = f"""[SISTEMA ATHENA-SDA — SPACE DOMAIN AWARENESS]
-Você é o BOB, analista sênior de SDA. Gere um briefing tático em Português.
+    prompt = f"""[ATHENA-SDA SYSTEM — SPACE DOMAIN AWARENESS]
+You are BOB, a senior SDA analyst. Produce a tactical briefing in English.
 
-METADADOS:
+METADATA:
 - NORAD #{norad_id} | {sat_metadata.get('name')} | {sat_metadata.get('country')} | {sat_metadata.get('purpose')}
 
-QUANTITATIVO:
-- Distância a ativo militar: {min_dist_mil:.2f} km
+QUANTITATIVE:
+- Distance to protected military asset: {min_dist_mil:.2f} km
 - ΔSMA 7d: {delta_sma:.4f} km | TLE age: {tle_age:.1f}h
 - Shannon: {shannon:.2f} | Kolmogorov: {kolmogorov:.2f} | Hurst: {hurst:.2f}
-- ADF p: {adf:.4f} | CUSUM L1: {l1_cusum:.2f} | Cointegração p: {coint:.4f}
+- ADF p: {adf:.4f} | CUSUM L1: {l1_cusum:.2f} | Cointegration p: {coint:.4f}
 - Ricci: {ricci:.3f} | RKHS anomaly: {rkhs:.3f}
 {xgb_line}- Fuzzy: {classification} | threat={threat_level:.2f} | conf={confidence*100:.1f}%
 
-INSTRUÇÕES:
-1. Cabeçalho com classificação e confiança.
-2. Justifique com física/math (Hurst, Kolmogorov, CUSUM, cointegração).
-3. Avalie RPO / conjunction box (~10 km).
-4. Liste 3 ações táticas priorizadas.
-5. Tom formal militar. Português.
+INSTRUCTIONS:
+1. Header with classification and confidence.
+2. Justify with physics/math (Hurst, Kolmogorov, CUSUM, cointegration).
+3. Assess RPO / conjunction box (~10 km).
+4. List 3 prioritized tactical actions.
+5. Formal military tone. English only.
 
 BRIEFING:"""
 
@@ -246,52 +249,52 @@ def _local_briefing(
     xgb_bit = ""
     if ml_context:
         xgb_bit = (
-            f"- Camada XGBoost: **{ml_context.get('xgb_class')}** "
-            f"(confiança {float(ml_context.get('xgb_confidence', 0))*100:.0f}%), "
+            f"- XGBoost layer: **{ml_context.get('xgb_class')}** "
+            f"(confidence {float(ml_context.get('xgb_confidence', 0))*100:.0f}%), "
             f"anomaly_score={float(ml_context.get('anomaly_score', 0)):.2f}\n"
         )
 
     shadow = ""
     if coint < 0.05:
         shadow = (
-            f"- **Shadowing/Cointegração:** p-value={coint:.4f} < 0.05 — séries de altitude "
-            f"cointegradas com ativo de alto valor (padrão de escolta/perseguição).\n"
+            f"- **Shadowing / cointegration:** p-value={coint:.4f} < 0.05 — altitude series "
+            f"cointegrated with a high-value asset (escort / pursuit pattern).\n"
         )
 
-    body = f"""🚨 BRIEFING SDA — ATHENA
-OBJETO: {sat_metadata.get('name')} (#{norad_id}) | ORIGEM: {sat_metadata.get('country')}
-CLASSIFICAÇÃO: **{classification}** (risco {threat_level:.2f}) | CONFIANÇA: {confidence*100:.1f}% | AMBIGUIDADE: {ambiguity*100:.1f}%
+    body = f"""SDA BRIEFING — ATHENA
+OBJECT: {sat_metadata.get('name')} (#{norad_id}) | ORIGIN: {sat_metadata.get('country')}
+CLASSIFICATION: **{classification}** (risk {threat_level:.2f}) | CONFIDENCE: {confidence*100:.1f}% | AMBIGUITY: {ambiguity*100:.1f}%
 
-ANÁLISE QUANTITATIVA:
-{xgb_bit}- **Hurst H={hurst:.2f}:** {"persistência de propulsão ativa (baixo empuxo)" if hurst > 0.55 else "comportamento próximo de ruído/reversão à média"}.
-- **Kolmogorov K={kolmogorov:.2f}:** {"trajetória de alta complexidade (controle ativo)" if kolmogorov > 0.5 else "dinâmica compressível / Kepleriana"}.
-- **ADF p={adf:.4f} | CUSUM L1={l1_cusum:.2f}:** quebra estrutural {"detectada" if (adf > 0.05 or l1_cusum > 0.5) else "não dominante"}.
+QUANTITATIVE ANALYSIS:
+{xgb_bit}- **Hurst H={hurst:.2f}:** {"active propulsion persistence (low thrust)" if hurst > 0.55 else "near-noise / mean-reverting behavior"}.
+- **Kolmogorov K={kolmogorov:.2f}:** {"high-complexity trajectory (active control)" if kolmogorov > 0.5 else "compressible / Keplerian dynamics"}.
+- **ADF p={adf:.4f} | CUSUM L1={l1_cusum:.2f}:** structural break {"detected" if (adf > 0.05 or l1_cusum > 0.5) else "not dominant"}.
 - **ΔSMA 7d = {delta_sma:.4f} km** | TLE age **{tle_age:.1f} h**
-- **Military Proximity: {min_dist_mil:.2f} km** | Ricci≈{ricci:.2f} | RKHS≈{rkhs:.2f}
+- **Military proximity: {min_dist_mil:.2f} km** | Ricci≈{ricci:.2f} | RKHS≈{rkhs:.2f}
 {shadow}
 """
 
     if classification in ("HOSTILE", "HOSTIL"):
         actions = """RECOMMENDED ACTIONS (High Kelly Priority):
-1. 🔴 Notify SDA cell / Space Command and log emergency conjunction notice.
-2. 📡 Optical/Radar sensor tasking on next overpass; verify payload status.
-3. 🛡️ Prepare evasive maneuver plan if distance < conjunction threshold (10 km).
-4. 📋 Generate formal intelligence report for space threat catalog."""
+1. Notify SDA cell / Space Command and log emergency conjunction notice.
+2. Optical/radar sensor tasking on next overpass; verify payload status.
+3. Prepare evasive maneuver plan if distance < conjunction threshold (10 km).
+4. Generate formal intelligence report for space threat catalog."""
     elif classification in ("SUSPECT", "SUSPEITO"):
         actions = """RECOMMENDED ACTIONS:
-1. 🟠 Add to 24h high-priority watchlist with 25–50 km threshold.
-2. 📡 Increase TLE ingest frequency (Space-Track / CelesTrak).
-3. 📊 Monitor cointegration and Hurst exponent across next 6 orbits.
-4. 📝 Provide partial briefing to command if distance drops below 25 km."""
+1. Add to 24h high-priority watchlist with 25–50 km threshold.
+2. Increase TLE ingest frequency (Space-Track / CelesTrak).
+3. Monitor cointegration and Hurst exponent across next 6 orbits.
+4. Provide partial briefing to command if distance drops below 25 km."""
     elif classification in ("ANOMALOUS", "ANÔMALO", "ANOMALO"):
         actions = """RECOMMENDED ACTIONS:
-1. 🟡 Maintain passive tracking; correlate with space weather (F10.7/Ap indices).
-2. 📡 Await fresh TLE if data age > 48h (elevated uncertainty).
-3. 📊 Reprocess feature metrics upon next catalog update."""
+1. Maintain passive tracking; correlate with space weather (F10.7/Ap indices).
+2. Await fresh TLE if data age > 48h (elevated uncertainty).
+3. Reprocess feature metrics upon next catalog update."""
     else:
         actions = """RECOMMENDED ACTIONS:
-1. 🟢 Maintain standard catalog sweep.
-2. 🟢 Behavior consistent with normal station-keeping or natural atmospheric decay."""
+1. Maintain standard catalog sweep.
+2. Behavior consistent with normal station-keeping or natural atmospheric decay."""
 
     return (body + "\n" + actions).strip()
 
@@ -312,8 +315,11 @@ def answer_operator_query(
     text = user_input.strip()
     low = text.lower()
 
-    # Intent: list alerts / status
-    if any(k in low for k in ("alerta", "alertas", "status", "resumo", "overview", "hostil", "suspeito", "alert", "alerts", "threat", "threats")):
+    # Intent: list alerts / status (EN + legacy PT keywords)
+    if any(k in low for k in (
+        "alerta", "alertas", "status", "resumo", "overview", "hostil", "suspeito",
+        "alert", "alerts", "threat", "threats", "summary",
+    )):
         alerts = tool_list_alerts(processed)
         if not alerts:
             return "No active threat alerts at this time. Catalog within normal baseline."
@@ -321,19 +327,19 @@ def answer_operator_query(
         for a in alerts:
             lines.append(
                 f"- #{a['id']} {a['name']}: **{a['classification']}** | "
-                f"ameaça {a['threat_level']:.2f} | Kelly {a['kelly']*100:.0f}% | "
-                f"dist. militar {a['min_dist_mil']:.1f} km"
+                f"threat {a['threat_level']:.2f} | Kelly {a['kelly']*100:.0f}% | "
+                f"military dist. {a['min_dist_mil']:.1f} km"
             )
         weather = tool_get_space_weather()
         lines.append(
-            f"\nClima espacial: F10.7={weather['f10_7']}, Ap={weather['ap_index']}. {weather['note']}"
+            f"\nSpace weather: F10.7={weather['f10_7']}, Ap={weather['ap_index']}. {weather['note']}"
         )
         return "\n".join(lines)
 
-    if any(k in low for k in ("clima", "space weather", "f10", "arrasto")):
+    if any(k in low for k in ("clima", "space weather", "f10", "arrasto", "weather", "drag")):
         w = tool_get_space_weather()
         return (
-            f"**Space weather (demo):** F10.7={w['f10_7']}, Ap={w['ap_index']}, Kp={w['kp']}.\n"
+            f"**Space weather:** F10.7={w['f10_7']}, Ap={w['ap_index']}, Kp={w['kp']}.\n"
             f"{w['note']}"
         )
 
@@ -358,44 +364,52 @@ def answer_operator_query(
     if norad_id is None:
         ids = ", ".join(f"#{k}" for k in sorted(catalog.keys())[:12])
         return (
-            "Não identifiquei o objeto. Exemplos:\n"
-            "- `Briefing do #44231`\n"
-            "- `Quais alertas ativos?`\n"
-            "- `Histórico do #2001`\n"
-            f"IDs no catálogo: {ids}..."
+            "I could not identify the object. Examples:\n"
+            "- `Briefing for #44231`\n"
+            "- `Active alerts?`\n"
+            "- `History for #2001`\n"
+            f"Catalog IDs: {ids}..."
         )
 
     # History intent
-    if any(k in low for k in ("históric", "historico", "trajetória", "trajetoria", "sma", "últimos dias", "ultimos dias")):
+    if any(k in low for k in (
+        "históric", "historico", "history", "trajetória", "trajetoria", "trajectory",
+        "sma", "últimos dias", "ultimos dias", "last days",
+    )):
         h = tool_get_object_history(norad_id, catalog, days=14)
         if "error" in h:
             return h["error"]
         return (
-            f"**Histórico orbital #{norad_id}** (janela recente):\n"
-            f"- Épocas: {h['n_epochs']}\n"
+            f"**Orbital history #{norad_id}** (recent window):\n"
+            f"- Epochs: {h['n_epochs']}\n"
             f"- SMA: {h['sma_start']:.3f} → {h['sma_end']:.3f} km (Δ {h['delta_sma_km']:+.4f} km)\n"
-            f"- Inclinação média: {h['inc_mean']:.3f}°"
+            f"- Mean inclination: {h['inc_mean']:.3f}°"
         )
 
     # Approaches intent
-    if any(k in low for k in ("aproxima", "distância", "distancia", "rpo", "conjun")):
+    if any(k in low for k in (
+        "aproxima", "approach", "approaches", "distância", "distancia", "distance",
+        "rpo", "conjun", "proximity",
+    )):
         ca = tool_get_close_approaches(norad_id, processed_by_id)
         if "error" in ca:
             return ca["error"]
         return (
-            f"**Aproximações #{norad_id}:**\n"
-            f"- Distância mín. a ativo militar: **{ca['min_distance_to_military_km']:.2f} km**\n"
-            f"- Ativo mais próximo: {ca['closest_asset']}\n"
-            f"- Dentro de 50 km: {'SIM' if ca['within_threshold'] else 'não'}\n"
-            f"- Cointegração p-value: {ca['cointegration_pvalue']}"
+            f"**Approaches #{norad_id}:**\n"
+            f"- Min distance to military asset: **{ca['min_distance_to_military_km']:.2f} km**\n"
+            f"- Closest asset: {ca['closest_asset']}\n"
+            f"- Within 50 km: {'YES' if ca['within_threshold'] else 'no'}\n"
+            f"- Cointegration p-value: {ca['cointegration_pvalue']}"
         )
 
     # Default: full briefing
     row = processed_by_id.get(norad_id)
     if row is None:
-        return f"Objeto #{norad_id} está no catálogo mas ainda sem score processado."
+        return f"Object #{norad_id} is in the catalog but has no processed score yet."
 
-    meta = catalog[norad_id]["metadata"] if norad_id in catalog else {"name": row["name"], "country": row["country"], "purpose": row["purpose"]}
+    meta = catalog[norad_id]["metadata"] if norad_id in catalog else {
+        "name": row["name"], "country": row["country"], "purpose": row["purpose"],
+    }
     return generate_bob_briefing(
         row["features"],
         {

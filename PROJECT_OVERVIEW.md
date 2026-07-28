@@ -137,147 +137,151 @@ TLE Time Series ──▶ Feature Extractor ──▶ ML Training Dataset
 | Threat Classifier | XGBoost | Supervised | 38 features + anomaly_score | 🟢🟡🟠🔴 Tiers |
 | Risk Calibration | Mamdani Fuzzy | Rule Engine | Distance, Cointegration, Anomaly | Operational Risk |
 
----
-    "eccentricity": 0.001,              # quão circular é a órbita
-    "inclination_deg": 51.6,            # ângulo em relação ao equador
-    "raan_deg": 150.1,                  # orientação do plano orbital
-    "arg_perigee_deg": 100.1,           # orientação da elipse
-    "mean_anomaly_deg": 260.5,          # posição na órbita
-    "mean_motion_rev_per_day": 15.5,    # voltas por dia
-    
-    # Variações temporais (detectam manobras)
-    "delta_sma_7d_km": 0.15,           # mudança de altitude em 7 dias
-    "delta_sma_30d_km": 0.45,          # mudança em 30 dias
-    "delta_inc_30d_deg": 0.02,         # mudança de inclinação
-    "delta_ecc_30d": 0.0001,           # mudança de excentricidade
-    
-    # Contagem de eventos
-    "maneuver_count_7d": 0,            # quantas manobras na semana
-    "maneuver_count_30d": 1,           # quantas no mês
-    
-    # Proximidade de ativos militares
-    "min_distance_to_military_km": 450.0,  # distância do sat militar mais próximo
-    "military_nearby_count": 3,            # quantos sat militares num raio de 500km
+### Example Feature Vector
+
+```python
+features = {
+    "semi_major_axis_km": 6878.0,
+    "eccentricity": 0.001,              # how circular the orbit is
+    "inclination_deg": 51.6,            # angle relative to the equator
+    "raan_deg": 150.1,                  # orbital plane orientation
+    "arg_perigee_deg": 100.1,           # ellipse orientation
+    "mean_anomaly_deg": 260.5,          # position on the orbit
+    "mean_motion_rev_per_day": 15.5,    # revolutions per day
+
+    # Temporal variations (detect maneuvers)
+    "delta_sma_7d_km": 0.15,           # altitude change over 7 days
+    "delta_sma_30d_km": 0.45,          # change over 30 days
+    "delta_inc_30d_deg": 0.02,         # inclination change
+    "delta_ecc_30d": 0.0001,           # eccentricity change
+
+    # Event counts
+    "maneuver_count_7d": 0,            # maneuvers in the week
+    "maneuver_count_30d": 1,           # maneuvers in the month
+
+    # Military asset proximity
+    "min_distance_to_military_km": 450.0,  # distance to nearest military sat
+    "military_nearby_count": 3,            # military sats within 500 km
 }
 ```
 
-### Como rotulamos (ground truth simulado)
+### How We Label (Simulated Ground Truth)
 
-Não temos acesso a classificações reais de ameaça (classificado). Criamos regras baseadas em **doutrina militar pública**:
+We do not have access to real threat classifications (classified). We create rules based on **public military doctrine**:
 
 ```python
 def label_object(features):
     """
-    Regras de doutrina de Space Domain Awareness:
-    - Manobra >2km em 7 dias + perto de militar = SUSPEITO
-    - Manobra >5km ou aproximação <10km = HOSTIL
-    - Múltiplas manobras sem motivação = SUSPEITO
+    Space Domain Awareness doctrine rules:
+    - Maneuver >2km in 7 days + near military = SUSPECT
+    - Maneuver >5km or approach <10km = HOSTILE
+    - Multiple maneuvers without motivation = SUSPECT
     """
     if features["min_distance_to_military_km"] < 10:
-        return "HOSTIL"
+        return "HOSTILE"
     if features["delta_sma_7d_km"] > 5.0:
-        return "HOSTIL"
-    if (features["delta_sma_7d_km"] > 2.0 and 
+        return "HOSTILE"
+    if (features["delta_sma_7d_km"] > 2.0 and
         features["min_distance_to_military_km"] < 50):
-        return "SUSPEITO"
+        return "SUSPECT"
     if features["maneuver_count_30d"] >= 3:
-        return "SUSPEITO"
+        return "SUSPECT"
     if features["delta_sma_7d_km"] > 1.0:
-        return "ANÔMALO"
+        return "ANOMALOUS"
     return "NORMAL"
 ```
 
 ### Dataset
 
-| Parâmetro | Valor |
+| Parameter | Value |
 |-----------|-------|
-| Objetos analisados | ~10.000 satélites ativos + ~5.000 fragmentos rastreáveis |
-| Período histórico | 12 meses (365 dias) |
-| Features por registro | 15 |
-| Registros totais | ~15.000 objetos × 365 dias = **~5.5 milhões** |
-| Tamanho em disco | ~200 MB (CSV comprimido) |
-| Distribuição esperada | ~95% NORMAL, ~3% ANÔMALO, ~1.5% SUSPEITO, ~0.5% HOSTIL |
+| Objects analyzed | ~10,000 active satellites + ~5,000 trackable fragments |
+| Historical period | 12 months (365 days) |
+| Features per record | 15 |
+| Total records | ~15,000 objects × 365 days = **~5.5 million** |
+| On-disk size | ~200 MB (compressed CSV) |
+| Expected distribution | ~95% NORMAL, ~3% ANOMALOUS, ~1.5% SUSPECT, ~0.5% HOSTILE |
 
-### Treino no seu hardware
+### Training on Local Hardware
 
-| Hardware | Tempo Isolation Forest | Tempo XGBoost | Total |
-|----------|----------------------|---------------|-------|
-| Ryzen 9 7900X (CPU 12C/24T) | ~30 segundos | ~3 minutos | **~4 minutos** |
-| Com GPU ROCm | — | ~1 minuto | ~2 minutos |
+| Hardware | Isolation Forest Time | XGBoost Time | Total |
+|----------|----------------------|--------------|-------|
+| Ryzen 9 7900X (CPU 12C/24T) | ~30 seconds | ~3 minutes | **~4 minutes** |
+| With ROCm GPU | — | ~1 minute | ~2 minutes |
 
 ---
 
-## 7. O DASHBOARD
+## 6. THE DASHBOARD
 
 ### Layout
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  ATHENA-SDA                           🟢 9.947 🟡 35 │
+│  ATHENA-SDA                           🟢 9,947 🟡 35 │
 │  Space Domain Awareness Copilot           🟠 12  🔴 3   │
 ├────────────────────┬─────────────────────────────────────┤
-│                    │  🚨 ALERTAS ATIVOS                  │
+│                    │  🚨 ACTIVE ALERTS                   │
 │                    │                                     │
-│                    │  🔴 PRIORIDADE 1                     │
-│   🌍 GLOBO 3D     │  ┌─────────────────────────────┐    │
-│   (Cesium/Plotly) │  │ Objeto #44231               │    │
-│                    │  │ 3 manobras em 24h           │    │
-│   • 15.000 objetos │  │ Aproximação de US #22988    │    │
-│     em órbita      │  │ Confiança: 87%              │    │
-│   • Coloridos por  │  │ [Ver briefing] [Ignorar]    │    │
-│     classificação  │  └─────────────────────────────┘    │
-│   • Linhas de      │                                     │
-│     trajetória     │  🟠 PRIORIDADE 2                     │
+│                    │  🔴 PRIORITY 1                      │
+│   🌍 3D GLOBE      │  ┌─────────────────────────────┐    │
+│   (Cesium/Plotly)  │  │ Object #44231               │    │
+│                    │  │ 3 maneuvers in 24h          │    │
+│   • 15,000 objects │  │ Approach to US #22988       │    │
+│     in orbit       │  │ Confidence: 87%             │    │
+│   • Colored by     │  │ [View briefing] [Dismiss]   │    │
+│     classification │  └─────────────────────────────┘    │
+│   • Trajectory     │                                     │
+│     lines          │  🟠 PRIORITY 2                      │
 │   • Hover = info   │  ┌─────────────────────────────┐    │
-│                    │  │ Objeto #52901               │    │
-│                    │  │ Mudança orbital suspeita     │    │
-│                    │  │ Confiança: 72%              │    │
+│                    │  │ Object #52901               │    │
+│                    │  │ Suspect orbital change      │    │
+│                    │  │ Confidence: 72%             │    │
 │                    │  └─────────────────────────────┘    │
 ├────────────────────┴─────────────────────────────────────┤
 │  💬 BOB CHAT                                          │
 │  ┌──────────────────────────────────────────────────┐  │
-│  │ Bob: Detectei 15 alertas nas últimas 24h.        │  │
-│  │ 3 requerem atenção imediata.                     │  │
+│  │ Bob: I detected 15 alerts in the last 24h.       │  │
+│  │ 3 require immediate attention.                   │  │
 │  │                                                  │  │
-│  │ Operador: Bob, mostre a trajetória do #44231     │  │
-│  │ dos últimos 7 dias.                              │  │
+│  │ Operator: Bob, show the trajectory of #44231     │  │
+│  │ for the last 7 days.                             │  │
 │  │                                                  │  │
-│  │ Bob: Renderizando no globo...                    │  │
-│  │ O objeto fez 3 manobras:                         │  │
-│  │ • 10/07: +2.3 km (suspeito)                      │  │
-│  │ • 12/07: -1.1 km (suspeito)                      │  │
-│  │ • 13/07: +0.8 km (suspeito)                      │  │
-│  │ [Digite sua pergunta...]                         │  │
+│  │ Bob: Rendering on the globe...                   │  │
+│  │ The object performed 3 maneuvers:                │  │
+│  │ • 10/07: +2.3 km (suspect)                       │  │
+│  │ • 12/07: -1.1 km (suspect)                       │  │
+│  │ • 13/07: +0.8 km (suspect)                       │  │
+│  │ [Type your question...]                          │  │
 │  └──────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 8. MÉTRICAS PARA O PITCH
+## 7. PITCH METRICS
 
-| Métrica | Valor | Como medir |
-|---------|-------|------------|
-| Objetos monitorados | 15.000+ | Catálogo Space-Track ativo |
-| Features por objeto | 15 | Extraídas do TLE |
-| Redução de carga cognitiva | **De 15.000 para 15 alertas/dia** | Filtro ML |
-| Precisão do classificador | >85% (validação cruzada) | Métricas sklearn |
-| Tempo de análise do Bob | <5 segundos por alerta | Do insight ao briefing |
-| Patentes referenciadas | 30+ | Mapeadas no projeto |
-| Contratantes reais | Palantir + Pentágono ($30B Space Force) | Prova de mercado |
-
----
-
-## 9. POR QUE ISSO É REAL
-
-- **Palantir** tem contrato ativo com US Space Force para SDA
-- **Voyager Space + Palantir** anunciaram parceria em Junho/2024 exatamente para AI militar espacial
-- **China** está patentendo defesa orbital ativa (5 patentes em 2024-2025)
-- **Mercado de SDA**: $6.9 bilhões em 2025, crescendo
-- **Dados são públicos**: Space-Track é mantido pelo US Space Force
+| Metric | Value | How to Measure |
+|--------|-------|----------------|
+| Objects monitored | 15,000+ | Active Space-Track catalog |
+| Features per object | 15 | Extracted from TLE |
+| Cognitive load reduction | **From 15,000 to 15 alerts/day** | ML filter |
+| Classifier precision | >85% (cross-validation) | sklearn metrics |
+| Bob analysis time | <5 seconds per alert | From insight to briefing |
+| Patents referenced | 30+ | Mapped in the project |
+| Real contractors | Palantir + Pentagon ($30B Space Force) | Market proof |
 
 ---
 
-## 10. RESUMO EM 1 PARÁGRAFO
+## 8. WHY THIS IS REAL
 
-O Athena-SDA ingere o catálogo orbital público de 15.000 objetos, extrai 15 features orbitais e temporais de cada um, e usa Isolation Forest + XGBoost treinados para classificar comportamento em 4 níveis de ameaça. Dos 15.000 objetos, apenas ~15 geram alertas por dia. Esses alertas alimentam o IBM Bob, que — seguindo a arquitetura de 4 etapas da patente Palantir US 2024/0394296 A1 (LLM + Geospatial) — contextualiza cada ameaça com dados de clima espacial e catálogos de propósito militar, gera uma descrição qualitativa, classifica com nível de confiança e recomenda ações táticas. Tudo é exibido em um dashboard com globo 3D interativo, cards de alerta priorizados e chat com o Bob. O projeto se fundamenta em 30+ patentes de fronteira (Palantir, Lockheed Martin, Raytheon, China CAST/CASC) publicadas entre 2023 e 2026.
+- **Palantir** has an active US Space Force contract for SDA
+- **Voyager Space + Palantir** announced a partnership in June 2024 specifically for military space AI
+- **China** is patenting active orbital defense (5 patents in 2024–2025)
+- **SDA market**: $6.9 billion in 2025, growing
+- **Data is public**: Space-Track is maintained by the US Space Force
+
+---
+
+## 9. ONE-PARAGRAPH SUMMARY
+
+Athena-SDA ingests the public orbital catalog of 15,000 objects, extracts 15 orbital and temporal features from each, and uses trained Isolation Forest + XGBoost models to classify behavior into 4 threat tiers. Of the 15,000 objects, only ~15 generate alerts per day. Those alerts feed IBM Bob, which — following the 4-stage architecture of Palantir patent US 2024/0394296 A1 (LLM + Geospatial) — contextualizes each threat with space-weather data and military purpose catalogs, produces a qualitative description, classifies with a confidence level, and recommends tactical actions. Everything is displayed on a dashboard with an interactive 3D globe, prioritized alert cards, and chat with Bob. The project is grounded in 30+ frontier patents (Palantir, Lockheed Martin, Raytheon, China CAST/CASC) published between 2023 and 2026.

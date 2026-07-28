@@ -2,7 +2,7 @@
 
 **Athena-SDA** · Walk-Forward Validation (Expanding Window)  
 **Data:** Public TLEs (HF `space-track-tle-history` mirror filtered to watchlist) · **2014-01-01 → 2026-07-25**  
-**Artifacts:** `data/alerts/walkforward/wf_*.json` · `demostracao_previsao_pre_report.csv`
+**Artifacts:** `data/alerts/walkforward/wf_*.json` · `pre_report_prediction_demo.csv`
 
 ---
 
@@ -92,7 +92,7 @@ For each `asof` date leading to report peak `t_peak`:
 ```bash
 python scripts/run_walkforward.py run --step-days 14 --threshold 0.50
 python scripts/run_walkforward.py summary
-python -c "import pandas as pd; print(pd.read_csv('data/alerts/walkforward/demostracao_previsao_pre_report.csv').to_string())"
+python -c "import pandas as pd; print(pd.read_csv('data/alerts/walkforward/pre_report_prediction_demo.csv').to_string())"
 ```
 
 ---

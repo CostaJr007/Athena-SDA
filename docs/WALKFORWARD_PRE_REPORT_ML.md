@@ -179,13 +179,7 @@ python scripts/run_walkforward.py summary
 | Documentation Report | `docs/WALKFORWARD_PRE_REPORT_ML.md` |
 
 ---
+
+*Walk-forward executed with the post–space-weather / hybrid / series-protocol ML. Duration ~13.5 min. Exit code 0.*
+
 *Athena-SDA — Walk-forward validation report.*
-s por evento |
-| `data/alerts/walkforward/wf_<event>.json` | Folds completos + features por asof |
-| `data/alerts/walkforward/wf_analysis_new_ml.json` | Extração 1º hit / movers |
-| `data/catalog/events_walkforward.json` | Âncoras e fontes |
-| Este relatório | `docs/RELATORIO_WALKFORWARD_PRE_REPORT_ML_NOVO.md` |
-
----
-
-*Walk-forward executado com o ML pós–space weather / hybrid / protocolo série. Duração ~13,5 min. Exit code 0.*

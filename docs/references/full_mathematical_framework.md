@@ -1,23 +1,23 @@
-# Framework Matemático Completo — Athena-SDA
+# Complete Mathematical Framework — Athena-SDA
 
-Este documento serve como referência de engenharia e modelagem para o **Athena-SDA**, unindo 16 teorias estatísticas, matemáticas e econômicas para a detecção de anomalias orbitais, identificação de manobras de baixíssimo empuxo e detecção de satélites espiões (aproximação e shadowing).
+This document is the engineering and modeling reference for **Athena-SDA**, unifying 16 statistical, mathematical, and economic theories for orbital anomaly detection, very-low-thrust maneuver identification, and spy-satellite detection (proximity and shadowing).
 
 ---
 
-## 1. Entropia de Shannon (Previsibilidade Orbital)
-* **Teoria:** Claude Shannon (1948)
-* **Objetivo:** Quantificar o nível de desordem ou incerteza no comportamento do semi-eixo maior ($a$).
+## 1. Shannon Entropy (Orbital Predictability)
+* **Theory:** Claude Shannon (1948)
+* **Objective:** Quantify disorder or uncertainty in semi-major axis (\(a\)) behavior.
 
-### Formulação Matemática
-Dada uma série temporal de variações diárias do semi-eixo maior $\Delta a_t = a_t - a_{t-1}$, discretizamos esses valores em $N$ caixas (bins) de histograma para aproximar a distribuição de probabilidade empírica $P(x_i)$. A Entropia de Shannon é dada por:
+### Mathematical Formulation
+Given a time series of daily semi-major-axis variations \(\Delta a_t = a_t - a_{t-1}\), discretize those values into \(N\) histogram bins to approximate the empirical probability distribution \(P(x_i)\). Shannon entropy is:
 
 $$H(X) = -\sum_{i=1}^{N} P(x_i) \log_2 P(x_i)$$
 
-### Justificativa Física (SDA)
-* **Órbita Kepleriana Passiva:** O satélite apenas decai devido a forças gravitacionais e arrasto atmosférico regular. A variação $\Delta a_t$ é altamente concentrada em poucas caixas. $H(X) \to 0$ (alta ordem/previsibilidade).
-* **Órbita com Manobras Ativas:** As variações diárias de altitude são distribuídas de forma errática devido a ignições ocasionais. $H(X) > 1.8$ (alta desordem/caos).
+### Physical Justification (SDA)
+* **Passive Keplerian orbit:** The satellite decays only under gravity and regular atmospheric drag. \(\Delta a_t\) is highly concentrated in few bins. \(H(X) \to 0\) (high order / predictability).
+* **Orbit with active maneuvers:** Daily altitude variations are erratically distributed due to occasional burns. \(H(X) > 1.8\) (high disorder / chaos).
 
-### Implementação em Python
+### Python Implementation
 ```python
 import numpy as np
 from scipy.stats import entropy
@@ -28,27 +28,27 @@ def shannon_entropy_sma(sma_series, bins=10):
     diffs = np.diff(sma_series)
     hist, _ = np.histogram(diffs, bins=bins)
     probs = hist / np.sum(hist)
-    # Remove probabilidades nulas
+    # Remove zero probabilities
     probs = probs[probs > 0]
     return entropy(probs, base=2)
 ```
 
 ---
 
-## 2. Complexidade de Kolmogorov (Detecção de Controle Algorítmico)
-* **Teoria:** Andrey Kolmogorov (1965)
-* **Objetivo:** Avaliar se a trajetória orbital é descrita por leis físicas simples ou por um algoritmo dinâmico de controle de guiamento.
+## 2. Kolmogorov Complexity (Algorithmic Control Detection)
+* **Theory:** Andrey Kolmogorov (1965)
+* **Objective:** Assess whether the orbital trajectory is described by simple physical laws or by a dynamic guidance-control algorithm.
 
-### Formulação Matemática
-A complexidade de Kolmogorov $K(s)$ é o tamanho do menor programa $p$ que gera a string $s$ em uma máquina de Turing Universal. Como $K(s)$ é indecidível, usamos um compressor sem perdas (como `zlib`) como limite superior (proxy):
+### Mathematical Formulation
+Kolmogorov complexity \(K(s)\) is the size of the shortest program \(p\) that produces string \(s\) on a Universal Turing Machine. Because \(K(s)\) is undecidable, a lossless compressor (e.g. `zlib`) is used as an upper-bound proxy:
 
 $$K_{\text{proxy}}(s) = \frac{\text{Len}(\text{Compress}(s))}{\text{Len}(s)}$$
 
-### Justificativa Física (SDA)
-* **Deriva Natural:** A trajetória do satélite é descrita por equações físicas simples de propagação (baixo fluxo de informação). A representação discretizada da direção do movimento comprime muito bem ($K_{\text{proxy}} \to 0$).
-* **Manobras Evasivas ou RPO:** O satélite executa micro-correções frequentes baseadas em sensores, criando uma cadeia de estados pseudo-aleatória que resiste à compressão ($K_{\text{proxy}} \to 1$).
+### Physical Justification (SDA)
+* **Natural drift:** The trajectory is described by simple propagation physics (low information flow). The discretized motion-direction representation compresses well (\(K_{\text{proxy}} \to 0\)).
+* **Evasive maneuvers or RPO:** The satellite executes frequent sensor-driven micro-corrections, creating a pseudo-random state chain that resists compression (\(K_{\text{proxy}} \to 1\)).
 
-### Implementação em Python
+### Python Implementation
 ```python
 import zlib
 
@@ -56,8 +56,8 @@ def kolmogorov_complexity_proxy(sma_series):
     if len(sma_series) < 2:
         return 0.0
     diffs = np.diff(sma_series)
-    # Codifica a série em tokens: U (Up), D (Down), S (Stable)
-    threshold = 0.05  # 50 metros
+    # Encode the series as tokens: U (Up), D (Down), S (Stable)
+    threshold = 0.05  # 50 meters
     tokens = []
     for d in diffs:
         if d > threshold:
@@ -76,20 +76,20 @@ def kolmogorov_complexity_proxy(sma_series):
 
 ---
 
-## 3. Expoente de Hurst (Memória de Longo Prazo e R/S)
-* **Teoria:** Harold Edwin Hurst (1951)
-* **Objetivo:** Identificar se o movimento orbital possui tendência ativa de longo prazo (propulsão elétrica de baixo empuxo).
+## 3. Hurst Exponent (Long-Memory and R/S)
+* **Theory:** Harold Edwin Hurst (1951)
+* **Objective:** Identify whether orbital motion has an active long-term trend (low-thrust electric propulsion).
 
-### Formulação Matemática
-A análise de Faixa Redimensionada (R/S) é realizada dividindo a amplitude cumulativa desfiada da média pelo desvio padrão em janelas de tamanho $n$:
+### Mathematical Formulation
+Rescaled Range (R/S) analysis divides the cumulative range of mean-detrended amplitude by the standard deviation over windows of size \(n\):
 
 $$E \left[ \frac{R(n)}{S(n)} \right] = C \cdot n^H$$
 
-* **$H < 0.5$:** Anti-persistente (reversão à média - manutenção de órbita padrão/station-keeping).
-* **$H = 0.5$:** Caminhada aleatória pura (ruído branco Kepleriano).
-* **$H > 0.5$:** Persistente (comportamento de busca de alvo / transferência orbital ativa).
+* **\(H < 0.5\):** Anti-persistent (mean reversion — standard station-keeping).
+* **\(H = 0.5\):** Pure random walk (Keplerian white noise).
+* **\(H > 0.5\):** Persistent (target-seeking / active orbital transfer behavior).
 
-### Implementação em Python
+### Python Implementation
 ```python
 def hurst_exponent(series, max_lag=20):
     n = len(series)
@@ -120,33 +120,33 @@ def hurst_exponent(series, max_lag=20):
 
 ---
 
-## 4. Curvatura de Ricci de Ollivier (Anomalias de Grafo Orbital)
-* **Teoria:** Yann Ollivier (2007)
-* **Objetivo:** Detectar convergências e distorções espaciais na vizinhança geométrica de uma constelação.
+## 4. Ollivier-Ricci Curvature (Orbital Graph Anomalies)
+* **Theory:** Yann Ollivier (2007)
+* **Objective:** Detect convergences and spatial distortions in the geometric neighborhood of a constellation.
 
-### Formulação Matemática
-A curvatura de Ricci $\kappa(x, y)$ entre dois nós (satélites) no grafo geométrico é calculada usando a distância de transporte de Wasserstein-1 ($W_1$) entre as medidas de probabilidade das vizinhanças dos nós:
+### Mathematical Formulation
+Ricci curvature \(\kappa(x, y)\) between two nodes (satellites) on the geometric graph is computed using the Wasserstein-1 transport distance (\(W_1\)) between neighborhood probability measures:
 
 $$\kappa(x, y) = 1 - \frac{W_1(m_x, m_y)}{d(x, y)}$$
 
-### Justificativa Física (SDA)
-* **Estrutura Regular:** Em constelações estáveis (ex: GPS), os satélites mantêm distâncias constantes. A curvatura é estável e homogênea.
-* **Aproximação Hostil:** Um satélite invasor entra na vizinhança, mudando o fluxo de transporte local de forma atípica, fazendo $\kappa(x, y)$ assumir valores positivos na direção do alvo.
+### Physical Justification (SDA)
+* **Regular structure:** In stable constellations (e.g. GPS), satellites keep constant distances. Curvature is stable and homogeneous.
+* **Hostile approach:** An intruder enters the neighborhood, changing local transport flow atypically so that \(\kappa(x, y)\) takes positive values toward the target.
 
-### Implementação em Python
+### Python Implementation
 ```python
 from scipy.stats import wasserstein_distance
 
 def ollivier_ricci_proxy(pos_x, neighbors_x, pos_y, neighbors_y):
     """
-    Aproximação discreta da curvatura de Ricci usando Wasserstein 1D
-    sobre as distâncias dos vizinhos em relação aos nós centrais.
+    Discrete approximation of Ricci curvature using 1D Wasserstein
+    on neighbor distances relative to the central nodes.
     """
     d_xy = np.linalg.norm(pos_x - pos_y)
     if d_xy == 0:
         return 0.0
     
-    # Medida empírica dos vizinhos
+    # Empirical neighborhood measures
     dist_x = np.linalg.norm(neighbors_x - pos_x, axis=1)
     dist_y = np.linalg.norm(neighbors_y - pos_y, axis=1)
     
@@ -156,24 +156,24 @@ def ollivier_ricci_proxy(pos_x, neighbors_x, pos_y, neighbors_y):
 
 ---
 
-## 5. Homologia Persistente (TDA - Análise de Dados Topológicos)
-* **Teoria:** Herbert Edelsbrunner (2002)
-* **Objetivo:** Detectar deformações estruturais de longo prazo nas trajetórias de nuvens de pontos 3D.
+## 5. Persistent Homology (TDA — Topological Data Analysis)
+* **Theory:** Herbert Edelsbrunner (2002)
+* **Objective:** Detect long-term structural deformations in 3D point-cloud trajectories.
 
-### Formulação Matemática
-Construímos a filtração de Vietoris-Rips $VR(P, \epsilon)$ variando o raio de conectividade $\epsilon$ sobre os pontos tridimensionais de posição orbital do satélite:
+### Mathematical Formulation
+Build the Vietoris–Rips filtration \(VR(P, \epsilon)\) by varying connectivity radius \(\epsilon\) over the satellite’s three-dimensional orbital positions:
 
 $$VR(P, \epsilon) = \{ \sigma \subseteq P : \text{diam}(\sigma) \le \epsilon \}$$
 
-Acompanhamos o ciclo $H_1$ (loops 1D) ao longo da filtração para mapear sua persistência (nascimento e morte).
+Track the \(H_1\) cycle (1D loops) along the filtration to map its persistence (birth and death).
 
-### Implementação em Python
+### Python Implementation
 ```python
 from ripser import ripser
 
 def persistent_homology_features(positions_3d):
     """
-    Mede a persistência topológica (H0 e H1) de um enxame ou trajetória
+    Measure topological persistence (H0 and H1) of a swarm or trajectory.
     """
     if len(positions_3d) < 5:
         return {'h0_persistent': 1, 'h1_persistent': 0}
@@ -182,7 +182,7 @@ def persistent_homology_features(positions_3d):
     h0 = dgms[0]
     h1 = dgms[1]
     
-    # Persistência média de H0 (componentes conexas) e H1 (loops)
+    # Mean H0 (connected components) and H1 (loops) persistence
     h0_pers = np.mean([d[1] - d[0] for d in h0 if np.isfinite(d[1])]) if len(h0) > 0 else 0
     h1_pers = np.mean([d[1] - d[0] for d in h1]) if len(h1) > 0 else 0
     
@@ -194,43 +194,43 @@ def persistent_homology_features(positions_3d):
 
 ---
 
-## 6. Chern-Simons Proxy (Não-Conservação do Campo Orbital)
-* **Teoria:** Chern-Simons (1974)
-* **Objetivo:** Medir a atuação de forças propulsoras não-conservativas (químicas ou iônicas).
+## 6. Chern–Simons Proxy (Non-Conservation of the Orbital Field)
+* **Theory:** Chern–Simons (1974)
+* **Objective:** Measure the action of non-conservative propulsive forces (chemical or ion).
 
-### Formulação Matemática
-O momento angular específico $\vec{h} = \vec{r} \times \vec{v}$ é um vetor conservado para uma órbita Kepleriana pura (campo gravitacional conservativo). A perturbação no momento angular é usada como proxy topológico de Chern-Simons:
+### Mathematical Formulation
+Specific angular momentum \(\vec{h} = \vec{r} \times \vec{v}\) is conserved for a pure Keplerian orbit (conservative gravitational field). Perturbation of angular momentum is used as a Chern–Simons topological proxy:
 
 $$\text{CS}_{\text{proxy}} = \frac{\max \|\vec{h}_t - \vec{h}_0\|}{\|\vec{h}_0\|}$$
 
-### Implementação em Python
+### Python Implementation
 ```python
 def chern_simons_angular_momentum(positions, velocities):
     if len(positions) < 2:
         return 0.0
-    # Calcula momento angular específico h = r x v
+    # Specific angular momentum h = r x v
     h_vectors = np.cross(positions, velocities)
     h0 = h_vectors[0]
     norm_h0 = np.linalg.norm(h0)
     if norm_h0 == 0:
         return 0.0
-    # Desvio máximo da baseline
+    # Maximum deviation from baseline
     diffs = np.linalg.norm(h_vectors - h0, axis=1)
     return np.max(diffs) / norm_h0
 ```
 
 ---
 
-## 7. Anomalia Espectral em Espaço de Hilbert (RKHS)
-* **Teoria:** David Hilbert (~1900)
-* **Objetivo:** Detectar mudanças de distribuição orbital mapeando as features em dimensões infinitas.
+## 7. Spectral Anomaly in Hilbert Space (RKHS)
+* **Theory:** David Hilbert (~1900)
+* **Objective:** Detect orbital distribution changes by mapping features into infinite dimensions.
 
-### Formulação Matemática
-Usamos o kernel Gaussiano RBF $k(x, y) = \exp(-\gamma \|x - y\|^2)$ para computar a similaridade das features no espaço de Hilbert e avaliamos a norma de similaridade com um conjunto estável de referência:
+### Mathematical Formulation
+Use the Gaussian RBF kernel \(k(x, y) = \exp(-\gamma \|x - y\|^2)\) to compute feature similarity in Hilbert space and evaluate the similarity norm against a stable reference set:
 
-$$\text{Anomalia} = 1.0 - \max_j k(x, x_{\text{ref}, j})$$
+$$\text{Anomaly} = 1.0 - \max_j k(x, x_{\text{ref}, j})$$
 
-### Implementação em Python
+### Python Implementation
 ```python
 from sklearn.metrics.pairwise import rbf_kernel
 
@@ -244,41 +244,41 @@ def spectral_anomaly_rkhs(features_vector, reference_matrix, gamma=0.1):
 
 ---
 
-## 8. Lógica Fuzzy de Mamdani (Inferência sob Incerteza)
-* **Teoria:** Lotfi A. Zadeh (1965)
-* **Objetivo:** Agregar múltiplos scores de ML e features matemáticas sob incerteza de medição.
+## 8. Mamdani Fuzzy Logic (Inference under Uncertainty)
+* **Theory:** Lotfi A. Zadeh (1965)
+* **Objective:** Aggregate multiple ML scores and mathematical features under measurement uncertainty.
 
-### Formulação Matemática
-Dada a entrada contínua $x$, calcula-se o grau de pertinência $\mu_A(x) \in [0, 1]$. As regras de inferência são agregadas e o valor de saída nítido é defuzzificado pelo centroide:
+### Mathematical Formulation
+Given continuous input \(x\), compute membership \(\mu_A(x) \in [0, 1]\). Inference rules are aggregated and the crisp output is defuzzified by centroid:
 
 $$z^* = \frac{\int z \cdot \mu_C(z) dz}{\int \mu_C(z) dz}$$
 
-### Implementação em Python
+### Python Implementation
 ```python
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
-# Setup básico do sistema de controle Fuzzy
+# Basic fuzzy control system setup
 anomaly = ctrl.Antecedent(np.arange(0, 1.01, 0.01), 'anomaly')
-anomaly['baixo'] = fuzz.trapmf(anomaly.universe, [0, 0, 0.3, 0.5])
-anomaly['medio'] = fuzz.trimf(anomaly.universe, [0.3, 0.5, 0.7])
-anomaly['alto']  = fuzz.trapmf(anomaly.universe, [0.5, 0.7, 1.0, 1.0])
+anomaly['low'] = fuzz.trapmf(anomaly.universe, [0, 0, 0.3, 0.5])
+anomaly['medium'] = fuzz.trimf(anomaly.universe, [0.3, 0.5, 0.7])
+anomaly['high']  = fuzz.trapmf(anomaly.universe, [0.5, 0.7, 1.0, 1.0])
 
-# Variáveis e regras são inicializadas no módulo fuzzy.py
+# Variables and rules are initialized in the fuzzy.py module
 ```
 
 ---
 
-## 9. Lógica Łukasiewicz (Validação Lógica de Teses)
-* **Teoria:** Jan Łukasiewicz (1920)
-* **Objetivo:** Verificar a consistência de hipóteses aeroespaciais contínuas (ex: "Satélite A está se comportando de forma anômala implica que ele está realizando RPO").
+## 9. Łukasiewicz Logic (Logical Validation of Theses)
+* **Theory:** Jan Łukasiewicz (1920)
+* **Objective:** Check consistency of continuous aerospace hypotheses (e.g. “Satellite A behaves anomalously implies it is performing RPO”).
 
-### Formulação Matemática
-A verdade da implicação de Łukasiewicz $I(p, q)$ opera sobre valores lógicos contínuos no intervalo $[0, 1]$:
+### Mathematical Formulation
+Truth of the Łukasiewicz implication \(I(p, q)\) operates on continuous logical values in \([0, 1]\):
 
 $$v(p \rightarrow q) = \min(1, 1 - v(p) + v(q))$$
 
-### Implementação em Python
+### Python Implementation
 ```python
 def lukasiewicz_implication(val_p, val_q):
     return min(1.0, 1.0 - val_p + val_q)
@@ -286,20 +286,20 @@ def lukasiewicz_implication(val_p, val_q):
 
 ---
 
-## 10. Critério de Kelly (Priorização e Alocação Sizing)
-* **Teoria:** John Larry Kelly, Jr. (1956)
-* **Objetivo:** Sintonizar o foco e tempo de varredura de sensores (radares/telescópios) nos satélites com alertas mais valiosos.
+## 10. Kelly Criterion (Prioritization and Allocation Sizing)
+* **Theory:** John Larry Kelly, Jr. (1956)
+* **Objective:** Tune sensor scan focus and time (radars/telescopes) toward the highest-value alert satellites.
 
-### Formulação Matemática
-A fração ideal de tempo de rastreamento $f^*$ para um objeto específico é:
+### Mathematical Formulation
+The ideal tracking-time fraction \(f^*\) for a specific object is:
 
 $$f^* = \frac{p \cdot b - q}{b}$$
 
-* **$p$:** Probabilidade da ameaça ser real (fuzzy confidence $\times$ threat level).
-* **$q = 1.0 - p$:** Probabilidade de ser falso positivo.
-* **$b$:** Severidade do alvo (odds multiplicador: militar=100, civil=5).
+* **\(p\):** Probability the threat is real (fuzzy confidence \(\times\) threat level).
+* **\(q = 1.0 - p\):** Probability of false positive.
+* **\(b\):** Target severity (odds multiplier: military=100, civil=5).
 
-### Implementação em Python
+### Python Implementation
 ```python
 def kelly_resource_allocation(threat_prob, severity_multiplier):
     p = threat_prob
@@ -308,19 +308,19 @@ def kelly_resource_allocation(threat_prob, severity_multiplier):
     if b <= 0:
         return 0.0
     f_star = (p * b - q) / b
-    return max(0.0, f_star * 0.5)  # Half-Kelly para estabilidade
+    return max(0.0, f_star * 0.5)  # Half-Kelly for stability
 ```
 
 ---
 
-## 11. Valor Intrínseco de Williams (Ameaça Heurística Estática)
-* **Teoria:** John Burr Williams (1938)
-* **Objetivo:** Avaliar a vulnerabilidade geopolítica estática intrínseca do satélite.
+## 11. Williams Intrinsic Value (Static Heuristic Threat)
+* **Theory:** John Burr Williams (1938)
+* **Objective:** Evaluate the static geopolitical vulnerability intrinsic to the satellite.
 
-### Formulação Matemática
-Atribui um peso estático com base nas propriedades fixas do satélite: país proprietário (aliados vs adversários), tipo de órbita (LEO Polar vs LEO Equatorial) e finalidade da missão (SIGINT/Reconhecimento vs Telecomunicações civil).
+### Mathematical Formulation
+Assign a static weight from fixed satellite properties: owner country (allies vs adversaries), orbit type (LEO Polar vs LEO Equatorial), and mission purpose (SIGINT/Reconnaissance vs civil telecommunications).
 
-### Implementação em Python
+### Python Implementation
 ```python
 def williams_intrinsic_threat(country, purpose, orbit_class, inclination):
     score = 0.0
@@ -336,7 +336,7 @@ def williams_intrinsic_threat(country, purpose, orbit_class, inclination):
     elif purpose in ['commercial', 'scientific']:
         score += 0.05
     
-    # Órbita LEO Polar é típica de satélites espiões de alta resolução
+    # Polar LEO is typical of high-resolution reconnaissance satellites
     if orbit_class == 'LEO' and inclination > 55:
         score += 0.2
         
@@ -345,23 +345,23 @@ def williams_intrinsic_threat(country, purpose, orbit_class, inclination):
 
 ---
 
-## 12. Suavização por Regressão de Kernel (Filtro de Ruído Harmônico)
-* **Teoria:** Lo et al. (2000)
-* **Objetivo:** Suavizar as séries de coordenadas para eliminar perturbações orbitais harmônicas secundárias ou erros pontuais de medição do TLE.
+## 12. Kernel Regression Smoothing (Harmonic Noise Filter)
+* **Theory:** Lo et al. (2000)
+* **Objective:** Smooth coordinate series to remove secondary harmonic orbital perturbations or point TLE measurement errors.
 
-### Formulação Matemática
-Usamos o estimador de Nadaraya-Watson com kernel Gaussiano $K_h$:
+### Mathematical Formulation
+Use the Nadaraya–Watson estimator with Gaussian kernel \(K_h\):
 
 $$\hat{m}(t) = \frac{\sum_{i=1}^{n} K_h(t - t_i) Y_i}{\sum_{i=1}^{n} K_h(t - t_i)}$$
 
-### Implementação em Python
+### Python Implementation
 ```python
 def kernel_smoothing_nadaraya_watson(time_indices, values, bandwidth=1.5):
     n = len(values)
     smoothed = np.zeros(n)
     for i, t in enumerate(time_indices):
         diffs = (t - time_indices) / bandwidth
-        weights = np.exp(-0.5 * diffs**2)  # Kernel Gaussiano
+        weights = np.exp(-0.5 * diffs**2)  # Gaussian kernel
         sum_w = np.sum(weights)
         smoothed[i] = np.sum(weights * values) / sum_w if sum_w > 0 else values[i]
     return smoothed
@@ -369,15 +369,15 @@ def kernel_smoothing_nadaraya_watson(time_indices, values, bandwidth=1.5):
 
 ---
 
-## 13. Algoritmo L1-CUSUM Kernelizado
-* **Objetivo:** Detectar quebras estruturais abruptas na variação da órbita de forma estatisticamente robusta.
+## 13. Kernelized L1-CUSUM Algorithm
+* **Objective:** Detect abrupt structural breaks in orbital variation in a statistically robust way.
 
-### Formulação Matemática
-Usamos a mediana e o desvio absoluto mediano (MAD) sob o kernel Epanechnikov para evitar que outliers isolados disparem alarmes falsos de manobra:
+### Mathematical Formulation
+Use the median and median absolute deviation (MAD) under an Epanechnikov kernel so that isolated outliers do not trigger false maneuver alarms:
 
 $$z_t = \frac{|x_t - \text{median}|}{\text{MAD} + \epsilon}$$
 
-### Implementação em Python
+### Python Implementation
 ```python
 def kernel_l1_cusum_robust(series, window=30, threshold=3.5):
     if len(series) < window:
@@ -390,7 +390,7 @@ def kernel_l1_cusum_robust(series, window=30, threshold=3.5):
     current = series[-1]
     z_score = np.abs(current - baseline) / mad
     
-    # Kernel Epanechnikov
+    # Epanechnikov kernel
     if z_score > 1.0:
         kernel_weight = 0.0
     else:
@@ -402,16 +402,16 @@ def kernel_l1_cusum_robust(series, window=30, threshold=3.5):
 
 ---
 
-## 14. Anomalias de Cauda Pesada de Mandelbrot
-* **Teoria:** Benoit Mandelbrot (1963)
-* **Objetivo:** Modelar as caudas das variações orbitais por meio de distribuições de cauda pesada de Pareto.
+## 14. Mandelbrot Heavy-Tail Anomalies
+* **Theory:** Benoit Mandelbrot (1963)
+* **Objective:** Model the tails of orbital variations with heavy-tailed Pareto distributions.
 
-### Formulação Matemática
-As variações orbitais naturais seguem distribuições Gaussianas, mas manobras deliberadas produzem eventos extremos que violam essa suposição. Ajustamos uma distribuição de Pareto à cauda superior:
+### Mathematical Formulation
+Natural orbital variations follow Gaussian distributions, but deliberate maneuvers produce extreme events that violate that assumption. Fit a Pareto distribution to the upper tail:
 
 $$P(X > x) \sim \left( \frac{x_{\text{min}}}{x} \right)^\alpha$$
 
-### Implementação em Python
+### Python Implementation
 ```python
 from scipy.stats import pareto
 
@@ -423,80 +423,80 @@ def mandelbrot_tail_anomaly(series, quantile=90):
     if len(tail_data) < 2 or np.all(tail_data == threshold):
         return 0.0
     
-    # Estimador de Hill para o parâmetro alfa de cauda
+    # Hill estimator for the tail alpha parameter
     alpha = len(tail_data) / np.sum(np.log(tail_data / threshold))
     current = series[-1]
     if current < threshold:
         return 0.0
     
-    # P-value sob distribuição Pareto
+    # P-value under Pareto distribution
     p_val = (current / threshold) ** (-alpha)
     return 1.0 - p_val
 ```
 
 ---
 
-## 15. Teste de Raiz Unitária de Dickey-Fuller Aumentado (ADF)
-* **Teoria:** David Dickey, Wayne Fuller (1979)
-* **Objetivo:** Detectar a perda de estacionaridade na série de resíduos orbitais detendenciados, assinalando o início de micro-manobras ativas.
+## 15. Augmented Dickey–Fuller Unit-Root Test (ADF)
+* **Theory:** David Dickey, Wayne Fuller (1979)
+* **Objective:** Detect loss of stationarity in the detrended residual orbital series, flagging the onset of active micro-maneuvers.
 
-### Formulação Matemática
-O teste ADF ajusta um modelo de regressão linear para a primeira diferença da série orbital para testar a presença de raiz unitária ($\gamma = 0$):
+### Mathematical Formulation
+The ADF test fits a linear regression on the first difference of the orbital series to test for a unit root (\(\gamma = 0\)):
 
 $$\Delta y_t = \alpha + \beta t + \gamma y_{t-1} + \sum_{i=1}^{p} \delta_i \Delta y_{t-i} + \epsilon_t$$
 
-* **Hipótese Nula ($H_0$):** A série possui raiz unitária (não estacionária - satélite está mudando ativamente de órbita).
-* **Hipótese Alternativa ($H_1$):** A série é estacionária (satélite apenas decaindo passivamente).
+* **Null hypothesis (\(H_0\)):** The series has a unit root (non-stationary — satellite is actively changing orbit).
+* **Alternative hypothesis (\(H_1\)):** The series is stationary (satellite only decaying passively).
 
-### Implementação em Python
+### Python Implementation
 ```python
 from statsmodels.tsa.stattools import adfuller
 
 def adf_stationarity_pvalue(series):
     """
-    Retorna o p-value do teste ADF.
-    p-value > 0.05 -> Não-estacionário (indício de mudança de comportamento/manobra).
-    p-value <= 0.05 -> Estacionário (satélite passivo/Kepleriano estável).
+    Returns the ADF test p-value.
+    p-value > 0.05 -> Non-stationary (indication of behavior change / maneuver).
+    p-value <= 0.05 -> Stationary (passive / stable Keplerian satellite).
     """
     if len(series) < 20:
-        return 0.0  # Sem dados suficientes para testar
+        return 0.0  # Insufficient data to test
     try:
-        # Executa ADF com regressão contendo constante e tendência
+        # Run ADF with regression containing constant and trend
         result = adfuller(series, regression='ct')
         p_value = result[1]
         return p_value
     except Exception:
-        return 0.5  # Em caso de erro numérico, retorna indecisão
+        return 0.5  # On numerical error, return indecision
 ```
 
 ---
 
-## 16. Teste de Cointegração de Engle-Granger (RPO/Shadowing Detection)
-* **Teoria:** Robert Engle, Clive Granger (1987)
-* **Objetivo:** Detectar perseguição física (shadowing) entre dois satélites calculando se a diferença de suas altitudes é estacionária no longo prazo.
+## 16. Engle–Granger Cointegration Test (RPO / Shadowing Detection)
+* **Theory:** Robert Engle, Clive Granger (1987)
+* **Objective:** Detect physical pursuit (shadowing) between two satellites by testing whether the difference of their altitudes is stationary long-term.
 
-### Formulação Matemática
-Dadas duas séries de altitudes não-estacionárias $y_{A, t}$ e $y_{B, t}$ (que decaem independentemente por arrasto), rodamos uma regressão ordinária de mínimos quadrados (OLS):
+### Mathematical Formulation
+Given two non-stationary altitude series \(y_{A, t}\) and \(y_{B, t}\) (which decay independently under drag), run ordinary least squares (OLS):
 
 $$y_{A, t} = \beta y_{B, t} + u_t$$
 
-Em seguida, testamos a estacionaridade dos resíduos estimados $\hat{u}_t$ usando o teste ADF. Se $\hat{u}_t$ for estacionário, as séries são **cointegradas**, significando que a distância entre eles é mantida ativa e precisamente sob controle de malha fechada.
+Then test stationarity of the estimated residuals \(\hat{u}_t\) with the ADF test. If \(\hat{u}_t\) is stationary, the series are **cointegrated**, meaning the distance between them is actively and precisely maintained under closed-loop control.
 
-### Implementação em Python
+### Python Implementation
 ```python
 from statsmodels.tsa.stattools import coint
 
 def check_orbital_cointegration(series_a, series_b):
     """
-    Verifica se a trajetória de dois satélites está cointegrada.
-    Retorna p-value do teste de Engle-Granger.
-    p-value < 0.05 -> Cointegrados (Satélite A está ativamente seguindo/espionando B).
-    p-value >= 0.05 -> Não-cointegrados (Órbitas independentes que divergem).
+    Check whether two satellite trajectories are cointegrated.
+    Returns Engle-Granger test p-value.
+    p-value < 0.05 -> Cointegrated (Satellite A is actively following / spying on B).
+    p-value >= 0.05 -> Not cointegrated (Independent orbits that diverge).
     """
     if len(series_a) < 20 or len(series_b) < 20:
         return 1.0
     try:
-        # O teste retorna estatística de teste, p-value e valores críticos
+        # Test returns test statistic, p-value, and critical values
         score, p_value, _ = coint(series_a, series_b, trend='c')
         return p_value
     except Exception:

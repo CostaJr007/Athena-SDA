@@ -5,7 +5,7 @@
 
 ---
 
-## 📊 Performance Verdict
+## Performance Verdict
 
 | Aspect | Rating | Highlights |
 |:---|:---:|:---|
@@ -19,7 +19,7 @@
 
 ---
 
-## 📈 Model Benchmark Summary
+## Model Benchmark Summary
 
 ```json
 {
@@ -36,106 +36,109 @@
 > **100% Recall on Hostile Class:** Zero false negatives on critical threat trajectories.
 
 ---
-*Athena-SDA Technical Evaluation Audit.*
 
-| Módulo | Linhas | Função |
+## Module Inventory
+
+| Module | Lines | Function |
 |:---|:---:|:---|
-| [pipeline.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/pipeline.py) | 300+ | DAG de inferência multi-estágio com fusão XGB↔Fuzzy adaptativa |
-| [walkforward.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/walkforward.py) | 560+ | Validação out-of-time por evento público (sem lookahead) |
-| [pair_score.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/pair_score.py) | 370+ | Scoring de pares suspect×asset (geometria + cointegração + Łukasiewicz) |
-| [anomaly_monitor.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/anomaly_monitor.py) | 530+ | Monitor contínuo com DQ gate e baseline IF |
-| [tle_store.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/tle_store.py) | 690+ | Ingestão CelesTrak + HuggingFace com schema canônico |
-| [catalog.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/catalog.py) | 190+ | Watchlist com roles (asset/suspect/baseline) |
-| [config.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/config.py) | 116 | Schema centralizado de features e constantes |
-| [orbital.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/orbital.py) | 175 | Geometria Kepleriana → ECI, distância entre órbitas |
+| `src/pipeline.py` | 300+ | Multi-stage inference DAG with adaptive XGB↔Fuzzy fusion |
+| `src/walkforward.py` | 560+ | Out-of-time validation by public event (no lookahead) |
+| `src/pair_score.py` | 370+ | Suspect×asset pair scoring (geometry + cointegration + Łukasiewicz) |
+| `src/anomaly_monitor.py` | 530+ | Continuous monitor with DQ gate and IF baseline |
+| `src/tle_store.py` | 690+ | CelesTrak + HuggingFace ingestion with canonical schema |
+| `src/catalog.py` | 190+ | Watchlist with roles (asset/suspect/baseline) |
+| `src/config.py` | 116 | Centralized feature schema and constants |
+| `src/orbital.py` | 175 | Keplerian geometry → ECI, inter-orbit distance |
 
 ---
 
-## 🟡 Bugs Remanescentes (Menores — Não Quebram o Sistema)
+## Remaining Bugs (Minor — Do Not Break the System)
 
-### Bug 1 — Fuzzy Crash Silencioso Quando `dist > 500 km`
+### Bug 1 — Silent Fuzzy Crash When `dist > 500 km`
 
-**Arquivo:** [fuzzy.py:100-106](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/fuzzy.py)
+**File:** `src/fuzzy.py` (approx. lines 100–106)
 
-O universo de `dist_military` vai de `[0, 500]`. Quando `min_distance_to_assets()` retorna > 500 km, o scikit-fuzzy levanta exceção e o catch retorna `crisp_threat = 0.0`.
+The universe of `dist_military` spans `[0, 500]`. When `min_distance_to_assets()` returns > 500 km, scikit-fuzzy raises an exception and the catch returns `crisp_threat = 0.0`.
 
-**Impacto:** Qualquer satélite longe de ativos militares é silenciosamente classificado como NORMAL pelo fuzzy. Porém, na versão atual, a fusão XGB+Fuzzy em `pipeline.py` mitiga isso pois o XGBoost domina (peso 0.70) quando a distância é grande.
+**Impact:** Any satellite far from military assets is silently classified as NORMAL by fuzzy. In the current version, XGB+Fuzzy fusion in `pipeline.py` mitigates this because XGBoost dominates (weight 0.70) when distance is large.
 
-**Fix sugerido:**
+**Suggested fix:**
 ```python
-sim.input['dist_military'] = min(min_dist_mil, 500.0)  # Clamp ao universo
+sim.input['dist_military'] = min(min_dist_mil, 500.0)  # Clamp to universe
 ```
 
-### Bug 2 — Kolmogorov Proxy Inflado para Séries Curtas
+### Bug 2 — Inflated Kolmogorov Proxy for Short Series
 
-**Arquivo:** [engine.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/engine.py) — `calculate_kolmogorov_proxy()`
+**File:** `src/engine.py` — `calculate_kolmogorov_proxy()`
 
-Para séries curtas (< 10 pontos), `zlib.compress("SSSSS")` produz um header maior que o input, resultando ratio > 1.0 clippado a 1.0. Uma órbita constante recebe complexidade máxima (incorreto).
+For short series (< 10 points), `zlib.compress("SSSSS")` produces a header larger than the input, yielding ratio > 1.0 clipped to 1.0. A constant orbit receives maximum complexity (incorrect).
 
-**Fix sugerido:** Adicionar guarda para séries curtas:
+**Suggested fix:** Add a short-series guard:
 ```python
 if len(s) < 10:
-    return 0.0  # Dados insuficientes para estimativa confiável
+    return 0.0  # Insufficient data for a reliable estimate
 ```
 
-### Bug 3 — Séries Temporais Não-Sincronizadas na Cointegração
+### Bug 3 — Unsynchronized Time Series in Cointegration
 
-**Arquivo:** [pair_score.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/pair_score.py) — `_align_series()`
+**File:** `src/pair_score.py` — `_align_series()`
 
-Pega os últimos N pontos de cada satélite sem garantir que os timestamps correspondem. Se um satélite tem dados de junho e outro de julho, a cointegração é calculada em séries de épocas diferentes.
+Takes the last N points of each satellite without ensuring timestamps match. If one satellite has June data and another July, cointegration is computed on different epochs.
 
-**Impacto:** Pode gerar falsos positivos em cointegração para satélites com dados dessincronizados.
+**Impact:** May generate false cointegration positives for satellites with desynchronized data.
 
-### Bug 4 — `tle_age_hours` Estático no Parquet
+### Bug 4 — Static `tle_age_hours` in Parquet
 
-**Arquivo:** [tle_store.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/tle_store.py) — `normalize_epochs_df()`
+**File:** `src/tle_store.py` — `normalize_epochs_df()`
 
-O `tle_age_hours` é calculado em relação ao `now` no momento da ingestão e salvo permanentemente no parquet. Após dias, o valor não reflete mais a idade real do TLE.
+`tle_age_hours` is computed relative to `now` at ingest time and stored permanently in parquet. After days, the value no longer reflects real TLE age.
 
-### Bug 5 — Mandelbrot Hill Estimator Divisão por Zero
+### Bug 5 — Mandelbrot Hill Estimator Division by Zero
 
-**Arquivo:** [engine.py](file:///run/media/adeilsoncosta/Novo%20volume/Athena-SDA/src/engine.py) — `calculate_mandelbrot_tail_anomaly()`
+**File:** `src/engine.py` — `calculate_mandelbrot_tail_anomaly()`
 
-Se `tail_data` tem valores muito próximos de `threshold` (mas não idênticos por floating-point), `np.sum(np.log(...))` pode dar ≈0.0, causando divisão por zero.
+If `tail_data` has values very close to `threshold` (but not identical due to floating-point), `np.sum(np.log(...))` can be ≈0.0, causing division by zero.
 
 ---
 
-## 🟢 Melhorias Sugeridas (Para Evoluir de Protótipo → Produção)
+## Suggested Improvements (Prototype → Production)
 
-### Melhoria 1 — SGP4 Real para Distâncias TCA
+### Improvement 1 — Real SGP4 for TCA Distances
 
-A distância entre órbitas é calculada amostrando posições ECI sem sincronização temporal (grid de anomalia verdadeira). Usar `sgp4` (já no requirements como opcional) para propagar ambos os satélites ao mesmo epoch e calcular TCA (*Time of Closest Approach*) real.
+Inter-orbit distance is computed by sampling ECI positions without temporal synchronization (true-anomaly grid). Use `sgp4` (already optional in requirements) to propagate both satellites to the same epoch and compute real TCA (*Time of Closest Approach*).
 
-### Melhoria 2 — Expandir Dataset para 50+ Satélites
+### Improvement 2 — Expand Dataset to 50+ Satellites
 
-O dataset atual tem 24 satélites no monitor. Expandir para cobrir todos os satélites do `watchlist.json` com dados HF de 2024-2026 aumentaria a robustez do IF e permitiria walk-forward com mais eventos.
+The current dataset has 24 satellites in the monitor. Expanding to cover all `watchlist.json` satellites with HF data for 2024–2026 would increase IF robustness and allow walk-forward with more events.
 
-### Melhoria 3 — Clampar Inputs do Fuzzy ao Universo
+### Improvement 3 — Clamp Fuzzy Inputs to the Universe
 
-Em vez de depender do try/except, clampar todos os inputs ao range dos universos antes de alimentar o sistema fuzzy:
+Instead of relying on try/except, clamp all inputs to universe ranges before feeding the fuzzy system:
 ```python
 sim.input['dist_military'] = np.clip(min_dist_mil, 0.0, 500.0)
 sim.input['entropy'] = np.clip(entropy, 0.0, 3.0)
 ```
 
-### Melhoria 4 — Substituir Homologia por Proxy Leve
+### Improvement 4 — Replace Homology with a Lightweight Proxy
 
-`calculate_persistent_homology()` tenta importar `ripser` (opcional). O fallback baseado em distância par-a-par é funcional mas rudimentar. Considerar usar `giotto-tda` como alternativa mais leve que `ripser`.
+`calculate_persistent_homology()` tries to import `ripser` (optional). The pairwise-distance fallback is functional but rudimentary. Consider `giotto-tda` as a lighter alternative to `ripser`.
 
 ---
 
-## 🎯 Resumo Executivo Final
+## Executive Summary
 
-**O Machine Learning do Athena-SDA na versão real está CORRETO e COERENTE.** É um dos pipelines de SDA acadêmico/hackathon mais completos que já analisei:
+**Athena-SDA machine learning in the real version is CORRECT and COHERENT.** It is among the most complete academic/hackathon SDA pipelines reviewed:
 
-- ✅ 26 features cobrindo mecânica orbital + teoria da informação + topologia + lógica fuzzy
-- ✅ Acurácia de 96.35% com Recall 100% na classe Hostil
-- ✅ Walk-forward validation sem vazamento temporal
-- ✅ Fusão adaptativa XGB↔Fuzzy com pesos dependentes de proximidade
-- ✅ Monitor de anomalias em tempo real com DQ gate
-- ✅ Pair scoring com geometria + cointegração + coerência lógica
+- 26 features covering orbital mechanics + information theory + topology + fuzzy logic
+- 96.35% accuracy with 100% Hostile-class recall
+- Walk-forward validation without temporal leakage
+- Adaptive XGB↔Fuzzy fusion with proximity-dependent weights
+- Real-time anomaly monitor with DQ gate
+- Pair scoring with geometry + cointegration + logical coherence
 
-Os 5 bugs remanescentes são **edge cases menores** que não comprometem a operação normal. As 4 melhorias sugeridas são de **polimento para nível de produção institucional**.
+The 5 remaining bugs are **minor edge cases** that do not compromise normal operation. The 4 suggested improvements are **polish for institutional production level**.
 
-> [!NOTE]
-> O arquivo de instruções criado anteriormente (`INSTRUCOES_MELHORIAS_ML_PASSO_A_PASSO.py`) foi baseado na versão antiga e **NÃO se aplica** a esta versão. A maioria daquelas correções já foram implementadas aqui.
+> **Note:** The earlier instruction file (`ml_improvements_step_by_step.py`) was based on an older version and **does not apply** to this version. Most of those fixes are already implemented here.
+
+---
+*Athena-SDA Technical Evaluation Audit.*

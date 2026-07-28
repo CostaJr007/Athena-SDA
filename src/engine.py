@@ -7,8 +7,8 @@ from statsmodels.tsa.stattools import adfuller, coint
 
 def calculate_shannon_entropy(sma_series, bins=10):
     """
-    1. Entropia de Shannon (Shannon, 1948)
-    Mede a desordem nas variações do semi-eixo maior.
+    1. Shannon entropy (Shannon, 1948)
+    Measures disorder in semi-major-axis variations.
     """
     if len(sma_series) < 2:
         return 0.0
@@ -20,15 +20,15 @@ def calculate_shannon_entropy(sma_series, bins=10):
 
 def calculate_kolmogorov_proxy(sma_series):
     """
-    2. Proxy de Complexidade de Kolmogorov (Kolmogorov, 1965)
-    Usa compressão zlib como estimativa de complexidade algorítmica da trajetória.
+    2. Kolmogorov complexity proxy (Kolmogorov, 1965)
+    Uses zlib compression as an estimate of trajectory algorithmic complexity.
 
     Returns value in [0, 1]; small expansion (compressed > raw) is clipped at 1.
     """
     if len(sma_series) < 2:
         return 0.0
     diffs = np.diff(sma_series)
-    threshold = 0.02  # 20 metros para discretização
+    threshold = 0.02  # 20 m discretization
     tokens = []
     for d in diffs:
         if d > threshold:
@@ -47,10 +47,10 @@ def calculate_kolmogorov_proxy(sma_series):
 
 def calculate_hurst_exponent(series, max_lag=20):
     """
-    3. Expoente de Hurst (Hurst, 1951)
-    Mede a persistência de longo prazo na variação da altitude (R/S Analysis).
-    H > 0.5: Tendência contínua persistente (propulsão ativa de baixo empuxo).
-    H < 0.5: Reversão à média (manutenção de órbita padrão / ruído).
+    3. Hurst exponent (Hurst, 1951)
+    Measures long-range persistence in altitude variation (R/S analysis).
+    H > 0.5: persistent trend (active low-thrust propulsion).
+    H < 0.5: mean reversion (standard station-keeping / noise).
     """
     n = len(series)
     if n < 10:
@@ -79,14 +79,14 @@ def calculate_hurst_exponent(series, max_lag=20):
 
 def calculate_ricci_proxy(pos_x, neighbors_x, pos_y, neighbors_y):
     """
-    4. Curvatura de Ricci de Ollivier (Ollivier, 2007)
-    Mede a curvatura de vizinhança entre dois satélites (convergência espacial).
+    4. Ollivier-Ricci curvature (Ollivier, 2007)
+    Measures neighborhood curvature between two satellites (spatial convergence).
     """
     d_xy = np.linalg.norm(pos_x - pos_y)
     if d_xy == 0:
         return 0.0
     
-    # Distâncias médias locais dos vizinhos em relação a x e y
+    # Local mean neighbor distances relative to x and y
     dist_x = np.linalg.norm(neighbors_x - pos_x, axis=1) if len(neighbors_x) > 0 else np.array([0.0])
     dist_y = np.linalg.norm(neighbors_y - pos_y, axis=1) if len(neighbors_y) > 0 else np.array([0.0])
     
@@ -95,8 +95,8 @@ def calculate_ricci_proxy(pos_x, neighbors_x, pos_y, neighbors_y):
 
 def calculate_persistent_homology(positions_3d):
     """
-    5. Homologia Persistente (TDA - Edelsbrunner, 2002)
-    Estrutura topológica de um enxame ou janela orbital.
+    5. Persistent homology (TDA — Edelsbrunner, 2002)
+    Topological structure of a swarm or orbital window.
 
     Uses ripser when installed; otherwise a lightweight pairwise-distance
     proxy that still yields stable h0/h1-like scalars for the ML vector.
@@ -129,12 +129,12 @@ def calculate_persistent_homology(positions_3d):
 
 def calculate_chern_simons_proxy(positions, velocities):
     """
-    6. Chern-Simons Proxy (Chern-Simons, 1974)
-    Mede a quebra de conservação do momento angular específico orbital.
+    6. Chern-Simons proxy (Chern-Simons, 1974)
+    Measures break of conservation of specific orbital angular momentum.
     """
     if len(positions) < 2:
         return 0.0
-    # h = r x v (momento angular específico)
+    # h = r x v (specific angular momentum)
     h_vectors = np.cross(positions, velocities)
     h0 = h_vectors[0]
     norm_h0 = np.linalg.norm(h0)
@@ -145,8 +145,8 @@ def calculate_chern_simons_proxy(positions, velocities):
 
 def calculate_spectral_anomaly_rkhs(features_vector, reference_matrix, gamma=0.1):
     """
-    7. Anomalia Espectral em RKHS (David Hilbert)
-    Mede a typicalidade da distribuição de features em um Espaço de Hilbert de Kernel Reprodutor.
+    7. Spectral anomaly in RKHS (David Hilbert)
+    Measures typicality of a feature distribution in a reproducing kernel Hilbert space.
     """
     if len(reference_matrix) == 0:
         return 1.0
@@ -156,15 +156,15 @@ def calculate_spectral_anomaly_rkhs(features_vector, reference_matrix, gamma=0.1
 
 def calculate_lukasiewicz_implication(val_p, val_q):
     """
-    9. Lógica Łukasiewicz (Łukasiewicz, 1920)
-    Implicação fuzzy para validação lógica de teses.
+    9. Łukasiewicz logic (Łukasiewicz, 1920)
+    Fuzzy implication for logical thesis validation.
     """
     return float(min(1.0, 1.0 - val_p + val_q))
 
 def calculate_kelly_allocation(threat_prob, severity_multiplier):
     """
-    10. Critério de Kelly (Kelly, 1956)
-    Otimiza o sizing da alocação de tempo do sensor.
+    10. Kelly criterion (Kelly, 1956)
+    Optimizes sensor-time allocation sizing.
     """
     p = threat_prob
     q = 1.0 - p
@@ -172,12 +172,12 @@ def calculate_kelly_allocation(threat_prob, severity_multiplier):
     if b <= 0:
         return 0.0
     f_star = (p * b - q) / b
-    return float(max(0.0, f_star * 0.5)) # Half-Kelly para amortecer volatilidade
+    return float(max(0.0, f_star * 0.5))  # Half-Kelly to damp volatility
 
 def calculate_williams_threat(country, purpose, orbit_class, inclination):
     """
-    11. Valor Intrínseco de Williams (Williams, 1938)
-    Avalia a vulnerabilidade/ameaça estratégica estática.
+    11. Williams intrinsic value (Williams, 1938)
+    Scores static strategic vulnerability / threat.
     """
     score = 0.0
     adversaries = ['CN', 'RU', 'KP', 'IR']
@@ -192,7 +192,7 @@ def calculate_williams_threat(country, purpose, orbit_class, inclination):
     elif purpose in ['commercial', 'scientific']:
         score += 0.05
     
-    # Órbita Polar LEO é indicadora clássica de escaneamento militar
+    # Polar LEO is a classic indicator of military scan orbits
     if orbit_class == 'LEO' and inclination > 55:
         score += 0.2
         
@@ -200,8 +200,8 @@ def calculate_williams_threat(country, purpose, orbit_class, inclination):
 
 def calculate_kernel_smoothing(time_indices, values, bandwidth=1.5):
     """
-    12. Suavização por Regressão de Kernel (Lo et al., 2000)
-    Filtro Nadaraya-Watson com kernel Gaussiano para limpar ruído orbital.
+    12. Kernel regression smoothing (Lo et al., 2000)
+    Nadaraya-Watson filter with Gaussian kernel to clean orbital noise.
     """
     n = len(values)
     smoothed = np.zeros(n)
@@ -214,8 +214,8 @@ def calculate_kernel_smoothing(time_indices, values, bandwidth=1.5):
 
 def calculate_kernel_l1_cusum(series, window=30, threshold=3.5):
     """
-    13. Algoritmo L1-CUSUM Kernelizado
-    Detecta quebras estruturais cumulativas na variação orbital.
+    13. Kernelized L1-CUSUM algorithm
+    Detects cumulative structural breaks in orbital variation.
     """
     if len(series) < window:
         return 0.0
@@ -237,8 +237,8 @@ def calculate_kernel_l1_cusum(series, window=30, threshold=3.5):
 
 def calculate_mandelbrot_tail_anomaly(series, quantile=90):
     """
-    14. Anomalias de Cauda Pesada de Mandelbrot (Mandelbrot, 1963)
-    Usa a distribuição de cauda pesada de Pareto para detectar anomalias raras.
+    14. Mandelbrot heavy-tail anomalies (Mandelbrot, 1963)
+    Uses a Pareto heavy-tail model to detect rare anomalies.
     """
     if len(series) < 15:
         return 0.0
@@ -247,7 +247,7 @@ def calculate_mandelbrot_tail_anomaly(series, quantile=90):
     if len(tail_data) < 2 or np.all(tail_data == threshold):
         return 0.0
     
-    # Estimador de Hill para o alfa de cauda
+    # Hill estimator for tail alpha
     log_sum = np.sum(np.log(tail_data / threshold))
     if log_sum < 1e-9:
         return 0.0
@@ -261,12 +261,12 @@ def calculate_mandelbrot_tail_anomaly(series, quantile=90):
 
 def calculate_adf_pvalue(series):
     """
-    15. Teste de Raiz Unitária de Dickey-Fuller Aumentado (ADF)
-    p-value > 0.05 -> Não-estacionário (indício forte de manobras de baixo empuxo).
-    p-value <= 0.05 -> Estacionário (satélite passivo decaindo normalmente).
+    15. Augmented Dickey-Fuller unit-root test (ADF)
+    p-value > 0.05 -> non-stationary (strong hint of low-thrust maneuvers).
+    p-value <= 0.05 -> stationary (passive satellite decaying normally).
     """
     if len(series) < 20:
-        return 0.0  # Dados insuficientes
+        return 0.0  # Insufficient data
     try:
         result = adfuller(series, regression='ct')
         p_value = result[1]
@@ -276,9 +276,9 @@ def calculate_adf_pvalue(series):
 
 def calculate_cointegration_pvalue(series_a, series_b):
     """
-    16. Teste de Cointegração de Engle-Granger
-    p-value < 0.05 -> Cointegrados (perseguição / shadowing tático comprovado).
-    p-value >= 0.05 -> órbitas independentes normais.
+    16. Engle-Granger cointegration test
+    p-value < 0.05 -> cointegrated (pursuit / tactical shadowing supported).
+    p-value >= 0.05 -> independent / normal orbits.
     """
     if len(series_a) < 20 or len(series_b) < 20:
         return 1.0

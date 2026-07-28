@@ -68,7 +68,7 @@
       <h1>TERRASAR-X <span class="muted">#31698</span></h1>
       <div class="meta">
         asset · DE · reconnaissance · LEO
-        <br />score day 2026-07-27 · 2026-07-27T01:22:03
+        <br />score day 2026-07-27 · 2026-07-27T18:18:34
       </div>
       <div class="tier">NOMINAL</div>
     </header>
@@ -76,17 +76,17 @@
     <section>
       <h2>Summary — why NOMINAL</h2>
       <p class="headline"><strong>TERRASAR-X</strong> is <strong>NOMINAL</strong>: there is no strong pair alert or orbit deviation above the Mission board threshold.</p>
-      <ul class="plain"><li>Athena looks at <strong>two things</strong>: (1) this object’s <strong>orbital series</strong> vs its own past (anomaly = <strong>0.38</strong>); (2) whether it approaches or “tracks” a <strong>protected asset</strong> (attention = <strong>0.38</strong>).</li><li>Watchlist role: <strong>asset</strong>. No suspect×asset pair is highlighted in this score — the main read is the object’s own series behavior.</li><li>Series noise appears <strong>elevated since about 2024-08-21</strong> (method if_first_soft). This answers “since when the orbit looked unusual”.</li><li>Altitude shows <strong>persistence</strong> (Hurst ≈ 0.87): the series tends to keep the same direction (slow drift / low thrust).</li><li>Altitude variation is <strong>disordered</strong> (Shannon ≈ 2.55): many irregular up/down moves in the recent window.</li><li>Usable data, with caveats: tle_aging_38h, gap_262h.</li><li>Board rule: no alert threshold was crossed.</li></ul>
+      <ul class="plain"><li>Athena looks at <strong>two things</strong>: (1) this object’s <strong>orbital series</strong> vs its own past (anomaly = <strong>0.37</strong>); (2) whether it approaches or “tracks” a <strong>protected asset</strong> (attention = <strong>0.37</strong>).</li><li>Watchlist role: <strong>asset</strong>. No suspect×asset pair is highlighted in this score — the main read is the object’s own series behavior.</li><li>Series noise appears <strong>elevated since about 2014-01-08</strong> (method if_first_soft). This answers “since when the orbit looked unusual”.</li><li>Altitude shows <strong>persistence</strong> (Hurst ≈ 0.88): the series tends to keep the same direction (slow drift / low thrust).</li><li>Altitude variation is <strong>disordered</strong> (Shannon ≈ 2.51): many irregular up/down moves in the recent window.</li><li>Usable data, with caveats: gap_262h.</li><li>Board rule: no alert threshold was crossed.</li></ul>
     </section>
 
     <section>
       <h2>Today’s numbers</h2>
       <div class="grid">
-        <div class="chip"><div class="k">Anomaly (orbit)</div><div class="v">0.383</div></div>
-        <div class="chip"><div class="k">Attention (priority)</div><div class="v">0.383</div></div>
+        <div class="chip"><div class="k">Anomaly (orbit)</div><div class="v">0.369</div></div>
+        <div class="chip"><div class="k">Attention (priority)</div><div class="v">0.369</div></div>
         <div class="chip"><div class="k">Monitor status</div><div class="v sm">NOMINAL</div></div>
-        <div class="chip"><div class="k">XGB class</div><div class="v sm">SUSPEITO</div></div>
-        <div class="chip"><div class="k">Change vs yesterday</div><div class="v">0.000</div></div>
+        <div class="chip"><div class="k">XGB class</div><div class="v sm">—</div></div>
+        <div class="chip"><div class="k">Change vs yesterday</div><div class="v">-0.015</div></div>
         <div class="chip"><div class="k">Anomaly threshold</div><div class="v">0.55</div></div>
       </div>
       <p class="lead-muted" style="margin-top:0.85rem">
@@ -104,7 +104,7 @@
       <h2>When the noise rose</h2>
       <div class="grid">
         <div class="chip"><div class="k">Noise elevated since</div>
-          <div class="v sm">2024-08-21 10:46</div></div>
+          <div class="v sm">2014-01-08 20:23</div></div>
         <div class="chip"><div class="k">Method</div>
           <div class="v sm">if_first_soft</div></div>
         <div class="chip"><div class="k">Altitude break</div>
@@ -127,18 +127,18 @@
         <thead>
           <tr><th>Measure</th><th>Value</th><th>What it means</th></tr>
         </thead>
-        <tbody><tr><td><span class='feat-title'>Hurst H (R/S)</span><br><code>hurst_exponent_sma</code></td><td class='num'>0.8707</td><td class='mean'>Altitude series persistence. H&gt;0.5: drift/low thrust; H≈0.5: noise; H&lt;0.5: mean reversion.</td></tr><tr><td><span class='feat-title'>Shannon entropy H(Δa)</span><br><code>shannon_entropy_sma_30d</code></td><td class='num'>2.5498</td><td class='mean'>Disorder in altitude change (~30 days). High: irregular orbit / active control.</td></tr><tr><td><span class='feat-title'>Kolmogorov Proxy</span><br><code>kolmogorov_proxy_7d</code></td><td class='num'>0.0526</td><td class='mean'>Complexity of the up/down pattern. Active control patterns are less “simple”.</td></tr><tr><td><span class='feat-title'>CUSUM L1</span><br><code>l1_cusum_sma</code></td><td class='num'>0.0000</td><td class='mean'>Accumulated deviations — helps see when the series left its prior regime.</td></tr><tr><td><span class='feat-title'>Δ altitude 7d (km)</span><br><code>delta_sma_7d_km</code></td><td class='num'>-0.0192</td><td class='mean'>How mean altitude changed over the last week (burn, drag, or station-keeping).</td></tr><tr><td><span class='feat-title'>Distance to asset (km)</span><br><code>min_distance_to_military_km</code></td><td class='num'>66.9532</td><td class='mean'>How close the object gets to a protected watchlist asset.</td></tr><tr><td><span class='feat-title'>Cointegration (p-value)</span><br><code>cointegration_pvalue</code></td><td class='num'>0.0001</td><td class='mean'>Low p: the two orbits move together long-term (statistical shadowing).</td></tr><tr><td><span class='feat-title'>F10.7</span><br><code>f10_7</code></td><td class='num'>144.0000</td><td class='mean'>Solar activity — drives thermosphere density and LEO drag.</td></tr><tr><td><span class='feat-title'>Ap</span><br><code>ap_index</code></td><td class='num'>6.0000</td><td class='mean'>Geomagnetic activity. Storms can change altitude without a burn.</td></tr><tr><td><span class='feat-title'>Storm Flag</span><br><code>geomagnetic_storm</code></td><td class='num'>0.0000</td><td class='mean'>1 = stormy climate — cross-check with Δ altitude before calling a burn.</td></tr><tr><td><span class='feat-title'>TLE Age (hours)</span><br><code>tle_age_hours</code></td><td class='num'>38.2911</td><td class='mean'>How fresh the data is. Stale TLE lowers confidence; it does not prove a threat.</td></tr></tbody>
+        <tbody><tr><td><span class='feat-title'>Hurst H (R/S)</span><br><code>hurst_exponent_sma</code></td><td class='num'>0.8785</td><td class='mean'>Altitude series persistence. H&gt;0.5: drift/low thrust; H≈0.5: noise; H&lt;0.5: mean reversion.</td></tr><tr><td><span class='feat-title'>Shannon entropy H(Δa)</span><br><code>shannon_entropy_sma_30d</code></td><td class='num'>2.5101</td><td class='mean'>Disorder in altitude change (~30 days). High: irregular orbit / active control.</td></tr><tr><td><span class='feat-title'>Kolmogorov Proxy</span><br><code>kolmogorov_proxy_7d</code></td><td class='num'>0.0526</td><td class='mean'>Complexity of the up/down pattern. Active control patterns are less “simple”.</td></tr><tr><td><span class='feat-title'>CUSUM L1</span><br><code>l1_cusum_sma</code></td><td class='num'>0.0000</td><td class='mean'>Accumulated deviations — helps see when the series left its prior regime.</td></tr><tr><td><span class='feat-title'>Δ altitude 7d (km)</span><br><code>delta_sma_7d_km</code></td><td class='num'>0.0029</td><td class='mean'>How mean altitude changed over the last week (burn, drag, or station-keeping).</td></tr><tr><td><span class='feat-title'>Distance to asset (km)</span><br><code>min_distance_to_military_km</code></td><td class='num'>66.9004</td><td class='mean'>How close the object gets to a protected watchlist asset.</td></tr><tr><td><span class='feat-title'>Cointegration (p-value)</span><br><code>cointegration_pvalue</code></td><td class='num'>0.0000</td><td class='mean'>Low p: the two orbits move together long-term (statistical shadowing).</td></tr><tr><td><span class='feat-title'>F10.7</span><br><code>f10_7</code></td><td class='num'>144.0000</td><td class='mean'>Solar activity — drives thermosphere density and LEO drag.</td></tr><tr><td><span class='feat-title'>Ap</span><br><code>ap_index</code></td><td class='num'>6.0000</td><td class='mean'>Geomagnetic activity. Storms can change altitude without a burn.</td></tr><tr><td><span class='feat-title'>Storm Flag</span><br><code>geomagnetic_storm</code></td><td class='num'>0.0000</td><td class='mean'>1 = stormy climate — cross-check with Δ altitude before calling a burn.</td></tr><tr><td><span class='feat-title'>TLE Age (hours)</span><br><code>tle_age_hours</code></td><td class='num'>6.2243</td><td class='mean'>How fresh the data is. Stale TLE lowers confidence; it does not prove a threat.</td></tr></tbody>
       </table>
       <div class="math-note">
         <strong>Protocol:</strong> train only on the series past (daily holdout);
         today’s point is only scored. Attention with pair:
         attention ≈ 0.45 × anomaly + 0.55 × pair_risk.
         <br />
-        <strong>TLE quality:</strong> score 0.550 ·
-        reliable=True · age 38.3 h ·
-        issues: tle_aging_38h, gap_262h.
+        <strong>TLE quality:</strong> score 0.700 ·
+        reliable=True · age 6.2 h ·
+        issues: gap_262h.
         <br />
-        <strong>Window:</strong> 2026-07-25 11:04:07.684320 ·
+        <strong>Window:</strong> 2026-07-27 12:04:29.414208 ·
         anomaly threshold 0.55.
       </div>
     </section>

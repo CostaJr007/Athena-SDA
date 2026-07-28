@@ -96,9 +96,9 @@ def get_flag(country_code: str) -> str:
 
 color_map = {
     "NORMAL": "#30d158",
-    "ANÔMALO": "#ffd60a",
-    "SUSPEITO": "#ff6b35",
-    "HOSTIL": "#ff2d55",
+    "ANOMALOUS": "#ffd60a",
+    "SUSPECT": "#ff6b35",
+    "HOSTILE": "#ff2d55",
 }
 
 # --- Load models & process ---
@@ -112,9 +112,9 @@ processed_by_id = {p["id"]: p for p in processed_sats}
 for p in processed_sats:
     processed_by_id[p["id"]] = p
 
-hostis = int((df_sats["classification"] == "HOSTIL").sum())
-suspeitos = int((df_sats["classification"] == "SUSPEITO").sum())
-anomalos = int((df_sats["classification"] == "ANÔMALO").sum())
+hostis = int(df_sats["classification"].isin(["HOSTILE", "HOSTIL"]).sum())
+suspeitos = int(df_sats["classification"].isin(["SUSPECT", "SUSPEITO"]).sum())
+anomalos = int(df_sats["classification"].isin(["ANOMALOUS", "ANÔMALO", "ANOMALO"]).sum())
 normais = int(len(df_sats) - hostis - suspeitos - anomalos)
 
 # --- Header ---
@@ -125,21 +125,21 @@ st.markdown(
 )
 
 with st.sidebar:
-    st.markdown("### 📡 STATUS ORBITAL")
-    st.metric("Objetos no catálogo demo", len(df_sats))
-    st.caption("Demo curada + física aproximada. Escala de produção usaria o catálogo Space-Track completo.")
+    st.markdown("### 📡 ORBITAL STATUS")
+    st.metric("Objects in demo catalog", len(df_sats))
+    st.caption("Curated demo + approximate physics. Production scale would use the full Space-Track catalog.")
     st.markdown(f"""
     <div class='glass-card' style='padding: 0.8rem;'>
         <div style='display:flex; justify-content:space-between; margin-bottom:6px;'>
-            <span style='color:#ff2d55;'>● HOSTIL</span>
+            <span style='color:#ff2d55;'>● HOSTILE</span>
             <span style='font-family:JetBrains Mono,monospace; color:#ff2d55;'>{hostis}</span>
         </div>
         <div style='display:flex; justify-content:space-between; margin-bottom:6px;'>
-            <span style='color:#ff6b35;'>● SUSPEITO</span>
+            <span style='color:#ff6b35;'>● SUSPECT</span>
             <span style='font-family:JetBrains Mono,monospace; color:#ff6b35;'>{suspeitos}</span>
         </div>
         <div style='display:flex; justify-content:space-between; margin-bottom:6px;'>
-            <span style='color:#ffd60a;'>● ANÔMALO</span>
+            <span style='color:#ffd60a;'>● ANOMALOUS</span>
             <span style='font-family:JetBrains Mono,monospace; color:#ffd60a;'>{anomalos}</span>
         </div>
         <div style='display:flex; justify-content:space-between;'>
@@ -155,19 +155,19 @@ with st.sidebar:
     if api_key_input and project_id_input:
         os.environ["WATSONX_APIKEY"] = api_key_input
         os.environ["WATSONX_PROJECT_ID"] = project_id_input
-        st.success("✓ Credenciais ativas (sessão)")
+        st.success("✓ Credentials active (session)")
     else:
-        st.info("Sem API: Bob usa briefing local (offline).")
+        st.info("No API: Bob uses local offline briefing.")
 
     if train_metrics:
-        st.markdown("### 📊 Último treino")
+        st.markdown("### 📊 Last training")
         st.caption(
             f"n={train_metrics.get('n_samples', '?')} | "
             f"acc={train_metrics.get('accuracy_test', 0):.2%} | "
             f"logloss={train_metrics.get('log_loss_test', float('nan')):.3f}"
         )
 
-tab1, tab2, tab3 = st.tabs(["🚀 Dashboard Tático", "🧠 Model Insights", "📖 Glossário"])
+tab1, tab2, tab3 = st.tabs(["🚀 Tactical Dashboard", "🧠 Model Insights", "📖 Glossary"])
 
 # ====================================================================
 # TAB 1 — DASHBOARD
@@ -178,7 +178,7 @@ with tab1:
         sat_id = int(row["id"])
         hist_df = all_sats[sat_id]["history"]
         color = color_map.get(row["classification"], "#30d158")
-        is_hostile = row["classification"] in ("HOSTIL", "SUSPEITO")
+        is_hostile = row["classification"] in ("HOSTILE", "HOSTIL", "SUSPECT", "SUSPEITO")
         sat_data_for_globe.append({
             "name": row["name"],
             "sma": float(hist_df["semi_major_axis_km"].values[-1]),
@@ -241,9 +241,9 @@ with tab1:
       <script src="https://unpkg.com/globe.gl@2.35.1"></script>
     </head>
     <body>
-      <div class="loading-overlay" id="loader"><div class="loading-spinner"></div><div class="loading-text">Carregando órbitas...</div></div>
-      <div class="hud-title"><div class="name">ATHENA-SDA</div><div class="status">Pipeline ML ativo</div></div>
-      <div class="hud-counter"><div class="count">__SAT_COUNT__</div><div class="label">Objetos rastreados</div></div>
+      <div class="loading-overlay" id="loader"><div class="loading-spinner"></div><div class="loading-text">Loading orbits...</div></div>
+      <div class="hud-title"><div class="name">ATHENA-SDA</div><div class="status">ML pipeline active</div></div>
+      <div class="hud-counter"><div class="count">__SAT_COUNT__</div><div class="label">Tracked objects</div></div>
       <div class="sat-tooltip" id="tooltip"></div>
       <div id="globeViz"></div>
       <script>
@@ -301,10 +301,10 @@ with tab1:
                 tooltip.style.display = 'block';
                 const orbitAlt = ((d.sma - 6371)).toFixed(0);
                 tooltip.innerHTML = `<div class="tt-name" style="color:${d.color}">${d.name}</div>
-                    <div class="tt-row"><span class="tt-label">País</span><span class="tt-value">${d.country}</span></div>
-                    <div class="tt-row"><span class="tt-label">Missão</span><span class="tt-value">${d.purpose}</span></div>
-                    <div class="tt-row"><span class="tt-label">Órbita</span><span class="tt-value">${d.orbit} (${orbitAlt} km)</span></div>
-                    <div class="tt-row"><span class="tt-label">Ameaça</span><span class="tt-value" style="color:${d.color}">${d.classification} (${(d.threat * 100).toFixed(0)}%)</span></div>
+                    <div class="tt-row"><span class="tt-label">Country</span><span class="tt-value">${d.country}</span></div>
+                    <div class="tt-row"><span class="tt-label">Mission</span><span class="tt-value">${d.purpose}</span></div>
+                    <div class="tt-row"><span class="tt-label">Orbit</span><span class="tt-value">${d.orbit} (${orbitAlt} km)</span></div>
+                    <div class="tt-row"><span class="tt-label">Threat</span><span class="tt-value" style="color:${d.color}">${d.classification} (${(d.threat * 100).toFixed(0)}%)</span></div>
                     <div class="tt-bar"><div class="tt-bar-fill" style="width:${d.threat * 100}%; background:${d.color};"></div></div>`;
             } else { tooltip.style.display = 'none'; }
         });
@@ -333,22 +333,22 @@ with tab1:
     alert_col, chat_col = st.columns([1.2, 1.0])
 
     with alert_col:
-        st.markdown("### 🚨 ALERTAS ATIVOS")
-        st.caption("Ordenados por Kelly (alocação de sensores). Scores = XGBoost + Fuzzy fundidos.")
+        st.markdown("### 🚨 ACTIVE ALERTS")
+        st.caption("Sorted by Kelly (sensor allocation). Scores = fused XGBoost + Fuzzy.")
         alertas = df_sats[df_sats["classification"] != "NORMAL"].sort_values(by="kelly_allocation", ascending=False)
 
         for _, row in alertas.iterrows():
             flag = get_flag(row["country"])
             target = row.get("closest_asset_name") or "—"
-            if row["classification"] == "HOSTIL":
-                card_class, badge, badge_color = "glass-card alert-card-red", "HOSTIL", "#ff2d55"
-                diag = f"⚠️ Ameaça elevada / RPO<br><span style='color:#ff2d55'>🎯 Alvo: {target}</span>"
-            elif row["classification"] == "SUSPEITO":
-                card_class, badge, badge_color = "glass-card alert-card-orange", "SUSPEITO", "#ff6b35"
-                diag = f"👁️ Comportamento anômalo persistente<br><span style='color:#ff6b35'>🎯 Possível alvo: {target}</span>"
+            if row["classification"] in ("HOSTILE", "HOSTIL"):
+                card_class, badge, badge_color = "glass-card alert-card-red", "HOSTILE", "#ff2d55"
+                diag = f"⚠️ Elevated threat / RPO<br><span style='color:#ff2d55'>🎯 Target: {target}</span>"
+            elif row["classification"] in ("SUSPECT", "SUSPEITO"):
+                card_class, badge, badge_color = "glass-card alert-card-orange", "SUSPECT", "#ff6b35"
+                diag = f"👁️ Persistent anomalous behavior<br><span style='color:#ff6b35'>🎯 Possible target: {target}</span>"
             else:
-                card_class, badge, badge_color = "glass-card alert-card-yellow", "ANÔMALO", "#ffd60a"
-                diag = "🔍 Desvio da baseline Kepleriana (CUSUM/ADF)"
+                card_class, badge, badge_color = "glass-card alert-card-yellow", "ANOMALOUS", "#ffd60a"
+                diag = "🔍 Deviation from Keplerian baseline (CUSUM/ADF)"
 
             xgb_c = row.get("xgb_class", "—")
             st.markdown(f"""
@@ -362,7 +362,7 @@ with tab1:
                 </div>
                 <div style="margin-top:6px; font-size:0.82rem; color:#e1e1e1;">{diag}</div>
                 <div style="margin-top:8px; display:flex; gap:16px; font-size:0.78rem; color:#8e8e93;">
-                    <span>Ameaça <span style="color:{badge_color}; font-family:'JetBrains Mono',monospace;">{row['threat_level']:.2f}</span></span>
+                    <span>Threat <span style="color:{badge_color}; font-family:'JetBrains Mono',monospace;">{row['threat_level']:.2f}</span></span>
                     <span>Conf <span style="color:#e1e1e1; font-family:'JetBrains Mono',monospace;">{row['confidence']*100:.0f}%</span></span>
                     <span>Kelly <span style="color:#00d4ff; font-family:'JetBrains Mono',monospace;">{row['kelly_allocation']*100:.0f}%</span></span>
                     <span>Dist <span style="color:#e1e1e1; font-family:'JetBrains Mono',monospace;">{row['min_dist_mil']:.1f} km</span></span>
@@ -371,32 +371,32 @@ with tab1:
             """, unsafe_allow_html=True)
 
         if alertas.empty:
-            st.success("Nenhum alerta — todos os objetos classificados NORMAL.")
+            st.success("No alerts — all objects classified NORMAL.")
 
     with chat_col:
         st.markdown("### 💬 COPILOTO BOB")
-        st.caption("Pergunte: briefing #ID · alertas · clima espacial · histórico · aproximações")
+        st.caption("Ask: briefing #ID · alerts · space weather · history · approaches")
         if "messages" not in st.session_state:
             st.session_state.messages = [{
                 "role": "assistant",
                 "content": (
-                    f"Operador, catálogo demo com **{len(df_sats)}** objetos. "
-                    f"**{hostis}** HOSTIL · **{suspeitos}** SUSPEITO · **{anomalos}** ANÔMALO. "
+                    f"Operator, demo catalog with **{len(df_sats)}** objects. "
+                    f"**{hostis}** HOSTILE · **{suspeitos}** SUSPECT · **{anomalos}** ANOMALOUS. "
                     f"Pipeline: Isolation Forest → XGBoost → Fuzzy → Kelly. "
-                    f"Ex.: `Briefing do #44231` ou `Quais alertas ativos?`"
+                    f"E.g.: `Briefing for #44231` or `Active alerts?`"
                 ),
             }]
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
 
-        user_input = st.chat_input("Ex: Briefing do satélite #44231")
+        user_input = st.chat_input("E.g.: Briefing for satellite #44231")
         if user_input:
             st.session_state.messages.append({"role": "user", "content": user_input})
             with st.chat_message("user"):
                 st.markdown(user_input)
             with st.chat_message("assistant"):
-                with st.spinner("Bob analisando (tools + ML)..."):
+                with st.spinner("Bob analyzing (tools + ML)..."):
                     response_text = answer_operator_query(
                         user_input, all_sats, processed_sats, processed_by_id
                     )
@@ -407,8 +407,8 @@ with tab1:
     insp_col, chart_col1, chart_col2 = st.columns([1.4, 0.8, 0.8])
 
     with insp_col:
-        st.markdown("### 🛰️ INSPETOR")
-        selected_sat_name = st.selectbox("Satélite", df_sats["name"].unique(), label_visibility="collapsed")
+        st.markdown("### 🛰️ INSPECTOR")
+        selected_sat_name = st.selectbox("Satellite", df_sats["name"].unique(), label_visibility="collapsed")
         sat_row = df_sats[df_sats["name"] == selected_sat_name].iloc[0]
         full = processed_by_id[int(sat_row["id"])]
         feats = full["features"]
@@ -418,10 +418,10 @@ with tab1:
         <div class="glass-card">
             <div style="font-size:1.05rem; font-weight:600; color:#00d4ff; margin-bottom:8px;">{flag} {selected_sat_name}</div>
             <div style="font-size:0.82rem; color:#8e8e93; line-height:1.8;">
-                <div>Classificação: <span style="color:{threat_color}; font-weight:600;">{sat_row['classification']}</span>
+                <div>Classification: <span style="color:{threat_color}; font-weight:600;">{sat_row['classification']}</span>
                     (XGB: {sat_row.get('xgb_class','—')} / Fuzzy: {sat_row.get('fuzzy_classification','—')})</div>
-                <div>Ameaça: {sat_row['threat_level']:.2f} · Conf: {sat_row['confidence']*100:.0f}% · Kelly: {sat_row['kelly_allocation']*100:.0f}%</div>
-                <div>Dist. militar: {sat_row['min_dist_mil']:.2f} km · Cointeg. p: {sat_row.get('cointegration_pvalue', 1):.4f}</div>
+                <div>Threat: {sat_row['threat_level']:.2f} · Conf: {sat_row['confidence']*100:.0f}% · Kelly: {sat_row['kelly_allocation']*100:.0f}%</div>
+                <div>Military dist.: {sat_row['min_dist_mil']:.2f} km · Cointeg. p: {sat_row.get('cointegration_pvalue', 1):.4f}</div>
                 <div>Hurst: {feats.get('hurst_exponent_sma',0):.2f} · Shannon: {feats.get('shannon_entropy_sma_30d',0):.2f}
                     · CUSUM: {feats.get('l1_cusum_sma',0):.2f}</div>
                 <div>Kolmogorov: {feats.get('kolmogorov_proxy_7d',0):.2f} · RKHS: {feats.get('spectral_anomaly_rkhs',0):.2f}
@@ -431,21 +431,21 @@ with tab1:
         """, unsafe_allow_html=True)
 
     with chart_col1:
-        st.markdown("##### Por País")
+        st.markdown("##### By Country")
         country_counts = df_sats["country"].value_counts().reset_index()
-        country_counts.columns = ["País", "Qtd"]
-        fig_c = go.Figure(go.Bar(x=country_counts["País"], y=country_counts["Qtd"], marker=dict(color="#00d4ff", line=dict(width=0))))
+        country_counts.columns = ["Country", "Count"]
+        fig_c = go.Figure(go.Bar(x=country_counts["Country"], y=country_counts["Count"], marker=dict(color="#00d4ff", line=dict(width=0))))
         fig_c.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                             font=dict(color="#8e8e93", family="Inter", size=11), height=220,
                             margin=dict(l=10, r=10, t=10, b=10), xaxis=dict(showgrid=False), yaxis=dict(showgrid=False))
         st.plotly_chart(fig_c, width="stretch")
 
     with chart_col2:
-        st.markdown("##### Por Classificação")
+        st.markdown("##### By Classification")
         cls_counts = df_sats["classification"].value_counts().reset_index()
-        cls_counts.columns = ["Classe", "Qtd"]
-        colors = [color_map.get(c, "#888") for c in cls_counts["Classe"]]
-        fig_o = go.Figure(go.Bar(x=cls_counts["Classe"], y=cls_counts["Qtd"], marker=dict(color=colors, line=dict(width=0))))
+        cls_counts.columns = ["Class", "Count"]
+        colors = [color_map.get(c, "#888") for c in cls_counts["Class"]]
+        fig_o = go.Figure(go.Bar(x=cls_counts["Class"], y=cls_counts["Count"], marker=dict(color=colors, line=dict(width=0))))
         fig_o.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
                             font=dict(color="#8e8e93", family="Inter", size=11), height=220,
                             margin=dict(l=10, r=10, t=10, b=10), xaxis=dict(showgrid=False), yaxis=dict(showgrid=False))
@@ -457,7 +457,7 @@ with tab1:
 with tab2:
     st.markdown("### 🧠 Model Insights — Isolation Forest + XGBoost + Fuzzy")
     st.markdown(
-        "<span style='color:#8e8e93;font-size:0.9rem;'>DAG: features matemáticas → IF anomaly → XGB classe → Fuzzy calibração → Kelly.</span>",
+        "<span style='color:#8e8e93;font-size:0.9rem;'>DAG: math features → IF anomaly → XGB class → Fuzzy calibration → Kelly.</span>",
         unsafe_allow_html=True,
     )
     ml_col1, ml_col2 = st.columns([1.5, 1])
@@ -467,25 +467,25 @@ with tab2:
         try:
             importances = xgb_model.feature_importances_
             names = list(getattr(xgb_model, "feature_names_in_", None) or [f"f{i}" for i in range(len(importances))])
-            df_imp = pd.DataFrame({"Feature": names, "Importância": importances}).sort_values("Importância", ascending=True)
-            vmax = max(df_imp["Importância"].max(), 1e-9)
-            colors = [f"rgba(0, {int(150 + 105 * v / vmax)}, {int(200 + 55 * v / vmax)}, 0.85)" for v in df_imp["Importância"]]
-            fig_ml = go.Figure(go.Bar(x=df_imp["Importância"], y=df_imp["Feature"], orientation="h",
+            df_imp = pd.DataFrame({"Feature": names, "Importance": importances}).sort_values("Importance", ascending=True)
+            vmax = max(df_imp["Importance"].max(), 1e-9)
+            colors = [f"rgba(0, {int(150 + 105 * v / vmax)}, {int(200 + 55 * v / vmax)}, 0.85)" for v in df_imp["Importance"]]
+            fig_ml = go.Figure(go.Bar(x=df_imp["Importance"], y=df_imp["Feature"], orientation="h",
                                       marker=dict(color=colors, line=dict(width=0))))
             fig_ml.update_layout(margin=dict(l=10, r=20, t=10, b=10), paper_bgcolor="rgba(0,0,0,0)",
                                  plot_bgcolor="rgba(0,0,0,0)", font=dict(color="#8e8e93", family="Inter", size=10),
                                  height=520, xaxis=dict(showgrid=False), yaxis=dict(showgrid=False))
             st.plotly_chart(fig_ml, width="stretch")
         except Exception as e:
-            st.warning(f"Não foi possível plotar importâncias: {e}")
+            st.warning(f"Could not plot importances: {e}")
 
     with ml_col2:
-        st.markdown("##### Métricas de treino (hold-out 20%)")
+        st.markdown("##### Training metrics (20% hold-out)")
         if train_metrics:
             st.markdown(f"""
             <div class='glass-card'>
                 <div style="font-size:0.85rem; line-height:1.9; color:#e1e1e1;">
-                    <div>Amostras: <span style="color:#00d4ff; font-family:JetBrains Mono,monospace;">{train_metrics.get('n_samples')}</span></div>
+                    <div>Samples: <span style="color:#00d4ff; font-family:JetBrains Mono,monospace;">{train_metrics.get('n_samples')}</span></div>
                     <div>Features XGB: <span style="color:#00d4ff; font-family:JetBrains Mono,monospace;">{train_metrics.get('n_features')}</span></div>
                     <div>Accuracy: <span style="color:#30d158; font-family:JetBrains Mono,monospace;">{train_metrics.get('accuracy_test',0):.3f}</span></div>
                     <div>Macro F1: <span style="color:#30d158; font-family:JetBrains Mono,monospace;">{train_metrics.get('macro_f1',0):.3f}</span></div>
@@ -497,19 +497,19 @@ with tab2:
             if dist:
                 st.json(dist)
         else:
-            st.info("Métricas não encontradas. Retreine os modelos.")
+            st.info("Metrics not found. Retrain the models.")
 
-        st.markdown("##### Arquitetura (patente-inspired)")
+        st.markdown("##### Architecture (patent-inspired)")
         st.markdown("""
         <div class='glass-card' style="font-size:0.82rem; color:#8e8e93; line-height:1.7;">
-        <b style="color:#e1e1e1;">US 2024/0394296</b> — filtro → ML quantitativo → LLM descritivo → classificação<br>
-        <b style="color:#e1e1e1;">US 12,657,514</b> — Data/Inference API + DAG de modelos<br>
-        <b style="color:#e1e1e1;">US 2023/0050870</b> — micro-modelos IF + XGB + fuzzy
+        <b style="color:#e1e1e1;">US 2024/0394296</b> — filter → quantitative ML → descriptive LLM → classification<br>
+        <b style="color:#e1e1e1;">US 12,657,514</b> — Data/Inference API + model DAG<br>
+        <b style="color:#e1e1e1;">US 2023/0050870</b> — micro-models IF + XGB + fuzzy
         </div>
         """, unsafe_allow_html=True)
 
-        if st.button("🔄 Retreinar Modelos"):
-            with st.spinner("Retreinando Isolation Forest + XGBoost..."):
+        if st.button("🔄 Retrain Models"):
+            with st.spinner("Retraining Isolation Forest + XGBoost..."):
                 metrics = train_and_save_models()
                 st.success(f"✓ acc={metrics.get('accuracy_test', 0):.3f} logloss={metrics.get('log_loss_test', 0):.4f}")
                 st.cache_resource.clear()
@@ -517,39 +517,39 @@ with tab2:
                 st.rerun()
 
 # ====================================================================
-# TAB 3 — GLOSSÁRIO
+# TAB 3 — GLOSSARY
 # ====================================================================
 with tab3:
-    st.markdown("### 📖 Glossário do Framework Matemático")
+    st.markdown("### 📖 Mathematical Framework Glossary")
     c1, c2 = st.columns(2)
     with c1:
         st.markdown("""
         <div class="glass-card">
-            <div style="font-size:0.8rem; color:#00d4ff; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px;">Sinais & Caos Orbital</div>
+            <div style="font-size:0.8rem; color:#00d4ff; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px;">Signals & Orbital Chaos</div>
             <ul style="font-size:0.85rem; color:#e1e1e1; line-height:1.7; padding-left:18px;">
-                <li><strong>Hurst (H):</strong> memória longa — H&gt;0.7 sugere empuxo contínuo.</li>
-                <li><strong>Shannon:</strong> desordem em ΔSMA — órbita caótica eleva entropia.</li>
-                <li><strong>Kolmogorov (zlib):</strong> complexidade algorítmica da trajetória.</li>
-                <li><strong>L1-CUSUM:</strong> quebra estrutural / manobra Delta-V.</li>
-                <li><strong>ADF:</strong> não-estacionariedade (manobra de baixo empuxo).</li>
-                <li><strong>Mandelbrot:</strong> caudas pesadas em anomalias raras.</li>
-                <li><strong>Cointegração:</strong> shadowing entre espião e alvo.</li>
+                <li><strong>Hurst (H):</strong> long memory — H&gt;0.7 suggests continuous thrust.</li>
+                <li><strong>Shannon:</strong> disorder in ΔSMA — chaotic orbit raises entropy.</li>
+                <li><strong>Kolmogorov (zlib):</strong> algorithmic complexity of the trajectory.</li>
+                <li><strong>L1-CUSUM:</strong> structural break / Delta-V maneuver.</li>
+                <li><strong>ADF:</strong> non-stationarity (low-thrust maneuver).</li>
+                <li><strong>Mandelbrot:</strong> heavy tails on rare anomalies.</li>
+                <li><strong>Cointegration:</strong> shadowing between spy and target.</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
     with c2:
         st.markdown("""
         <div class="glass-card">
-            <div style="font-size:0.8rem; color:#00d4ff; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px;">Geometria, Lógica & Decisão</div>
+            <div style="font-size:0.8rem; color:#00d4ff; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px;">Geometry, Logic & Decision</div>
             <ul style="font-size:0.85rem; color:#e1e1e1; line-height:1.7; padding-left:18px;">
-                <li><strong>RKHS:</strong> anomalia espectral vs baseline normal.</li>
-                <li><strong>Ricci (Ollivier):</strong> distorção de vizinhança / convergência.</li>
-                <li><strong>Homologia H0/H1:</strong> topologia da nuvem de posições.</li>
-                <li><strong>Chern-Simons proxy:</strong> não-conservação de h = r×v.</li>
-                <li><strong>Fuzzy Mamdani:</strong> calibração sob incerteza de TLE.</li>
-                <li><strong>Łukasiewicz:</strong> consistência lógica (cointeg → Hurst).</li>
-                <li><strong>Kelly:</strong> sizing de tasking de sensores.</li>
-                <li><strong>Williams:</strong> valor intrínseco por país/missão/órbita.</li>
+                <li><strong>RKHS:</strong> spectral anomaly vs normal baseline.</li>
+                <li><strong>Ricci (Ollivier):</strong> neighborhood distortion / convergence.</li>
+                <li><strong>Homologia H0/H1:</strong> topology of the position cloud.</li>
+                <li><strong>Chern-Simons proxy:</strong> non-conservation of h = r×v.</li>
+                <li><strong>Fuzzy Mamdani:</strong> calibration under TLE uncertainty.</li>
+                <li><strong>Łukasiewicz:</strong> logical consistency (coint → Hurst).</li>
+                <li><strong>Kelly:</strong> sensor tasking sizing.</li>
+                <li><strong>Williams:</strong> intrinsic value by country/mission/orbit.</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)

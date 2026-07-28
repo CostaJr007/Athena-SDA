@@ -25,7 +25,7 @@ print()
 
 # History tool
 print("=== HISTORY TOOL (#2001) ===")
-print(answer_operator_query("Histórico do #2001", sats, out, by_id))
+print(answer_operator_query("History for #2001", sats, out, by_id))
 print()
 
 # App import check

@@ -42,7 +42,6 @@ src/frontend/dist/
 
 # Backups / legacy trees / chat dumps (not product code)
 leo-live-old/
-src/frontend-lovable-backup/
 chat_history_hackathon*.txt
 
 # Redundant bulk mirrors (parquet/csv curated kept; raw GFZ re-downloadable)

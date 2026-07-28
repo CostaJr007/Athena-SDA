@@ -41,7 +41,7 @@ The system splits into two dynamic layers:
 * **Purpose:** Alignment and compression of high-frequency geospatial trajectories for zero-latency interactive rendering.
 
 ### Architectural Design
-* **3D Spatiotemporal Tiling ($X, Y, Time\ T$):** Maps spatial coordinates and timeline metrics into indexed database tiles.
+* **3D Spatiotemporal Tiling (\(X, Y, Time\ T\)):** Maps spatial coordinates and timeline metrics into indexed database tiles.
 * **Multidimensional Simplification:** Applies trajectory compression algorithms (e.g. Ramer-Douglas-Peucker) across vector paths during temporal zoom-out to maintain UI responsiveness.
 
 ---
@@ -62,16 +62,15 @@ The system splits into two dynamic layers:
 * **Inventors:** Lauren Shearer, Anand Gupta, Cassandra Wang, Tess Druckenmiller, Dan Cervelli, Vineel Kodikanti.
 * **Purpose:** Indexing and visualization of intelligence ontology objects with dynamic filtering over interactive geospatial layers.
 
----
-*Athena-SDA Patent Research Reference.*
-* **UTF Grid:** Índice local no cliente que mapeia a localização dos pixels aos IDs dos objetos sem requisições adicionais de backend.
-* **Filtros Cruzados:** Selecionar um conjunto de objetos gera histogramas de propriedades na tela do cliente. Filtrar uma barra do histograma faz *drill-down* imediato no mapa e recalcula as demais estatísticas.
+### UI Mechanisms
+* **UTF Grid:** Client-side local index mapping pixel locations to object IDs without additional backend requests.
+* **Cross Filters:** Selecting a set of objects generates property histograms on the client. Filtering a histogram bar immediately drills down on the map and recomputes the remaining statistics.
 
 ---
 
-## 6. Mapeamento de Herança no Athena-SDA
+## 6. Inheritance Mapping in Athena-SDA
 
-O **Athena-SDA** foi desenhado herdando diretamente estes princípios:
+**Athena-SDA** was designed by inheriting these principles directly:
 
 ```
                   ┌────────────────────────────────────────────────┐
@@ -82,9 +81,12 @@ O **Athena-SDA** foi desenhado herdando diretamente estes princípios:
     ▼                                     ▼                                     ▼
 [US 2023/0050870 A1]              [US 2024/0394296 A1]                  [US 12,374,011 B2]
 AI Meta-Constellation              LLM + GIS integration                 Ontology & Histograms
-Herança:                          Herança:                              Herança:
-Uso de Micro-Modelos de ML        Decisão qualitativa e                 Histogramas dinâmicos de
-para detecção de anomalias        explicabilidade de ameaça             países e tipos de órbitas
-e priorização de telemetria       em linguagem natural                  com filtros cruzados no
-no satélite (borda/Edge).         usando o copiloto Bob/Granite.        painel lateral da aplicação.
+Inheritance:                       Inheritance:                          Inheritance:
+ML micro-models for                Qualitative decision                  Dynamic histograms of
+anomaly detection and              and threat explainability             countries and orbit types
+telemetry prioritization           in natural language                   with cross filters on the
+on the satellite (Edge).           via Bob/Granite copilot.              app side panel.
 ```
+
+---
+*Athena-SDA Patent Research Reference.*

@@ -82,9 +82,7 @@ LAYER 3 — Dashboard & Globe (UI):       Interactive 3D globe + risk cards + co
 
 ---
 
----
-
-## 4. ARQUITETURA DO SISTEMA
+## 4. SYSTEM ARCHITECTURE
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -96,43 +94,43 @@ LAYER 3 — Dashboard & Globe (UI):       Interactive 3D globe + risk cards + co
 │                         ▼                                        │
 │ ② FEATURE EXTRACTOR (20+ features)                               │
 │   Shannon Entropy │ Kolmogorov │ Hurst │ Mandelbrot │ Ricci     │
-│   Homologia │ Chern-Simons proxy │ Fuzzy │ Hilbert/RKHS          │
+│   Homology │ Chern-Simons proxy │ Fuzzy │ Hilbert/RKHS           │
 │                         │                                        │
 │                         ▼                                        │
 │ ③ ANOMALY DETECTOR (Isolation Forest)                            │
-│   "Este objeto está se comportando diferente do normal?"         │
+│   "Is this object behaving differently from normal?"             │
 │                         │                                        │
 │                         ▼                                        │
 │ ④ THREAT CLASSIFIER (XGBoost)                                    │
-│   🟢 NORMAL | 🟡 ANÔMALO | 🟠 SUSPEITO | 🔴 HOSTIL               │
+│   🟢 NORMAL | 🟡 ANOMALOUS | 🟠 SUSPECT | 🔴 HOSTILE             │
 │                         │                                        │
-│              (só alertas 🟠🔴 seguem)                             │
+│              (only 🟠🔴 alerts proceed)                          │
 │                         │                                        │
 │                         ▼                                        │
 │ ⑤ FUZZY INFERENCE (skfuzzy)                                      │
-│   Lida com incerteza: TLE velho, bordas de decisão               │
+│   Handles uncertainty: stale TLE, decision boundaries            │
 │   Output: threat_level + confidence + ambiguity                  │
 │                         │                                        │
 │                         ▼                                        │
 │ ⑥ BOB ANALYST (IBM Granite + Tool Calling)                       │
-│   Pipeline LLM+Geospatial 4 etapas (Palantir US 2024/0394296)    │
-│   Contextualiza → Explica → Prioriza → Recomenda                 │
+│   4-stage LLM+Geospatial pipeline (Palantir US 2024/0394296)     │
+│   Contextualize → Explain → Prioritize → Recommend               │
 │                         │                                        │
 │                         ▼                                        │
 │ ⑦ DASHBOARD (Streamlit)                                          │
-│   Globo 3D │ Cards de ameaça │ Chat Bob │ Histogramas            │
+│   3D Globe │ Threat cards │ Bob chat │ Histograms                │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 5. PIPELINE DE MACHINE LEARNING
+## 5. MACHINE LEARNING PIPELINE
 
-### Features (20+ por objeto)
+### Features (20+ per object)
 
 ```python
 features = {
-    # Parâmetros orbitais instantâneos (7)
+    # Instantaneous orbital parameters (7)
     "semi_major_axis_km": 6878.0,
     "eccentricity": 0.001,
     "inclination_deg": 51.6,
@@ -140,15 +138,15 @@ features = {
     "arg_perigee_deg": 100.1,
     "mean_anomaly_deg": 260.5,
     "mean_motion_rev_per_day": 15.5,
-    
-    # Variações temporais (4)
+
+    # Temporal variations (4)
     "delta_sma_7d_km": 0.15,
     "delta_sma_30d_km": 0.45,
     "delta_inc_30d_deg": 0.02,
     "maneuver_count_30d": 1,
-    
-    # Matemáticas avançadas (9+)
-    # (implementadas na Seção 6)
+
+    # Advanced mathematics (9+)
+    # (implemented in Section 6)
     "shannon_entropy_sma_30d": ...,
     "kolmogorov_proxy_7d": ...,
     "hurst_exponent_sma": ...,
@@ -158,239 +156,239 @@ features = {
     "persistent_h0_count": ...,
     "chern_simons_proxy": ...,
     "spectral_anomaly_rkhs": ...,
-    
-    # Contexto (2)
+
+    # Context (2)
     "intrinsic_threat_value": ...,  # Williams (1938)
     "tle_age_hours": 12,
 }
 ```
 
-### Modelos
+### Models
 
-| Modelo | Algoritmo | Tipo | Output |
-|--------|-----------|------|--------|
-| Anomaly Detector | Isolation Forest | Não-supervisionado | anomaly_score (0-1) |
-| Threat Classifier | XGBoost | Supervisionado | 🟢🟡🟠🔴 |
-| Fuzzy Inference | skfuzzy (Mamdani) | Baseado em regras | threat_level + confidence |
-| Kelly Allocator | Critério de Kelly | Decisão | resource_allocation |
+| Model | Algorithm | Type | Output |
+|-------|-----------|------|--------|
+| Anomaly Detector | Isolation Forest | Unsupervised | anomaly_score (0-1) |
+| Threat Classifier | XGBoost | Supervised | 🟢🟡🟠🔴 |
+| Fuzzy Inference | skfuzzy (Mamdani) | Rule-based | threat_level + confidence |
+| Kelly Allocator | Kelly Criterion | Decision | resource_allocation |
 
-### Labels (ground truth simulado)
+### Labels (Simulated Ground Truth)
 
-Baseado em doutrina militar pública de Space Domain Awareness:
+Based on public military Space Domain Awareness doctrine:
 
-- `min_distance_to_military_km < 10` → HOSTIL
-- `delta_sma_7d > 5.0 km` → HOSTIL
-- `delta_sma_7d > 2.0 AND min_dist < 50` → SUSPEITO
-- `maneuver_count_30d >= 3` → SUSPEITO
-- `delta_sma_7d > 1.0` → ANÔMALO
-- Demais → NORMAL
-
----
-
-## 6. FUNDAMENTAÇÃO MATEMÁTICA
-
-### Matriz completa: 14 teorias aplicadas
-
-| # | Teoria | Autor/Ano | Feature | Tipo |
-|---|--------|-----------|---------|------|
-| 1 | Valor Intrínseco | Williams (1938) | `intrinsic_threat_value` | Estático |
-| 2 | Kernel Regression | Lo et al. (2000) | `kernel_typicality_score` | Não-paramétrico |
-| 3 | Kernel L1 CUSUM | — | `l1_cusum_sma` | Sequencial robusto |
-| 4 | Caudas Pesadas | Mandelbrot (1963) | `mandelbrot_tail_score` | Distribucional |
-| 5 | Memória Longa R/S | Hurst (1951) | `hurst_exponent` | Temporal |
-| 6 | Entropia de Shannon | Shannon (1948) | `entropy_sma_30d` | Informacional |
-| 7 | Complexidade de Kolmogorov | Kolmogorov (1965) | `kolmogorov_proxy_7d` | Algorítmica |
-| 8 | Homologia Persistente | Edelsbrunner (2002) | `h0_persistent`, `h1_persistent` | Topológica |
-| 9 | Curvatura de Ricci | Ollivier (2007) | `ricci_mean`, `ricci_delta` | Geométrica |
-| 10 | Chern-Simons (proxy) | Chern-Simons (1974) | `topological_violation` | Topológica |
-| 11 | Fuzzy Sets | Zadeh (1965) | `fuzzy_threat`, `fuzzy_confidence` | Lógica |
-| 12 | Lógica Łukasiewicz | Łukasiewicz (1920) | `lukasiewicz_implication` | Lógica |
-| 13 | Critério de Kelly | Kelly (1956) | `kelly_allocation` | Decisão |
-| 14 | Hilbert/RKHS | Hilbert (~1900) | `spectral_anomaly` | Geométrica |
-
-### Ordem de aplicação (do básico ao avançado)
-
-```
-FASE 1 (MVP):     Features orbitais básicas → XGBoost
-FASE 2 (Avançado): Shannon + Kolmogorov + Hurst
-FASE 3 (Expert):   Mandelbrot + Ricci + Homologia + Chern-Simons
-FASE 4 (Decisão):  Fuzzy + Kelly + Hilbert/RKHS
-```
-
-### Status de implementação por teoria
-
-| Status | Teorias |
-|--------|---------|
-| ✅ Implementação direta (5-20 linhas) | Shannon, Kolmogorov, Hurst, Mandelbrot, Zadeh, Łukasiewicz, Kelly, Williams, Lo, Hilbert |
-| ⚠️ Aproximação necessária | Ollivier-Ricci, Homologia Persistente (samplear), Chern-Simons (proxy) |
-| ❌ Apenas conceitual | Chern-Simons exato (fora do escopo) |
+- `min_distance_to_military_km < 10` → HOSTILE
+- `delta_sma_7d > 5.0 km` → HOSTILE
+- `delta_sma_7d > 2.0 AND min_dist < 50` → SUSPECT
+- `maneuver_count_30d >= 3` → SUSPECT
+- `delta_sma_7d > 1.0` → ANOMALOUS
+- Otherwise → NORMAL
 
 ---
 
-## 7. BOB — O COPILOTO DE INTELIGÊNCIA
+## 6. MATHEMATICAL FRAMEWORK
 
-### O que Bob faz (baseado na patente Palantir US 2024/0394296 A1)
+### Complete Matrix: 14 Applied Theories
 
-Pipeline LLM + Geospatial em 4 etapas:
+| # | Theory | Author/Year | Feature | Type |
+|---|--------|-------------|---------|------|
+| 1 | Intrinsic Value | Williams (1938) | `intrinsic_threat_value` | Static |
+| 2 | Kernel Regression | Lo et al. (2000) | `kernel_typicality_score` | Non-parametric |
+| 3 | Kernel L1 CUSUM | — | `l1_cusum_sma` | Robust sequential |
+| 4 | Heavy Tails | Mandelbrot (1963) | `mandelbrot_tail_score` | Distributional |
+| 5 | Long Memory R/S | Hurst (1951) | `hurst_exponent` | Temporal |
+| 6 | Shannon Entropy | Shannon (1948) | `entropy_sma_30d` | Informational |
+| 7 | Kolmogorov Complexity | Kolmogorov (1965) | `kolmogorov_proxy_7d` | Algorithmic |
+| 8 | Persistent Homology | Edelsbrunner (2002) | `h0_persistent`, `h1_persistent` | Topological |
+| 9 | Ricci Curvature | Ollivier (2007) | `ricci_mean`, `ricci_delta` | Geometric |
+| 10 | Chern-Simons (proxy) | Chern-Simons (1974) | `topological_violation` | Topological |
+| 11 | Fuzzy Sets | Zadeh (1965) | `fuzzy_threat`, `fuzzy_confidence` | Logic |
+| 12 | Łukasiewicz Logic | Łukasiewicz (1920) | `lukasiewicz_implication` | Logic |
+| 13 | Kelly Criterion | Kelly (1956) | `kelly_allocation` | Decision |
+| 14 | Hilbert/RKHS | Hilbert (~1900) | `spectral_anomaly` | Geometric |
 
-| Etapa | O que faz | Exemplo |
-|-------|-----------|---------|
-| **1. Filtro** | Remove falsos positivos, objetos irrelevantes | "Dos 15 alertas, 12 são manutenção rotineira. 3 requerem análise." |
-| **2. Quantitativo** | XGBoost gera score numérico | threat_score = 0.87 |
-| **3. Descritivo** | Granite gera descrição contextual | "Objeto #44231 (Yaogan-31, China). 3 manobras em 24h. ΔSMA: +2.3, -1.1, +0.8 km." |
-| **4. Classificador** | Granite classifica e recomenda | "🟠 SUSPEITO. Confiança: 87%. Recomendo tasking óptico + notificar USSF." |
-
-### Tool Calling (APIs que Bob consulta)
+### Application Order (Basic to Advanced)
 
 ```
-get_object_history(norad_id)     → 12 meses de TLE
-get_close_approaches(norad_id)   → Aproximações <50km em 48h
+PHASE 1 (MVP):      Basic orbital features → XGBoost
+PHASE 2 (Advanced): Shannon + Kolmogorov + Hurst
+PHASE 3 (Expert):   Mandelbrot + Ricci + Homology + Chern-Simons
+PHASE 4 (Decision): Fuzzy + Kelly + Hilbert/RKHS
+```
+
+### Implementation Status by Theory
+
+| Status | Theories |
+|--------|----------|
+| ✅ Direct implementation (5–20 lines) | Shannon, Kolmogorov, Hurst, Mandelbrot, Zadeh, Łukasiewicz, Kelly, Williams, Lo, Hilbert |
+| ⚠️ Approximation required | Ollivier-Ricci, Persistent Homology (sample), Chern-Simons (proxy) |
+| ❌ Conceptual only | Exact Chern-Simons (out of scope) |
+
+---
+
+## 7. BOB — THE INTELLIGENCE COPILOT
+
+### What Bob Does (Based on Palantir Patent US 2024/0394296 A1)
+
+4-stage LLM + Geospatial pipeline:
+
+| Stage | What It Does | Example |
+|-------|--------------|---------|
+| **1. Filter** | Removes false positives, irrelevant objects | "Of 15 alerts, 12 are routine maintenance. 3 require analysis." |
+| **2. Quantitative** | XGBoost produces numeric score | threat_score = 0.87 |
+| **3. Descriptive** | Granite generates contextual description | "Object #44231 (Yaogan-31, China). 3 maneuvers in 24h. ΔSMA: +2.3, -1.1, +0.8 km." |
+| **4. Classifier** | Granite classifies and recommends | "🟠 SUSPECT. Confidence: 87%. Recommend optical tasking + notify USSF." |
+
+### Tool Calling (APIs Bob Queries)
+
+```
+get_object_history(norad_id)     → 12 months of TLE
+get_close_approaches(norad_id)   → Approaches <50km in 48h
 get_space_weather()              → F10.7, Ap index
-get_object_metadata(norad_id)    → País, propósito, lançamento
-get_similar_events(norad_id)     → Eventos históricos similares
+get_object_metadata(norad_id)    → Country, purpose, launch
+get_similar_events(norad_id)     → Similar historical events
 ```
 
-### Exemplo de briefing gerado
+### Example Generated Briefing
 
 ```
-🚨 BRIEFING SDA — 2026-07-14 04:52 UTC
+🚨 SDA BRIEFING — 2026-07-14 04:52 UTC
 
-OBJETO: #44231 (Yaogan-31, China)
-CLASSIFICAÇÃO: 🟠 SUSPEITO
-CONFIANÇA FUZZY: 87% | AMBIGUIDADE: 13%
+OBJECT: #44231 (Yaogan-31, China)
+CLASSIFICATION: 🟠 SUSPECT
+FUZZY CONFIDENCE: 87% | AMBIGUITY: 13%
 
-ANÁLISE:
-- 3 manobras orbitais em 24h (ΔSMA: +2.3, -1.1, +0.8 km)
-- Entropia de Shannon: 2.1 (caótico — normal é 0.3)
-- Expoente de Hurst: 0.78 (fortemente persistente)
-- Curvatura de Ricci: -0.45 (divergência da vizinhança)
-- Aproximou-se do satélite militar US #22988: 15.2 km
-- TLE tem 12h de idade (precisão ±100m)
+ANALYSIS:
+- 3 orbital maneuvers in 24h (ΔSMA: +2.3, -1.1, +0.8 km)
+- Shannon entropy: 2.1 (chaotic — normal is 0.3)
+- Hurst exponent: 0.78 (strongly persistent)
+- Ricci curvature: -0.45 (neighborhood divergence)
+- Approached US military satellite #22988: 15.2 km
+- TLE is 12h old (precision ±100m)
 
-AÇÃO RECOMENDADA (Kelly allocation: 42% dos recursos):
-1. 🔴 Notificar USSF SDA cell
-2. 📡 Solicitar tasking óptico (próximo overpass: 06:30 UTC)
-3. 📊 Monitorar 24h com threshold de 10 km
-4. 📋 Gerar relatório para JSpOC
+RECOMMENDED ACTION (Kelly allocation: 42% of resources):
+1. 🔴 Notify USSF SDA cell
+2. 📡 Request optical tasking (next overpass: 06:30 UTC)
+3. 📊 Monitor 24h with 10 km threshold
+4. 📋 Generate report for JSpOC
 ```
 
 ---
 
-## 8. DASHBOARD E INTERFACE
+## 8. DASHBOARD AND INTERFACE
 
 ### Layout
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  ATHENA-SDA                           🟢 29.947 🟡 35│
+│  ATHENA-SDA                           🟢 29,947 🟡 35│
 │  Space Domain Awareness Copilot           🟠 12  🔴 3   │
 ├────────────────────┬─────────────────────────────────────┤
-│                    │  🚨 ALERTAS ATIVOS (Kelly ranked)   │
-│   🌍 GLOBO 3D     │  🔴 42% — Objeto #44231 (Yaogan-31) │
-│   • 30k objetos   │  🟠 28% — Objeto #52901              │
-│   • Coloridos por │  🟠 15% — Objeto #67012              │
-│     classificação │  ...                                  │
-│   • Trajetórias   │                                      │
-│   • Hover = info  │  📊 HISTOGRAMAS                      │
-│                    │  [Por país] [Por classe] [Por órbita]│
+│                    │  🚨 ACTIVE ALERTS (Kelly ranked)   │
+│   🌍 3D GLOBE      │  🔴 42% — Object #44231 (Yaogan-31)│
+│   • 30k objects    │  🟠 28% — Object #52901             │
+│   • Colored by     │  🟠 15% — Object #67012             │
+│     classification │  ...                                  │
+│   • Trajectories   │                                      │
+│   • Hover = info   │  📊 HISTOGRAMS                       │
+│                    │  [By country] [By class] [By orbit]  │
 ├────────────────────┴─────────────────────────────────────┤
 │  💬 BOB CHAT                                          │
-│  Bob: 15 alertas nas últimas 24h. 3 prioritários.    │
-│  Operador: Detalhe o #44231                          │
-│  Bob: Yaogan-31, China. 3 manobras. Padrão suspeito. │
+│  Bob: 15 alerts in the last 24h. 3 priority.         │
+│  Operator: Detail #44231                             │
+│  Bob: Yaogan-31, China. 3 maneuvers. Suspect pattern.│
 │  [_________________________________________________] │
 └──────────────────────────────────────────────────────────┘
 ```
 
-### Tecnologias
+### Technologies
 
-- **Streamlit** — framework do dashboard
-- **Plotly/Cesium** — globo 3D
-- **Folium** — mapa 2D (fallback)
-- **Altair/Plotly** — histogramas interativos
-
----
-
-## 9. CENÁRIOS DE DEMONSTRAÇÃO
-
-### Cenário principal: Alerta de reconhecimento orbital
-
-```
-1. TLEs do dia são ingeridos (10 segundos)
-2. ML processa 30.000 objetos:
-   - 29.947 🟢 NORMAL
-   - 35 🟡 ANÔMALO
-   - 12 🟠 SUSPEITO
-   - 3 🔴 HOSTIL
-3. Bob analisa os 15 alertas 🟠🔴 (5 segundos cada)
-4. Dashboard mostra:
-   - #44231 (Yaogan-31, China): 🔴 HOSTIL — aproximou de US MILSAT
-   - #67012 (debris anômalo): 🟠 SUSPEITO — manobras inexplicadas
-   - #88001 (Cosmos-2560, Rússia): 🟠 SUSPEITO — mudança de órbita
-5. Operador pergunta: "Bob, o #44231 já fez isso antes?"
-6. Bob: "Sim. Padrão similar em Março/2024 sobre o Pacífico."
-```
-
-### Cenário secundário: Falso positivo com TLE velho
-
-```
-1. Objeto #52901: TLE com 96h de idade
-2. Fuzzy detecta alta incerteza (ambiguidade: 49%)
-3. Bob: "Confiança baixa (51%). TLE desatualizado.
-         Não recomendo escalar. Aguardar update."
-```
+- **Streamlit** — dashboard framework
+- **Plotly/Cesium** — 3D globe
+- **Folium** — 2D map (fallback)
+- **Altair/Plotly** — interactive histograms
 
 ---
 
-## 10. ROADMAP DE IMPLEMENTAÇÃO
+## 9. DEMONSTRATION SCENARIOS
 
-### Fases
+### Primary Scenario: Orbital Reconnaissance Alert
 
 ```
-FASE 0 (30min)  ▸ Setup: IBM Cloud + watsonx.ai + repositório
-FASE 1 (2h)     ▸ Download TLE Space-Track/CelesTrak + UCS DB
-FASE 2 (2h)     ▸ Feature Extractor: features orbitais básicas (7)
-FASE 3 (2h)     ▸ Treino: Isolation Forest + XGBoost (MVP)
-FASE 4 (2h)     ▸ Features avançadas: Shannon + Kolmogorov + Hurst + Mandelbrot
-FASE 5 (2h)     ▸ Features expert: Ricci + Homologia + Chern-Simons proxy
-FASE 6 (2h)     ▸ Fuzzy Inference System + Kelly Allocator
-FASE 7 (2h)     ▸ Bob Integration: Granite + Tool Calling + Prompt Engineering
-FASE 8 (2h)     ▸ Dashboard Streamlit: globo 3D + cards + chat
-FASE 9 (1h30)   ▸ Polish + Pitch Deck + Ensaio
+1. Day's TLEs are ingested (10 seconds)
+2. ML processes 30,000 objects:
+   - 29,947 🟢 NORMAL
+   - 35 🟡 ANOMALOUS
+   - 12 🟠 SUSPECT
+   - 3 🔴 HOSTILE
+3. Bob analyzes the 15 🟠🔴 alerts (5 seconds each)
+4. Dashboard shows:
+   - #44231 (Yaogan-31, China): 🔴 HOSTILE — approached US MILSAT
+   - #67012 (anomalous debris): 🟠 SUSPECT — unexplained maneuvers
+   - #88001 (Cosmos-2560, Russia): 🟠 SUSPECT — orbit change
+5. Operator asks: "Bob, has #44231 done this before?"
+6. Bob: "Yes. Similar pattern in March/2024 over the Pacific."
 ```
 
-### Prioridade
+### Secondary Scenario: False Positive with Stale TLE
 
-| Prioridade | O que | Por quê |
-|-----------|-------|---------|
-| 🔴 MUST | Features básicas + XGBoost + Bob + Dashboard | MVP funcional |
-| 🟡 SHOULD | Shannon + Kolmogorov + Hurst + Fuzzy | Diferencial matemático |
-| 🟢 NICE | Ricci + Homologia + Chern-Simons + Kelly | Excelência acadêmica |
+```
+1. Object #52901: TLE with 96h age
+2. Fuzzy detects high uncertainty (ambiguity: 49%)
+3. Bob: "Low confidence (51%). Stale TLE.
+         I do not recommend escalation. Await update."
+```
 
 ---
 
-## 11. MÉTRICAS PARA O PITCH
+## 10. IMPLEMENTATION ROADMAP
 
-| Métrica | Valor | Como medir |
-|---------|-------|------------|
-| Objetos monitorados | 30.000+ | Space-Track catalog |
-| Features por objeto | 20+ | Pipeline de extração |
-| Redução cognitiva | De 30.000 para ~15 alertas/dia | Filtro ML + Fuzzy |
-| Precisão do classificador | >85% | Validação cruzada |
-| Tempo de análise do Bob | <5s por alerta | Timestamp |
-| Teorias matemáticas aplicadas | 14 | Documentadas |
-| Patentes referenciadas | 30+ | Mapeadas |
-| Mercado real | $6.9B SDA + $30B Space Force | Market reports |
-| Contratantes reais | Palantir + Pentágono | Prova de mercado |
+### Phases
+
+```
+PHASE 0 (30min)  ▸ Setup: IBM Cloud + watsonx.ai + repository
+PHASE 1 (2h)     ▸ Download TLE Space-Track/CelesTrak + UCS DB
+PHASE 2 (2h)     ▸ Feature Extractor: basic orbital features (7)
+PHASE 3 (2h)     ▸ Train: Isolation Forest + XGBoost (MVP)
+PHASE 4 (2h)     ▸ Advanced features: Shannon + Kolmogorov + Hurst + Mandelbrot
+PHASE 5 (2h)     ▸ Expert features: Ricci + Homology + Chern-Simons proxy
+PHASE 6 (2h)     ▸ Fuzzy Inference System + Kelly Allocator
+PHASE 7 (2h)     ▸ Bob Integration: Granite + Tool Calling + Prompt Engineering
+PHASE 8 (2h)     ▸ Streamlit Dashboard: 3D globe + cards + chat
+PHASE 9 (1h30)   ▸ Polish + Pitch Deck + Rehearsal
+```
+
+### Priority
+
+| Priority | What | Why |
+|----------|------|-----|
+| 🔴 MUST | Basic features + XGBoost + Bob + Dashboard | Functional MVP |
+| 🟡 SHOULD | Shannon + Kolmogorov + Hurst + Fuzzy | Mathematical differentiator |
+| 🟢 NICE | Ricci + Homology + Chern-Simons + Kelly | Academic excellence |
 
 ---
 
-## APÊNDICE: Referências Completas
+## 11. PITCH METRICS
 
-### Patentes
-Ver documento `references/ATHENA-SDA.md` para lista completa com 30+ patentes.
+| Metric | Value | How to Measure |
+|--------|-------|----------------|
+| Objects monitored | 30,000+ | Space-Track catalog |
+| Features per object | 20+ | Extraction pipeline |
+| Cognitive reduction | From 30,000 to ~15 alerts/day | ML + Fuzzy filter |
+| Classifier precision | >85% | Cross-validation |
+| Bob analysis time | <5s per alert | Timestamp |
+| Applied mathematical theories | 14 | Documented |
+| Patents referenced | 30+ | Mapped |
+| Real market | $6.9B SDA + $30B Space Force | Market reports |
+| Real contractors | Palantir + Pentagon | Market proof |
 
-### Teorias Matemáticas
+---
+
+## APPENDIX: Complete References
+
+### Patents
+See document `docs/references/palantir_patents.md` for the mapped patent list.
+
+### Mathematical Theories
 - Shannon, C.E. (1948). *A Mathematical Theory of Communication*. Bell System Technical Journal.
 - Kolmogorov, A.N. (1965). *Three approaches to the quantitative definition of information*. Problems of Information Transmission.
 - Hurst, H.E. (1951). *Long-term storage capacity of reservoirs*. Transactions of ASCE.
@@ -402,7 +400,7 @@ Ver documento `references/ATHENA-SDA.md` para lista completa com 30+ patentes.
 - Williams, J.B. (1938). *The Theory of Investment Value*. Harvard University Press.
 - Lo, A.W. et al. (2000). *Foundations of technical analysis*. Journal of Finance.
 
-### Dados
+### Data
 - CelesTrak: https://celestrak.org
 - Space-Track: https://www.space-track.org
 - UCS Satellite Database: https://www.ucsusa.org/resources/satellite-database
@@ -415,5 +413,5 @@ Ver documento `references/ATHENA-SDA.md` para lista completa com 30+ patentes.
 
 ---
 
-*Documento gerado como referência mestre do projeto Athena-SDA.*
-*Hackathon AI Builders Challenge — Agosto 2025*
+*Document generated as the master reference for the Athena-SDA project.*
+*Hackathon AI Builders Challenge — August 2025*

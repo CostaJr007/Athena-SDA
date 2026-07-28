@@ -1,7 +1,7 @@
 {
   "protocol": "series_past_train__latest_score",
-  "description": "Baseline = janelas da s\u00e9rie com fim < cutoff (passado). Score di\u00e1rio = \u00faltima janela vs esse baseline. holdout_days=1 \u21d2 ontem e antes treinam; hoje s\u00f3 compara.",
-  "trained_at": "2026-07-26T04:22:51.150114+00:00",
+  "description": "Baseline = series windows with end < cutoff (past). Daily score = latest window vs baseline. holdout_days=1 => yesterday and before train; today compares.",
+  "trained_at": "2026-07-27T18:17:52.809120+00:00",
   "n_windows": 1440,
   "n_sats": 24,
   "holdout_days": 1,
@@ -44,10 +44,10 @@
     "geomagnetic_storm",
     "space_weather_available"
   ],
-  "score_mean": 0.41623776207016494,
-  "score_p95": 0.5126891172772969,
-  "score_p99": 0.564258836390172,
-  "cutoff_utc": "2026-07-25 04:22:42.109964+00:00",
+  "score_mean": 0.41171413942556,
+  "score_p95": 0.5138813432128247,
+  "score_p99": 0.5634574315775864,
+  "cutoff_utc": "2026-07-26 18:17:42.981332+00:00",
   "train_window_end_min": "2014-01-04 07:21:14.000256+00:00",
-  "train_window_end_max": "2026-07-25 02:22:51.590208+00:00"
+  "train_window_end_max": "2026-07-26 05:48:33.695424+00:00"
 }

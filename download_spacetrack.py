@@ -27,9 +27,9 @@ PASSWORD = os.environ.get("SPACETRACK_PASSWORD", "").strip()
 
 if not IDENTITY or not PASSWORD:
     print(
-        "Credenciais Space-Track ausentes.\n"
-        "Defina SPACETRACK_IDENTITY e SPACETRACK_PASSWORD no ambiente ou no arquivo .env\n"
-        "(veja .env.example)."
+        "Space-Track credentials missing.\n"
+        "Set SPACETRACK_IDENTITY and SPACETRACK_PASSWORD in the environment or .env\n"
+        "(see .env.example)."
     )
     sys.exit(1)
 
@@ -37,10 +37,10 @@ try:
     from spacetrack import SpaceTrackClient
     import spacetrack.operators as op
 except ImportError:
-    print("Pacote 'spacetrack' não instalado. Rode: pip install spacetrack")
+    print("Package 'spacetrack' is not installed. Run: pip install spacetrack")
     sys.exit(1)
 
-print("Autenticando no Space-Track.org via API oficial...")
+print("Authenticating to Space-Track.org via official API...")
 st = SpaceTrackClient(identity=IDENTITY, password=PASSWORD)
 
 targets = [44231, 43013, 25994, 41905, 43941, 43603, 39166, 25544]
@@ -48,7 +48,7 @@ targets = [44231, 43013, 25994, 41905, 43941, 43603, 39166, 25544]
 start_date = datetime.date.today() - datetime.timedelta(days=40)
 end_date = datetime.date.today() + datetime.timedelta(days=1)
 
-print(f"Baixando histórico de TLEs de {start_date} até o presente...")
+print(f"Downloading TLE history from {start_date} to present...")
 
 try:
     data = st.gp_history(
@@ -65,12 +65,12 @@ try:
         with open(csv_path, "w", encoding="utf-8") as f:
             f.write(data)
         df = pd.read_csv(csv_path)
-        print(f"Sucesso. Dados salvos em: {csv_path}")
-        print(f"Total de registros: {len(df)}")
+        print(f"Success. Data saved to: {csv_path}")
+        print(f"Total records: {len(df)}")
         print(df.head())
     else:
-        print("Consulta vazia. Verifique permissões da conta (GP History).")
+        print("Empty query. Check account permissions (GP History).")
 except Exception as e:
     import traceback
     traceback.print_exc()
-    print(f"Erro na API Space-Track: {e}")
+    print(f"Space-Track API error: {e}")

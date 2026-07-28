@@ -68,51 +68,51 @@ python scripts/run_anomaly_monitor.py seed-space-weather --force --start-year 20
 python scripts/run_anomaly_monitor.py status
 ```
 
-# 1. Base Científica e Processamento de Dados
+# 1. Scientific base and data processing
 pip install numpy pandas scipy pandas-ta jinja2
 
-# 2. Compilação JIT (Acelera os cálculos de Hurst e Entropia)
+# 2. JIT compilation (speeds up Hurst and entropy)
 pip install numba
 
-# 3. Machine Learning e Inteligência Fuzzy
+# 3. Machine learning and fuzzy intelligence
 pip install scikit-learn xgboost scikit-fuzzy
 
-# 4. Análise de Dados Topológicos (TDA - Homologia Persistente)
+# 4. Topological data analysis (TDA — persistent homology)
 pip install ripser persim
 
-# 5. Interface Gráfica e Visualizações 3D
+# 5. GUI and 3D visualizations
 pip install streamlit plotly watchdog
 
-# 6. Integração com IBM watsonx / LLM Granite
+# 6. IBM watsonx / Granite LLM integration
 pip install ibm-watsonx-ai
 ```
 
 ---
 
-## 4. O que faremos na Próxima Sessão (Roteiro)
+## 4. Next session roadmap
 
-Quando você abrir a nova sessão no Linux, o agente IA poderá guiar você nas seguintes etapas de codificação:
+When you open a new Linux session, the AI agent can guide you through these coding steps:
 
 ```
-ETAPA 1: Criar a pasta de código local `athena/`
+STEP 1: Create the local code folder `athena/`
 ETAPA 2: Codificar o extrator de features (`athena/engine.py`)
          - Shannon Entropy
-         - Kolmogorov Proxy (compressão zlib)
+         - Kolmogorov Proxy (zlib compression)
          - Hurst Exponent (R/S)
-ETAPA 3: Criar gerador de TLE de testes e ingestão (`athena/utils.py`)
-ETAPA 4: Criar o pipeline de ML (`athena/models.py`)
+STEP 3: Create test TLE generator and ingest (`athena/utils.py`)
+STEP 4: Create the ML pipeline (`athena/models.py`)
          - Isolation Forest para anomalias
-         - XGBoost para classificação (🟢🟡🟠🔴)
-ETAPA 5: Criar o motor lógico de incertezas (`athena/fuzzy.py`)
+         - XGBoost for classification (🟢🟡🟠🔴)
+STEP 5: Create the uncertainty logic engine (`athena/fuzzy.py`)
 ETAPA 6: Ligar o copiloto inteligente Bob (`athena/bob.py`)
 ETAPA 7: Montar a tela Streamlit 3D (`app.py`)
 ```
 
 ---
 
-## 5. Como rodar a aplicação para testar
-Após a criação dos arquivos de código, você poderá testar a aplicação executando:
+## 5. How to run the app for testing
+After creating the code files, you can test the application by running:
 ```bash
 streamlit run app.py
 ```
-Isso abrirá o navegador no painel interativo do **Athena-SDA**.
+This will open the browser on the interactive **Athena-SDA** panel.

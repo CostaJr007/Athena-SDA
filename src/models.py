@@ -134,7 +134,7 @@ def extract_satellite_features(
     """
     history_df = history_df.ffill().bfill()
     if len(history_df) < 20:
-        raise ValueError("Histórico insuficiente (mínimo 20 épocas) para features matemáticas.")
+        raise ValueError("Insufficient history (minimum 20 epochs) for mathematical features.")
 
     last_row = history_df.iloc[-1]
     sma = float(last_row["semi_major_axis_km"])
@@ -290,16 +290,16 @@ def label_features_for_threat(features: Dict[str, float], min_dist_mil: Optional
     anomaly = features.get("anomaly_score", 0.0)
 
     # Space weather context: strong geomag / high F10.7 inflate LEO drag Δa
-    # Soft-suppress HOSTIL when stormy + mild delta (favor drag over maneuver)
+    # Soft-suppress HOSTILE when stormy + mild delta (favor drag over maneuver)
     storm = float(features.get("geomagnetic_storm", 0.0) or 0.0) >= 0.5
     ap = float(features.get("ap_index", 8.0) or 8.0)
     f107 = float(features.get("f10_7", 120.0) or 120.0)
     high_drag_climate = storm or ap >= 30.0 or f107 >= 180.0
 
-    # HOSTIL: critical RPO geometry + active Δ / shadowing
-    # Under high drag climate, require stronger Δ or cointegration for HOSTIL
-    hostil_delta_thr = 3.0 if high_drag_climate else 2.0
-    if dist < 25.0 and (delta > hostil_delta_thr or hurst > 0.6 or coint < 0.05 or anomaly > 0.55):
+    # HOSTILE: critical RPO geometry + active Δ / shadowing
+    # Under high drag climate, require stronger Δ or cointegration for HOSTILE
+    hostile_delta_thr = 3.0 if high_drag_climate else 2.0
+    if dist < 25.0 and (delta > hostile_delta_thr or hurst > 0.6 or coint < 0.05 or anomaly > 0.55):
         if not (high_drag_climate and delta <= 2.5 and coint >= 0.05 and dist >= 15.0):
             return 3
     if delta > (5.0 if high_drag_climate else 4.0) and dist < 80.0:
@@ -307,7 +307,7 @@ def label_features_for_threat(features: Dict[str, float], min_dist_mil: Optional
     if coint < 0.05 and dist < 40.0 and hurst > 0.55:
         return 3
 
-    # SUSPEITO: mid-range approach, multi-maneuver, or cointegrated pursuit
+    # SUSPECT: mid-range approach, multi-maneuver, or cointegrated pursuit
     if dist < 150.0 and (delta > 1.0 or hurst > 0.7 or coint < 0.08):
         return 2
     if delta > (2.5 if high_drag_climate else 2.0) and dist < 200.0:
@@ -321,8 +321,8 @@ def label_features_for_threat(features: Dict[str, float], min_dist_mil: Optional
     if hurst > 0.8 and shannon > 1.5 and delta > 1.0:
         return 2
 
-    # ANÔMALO: structural break without hostile geometry
-    # Mild Δ under storm → more often NORMAL (natural drag), not ANÔMALO
+    # ANOMALOUS: structural break without hostile geometry
+    # Mild Δ under storm → more often NORMAL (natural drag), not ANOMALOUS
     if high_drag_climate and delta < 1.2 and dist > 150.0 and cusum < 0.9:
         return 0
     if cusum > 0.85 and delta > 0.8:
@@ -768,7 +768,7 @@ def train_and_save_models(
     class_w = {0: 1.0, 1: 1.5, 2: 3.0, 3: 5.0}
     sw_train = np.array([class_w.get(int(yi), 1.0) for yi in y_train])
 
-    print("Treinando XGBoost Classifier (sample weights assimétricos)...")
+    print("Training XGBoost Classifier (asymmetric sample weights)...")
     xgb = XGBClassifier(
         n_estimators=140,
         max_depth=5,
@@ -837,7 +837,7 @@ def train_and_save_models(
     metrics_path = os.path.join(MODELS_DIR_STR, "training_metrics.json")
     with open(metrics_path, "w", encoding="utf-8") as f:
         json.dump(metrics, f, indent=2, ensure_ascii=False)
-    print(f"Modelos e métricas salvos em {MODELS_DIR_STR}")
+    print(f"Models and metrics saved to {MODELS_DIR_STR}")
     return metrics
 
 
@@ -849,7 +849,7 @@ def load_models() -> Tuple[IsolationForest, XGBClassifier, np.ndarray, Dict[str,
     metrics_path = os.path.join(MODELS_DIR_STR, "training_metrics.json")
 
     if not (os.path.exists(iforest_path) and os.path.exists(xgb_path) and os.path.exists(rkhs_path)):
-        print("Modelos não encontrados. Treinando automaticamente...")
+        print("Models not found. Training automatically...")
         train_and_save_models()
 
     iforest = joblib.load(iforest_path)
