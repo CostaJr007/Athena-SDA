@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Athena-SDA · Walk-Forward Proof of Concept</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #02040a;
+      --panel: #0a0c10;
+      --panel2: #0c1018;
+      --border: rgba(255,255,255,0.12);
+      --border2: rgba(255,255,255,0.2);
+      --text: #fafafa;
+      --muted: #a1a1aa;
+      --dim: #d4d4d8;
+      --accent: #34d399;
+      --warn: #fbbf24;
+      --alert: #fb7185;
+      --orange: #fb923c;
+      --sky: #7dd3fc;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+      font-size: 15.5px;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 1.25rem 1.1rem 4rem; }
+    .nav {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(2,4,10,0.92); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      margin: 0 -1.1rem 1.25rem; padding: 0.65rem 1.1rem;
+      display: flex; flex-wrap: wrap; gap: 0.55rem 1rem; align-items: center;
+    }
+    .nav .brand {
+      font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--muted); font-weight: 600; margin-right: auto;
+    }
+    .nav a {
+      font-size: 12px; letter-spacing: 0.04em; color: var(--dim);
+      text-decoration: none; border: 1px solid transparent; padding: 0.2rem 0.4rem;
+    }
+    .nav a:hover { color: var(--accent); border-color: var(--border); }
+    header.hero {
+      border: 1px solid var(--border);
+      background: linear-gradient(165deg, #0e1620 0%, #06080c 55%, #04060a 100%);
+      padding: 1.6rem 1.5rem 1.4rem; margin-bottom: 1rem;
+      position: relative; overflow: hidden;
+    }
+    header.hero::before {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 85% 0%, rgba(52,211,153,0.12), transparent 55%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); font-weight: 600; position: relative;
+    }
+    h1 {
+      margin: 0.45rem 0 0.5rem; font-size: clamp(1.35rem, 3.5vw, 1.75rem);
+      font-weight: 600; line-height: 1.25; position: relative;
+    }
+    .lede { color: var(--dim); font-size: 1.02rem; max-width: 52rem; position: relative; margin: 0; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; position: relative; }
+    .badge {
+      border: 1px solid var(--border2); background: rgba(0,0,0,0.45);
+      padding: 0.28rem 0.65rem; font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--dim); font-weight: 600;
+    }
+    .badge.hit { border-color: rgba(52,211,153,0.5); color: var(--accent); }
+    .badge.warn { border-color: rgba(251,191,36,0.45); color: var(--warn); }
+    .badge.alert { border-color: rgba(251,113,133,0.45); color: var(--alert); }
+    section {
+      border: 1px solid var(--border); background: var(--panel);
+      padding: 1.15rem 1.35rem; margin-bottom: 0.85rem;
+    }
+    section.case { border-left: 3px solid var(--accent); }
+    section.placebo { border-left: 3px solid var(--muted); }
+    h2 {
+      margin: 0 0 0.9rem; font-size: 12px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--muted); font-weight: 600;
+    }
+    h3 {
+      margin: 0 0 0.5rem; font-size: 1.15rem; font-weight: 600;
+    }
+    h3 .norad {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.85rem; color: var(--muted); font-weight: 500;
+    }
+    p { margin: 0 0 0.75rem; }
+    p:last-child { margin-bottom: 0; }
+    .plain { margin: 0; padding-left: 1.15rem; }
+    .plain li { margin-bottom: 0.55rem; }
+    .plain li:last-child { margin-bottom: 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.55rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+    .chip {
+      border: 1px solid var(--border); background: #000; padding: 0.65rem 0.75rem;
+    }
+    .chip .k {
+      font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    }
+    .chip .v {
+      margin-top: 0.3rem; font-size: 1.15rem; font-variant-numeric: tabular-nums;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+    }
+    .chip .v.sm { font-size: 0.92rem; line-height: 1.35; font-family: "IBM Plex Sans", system-ui, sans-serif; }
+    .chip .unit { font-size: 0.72rem; color: var(--muted); font-weight: 400; }
+    .callout {
+      border: 1px solid rgba(52,211,153,0.28);
+      background: rgba(52,211,153,0.06);
+      padding: 0.9rem 1rem; margin: 0.85rem 0 0;
+      font-size: 0.98rem;
+    }
+    .callout.judge {
+      border-color: rgba(125,211,252,0.3);
+      background: rgba(125,211,252,0.05);
+    }
+    .callout strong { color: #ecfdf5; }
+    .pipeline {
+      display: grid; gap: 0.4rem; margin: 0.75rem 0 0;
+      font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px;
+    }
+    .pipe-step {
+      border: 1px solid var(--border); background: #000;
+      padding: 0.55rem 0.75rem; display: flex; gap: 0.75rem; align-items: flex-start;
+    }
+    .pipe-n {
+      color: var(--accent); font-weight: 600; min-width: 1.4rem;
+    }
+    .pipe-step span { color: var(--dim); }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th, td {
+      border-top: 1px solid var(--border); padding: 0.55rem 0.4rem;
+      vertical-align: top; text-align: left;
+    }
+    th {
+      color: var(--muted); font-weight: 500; font-size: 11px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .num {
+      font-variant-numeric: tabular-nums;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      white-space: nowrap;
+    }
+    .ok { color: var(--accent); font-weight: 600; }
+    .no { color: var(--muted); }
+    .tl {
+      margin: 0.9rem 0 0; border-left: 2px solid rgba(52,211,153,0.35);
+      padding-left: 0.9rem;
+    }
+    .tl-item { margin-bottom: 0.7rem; position: relative; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-item::before {
+      content: ""; position: absolute; left: -1.05rem; top: 0.45rem;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--muted); border: 2px solid var(--bg);
+    }
+    .tl-item.hit::before { background: var(--accent); box-shadow: 0 0 0 3px rgba(52,211,153,0.2); }
+    .tl-item.peak::before { background: var(--alert); box-shadow: 0 0 0 3px rgba(251,113,133,0.25); }
+    .tl-date {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 12px; color: var(--accent); letter-spacing: 0.02em;
+    }
+    .tl-item.peak .tl-date { color: var(--alert); }
+    .tl-body { font-size: 14px; color: var(--dim); margin-top: 0.15rem; }
+    .feat-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.45rem; margin-top: 0.75rem;
+    }
+    .feat {
+      border: 1px solid var(--border); background: #000; padding: 0.55rem 0.65rem;
+    }
+    .feat .name { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .feat .val {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 1.05rem; margin-top: 0.15rem;
+    }
+    .feat .why { font-size: 12.5px; color: var(--dim); margin-top: 0.25rem; line-height: 1.4; }
+    .math-box {
+      border: 1px solid var(--border); background: #000; padding: 0.75rem 0.9rem;
+      font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px;
+      color: var(--dim); margin: 0.65rem 0 0; overflow-x: auto;
+    }
+    .src {
+      margin-top: 0.75rem; padding-top: 0.7rem; border-top: 1px solid var(--border);
+      font-size: 13px; color: var(--muted);
+    }
+    .src li { margin-bottom: 0.35rem; }
+    footer {
+      margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);
+      font-size: 12.5px; color: var(--muted);
+    }
+    .toc a { display: inline-block; margin: 0.15rem 0.35rem 0.15rem 0; }
+    .score-bar {
+      height: 6px; background: rgba(255,255,255,0.06); margin-top: 0.35rem; border-radius: 2px;
+      overflow: hidden;
+    }
+    .score-bar > i {
+      display: block; height: 100%; background: linear-gradient(90deg, #059669, var(--accent));
+    }
+    .compare {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; margin-top: 0.75rem;
+    }
+    @media (max-width: 640px) { .compare { grid-template-columns: 1fr; } }
+    .compare .side {
+      border: 1px solid var(--border); padding: 0.7rem 0.8rem; background: #000;
+    }
+    .compare .side.good { border-color: rgba(52,211,153,0.35); }
+    .compare .side.bad { border-color: rgba(161,161,170,0.35); }
+    .compare .side h4 {
+      margin: 0 0 0.4rem; font-size: 11px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav" aria-label="Page sections">
+      <span class="brand">Athena-SDA · PoC</span>
+      <a href="#lay">For judges</a>
+      <a href="#how">How it works</a>
+      <a href="#math">Math</a>
+      <a href="#scoreboard">Scoreboard</a>
+      <a href="#cases">Cases</a>
+      <a href="#placebos">Placebos</a>
+      <a href="#honesty">Limits</a>
+    </nav>
+
+    <header class="hero">
+      <div class="eyebrow">Proof of concept · Walk-forward validation</div>
+      <h1>The ML found orbital noise <em style="font-style:normal;color:var(--accent)">before</em> public reports did</h1>
+      <p class="lede">
+        Athena-SDA is a Space Domain Awareness copilot. On five documented GEO inspection /
+        shadowing episodes (Luch / Olymp-K and Shiyan-12), an Isolation Forest trained
+        <strong>only on past data</strong> raised a hard anomaly flag
+        <strong>months before</strong> open-source publications. Civil placebos on the same
+        calendars did not cross the threshold.
+      </p>
+      <div class="badge-row">
+        <span class="badge hit">5 / 5 interest hits</span>
+        <span class="badge hit">0 / 3 placebo hard hits</span>
+        <span class="badge warn">~201 day mean lead-time</span>
+        <span class="badge">IF past-only · thr 0.50</span>
+        <span class="badge">Run 2026-07-26</span>
+      </div>
+    </header>
+
+    <!-- ========== LAY SUMMARY ========== -->
+    <section id="lay">
+      <h2>For judges — plain language</h2>
+      <h3>What problem are we solving?</h3>
+      <p>
+        Earth orbit is crowded. Operators cannot stare at every satellite every day.
+        Some objects quietly change how they fly — relocating in GEO, “shadowing” another
+        satellite, or performing inspection-like approaches — long before a newspaper or
+        think-tank writes about it.
+      </p>
+      <p>
+        Athena turns public orbital catalogs (TLE) and public space weather into a
+        <strong>noise profile</strong>: a mathematical fingerprint of “is this object still
+        behaving like itself?” When that fingerprint becomes rare compared with the object’s
+        own history, we raise an alert for human analysts (and explain it with Bob).
+      </p>
+
+      <div class="compare">
+        <div class="side good">
+          <h4>What we claim</h4>
+          <ul class="plain">
+            <li>Real public TLE + GFZ weather (not fake orbits).</li>
+            <li>ML trained <strong>without future data</strong> at each test date.</li>
+            <li>Hard anomaly <strong>before</strong> open-source report anchors on 5/5 cases.</li>
+            <li>Same method on TERRA / NOAA-20 → <strong>no</strong> hard hits (controls).</li>
+          </ul>
+        </div>
+        <div class="side bad">
+          <h4>What we do not claim</h4>
+          <ul class="plain">
+            <li>We do not “prove classified intent” or name spies.</li>
+            <li>XGBoost accuracy ≠ ground-truth HOSTILE label.</li>
+            <li>Lead-time is often a <strong>sustained regime</strong>, not one single burn.</li>
+            <li>Anchors are open publications / documented episodes, not secret TCA times.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout judge">
+        <strong>One-sentence pitch for the jury:</strong>
+        We download multi-year public orbits, describe noise with information-theory and
+        change-detection math, train Isolation Forest only on the past, and show that
+        Luch/Shiyan series looked statistically abnormal months before Gunter, CSIS, AMOS/SWF
+        and Breaking Defense wrote about them — while civil satellites on the same days did not.
+      </div>
+    </section>
+
+    <!-- ========== HOW ========== -->
+    <section id="how">
+      <h2>How the model “sees” trouble</h2>
+      <p>
+        Think of each satellite as a patient with a daily vital-signs chart (altitude, motion,
+        irregularity). Athena builds a short medical summary of the last weeks, then asks:
+        <em>“Given only this patient’s past charts, is today’s chart weird?”</em>
+      </p>
+      <div class="pipeline">
+        <div class="pipe-step"><span class="pipe-n">1</span><span>Ingest public TLE history (Hugging Face / CelesTrak) + GFZ F10.7, Ap, Kp</span></div>
+        <div class="pipe-step"><span class="pipe-n">2</span><span>20-epoch window → features: Kepler + Shannon / Hurst / Kolmogorov / CUSUM / Mandelbrot / ADF + weather</span></div>
+        <div class="pipe-step"><span class="pipe-n">3</span><span>Isolation Forest trains on windows ending before asof − 3 days (past only)</span></div>
+        <div class="pipe-step"><span class="pipe-n">4</span><span>anomaly_score = clip(0.5 − decision_function) · hard hit if score ≥ 0.50 near public peak</span></div>
+        <div class="pipe-step"><span class="pipe-n">5</span><span>Story: first hit date → lead-time → open-source report confirmation</span></div>
+      </div>
+      <div class="grid" style="margin-top:1rem">
+        <div class="chip"><div class="k">Protocol</div><div class="v sm">Walk-forward · 14-day step</div></div>
+        <div class="chip"><div class="k">Holdout</div><div class="v">3 <span class="unit">days</span></div></div>
+        <div class="chip"><div class="k">Hit threshold</div><div class="v">0.50</div></div>
+        <div class="chip"><div class="k">Peak window</div><div class="v">±45 <span class="unit">days</span></div></div>
+      </div>
+    </section>
+
+    <!-- ========== MATH ========== -->
+    <section id="math">
+      <h2>Mathematical foundation (why these numbers mean “noise”)</h2>
+      <p>
+        We do not only watch raw position. Public TLEs are already filtered products.
+        The tactical signal is a <strong>change of regime</strong> in the time series —
+        maneuvers, irregular station-keeping, shadowing, inspection-like control.
+        Each tool answers a different question; Isolation Forest fuses them.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Theory</th>
+            <th>Feature</th>
+            <th>Plain meaning</th>
+            <th>GEO inspection cue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Shannon entropy (1948)</td>
+            <td><code>shannon_entropy_sma_30d</code></td>
+            <td>How messy are altitude steps?</td>
+            <td>Irregular burns spread the histogram</td>
+          </tr>
+          <tr>
+            <td>Hurst R/S (1951)</td>
+            <td><code>hurst_exponent_sma</code></td>
+            <td>Does the series keep drifting one way?</td>
+            <td>H ≫ 0.5 → persistent low-thrust / control</td>
+          </tr>
+          <tr>
+            <td>Kolmogorov proxy</td>
+            <td><code>kolmogorov_proxy_7d</code></td>
+            <td>Is the up/down pattern hard to compress?</td>
+            <td>Active control resists simple compression</td>
+          </tr>
+          <tr>
+            <td>L1-CUSUM</td>
+            <td><code>l1_cusum_sma</code></td>
+            <td>When did the series break?</td>
+            <td>Localized break (often secondary in GEO folds)</td>
+          </tr>
+          <tr>
+            <td>ΔSMA / maneuvers</td>
+            <td><code>delta_sma_7d_km</code>, <code>maneuver_count_30d</code></td>
+            <td>How far / how often did altitude jump?</td>
+            <td>Slot moves of tens of km, busy SK</td>
+          </tr>
+          <tr>
+            <td>Space weather (GFZ)</td>
+            <td><code>f10_7</code>, <code>ap_index</code></td>
+            <td>Is the Sun “stormy”?</td>
+            <td>Separates LEO drag from intentional change</td>
+          </tr>
+          <tr>
+            <td>Isolation Forest</td>
+            <td><code>anomaly_score</code></td>
+            <td>Is the full profile rare vs past?</td>
+            <td>Operational trigger (multivariate)</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="math-box">
+        score(asof) = clip( 0.5 − IF.decision_function( x_asof ) )<br />
+        train set = { windows ending before asof − holdout }  // no future leak<br />
+        hard hit  ⇔  score ≥ 0.50 inside [t_peak − 45d, t_peak + 45d]<br />
+        lead-time = t_peak − date(first score ≥ 0.50)
+      </div>
+      <p class="src" style="border:0;padding:0.5rem 0 0;margin:0.5rem 0 0">
+        Code: <code>src/engine.py</code> · <code>src/models.py</code> · <code>src/walkforward.py</code> ·
+        docs: <code>mathematical_foundation.md</code>
+      </p>
+    </section>
+
+    <!-- ========== SCOREBOARD ========== -->
+    <section id="scoreboard">
+      <h2>Scoreboard — interest vs placebo</h2>
+      <div class="grid">
+        <div class="chip"><div class="k">Interest hard hits</div><div class="v ok">5/5</div></div>
+        <div class="chip"><div class="k">Placebo hard hits</div><div class="v">0/3</div></div>
+        <div class="chip"><div class="k">Mean lead-time</div><div class="v">201 <span class="unit">days</span></div></div>
+        <div class="chip"><div class="k">Median lead-time</div><div class="v">197 <span class="unit">days</span></div></div>
+        <div class="chip"><div class="k">Mean max score (interest)</div><div class="v">0.603</div></div>
+        <div class="chip"><div class="k">Mean max score (placebo)</div><div class="v">0.477</div></div>
+      </div>
+      <table style="margin-top:1rem">
+        <thead>
+          <tr>
+            <th>Public case</th>
+            <th>Report peak</th>
+            <th>First Athena hit</th>
+            <th>Lead</th>
+            <th>Score</th>
+            <th>Hit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Luch · Intelsat mid-2015</td>
+            <td class="num">2015-04-15</td>
+            <td class="num">2014-10-15</td>
+            <td class="num">182 d</td>
+            <td class="num">0.646</td>
+            <td class="ok">YES</td>
+          </tr>
+          <tr>
+            <td>Luch · Intelsat 905 season</td>
+            <td class="num">2015-09-15</td>
+            <td class="num">2015-01-15</td>
+            <td class="num">243 d</td>
+            <td class="num">0.537</td>
+            <td class="ok">YES</td>
+          </tr>
+          <tr>
+            <td>Luch · Athena-Fidus</td>
+            <td class="num">2018-09-01</td>
+            <td class="num">2018-01-15</td>
+            <td class="num">229 d</td>
+            <td class="num">0.524</td>
+            <td class="ok">YES</td>
+          </tr>
+          <tr>
+            <td>Shiyan-12 · GEO RPO</td>
+            <td class="num">2022-06-15</td>
+            <td class="num">2022-01-12</td>
+            <td class="num">154 d</td>
+            <td class="num">0.534</td>
+            <td class="ok">YES</td>
+          </tr>
+          <tr>
+            <td>Luch-2 · trailing 2023</td>
+            <td class="num">2023-10-15</td>
+            <td class="num">2023-04-01</td>
+            <td class="num">197 d</td>
+            <td class="num">0.551</td>
+            <td class="ok">YES</td>
+          </tr>
+          <tr>
+            <td>Placebo TERRA 2015</td>
+            <td class="num">2015-09-15</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.478 max</td>
+            <td class="no">NO</td>
+          </tr>
+          <tr>
+            <td>Placebo TERRA 2018</td>
+            <td class="num">2018-09-01</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.489 max</td>
+            <td class="no">NO</td>
+          </tr>
+          <tr>
+            <td>Placebo NOAA-20 2023</td>
+            <td class="num">2023-10-15</td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="num">0.463 max</td>
+            <td class="no">NO</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ========== CASES ========== -->
+    <div id="cases"></div>
+
+    <!-- CASE 1 -->
+    <section class="case" id="case-luch-mid2015">
+      <h2>Case 01 · Interest</h2>
+      <h3>Luch / Olymp-K 1 — first Intelsat colocation <span class="norad">#40258</span></h3>
+      <p>
+        Russian GEO relay satellite (Olymp-K / Luch) later reported between commercial Intelsat
+        spacecraft. Athena’s job: was the orbital <em>noise</em> already loud before the open record?
+      </p>
+      <div class="grid">
+        <div class="chip"><div class="k">First hard hit</div><div class="v">2014-10-15</div></div>
+        <div class="chip"><div class="k">Public peak</div><div class="v">2015-04-15</div></div>
+        <div class="chip"><div class="k">Lead-time</div><div class="v ok">182 <span class="unit">days</span></div></div>
+        <div class="chip"><div class="k">Score at first hit</div><div class="v">0.646<div class="score-bar"><i style="width:64.6%"></i></div></div></div>
+      </div>
+
+      <h2 style="margin-top:1.1rem">Story timeline</h2>
+      <div class="tl">
+        <div class="tl-item hit">
+          <div class="tl-date">2014-10-15 · ATHENA DETECTS</div>
+          <div class="tl-body">
+            Hard hit 0.646 — strongest score in this window. Large weekly SMA change and
+            persistent control already look unlike a quiet GEO bird.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2015-01 → 2015-03</div>
+          <div class="tl-body">Continued elevated folds (e.g. 0.63, 0.60) with high Hurst — sustained regime, not a one-day glitch.</div>
+        </div>
+        <div class="tl-item peak">
+          <div class="tl-date">2015-04-15 · PUBLIC REPORT ANCHOR</div>
+          <div class="tl-body">
+            <strong>Gunter’s Space Page:</strong> first documented colocation of Olymp-K between
+            <strong>Intelsat 7 and Intelsat 901</strong> (~April 2015). Open catalog storytelling
+            catches up with behavior Athena had flagged ~6 months earlier.
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:1.1rem">Why the model fired (features @ first hit)</h2>
+      <div class="feat-grid">
+        <div class="feat">
+          <div class="name">ΔSMA 7 days</div>
+          <div class="val">−72.0 km</div>
+          <div class="why">Huge week-scale altitude / slot relocation — classic GEO reposition signature.</div>
+        </div>
+        <div class="feat">
+          <div class="name">Hurst H</div>
+          <div class="val">0.796</div>
+          <div class="why">Persistent drift (not pure random walk) → controlled dynamics.</div>
+        </div>
+        <div class="feat">
+          <div class="name">Maneuvers / 30d</div>
+          <div class="val">2</div>
+          <div class="why">Multiple SMA steps in a month while relocating.</div>
+        </div>
+        <div class="feat">
+          <div class="name">F10.7 / Ap</div>
+          <div class="val">125.8 / 9</div>
+          <div class="why">Quiet–moderate weather — not a geomagnetic false alarm.</div>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Judge takeaway:</strong> before any open “Intelsat sandwich” write-up, the
+        multivariate IF already isolated a rare profile driven by a <em>large SMA move + persistence</em>.
+      </div>
+      <ul class="src">
+        <li>Event id: <code>luch1_intelsat_mid2015</code></li>
+        <li>Sources: Gunter — first colocation between Intelsat 7 and 901 ~April 2015</li>
+      </ul>
+    </section>
+
+    <!-- CASE 2 -->
+    <section class="case" id="case-luch-2015">
+      <h2>Case 02 · Interest</h2>
+      <h3>Luch / Olymp-K 1 — Intelsat 905 season <span class="norad">#40258</span></h3>
+      <p>
+        Same object, later 2015 season near Intelsat 905 — extensively discussed in open GEO
+        “unusual behavior” literature (Gunter, CSIS).
+      </p>
+      <div class="grid">
+        <div class="chip"><div class="k">First hard hit</div><div class="v">2015-01-15</div></div>
+        <div class="chip"><div class="k">Public peak</div><div class="v">2015-09-15</div></div>
+        <div class="chip"><div class="k">Lead-time</div><div class="v ok">243 <span class="unit">days</span></div></div>
+        <div class="chip"><div class="k">Score at first hit</div><div class="v">0.537<div class="score-bar"><i style="width:53.7%"></i></div></div></div>
+      </div>
+
+      <h2 style="margin-top:1.1rem">Story timeline</h2>
+      <div class="tl">
+        <div class="tl-item hit">
+          <div class="tl-date">2015-01-15 · ATHENA DETECTS</div>
+          <div class="tl-body">
+            Score 0.537 with <strong>Hurst ≈ 0.94</strong> and <strong>6 maneuvers / 30 days</strong> —
+            a busy, persistently controlled GEO object from day one of the window.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2015-02-12</div>
+          <div class="tl-body">Fold score 0.563 with ΔSMA ≈ <strong>+62 km</strong> in a week — loud relocation pulse.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2015-08-27</div>
+          <div class="tl-body">Pre-peak peak fold 0.578 · Shannon ≈ 2.84 — altitude steps highly disordered.</div>
+        </div>
+        <div class="tl-item peak">
+          <div class="tl-date">2015-09-15 · PUBLIC REPORT ANCHOR</div>
+          <div class="tl-body">
+            <strong>Gunter / open press:</strong> Olymp-K near <strong>Intelsat 905</strong> (~24.4–24.5°W).
+            <strong>CSIS</strong> “Unusual Behavior in GEO” narrative covers Olymp-K / Luch patterns.
+            Open reporting crystallizes ~8 months after Athena’s first hard flag.
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:1.1rem">Why the model fired (features @ first hit)</h2>
+      <div class="feat-grid">
+        <div class="feat">
+          <div class="name">Hurst H</div>
+          <div class="val">0.941</div>
+          <div class="why">Extreme persistence — continuous controlled drift, not Brownian SK noise alone.</div>
+        </div>
+        <div class="feat">
+          <div class="name">Maneuvers / 30d</div>
+          <div class="val">6</div>
+          <div class="why">High cadence of SMA steps = active GEO operations.</div>
+        </div>
+        <div class="feat">
+          <div class="name">Shannon</div>
+          <div class="val">1.36</div>
+          <div class="why">Elevated disorder in ΔSMA histogram; later climbs toward ~2.8.</div>
+        </div>
+        <div class="feat">
+          <div class="name">Kolmogorov</div>
+          <div class="val">0.47</div>
+          <div class="why">Moderate complexity of the control token sequence.</div>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Judge takeaway:</strong> longest lead-time in the set (243 days). The “why” is
+        <em>sustained high-Hurst + high maneuver cadence</em>, later confirmed by Intelsat 905
+        proximity reporting — not a solar-storm coincidence (Ap = 5 at first hit).
+      </div>
+      <ul class="src">
+        <li>Event id: <code>luch1_intelsat_2015</code></li>
+        <li>Sources: Gunter (Intelsat 7/901 &amp; 905); CSIS Unusual Behavior in GEO</li>
+      </ul>
+    </section>
+
+    <!-- CASE 3 -->
+    <section class="case" id="case-athena-fidus">
+      <h2>Case 03 · Interest</h2>
+      <h3>Luch / Olymp-K 1 — Athena-Fidus concerns <span class="norad">#40258</span></h3>
+      <p>
+        Open reporting raised concerns about Luch proximity to
+        <strong>Athena-Fidus</strong> (French–Italian military communications satellite).
+        Quiet solar conditions make “it was just space weather” a weak excuse.
+      </p>
+      <div class="grid">
+        <div class="chip"><div class="k">First hard hit</div><div class="v">2018-01-15</div></div>
+        <div class="chip"><div class="k">Public peak</div><div class="v">2018-09-01</div></div>
+        <div class="chip"><div class="k">Lead-time</div><div class="v ok">229 <span class="unit">days</span></div></div>
+        <div class="chip"><div class="k">Score at first hit</div><div class="v">0.524<div class="score-bar"><i style="width:52.4%"></i></div></div></div>
+      </div>
+
+      <h2 style="margin-top:1.1rem">Story timeline</h2>
+      <div class="tl">
+        <div class="tl-item hit">
+          <div class="tl-date">2018-01-15 · ATHENA DETECTS</div>
+          <div class="tl-body">
+            Score 0.524 with <strong>Hurst 0.956</strong> and Kolmogorov 0.58 under
+            <strong>low F10.7 (70)</strong> — control signature in a quiet Sun.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2018-04-23</div>
+          <div class="tl-body">Fold 0.559 with ΔSMA ≈ <strong>−110 km</strong> — major GEO slot relocation still before public peak.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2018-08-27</div>
+          <div class="tl-body">Pre-peak high fold 0.561 · Shannon ≈ 2.65.</div>
+        </div>
+        <div class="tl-item peak">
+          <div class="tl-date">2018-09-01 · PUBLIC REPORT ANCHOR</div>
+          <div class="tl-body">
+            Open press / Gunter: proximity concerns involving <strong>Athena-Fidus</strong>;
+            French government space-security statements in open reporting. Public narrative
+            ~7.5 months after Athena’s first hard flag.
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:1.1rem">Why the model fired (features @ first hit)</h2>
+      <div class="feat-grid">
+        <div class="feat">
+          <div class="name">Hurst H</div>
+          <div class="val">0.956</div>
+          <div class="why">Near-maximal persistence — hallmark of continuous active control.</div>
+        </div>
+        <div class="feat">
+          <div class="name">Kolmogorov</div>
+          <div class="val">0.579</div>
+          <div class="why">Hard-to-compress trajectory tokens → sophisticated control pattern.</div>
+        </div>
+        <div class="feat">
+          <div class="name">ΔSMA 7d</div>
+          <div class="val">−7.65 km</div>
+          <div class="why">Non-trivial weekly change at onset; later −110 km fold.</div>
+        </div>
+        <div class="feat">
+          <div class="name">F10.7</div>
+          <div class="val">70.2</div>
+          <div class="why">Quiet solar flux — LEO-drag story does not apply; this is GEO control.</div>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Judge takeaway:</strong> storytelling arc is “math noise under a quiet Sun →
+        large relocation → open political/military concern about Athena-Fidus.”
+      </div>
+      <ul class="src">
+        <li>Event id: <code>luch1_athena_fidus_2018</code></li>
+        <li>Sources: Gunter / open press; French open government space-security statements</li>
+      </ul>
+    </section>
+
+    <!-- CASE 4 -->
+    <section class="case" id="case-sy12">
+      <h2>Case 04 · Interest</h2>
+      <h3>Shiyan-12 01 — GEO RPO <span class="norad">#50321</span></h3>
+      <p>
+        Chinese experimental GEO satellite associated in open SSA literature with
+        rendezvous and proximity operations (RPO) relative to other objects.
+      </p>
+      <div class="grid">
+        <div class="chip"><div class="k">First hard hit</div><div class="v">2022-01-12</div></div>
+        <div class="chip"><div class="k">Public peak</div><div class="v">2022-06-15</div></div>
+        <div class="chip"><div class="k">Lead-time</div><div class="v ok">154 <span class="unit">days</span></div></div>
+        <div class="chip"><div class="k">Score at first hit</div><div class="v">0.534<div class="score-bar"><i style="width:53.4%"></i></div></div></div>
+      </div>
+
+      <h2 style="margin-top:1.1rem">Story timeline</h2>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-date">Late 2021</div>
+          <div class="tl-body">SY-12 enters the public catalog era; WF window opens Dec 2021.</div>
+        </div>
+        <div class="tl-item hit">
+          <div class="tl-date">2022-01-12 · ATHENA DETECTS</div>
+          <div class="tl-body">
+            Score 0.534 — high Kolmogorov (0.63), 6 maneuvers / 30d, Hurst 0.89:
+            early GEO operations already look inspection-like, not passive.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2022-03-09</div>
+          <div class="tl-body">Fold 0.506 with ΔSMA ≈ −18 km — continued active profile.</div>
+        </div>
+        <div class="tl-item peak">
+          <div class="tl-date">2022-06-15 · PUBLIC REPORT ANCHOR</div>
+          <div class="tl-body">
+            <strong>AMOS / open SSA</strong> discussions of SY-12 GEO proximity with US objects;
+            <strong>Secure World Foundation</strong> Chinese Military RPO fact sheet (SY-12).
+            ~5 months after Athena’s hard flag.
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:1.1rem">Why the model fired (features @ first hit)</h2>
+      <div class="feat-grid">
+        <div class="feat">
+          <div class="name">Kolmogorov</div>
+          <div class="val">0.632</div>
+          <div class="why">High complexity — control sequence resists simple compression (RPO-like).</div>
+        </div>
+        <div class="feat">
+          <div class="name">Maneuvers / 30d</div>
+          <div class="val">6</div>
+          <div class="why">Busy early ops — many altitude steps.</div>
+        </div>
+        <div class="feat">
+          <div class="name">Hurst H</div>
+          <div class="val">0.887</div>
+          <div class="why">Persistent dynamics consistent with deliberate orbital control.</div>
+        </div>
+        <div class="feat">
+          <div class="name">Ap index</div>
+          <div class="val">3</div>
+          <div class="why">Geomagnetically quiet — not a storm-driven LEO artifact.</div>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Judge takeaway:</strong> different nation / different mission family, same
+        method: multivariate noise precedes open RPO reporting.
+      </div>
+      <ul class="src">
+        <li>Event id: <code>sy12_geo_rpo_2021_22</code></li>
+        <li>Sources: AMOS papers / open SSA; SWF Chinese Military RPO fact sheet</li>
+      </ul>
+    </section>
+
+    <!-- CASE 5 -->
+    <section class="case" id="case-luch2">
+      <h2>Case 05 · Interest</h2>
+      <h3>Luch-5X / Olymp-K 2 — trailing Western GEO <span class="norad">#55841</span></h3>
+      <p>
+        Second Olymp-K-class satellite. Launch March 2023; open defense press described
+        trailing of Western GEO systems later that year.
+      </p>
+      <div class="grid">
+        <div class="chip"><div class="k">First hard hit</div><div class="v">2023-04-01</div></div>
+        <div class="chip"><div class="k">Public peak</div><div class="v">2023-10-15</div></div>
+        <div class="chip"><div class="k">Lead-time</div><div class="v ok">197 <span class="unit">days</span></div></div>
+        <div class="chip"><div class="k">Score at first hit</div><div class="v">0.551<div class="score-bar"><i style="width:55.1%"></i></div></div></div>
+      </div>
+
+      <h2 style="margin-top:1.1rem">Story timeline</h2>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-date">2023-03-12</div>
+          <div class="tl-body">Launch of Luch / Olymp-K 2 (public launch context).</div>
+        </div>
+        <div class="tl-item hit">
+          <div class="tl-date">2023-04-01 · ATHENA DETECTS</div>
+          <div class="tl-body">
+            First fold of the WF window already hard-hits at 0.551 —
+            <strong>Shannon 2.12</strong> + Hurst 0.91: noisy, persistent GEO control weeks after launch.
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">2023-09-02</div>
+          <div class="tl-body">Max pre-report score <strong>0.569</strong> · Shannon 2.29 — weeks before the October story.</div>
+        </div>
+        <div class="tl-item peak">
+          <div class="tl-date">2023-10-15 · PUBLIC REPORT ANCHOR</div>
+          <div class="tl-body">
+            <strong>Breaking Defense (Oct 2023):</strong> second Luch reported trailing Western
+            systems in GEO. Press confirmation ~6.5 months after Athena’s first hard flag.
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:1.1rem">Why the model fired (features @ first hit)</h2>
+      <div class="feat-grid">
+        <div class="feat">
+          <div class="name">Shannon</div>
+          <div class="val">2.115</div>
+          <div class="why">Very high disorder in altitude steps — irregular early GEO ops.</div>
+        </div>
+        <div class="feat">
+          <div class="name">Hurst H</div>
+          <div class="val">0.910</div>
+          <div class="why">Strong persistence — not a quiet station-keeper.</div>
+        </div>
+        <div class="feat">
+          <div class="name">ΔSMA 7d</div>
+          <div class="val">+0.48 km</div>
+          <div class="why">Active weekly change; regime isolation is multivariate.</div>
+        </div>
+        <div class="feat">
+          <div class="name">F10.7 / Ap</div>
+          <div class="val">125 / 14</div>
+          <div class="why">Moderate; placebo NOAA-20 same calendar never hard-hits.</div>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Judge takeaway:</strong> new satellite, same pipeline — early post-launch noise
+        precedes defense-press “trailing” narrative; civil control (NOAA-20) on the same
+        calendar stays below 0.50.
+      </div>
+      <ul class="src">
+        <li>Event id: <code>luch2_trailing_2023</code></li>
+        <li>Sources: launch ~12 Mar 2023; Breaking Defense Oct 2023 trailing coverage</li>
+      </ul>
+    </section>
+
+    <!-- PLACEBOS -->
+    <section class="placebo" id="placebos">
+      <h2>Controls · Placebos (same calendars)</h2>
+      <h3>Why placebos matter for the jury</h3>
+      <p>
+        If solar weather or “the whole sky was weird” caused our hits, civil satellites on the
+        <strong>same dates</strong> would also hard-hit. They do not. That is the control arm of
+        the experiment.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Placebo</th>
+            <th>Shared peak calendar</th>
+            <th>Max score</th>
+            <th>Hard hit ≥0.50</th>
+            <th>Elevated pre-peak noise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>TERRA #25994 (EO science)</td>
+            <td class="num">2015-09-15 vs Luch Intelsat</td>
+            <td class="num">0.478</td>
+            <td class="no">NO</td>
+            <td class="no">NO</td>
+          </tr>
+          <tr>
+            <td>TERRA #25994</td>
+            <td class="num">2018-09-01 vs Athena-Fidus</td>
+            <td class="num">0.489</td>
+            <td class="no">NO</td>
+            <td class="no">NO</td>
+          </tr>
+          <tr>
+            <td>NOAA-20 #43013</td>
+            <td class="num">2023-10-15 vs Luch-2</td>
+            <td class="num">0.463</td>
+            <td class="no">NO</td>
+            <td class="no">NO</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout judge">
+        <strong>Scientific control:</strong> placebos share F10.7/Ap calendars with interest cases.
+        Discriminator = orbital regime features (Hurst / Shannon / ΔSMA / IF joint profile),
+        not the Sun alone.
+      </div>
+    </section>
+
+    <!-- HONESTY -->
+    <section id="honesty">
+      <h2>Limits · scientific honesty</h2>
+      <ul class="plain">
+        <li><strong>Long lead-times</strong> often mean a sustained anomalous regime from early in the window, not a single classified “prediction of intent.”</li>
+        <li><strong>t_peak</strong> is an open-source publication / documented episode anchor — not a secret conjunction timestamp.</li>
+        <li><strong>CUSUM</strong> is frequently low at first hit; Isolation Forest fires on the joint vector.</li>
+        <li><strong>Pair risk</strong> supports prioritization; it is not full SGP4 TCA analysis.</li>
+        <li>Walk-forward hit criterion is the <strong>IF anomaly score</strong>, not XGBoost class accuracy.</li>
+      </ul>
+      <div class="grid" style="margin-top:1rem">
+        <div class="chip"><div class="k">Reproduce</div><div class="v sm">python scripts/run_walkforward.py run</div></div>
+        <div class="chip"><div class="k">Summary</div><div class="v sm">python scripts/run_walkforward.py summary</div></div>
+        <div class="chip"><div class="k">JSON artifacts</div><div class="v sm">data/alerts/walkforward/</div></div>
+        <div class="chip"><div class="k">Markdown twin</div><div class="v sm">docs/WALKFORWARD_DETECTION_CASE_REPORT.md</div></div>
+      </div>
+    </section>
+
+    <footer>
+      <p>
+        <strong>Athena-SDA</strong> — Space Domain Awareness Copilot · IBM SkillsBuild AI Builders
+        · theme <em>Advance Space Exploration with AI</em>.
+      </p>
+      <p>
+        Data: public TLE mirrors · GFZ Potsdam indices · open-source report anchors (Gunter, CSIS,
+        AMOS/SWF, Breaking Defense). Walk-forward run 2026-07-26 · threshold 0.50 · holdout 3 days.
+      </p>
+      <p>
+        <a href="index.html">← Quant reports index</a>
+        · <a href="#lay">Back to top</a>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

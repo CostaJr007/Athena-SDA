@@ -179,7 +179,8 @@ cd src/frontend && npm install && npm run dev
 ```
 
 Board contract: [`docs/SCHEMA_RISK_REPORT.md`](docs/SCHEMA_RISK_REPORT.md).  
-Quant HTML: `public/reports/quant_<norad>_latest.html` (new tab from UI).
+Quant HTML: `public/reports/quant_<norad>_latest.html` (new tab from UI).  
+**Walk-forward PoC (judges):** [`src/frontend/public/reports/walkforward_poc.html`](src/frontend/public/reports/walkforward_poc.html) — noise before public reports, math + case storytelling.
 
 ---
 
