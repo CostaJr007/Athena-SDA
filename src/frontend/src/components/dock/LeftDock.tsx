@@ -52,6 +52,9 @@ interface LeftDockProps {
   reportStatus: 'loading' | 'ready' | 'error'
   reportError?: string | null
   extra?: ReactNode
+  /** Open in-app walk-forward PoC panel (globe HUD tab) */
+  onOpenPoc?: () => void
+  pocOpen?: boolean
 }
 
 export default function LeftDock({
@@ -61,6 +64,8 @@ export default function LeftDock({
   reportStatus,
   reportError,
   extra,
+  onOpenPoc,
+  pocOpen = false,
 }: LeftDockProps) {
   const board = sortedBoard(report)
   const threats = board.map(boardThreat)
@@ -96,17 +101,19 @@ export default function LeftDock({
           </div>
           <p className="mt-1.5 text-[13px] leading-relaxed text-zinc-400">
             Walk-forward: noise detected months before open-source reports (5/5 interest,
-            0/3 placebos).
+            0/3 placebos). Opens as a tab on this console.
           </p>
-          <a
-            href={`${import.meta.env.BASE_URL}reports/walkforward_poc.html`}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-2 inline-flex items-center gap-1.5 border border-emerald-400/35 bg-black/40 px-2 py-1 text-[12px] font-medium uppercase tracking-[0.12em] text-emerald-300 hover:border-emerald-300/60 hover:text-emerald-200"
+          <button
+            type="button"
+            onClick={() => onOpenPoc?.()}
+            className={`mt-2 inline-flex w-full items-center justify-center gap-1.5 border px-2 py-1.5 text-[12px] font-medium uppercase tracking-[0.12em] transition-colors ${
+              pocOpen
+                ? 'border-emerald-300/70 bg-emerald-400/20 text-emerald-100'
+                : 'border-emerald-400/35 bg-black/40 text-emerald-300 hover:border-emerald-300/60 hover:text-emerald-200'
+            }`}
           >
-            Open PoC for judges
-            <span aria-hidden>↗</span>
-          </a>
+            {pocOpen ? 'PoC panel open' : 'Open PoC panel'}
+          </button>
         </section>
 
         {report && (
