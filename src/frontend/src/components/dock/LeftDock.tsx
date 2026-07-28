@@ -90,6 +90,25 @@ export default function LeftDock({
       <div className="space-y-4">
         {extra}
 
+        <section className="border border-emerald-400/25 bg-emerald-500/5 px-2.5 py-2">
+          <div className="text-[13px] uppercase tracking-[0.2em] text-emerald-300/90">
+            ML proof of concept
+          </div>
+          <p className="mt-1.5 text-[13px] leading-relaxed text-zinc-400">
+            Walk-forward: noise detected months before open-source reports (5/5 interest,
+            0/3 placebos).
+          </p>
+          <a
+            href={`${import.meta.env.BASE_URL}reports/walkforward_poc.html`}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-2 inline-flex items-center gap-1.5 border border-emerald-400/35 bg-black/40 px-2 py-1 text-[12px] font-medium uppercase tracking-[0.12em] text-emerald-300 hover:border-emerald-300/60 hover:text-emerald-200"
+          >
+            Open PoC for judges
+            <span aria-hidden>↗</span>
+          </a>
+        </section>
+
         {report && (
           <section className="border border-white/10 bg-black/50 px-2.5 py-2">
             <div className="text-[13px] uppercase tracking-[0.2em] text-zinc-400">
