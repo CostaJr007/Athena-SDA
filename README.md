@@ -14,6 +14,8 @@
 
 ---
 
+**Integration:** Backend risk report ↔ frontend mission board is wired via `athena.risk_report.v1` + `scripts/sync_frontend_data.ps1`. See [`docs/FINAL_INTEGRATION_STATUS.md`](docs/FINAL_INTEGRATION_STATUS.md).
+
 ### Start here
 
 | Resource | Content |

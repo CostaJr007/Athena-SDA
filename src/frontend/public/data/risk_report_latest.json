@@ -1,7 +1,7 @@
 {
   "schema": "athena.risk_report.v1",
-  "generated_at": "2026-08-01T21:41:06.797442+00:00",
-  "day": "2026-08-01",
+  "generated_at": "2026-08-02T02:05:49.688376+00:00",
+  "day": "2026-08-02",
   "doctrine": "military_first_sda",
   "protocol": "military_baseline_train__suspect_score",
   "summary": {
@@ -33,19 +33,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_127h",
+          "tle_stale_132h",
           "gap_100h"
         ],
         "reliable": true,
-        "tle_age_hours": 127.25979528194443
+        "tle_age_hours": 131.66671703583333
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.0036514444673230173,
         "shannon_entropy_sma_30d": 2.996641328663726,
+        "shannon_entropy_sma_short": 2.4193819456463714,
         "hurst_exponent_sma": 0.7771696841522222,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.2771696841522222,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 127.25981373472221,
+        "tle_age_hours": 131.66674482861112,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -79,7 +82,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 14:24:58.566240",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 32289,
@@ -99,19 +102,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_127h",
+          "tle_stale_132h",
           "gap_94h"
         ],
         "reliable": true,
-        "tle_age_hours": 127.30087499361112
+        "tle_age_hours": 131.7070803836111
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.04536519357498037,
         "shannon_entropy_sma_30d": 2.6550505394177746,
+        "shannon_entropy_sma_short": 2.113283334294875,
         "hurst_exponent_sma": 0.8811026490861751,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3811026490861751,
         "kolmogorov_proxy_7d": 0.10526315789473684,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 127.30089357083334,
+        "tle_age_hours": 131.70710892,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -145,7 +151,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 14:22:26.336352",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 41038,
@@ -165,19 +171,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_127h",
+          "tle_stale_132h",
           "gap_96h"
         ],
         "reliable": true,
-        "tle_age_hours": 127.49734601361111
+        "tle_age_hours": 131.90417406083333
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.025836958494437567,
         "shannon_entropy_sma_30d": 2.8258459340407507,
+        "shannon_entropy_sma_short": 2.2810361125534238,
         "hurst_exponent_sma": 0.858458394203636,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.358458394203636,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 127.49736417083334,
+        "tle_age_hours": 131.90420480305556,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -211,7 +220,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 14:10:42.845088",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 39150,
@@ -231,19 +240,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_128h",
+          "tle_stale_132h",
           "gap_101h"
         ],
         "reliable": true,
-        "tle_age_hours": 127.55986711555555
+        "tle_age_hours": 131.9663461975
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.022356530296747223,
         "shannon_entropy_sma_30d": 2.900051698999543,
+        "shannon_entropy_sma_short": 2.1971597234241496,
         "hurst_exponent_sma": 0.7928142735320657,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.2928142735320657,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 127.55988582638889,
+        "tle_age_hours": 131.96637467861112,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -277,7 +289,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 14:06:55.608768",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 50321,
@@ -297,20 +309,23 @@
       "data_quality": {
         "score": 0.10000000000000003,
         "issues": [
-          "tle_stale_149h",
+          "tle_stale_153h",
           "gap_423h",
           "sma_jump"
         ],
         "reliable": false,
-        "tle_age_hours": 148.5564301102778
+        "tle_age_hours": 152.96359279444445
       },
       "features_snapshot": {
         "delta_sma_7d_km": -1.3023516127141193,
         "shannon_entropy_sma_30d": 2.8603207778330444,
+        "shannon_entropy_sma_short": 2.2810361125534238,
         "hurst_exponent_sma": 0.87596124998744,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.37596124998743996,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 148.55644495333334,
+        "tle_age_hours": 152.96360778166667,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -344,7 +359,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-26 17:07:13.916064",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 40258,
@@ -364,20 +379,23 @@
       "data_quality": {
         "score": 0.10000000000000003,
         "issues": [
-          "tle_stale_218h",
+          "tle_stale_222h",
           "gap_420h",
           "sma_jump"
         ],
         "reliable": false,
-        "tle_age_hours": 217.99037679138888
+        "tle_age_hours": 222.39710835055556
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.11746656360628549,
         "shannon_entropy_sma_30d": 2.6689801450225326,
+        "shannon_entropy_sma_short": 2.2810361125534233,
         "hurst_exponent_sma": 0.8887862372909526,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.38878623729095263,
         "kolmogorov_proxy_7d": 0.3157894736842105,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 217.99039202999998,
+        "tle_age_hours": 222.39713451555554,
         "f10_7": 148.0,
         "f10_7_adj": 152.3,
         "ap_index": 24.0,
@@ -411,7 +429,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-23 19:41:07.369152",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 55841,
@@ -431,19 +449,22 @@
       "data_quality": {
         "score": 0.35000000000000003,
         "issues": [
-          "tle_stale_154h",
+          "tle_stale_159h",
           "gap_420h"
         ],
         "reliable": false,
-        "tle_age_hours": 154.25244011805555
+        "tle_age_hours": 158.65961445777776
       },
       "features_snapshot": {
         "delta_sma_7d_km": 0.16679778830439318,
         "shannon_entropy_sma_30d": 2.5239860659612985,
+        "shannon_entropy_sma_short": 1.8799649487271113,
         "hurst_exponent_sma": 0.7694158133676507,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.26941581336765075,
         "kolmogorov_proxy_7d": 0.5789473684210527,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 154.25245478305555,
+        "tle_age_hours": 158.65963374194445,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -477,7 +498,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-26 11:25:28.795008",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 48274,
@@ -497,19 +518,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_197h",
+          "tle_stale_201h",
           "gap_95h"
         ],
         "reliable": true,
-        "tle_age_hours": 196.86052310583332
+        "tle_age_hours": 201.2676332986111
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.2980624389292643,
         "shannon_entropy_sma_30d": 2.179350202453772,
+        "shannon_entropy_sma_short": 2.2810361125534238,
         "hurst_exponent_sma": 0.8486225231264477,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3486225231264477,
         "kolmogorov_proxy_7d": 0.42105263157894735,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 196.8605400622222,
+        "tle_age_hours": 201.2676509275,
         "f10_7": 153.0,
         "f10_7_adj": 154.9,
         "ap_index": 7.0,
@@ -543,7 +567,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-24 16:48:58.098816",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 39166,
@@ -563,19 +587,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_140h",
+          "tle_stale_144h",
           "gap_156h"
         ],
         "reliable": true,
-        "tle_age_hours": 140.00693168305557
+        "tle_age_hours": 144.41349772833334
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.008122296854708111,
         "shannon_entropy_sma_30d": 1.5055213905049438,
+        "shannon_entropy_sma_short": 1.7527152789797047,
         "hurst_exponent_sma": 0.8190965728994042,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3190965728994042,
         "kolmogorov_proxy_7d": 0.42105263157894735,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 140.00694662583334,
+        "tle_age_hours": 144.41352245583334,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -602,7 +629,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 01:40:06.710304",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 25544,
@@ -622,19 +649,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_133h",
+          "tle_stale_137h",
           "gap_163h"
         ],
         "reliable": true,
-        "tle_age_hours": 132.5908344561111
+        "tle_age_hours": 136.99643426138888
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.27363523222811637,
         "shannon_entropy_sma_30d": 2.041814515501815,
+        "shannon_entropy_sma_short": 2.1971597234241496,
         "hurst_exponent_sma": 0.8438603059164086,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3438603059164086,
         "kolmogorov_proxy_7d": 0.3157894736842105,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 132.59085933416665,
+        "tle_age_hours": 136.99646304305554,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -661,7 +691,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 09:04:58.010016",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 43603,
@@ -681,19 +711,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_160h",
+          "tle_stale_164h",
           "gap_168h"
         ],
         "reliable": true,
-        "tle_age_hours": 159.86700891722222
+        "tle_age_hours": 164.27407871361112
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.01588435065423255,
         "shannon_entropy_sma_30d": 1.8895782867502313,
+        "shannon_entropy_sma_short": 2.1132833342948754,
         "hurst_exponent_sma": 0.8107997757378052,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.31079977573780515,
         "kolmogorov_proxy_7d": 0.42105263157894735,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 159.86702580611112,
+        "tle_age_hours": 164.27410402166666,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -727,7 +760,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-26 05:48:33.695424",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 48865,
@@ -747,19 +780,22 @@
       "data_quality": {
         "score": 0.35000000000000003,
         "issues": [
-          "tle_stale_139h",
+          "tle_stale_143h",
           "gap_232h"
         ],
         "reliable": false,
-        "tle_age_hours": 138.63581310027777
+        "tle_age_hours": 143.0429522813889
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.11772881049637363,
         "shannon_entropy_sma_30d": 1.9990298316961879,
+        "shannon_entropy_sma_short": 2.1971597234241496,
         "hurst_exponent_sma": 0.8916344428608503,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.39163444286085025,
         "kolmogorov_proxy_7d": 0.3157894736842105,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 138.6358306936111,
+        "tle_age_hours": 143.04297131555555,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -793,7 +829,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 03:02:27.574656",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 28874,
@@ -813,19 +849,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_133h",
+          "tle_stale_138h",
           "gap_167h"
         ],
         "reliable": true,
-        "tle_age_hours": 133.33533658194443
+        "tle_age_hours": 137.74125159194443
       },
       "features_snapshot": {
         "delta_sma_7d_km": 0.03478466914384626,
         "shannon_entropy_sma_30d": 1.4832261969709113,
+        "shannon_entropy_sma_short": 1.7527152789797051,
         "hurst_exponent_sma": 0.8120590885502291,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3120590885502291,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 133.33535174222223,
+        "tle_age_hours": 137.74127666305554,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -852,7 +891,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 08:20:20.676192",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 31698,
@@ -872,19 +911,22 @@
       "data_quality": {
         "score": 0.35000000000000003,
         "issues": [
-          "tle_stale_130h",
+          "tle_stale_134h",
           "gap_262h"
         ],
         "reliable": false,
-        "tle_age_hours": 129.59987571916668
+        "tle_age_hours": 134.0059848875
       },
       "features_snapshot": {
         "delta_sma_7d_km": 0.0029253997872729087,
         "shannon_entropy_sma_30d": 2.5100564603565396,
+        "shannon_entropy_sma_short": 2.1971597234241496,
         "hurst_exponent_sma": 0.8393599431684704,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3393599431684704,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 129.59989135916666,
+        "tle_age_hours": 134.00601165666666,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -911,7 +953,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 12:04:29.414208",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 31598,
@@ -931,19 +973,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_128h",
+          "tle_stale_132h",
           "gap_81h"
         ],
         "reliable": true,
-        "tle_age_hours": 128.01730743944444
+        "tle_age_hours": 132.42332004472223
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.06277913765279663,
         "shannon_entropy_sma_30d": 1.9579393553211153,
+        "shannon_entropy_sma_short": 2.058813890331201,
         "hurst_exponent_sma": 0.8844605234269142,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.38446052342691417,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 128.01732392388888,
+        "tle_age_hours": 132.42334769222222,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -970,7 +1015,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 13:39:26.096256",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 35951,
@@ -990,19 +1035,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_128h",
+          "tle_stale_132h",
           "gap_85h"
         ],
         "reliable": true,
-        "tle_age_hours": 127.50697406083334
+        "tle_age_hours": 131.91326729944444
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.008498679871991044,
         "shannon_entropy_sma_30d": 1.9526832779469114,
+        "shannon_entropy_sma_short": 1.879964948727111,
         "hurst_exponent_sma": 0.8280783342399424,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.32807833423994237,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 127.50699027083334,
+        "tle_age_hours": 131.91329445194444,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1029,7 +1077,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 14:10:04.919808",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 39208,
@@ -1049,19 +1097,22 @@
       "data_quality": {
         "score": 0.35000000000000003,
         "issues": [
-          "tle_stale_142h",
+          "tle_stale_146h",
           "gap_381h"
         ],
         "reliable": false,
-        "tle_age_hours": 141.66959404222223
+        "tle_age_hours": 146.0762347736111
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.020909266541821125,
         "shannon_entropy_sma_30d": 2.3920788329783202,
+        "shannon_entropy_sma_short": 2.4193819456463714,
         "hurst_exponent_sma": 0.8633592624720378,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.36335926247203776,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 141.6696120677778,
+        "tle_age_hours": 146.07625726194445,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1095,7 +1146,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 00:00:21.645792",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 28054,
@@ -1115,19 +1166,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_126h",
+          "tle_stale_131h",
           "gap_86h"
         ],
         "reliable": true,
-        "tle_age_hours": 126.4401534761111
+        "tle_age_hours": 130.84588776333334
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.0012083931542292703,
         "shannon_entropy_sma_30d": 2.694781460584273,
+        "shannon_entropy_sma_short": 2.4193819456463714,
         "hurst_exponent_sma": 0.8374515500516013,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3374515500516013,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 126.44017108999999,
+        "tle_age_hours": 130.8459157975,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1154,7 +1208,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 15:14:02.230656",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 44714,
@@ -1174,19 +1228,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_126h",
+          "tle_stale_130h",
           "gap_84h"
         ],
         "reliable": true,
-        "tle_age_hours": 125.6756835475
+        "tle_age_hours": 130.08277584888887
       },
       "features_snapshot": {
         "delta_sma_7d_km": -8.909185266868008,
         "shannon_entropy_sma_30d": 0.2974722489192897,
+        "shannon_entropy_sma_short": 0.5032583347756457,
         "hurst_exponent_sma": 0.880826495277838,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.38082649527783796,
         "kolmogorov_proxy_7d": 0.21052631578947367,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 125.67570128583333,
+        "tle_age_hours": 130.0827941963889,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1213,7 +1270,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 16:00:03.000096",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 28654,
@@ -1233,19 +1290,22 @@
       "data_quality": {
         "score": 0.35000000000000003,
         "issues": [
-          "tle_stale_127h",
+          "tle_stale_132h",
           "gap_191h"
         ],
         "reliable": false,
-        "tle_age_hours": 127.15606119166667
+        "tle_age_hours": 131.56188730388888
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.0028243474544069613,
         "shannon_entropy_sma_30d": 1.8452178053170998,
+        "shannon_entropy_sma_short": 1.7527152789797051,
         "hurst_exponent_sma": 0.8756703809410153,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.37567038094101535,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 127.15607933888889,
+        "tle_age_hours": 131.56191232111112,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1272,7 +1332,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 14:31:05.533824",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 27424,
@@ -1292,19 +1352,22 @@
       "data_quality": {
         "score": 0.35000000000000003,
         "issues": [
-          "tle_stale_128h",
+          "tle_stale_132h",
           "gap_190h"
         ],
         "reliable": false,
-        "tle_age_hours": 128.07694748027777
+        "tle_age_hours": 132.4825902652778
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.022160701317261555,
         "shannon_entropy_sma_30d": 1.6282202760321465,
+        "shannon_entropy_sma_short": 1.4466166676282084,
         "hurst_exponent_sma": 0.8695344881258066,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3695344881258066,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 128.07696523055554,
+        "tle_age_hours": 132.48262055722222,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1331,7 +1394,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 13:35:49.242624",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 39084,
@@ -1351,19 +1414,22 @@
       "data_quality": {
         "score": 0.35000000000000003,
         "issues": [
-          "tle_stale_127h",
+          "tle_stale_131h",
           "gap_457h"
         ],
         "reliable": false,
-        "tle_age_hours": 127.06656042333333
+        "tle_age_hours": 131.47294326972224
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.009294489533203887,
         "shannon_entropy_sma_30d": 1.824816986216862,
+        "shannon_entropy_sma_short": 1.879964948727111,
         "hurst_exponent_sma": 0.7986221451849513,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.29862214518495134,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 127.06657855555555,
+        "tle_age_hours": 131.47297447861112,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1390,7 +1456,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 14:36:30.940416",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 25994,
@@ -1410,19 +1476,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_126h",
+          "tle_stale_131h",
           "gap_133h"
         ],
         "reliable": true,
-        "tle_age_hours": 126.20415345777778
+        "tle_age_hours": 130.60976251138888
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.011950911793974228,
         "shannon_entropy_sma_30d": 1.824816986216862,
+        "shannon_entropy_sma_short": 2.058813890331201,
         "hurst_exponent_sma": 0.8610709672363819,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3610709672363819,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 126.20417136333333,
+        "tle_age_hours": 130.60978086416665,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1449,7 +1518,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 15:28:10.773696",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     },
     {
       "norad_id": 43013,
@@ -1469,19 +1538,22 @@
       "data_quality": {
         "score": 0.5,
         "issues": [
-          "tle_stale_127h",
+          "tle_stale_132h",
           "gap_86h"
         ],
         "reliable": true,
-        "tle_age_hours": 127.24279372
+        "tle_age_hours": 131.6498055288889
       },
       "features_snapshot": {
         "delta_sma_7d_km": -0.0025480269941908773,
         "shannon_entropy_sma_30d": 2.1942669866723286,
+        "shannon_entropy_sma_short": 2.058813890331201,
         "hurst_exponent_sma": 0.8033041200796417,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3033041200796417,
         "kolmogorov_proxy_7d": 0.05263157894736842,
         "l1_cusum_sma": 0.0,
-        "tle_age_hours": 127.2428123186111,
+        "tle_age_hours": 131.64982973138888,
         "f10_7": 144.0,
         "f10_7_adj": 149.2,
         "ap_index": 6.0,
@@ -1508,7 +1580,7 @@
         "note": "Estimate: TLE window end / epoch -- not intent date or maneuver clock."
       },
       "window_end": "2026-07-27 14:26:00.307680",
-      "score_delta_1d": null
+      "score_delta_1d": 0.0
     }
   ],
   "top_pairs": [
