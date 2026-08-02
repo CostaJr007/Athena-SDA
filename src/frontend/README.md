@@ -42,8 +42,25 @@ Docks can be toggled with **Board** / **Intel** buttons.
 - CelesTrak TLE feeds (+ offline snapshots in `public/data/`)
 - Athena demo catalog: `src/lib/athena-tracks.ts`
 
+## Data from the Python pipeline
+
+The UI reads the latest ML artifacts copied from `data/alerts/` into `public/data/`:
+
+```bash
+# Linux
+bash scripts/sync_frontend_data.sh
+# Windows
+powershell scripts/sync_frontend_data.ps1
+```
+
+- `risk_report_latest.json` — mission board rows (threat colors, anomaly scores, pair risk, data quality)
+- `anomalies_latest.json` / `proximity_latest.json` — alert lists
+- `walkforward_summary.json` — PoC summary (Open PoC for judges panel)
+- `reports/` — quant HTML per object + `walkforward_poc.html`
+
+Run the sync again after `python scripts/run_anomaly_monitor.py run-daily`.
+
 ## Next integrations
 
-1. Color globe points by Athena threat class
-2. Wire Bob chat to `src/bob.py` / watsonx
-3. Live scores from the Python pipeline instead of static tracks
+1. Wire Bob chat to `src/bob.py` / watsonx (currently local template briefing)
+2. Live TLE ingestion per watchlist NORAD (currently offline snapshots)

@@ -315,29 +315,46 @@ def merge_pairs_into_alerts(
             "pair_risk": pair.get("pair_risk"),
             "risk_level": pair.get("risk_level"),
         }
-        # Operational fuse: strong pair elevates attention even if IF alone is shy
+        # Operational fuse: strong pair elevates military attention (suspects only)
         pr = float(pair.get("pair_risk") or 0)
         an = float(a.get("anomaly_score") or 0)
+        role = str(a.get("role") or "").lower()
         if a.get("data_quality", {}).get("reliable", True):
-            if pair.get("risk_level") == "CRITICAL" or (
+            pair_hot = pair.get("risk_level") == "CRITICAL" or (
                 pair.get("risk_level") == "ELEVATED" and pr >= 0.65 and an >= 0.35
-            ):
+            )
+            if pair_hot and role == "suspect":
                 a["is_anomaly"] = True
-                if a.get("status") == "NOMINAL":
+                a["is_military_detection"] = True
+                if a.get("status") in (None, "NOMINAL", "CALIBRATION_BASELINE"):
                     a["status"] = "PAIR_ELEVATED"
             a["attention_score"] = round(float(np.clip(0.45 * an + 0.55 * pr, 0, 1)), 4)
         else:
             a["attention_score"] = an
 
+    # Baselines: calibration scores only — never force anomaly via pairs
+    for a in anomaly_report.get("alerts") or []:
+        if str(a.get("role") or "").lower() == "baseline":
+            a["is_anomaly"] = False
+            a["is_military_detection"] = False
+            if a.get("status") not in ("UNRELIABLE_DATA",):
+                a["status"] = "CALIBRATION_BASELINE"
+            if a.get("attention_score") is None:
+                a["attention_score"] = float(a.get("anomaly_score") or 0) * 0.35
+
     # re-count
     anomaly_report["n_anomalies"] = sum(1 for a in anomaly_report.get("alerts") or [] if a.get("is_anomaly"))
+    anomaly_report["n_military_detections"] = sum(
+        1 for a in anomaly_report.get("alerts") or [] if a.get("is_military_detection")
+    )
     anomaly_report["pairs_merged"] = True
     anomaly_report["n_pairs"] = pair_report.get("n_pairs_scored", 0)
     anomaly_report["n_pair_elevated"] = pair_report.get("n_elevated", 0)
 
-    # sort by attention if present
+    # sort: military detections, then attention
     anomaly_report["alerts"].sort(
         key=lambda x: (
+            -int(bool(x.get("is_military_detection"))),
             -float(x.get("attention_score") or x.get("anomaly_score") or 0),
             -float(x.get("anomaly_score") or 0),
         )
@@ -368,6 +385,9 @@ def build_risk_report(
                 "anomaly_score": a.get("anomaly_score"),
                 "attention_score": a.get("attention_score", a.get("anomaly_score")),
                 "is_anomaly": a.get("is_anomaly"),
+                "is_military_detection": a.get("is_military_detection"),
+                "is_platform_health_flag": a.get("is_platform_health_flag"),
+                "is_calibration_object": a.get("is_calibration_object"),
                 "status": a.get("status"),
                 "xgb_class": a.get("xgb_class"),
                 "data_quality": a.get("data_quality"),
@@ -383,17 +403,24 @@ def build_risk_report(
         "schema": "athena.risk_report.v1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "day": day,
+        "doctrine": anomaly_report.get("doctrine") or "military_first_sda",
+        "protocol": anomaly_report.get("protocol"),
         "summary": {
             "n_scored": anomaly_report.get("n_scored"),
             "n_anomalies": anomaly_report.get("n_anomalies"),
+            "n_military_detections": anomaly_report.get("n_military_detections")
+            or sum(1 for b in board if b.get("is_military_detection")),
+            "n_platform_health_flags": sum(1 for b in board if b.get("is_platform_health_flag")),
             "n_pairs": (pair_report or {}).get("n_pairs_scored", 0),
             "n_pair_elevated": (pair_report or {}).get("n_elevated", 0),
             "threshold": anomaly_report.get("threshold"),
+            "focus": "suspect detection + asset protect; baseline = IF normality only",
         },
         "board": board,
         "top_pairs": top_pairs,
         "model": anomaly_report.get("model"),
         "train_meta": anomaly_report.get("train_meta"),
+        "doctrine_summary": anomaly_report.get("doctrine_summary"),
     }
 
     ensure_dirs()

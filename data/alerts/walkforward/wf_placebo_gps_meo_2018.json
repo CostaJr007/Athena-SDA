@@ -1,0 +1,1657 @@
+{
+  "event_id": "placebo_gps_meo_2018",
+  "type": "placebo_baseline",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) are CASE STUDIES to read how quant noise features (Hurst, Shannon, CUSUM, IF score) behave — not prediction targets. Primary claim: continuous normality-vs-deviation monitoring. first_fold_hit=true means elevated from first scorable fold (regime level), not necessarily a rising ramp into t_peak. Not a classified ground-truth claim.",
+  "t_start": "2018-01-01",
+  "t_peak": "2018-09-01",
+  "t_end": "2019-03-01",
+  "norad_ids": [
+    28874
+  ],
+  "pair_with": [],
+  "sources": [
+    "MEO GNSS control calendar 2018 — stratified orbit class"
+  ],
+  "notes": "Placebo MEO — GPS BIIRM-1 (asset role; quiet PNT reference).",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 31,
+  "folds": [
+    {
+      "asof": "2018-01-01",
+      "cutoff": "2017-12-29",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.4480150393550912,
+          "window_end": "2017-12-31 20:56:08.276928",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.0643675200000002
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8603207778330444,
+            "hurst_exponent_sma": 0.8719758936396637,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7440298263673035,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.021631269330100622,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.0643675200000002,
+            "f10_7": 69.1,
+            "ap_index": 10.0,
+            "kp_mean": 2.20825,
+            "f10_7_delta_7d": -6.6000000000000085,
+            "ap_delta_7d": 3.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.925012,
+            "pair_risk": 0.08,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.24560676770979104
+        }
+      }
+    },
+    {
+      "asof": "2018-01-15",
+      "cutoff": "2018-01-12",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.42944238646043176,
+          "window_end": "2018-01-14 08:52:51.695328",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 15.118973519999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.694781460584273,
+            "hurst_exponent_sma": 0.8351446856694651,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.793832149288787,
+            "adf_pvalue": 0.6703635448399956,
+            "delta_sma_7d_km": 0.01421490429493133,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 15.118973519999999,
+            "f10_7": 70.2,
+            "ap_index": 9.0,
+            "kp_mean": 2.0001249999999997,
+            "f10_7_delta_7d": -0.09999999999999432,
+            "ap_delta_7d": 2.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.534355,
+            "pair_risk": 0.2167,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.3124340739071943
+        }
+      }
+    },
+    {
+      "asof": "2018-01-29",
+      "cutoff": "2018-01-26",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.43058860141654537,
+          "window_end": "2018-01-28 19:59:38.226912",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.00604808
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.5423289894137597,
+            "hurst_exponent_sma": 0.8675001676933237,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7541032731369193,
+            "adf_pvalue": 0.9166736849632104,
+            "delta_sma_7d_km": 0.027193976853595814,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.00604808,
+            "f10_7": 68.2,
+            "ap_index": 3.0,
+            "kp_mean": 0.666625,
+            "f10_7_delta_7d": -1.8999999999999915,
+            "ap_delta_7d": -3.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.183977,
+            "pair_risk": 0.3393,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3803798706374454
+        }
+      }
+    },
+    {
+      "asof": "2018-02-12",
+      "cutoff": "2018-02-09",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.42186550098369296,
+          "window_end": "2018-02-11 20:43:15.423744",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.27904896
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.549787381523038,
+            "hurst_exponent_sma": 0.8615248629527454,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7342629897033781,
+            "adf_pvalue": 0.9961075857367473,
+            "delta_sma_7d_km": 0.017746814894053387,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.27904896,
+            "f10_7": 78.6,
+            "ap_index": 3.0,
+            "kp_mean": 0.75,
+            "f10_7_delta_7d": 4.599999999999994,
+            "ap_delta_7d": -0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.334982,
+            "pair_risk": 0.2865,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3474144754426618
+        }
+      }
+    },
+    {
+      "asof": "2018-02-26",
+      "cutoff": "2018-02-23",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.4823037820402256,
+          "window_end": "2018-02-25 18:41:31.149600",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.308014
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.5907239186406503,
+            "hurst_exponent_sma": 0.7792613756313542,
+            "kolmogorov_proxy_7d": 0.2631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7770416909146399,
+            "adf_pvalue": 0.007430655348171173,
+            "delta_sma_7d_km": 0.025869964745652396,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.308014,
+            "f10_7": 69.8,
+            "ap_index": 6.0,
+            "kp_mean": 1.583375,
+            "f10_7_delta_7d": 0.7000000000000028,
+            "ap_delta_7d": -1.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.049153,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.4390717019181015
+        }
+      }
+    },
+    {
+      "asof": "2018-03-12",
+      "cutoff": "2018-03-09",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.4428608912063097,
+          "window_end": "2018-03-11 19:49:24.837024",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.1764341599999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.3920788329783207,
+            "hurst_exponent_sma": 0.8694626418424718,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.8038123624649203,
+            "adf_pvalue": 0.3337523662334446,
+            "delta_sma_7d_km": 0.017570478183188243,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.1764341599999995,
+            "f10_7": 68.1,
+            "ap_index": 2.0,
+            "kp_mean": 0.41662499999999997,
+            "f10_7_delta_7d": 0.5,
+            "ap_delta_7d": -3.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.1709,
+            "pair_risk": 0.3439,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3884324010428394
+        }
+      }
+    },
+    {
+      "asof": "2018-03-26",
+      "cutoff": "2018-03-23",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.43966948722550975,
+          "window_end": "2018-03-25 17:38:51.240192",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 6.35243328
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6078612261419987,
+            "hurst_exponent_sma": 0.8679730130620696,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7221788090488666,
+            "adf_pvalue": 0.26792702300864524,
+            "delta_sma_7d_km": 0.023839548204705352,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 6.35243328,
+            "f10_7": 67.8,
+            "ap_index": 10.0,
+            "kp_mean": 2.375,
+            "f10_7_delta_7d": -2.5,
+            "ap_delta_7d": 0.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.11257,
+            "pair_risk": 0.3643,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3982162692514794
+        }
+      }
+    },
+    {
+      "asof": "2018-04-09",
+      "cutoff": "2018-04-06",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.44015784979070177,
+          "window_end": "2018-04-08 18:52:04.933344",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.13196296
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4187229080665613,
+            "hurst_exponent_sma": 0.851327561539921,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7859191082959051,
+            "adf_pvalue": 0.0008160644249455828,
+            "delta_sma_7d_km": 0.0177473064577498,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.13196296,
+            "f10_7": 68.7,
+            "ap_index": 11.0,
+            "kp_mean": 2.208125,
+            "f10_7_delta_7d": 0.29999999999999716,
+            "ap_delta_7d": 5.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.187042,
+            "pair_risk": 0.3382,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3840810324058158
+        }
+      }
+    },
+    {
+      "asof": "2018-04-23",
+      "cutoff": "2018-04-20",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.5231857914952177,
+          "window_end": "2018-04-22 18:22:10.018272",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.630550479999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "hurst_exponent_sma": 0.8126400332931132,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5583359988003019,
+            "delta_sma_7d_km": 0.01156397552404087,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 5.630550479999999,
+            "f10_7": 73.9,
+            "ap_index": 6.0,
+            "kp_mean": 1.41675,
+            "f10_7_delta_7d": 4.700000000000003,
+            "ap_delta_7d": -3.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.896206,
+            "pair_risk": 0.09,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.28493360617284796
+        }
+      }
+    },
+    {
+      "asof": "2018-05-07",
+      "cutoff": "2018-05-04",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.4639164818881475,
+          "window_end": "2018-05-06 05:04:17.121792",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 18.92857728
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.499544305608132,
+            "hurst_exponent_sma": 0.8396792872499349,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7981034864198484,
+            "adf_pvalue": 0.03441910870839686,
+            "delta_sma_7d_km": 0.009710248195915483,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 18.92857728,
+            "f10_7": 69.6,
+            "ap_index": 16.0,
+            "kp_mean": 3.041625,
+            "f10_7_delta_7d": -0.6000000000000085,
+            "ap_delta_7d": 5.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.608095,
+            "pair_risk": 0.1909,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3137574168496664
+        }
+      }
+    },
+    {
+      "asof": "2018-05-21",
+      "cutoff": "2018-05-18",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.44869246741810037,
+          "window_end": "2018-05-20 15:59:27.918240",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 8.008911600000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.2920717524577876,
+            "hurst_exponent_sma": 0.8343200516687076,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7039986652043317,
+            "adf_pvalue": 0.010139200884661496,
+            "delta_sma_7d_km": 0.015006871031800983,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 8.008911600000001,
+            "f10_7": 69.6,
+            "ap_index": 2.0,
+            "kp_mean": 0.375,
+            "f10_7_delta_7d": -0.7000000000000028,
+            "ap_delta_7d": -1.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.457326,
+            "pair_risk": 0.2436,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3358916103381452
+        }
+      }
+    },
+    {
+      "asof": "2018-06-04",
+      "cutoff": "2018-06-01",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.4366716354211054,
+          "window_end": "2018-06-03 15:30:35.427168",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 8.490159120000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.294274067192862,
+            "hurst_exponent_sma": 0.840912861796759,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7426048662964628,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.01703727802305366,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 8.490159120000001,
+            "f10_7": 70.5,
+            "ap_index": 4.0,
+            "kp_mean": 1.08325,
+            "f10_7_delta_7d": -6.400000000000006,
+            "ap_delta_7d": -5.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.288024,
+            "pair_risk": 0.3029,
+            "risk_level": "LOW",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.36309723593949744
+        }
+      }
+    },
+    {
+      "asof": "2018-06-18",
+      "cutoff": "2018-06-15",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.46127114845369865,
+          "window_end": "2018-06-17 15:07:39.729216",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 8.87229744
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.976282278773577,
+            "hurst_exponent_sma": 0.9000920054195097,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.6689287588765664,
+            "adf_pvalue": 0.4322675113888925,
+            "delta_sma_7d_km": 0.012800131342373788,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 8.87229744,
+            "f10_7": 73.7,
+            "ap_index": 16.0,
+            "kp_mean": 2.9998750000000003,
+            "f10_7_delta_7d": 3.799999999999997,
+            "ap_delta_7d": 11.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.000249,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4296070168041644
+        }
+      }
+    },
+    {
+      "asof": "2018-07-02",
+      "cutoff": "2018-06-29",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.4460075468034169,
+          "window_end": "2018-07-01 22:23:24.347616",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.60990344
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.1793502024537723,
+            "hurst_exponent_sma": 0.8201225137541074,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7247356209396227,
+            "adf_pvalue": 0.9616796063601261,
+            "delta_sma_7d_km": 0.023658256453927606,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.60990344,
+            "f10_7": 66.6,
+            "ap_index": 2.0,
+            "kp_mean": 0.374875,
+            "f10_7_delta_7d": -6.200000000000003,
+            "ap_delta_7d": -4.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.81941,
+            "pair_risk": 0.1169,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.26499839606153763
+        }
+      }
+    },
+    {
+      "asof": "2018-07-16",
+      "cutoff": "2018-07-13",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.44686357516862585,
+          "window_end": "2018-07-15 21:57:07.069824",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.04803616
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.030087224632132,
+            "hurst_exponent_sma": 0.8455961829578348,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7356756999814763,
+            "adf_pvalue": 0.9230967619452031,
+            "delta_sma_7d_km": 0.01315339470966137,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.04803616,
+            "f10_7": 71.9,
+            "ap_index": 7.0,
+            "kp_mean": 1.8335,
+            "f10_7_delta_7d": -1.0,
+            "ap_delta_7d": 1.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.829966,
+            "pair_risk": 0.1132,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.2633486088258816
+        }
+      }
+    },
+    {
+      "asof": "2018-07-30",
+      "cutoff": "2018-07-27",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.4256931130696244,
+          "window_end": "2018-07-29 21:32:10.015296",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.4638846400000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7153266987718094,
+            "hurst_exponent_sma": 0.890076345764273,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7490127120149312,
+            "adf_pvalue": 0.125671379546334,
+            "delta_sma_7d_km": 0.02092192012423766,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.4638846400000003,
+            "f10_7": 68.3,
+            "ap_index": 4.0,
+            "kp_mean": 1.0,
+            "f10_7_delta_7d": 1.2999999999999972,
+            "ap_delta_7d": -1.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.292864,
+            "pair_risk": 0.3012,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.357221900881331
+        }
+      }
+    },
+    {
+      "asof": "2018-08-13",
+      "cutoff": "2018-08-10",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.4360998832588598,
+          "window_end": "2018-08-12 13:33:58.405248",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 10.43377632
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6550505394177746,
+            "hurst_exponent_sma": 0.8530136601749403,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.643580037097881,
+            "adf_pvalue": 0.8242641123630743,
+            "delta_sma_7d_km": 0.024188402087020222,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 10.43377632,
+            "f10_7": 67.8,
+            "ap_index": 4.0,
+            "kp_mean": 0.83325,
+            "f10_7_delta_7d": -1.2999999999999972,
+            "ap_delta_7d": -1.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.212149,
+            "pair_risk": 0.3295,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.37746994746648693
+        }
+      }
+    },
+    {
+      "asof": "2018-08-27",
+      "cutoff": "2018-08-24",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.5394571034754128,
+          "window_end": "2018-08-26 07:30:25.583904",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 16.49289336
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.710070621397606,
+            "hurst_exponent_sma": 0.8802263986093406,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.8104808746994323,
+            "adf_pvalue": 0.8765667157503504,
+            "delta_sma_7d_km": 0.015095749899046496,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 16.49289336,
+            "f10_7": 69.6,
+            "ap_index": 25.0,
+            "kp_mean": 3.3751249999999997,
+            "f10_7_delta_7d": 1.5999999999999943,
+            "ap_delta_7d": 7.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.917397,
+            "pair_risk": 0.0826,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.2881856965639358
+        }
+      }
+    },
+    {
+      "asof": "2018-09-10",
+      "cutoff": "2018-09-07",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.45431563475851017,
+          "window_end": "2018-09-09 12:49:04.344384",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 11.182126559999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9655839357277816,
+            "hurst_exponent_sma": 0.8599954386076202,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7309820437806408,
+            "adf_pvalue": 0.008117449363281156,
+            "delta_sma_7d_km": 0.024365263059735298,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 11.182126559999999,
+            "f10_7": 69.0,
+            "ap_index": 20.0,
+            "kp_mean": 2.58325,
+            "f10_7_delta_7d": 0.9000000000000057,
+            "ap_delta_7d": 12.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.098733,
+            "pair_risk": 0.3691,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.40744703564132956
+        }
+      }
+    },
+    {
+      "asof": "2018-09-24",
+      "cutoff": "2018-09-21",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.430088273967557,
+          "window_end": "2018-09-23 10:52:23.376576",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 13.126839839999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7742433029172697,
+            "hurst_exponent_sma": 0.8192537366579741,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.749380009839399,
+            "adf_pvalue": 0.9969159825285374,
+            "delta_sma_7d_km": 0.02074588357936591,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 13.126839839999999,
+            "f10_7": 68.6,
+            "ap_index": 6.0,
+            "kp_mean": 1.5833750000000002,
+            "f10_7_delta_7d": 0.7999999999999972,
+            "ap_delta_7d": -2.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.922465,
+            "pair_risk": 0.0808,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.23797972328540065
+        }
+      }
+    },
+    {
+      "asof": "2018-10-08",
+      "cutoff": "2018-10-05",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.45878974463925876,
+          "window_end": "2018-10-07 17:33:51.776064",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 6.4356177599999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.3576039891860257,
+            "hurst_exponent_sma": 0.8349769599826625,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7732417926665756,
+            "adf_pvalue": 0.5407127240516931,
+            "delta_sma_7d_km": 0.035135847097990336,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 6.4356177599999995,
+            "f10_7": 68.8,
+            "ap_index": 19.0,
+            "kp_mean": 3.208375,
+            "f10_7_delta_7d": -1.2999999999999972,
+            "ap_delta_7d": 9.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.71098,
+            "pair_risk": 0.1549,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.29165038508766644
+        }
+      }
+    },
+    {
+      "asof": "2018-10-22",
+      "cutoff": "2018-10-19",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.43473208745076597,
+          "window_end": "2018-10-21 11:21:23.037984",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 12.64360056
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6689801450225326,
+            "hurst_exponent_sma": 0.8531830665771598,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.741852338377087,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.026749288739665644,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 12.64360056,
+            "f10_7": 70.9,
+            "ap_index": 5.0,
+            "kp_mean": 1.2918749999999999,
+            "f10_7_delta_7d": 0.9000000000000057,
+            "ap_delta_7d": 1.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.711479,
+            "pair_risk": 0.1547,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.2807144393528447
+        }
+      }
+    },
+    {
+      "asof": "2018-11-05",
+      "cutoff": "2018-11-02",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.5327333882860485,
+          "window_end": "2018-11-04 11:33:33.818688",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 12.44060592
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.839775539645508,
+            "hurst_exponent_sma": 0.8532546510638374,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.791924226107579,
+            "adf_pvalue": 0.8356577405949038,
+            "delta_sma_7d_km": 0.022423682778025977,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 12.44060592,
+            "f10_7": 68.3,
+            "ap_index": 32.0,
+            "kp_mean": 4.041625,
+            "f10_7_delta_7d": -0.5,
+            "ap_delta_7d": 23.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.063847,
+            "pair_risk": 0.3814,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.44950002472872186
+        }
+      }
+    },
+    {
+      "asof": "2018-11-19",
+      "cutoff": "2018-11-16",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.4319654436335919,
+          "window_end": "2018-11-18 21:55:35.949792",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.07334728
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7153266987718094,
+            "hurst_exponent_sma": 0.8248364479177446,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.8154168506577228,
+            "adf_pvalue": 0.08526573577909474,
+            "delta_sma_7d_km": 0.028691883766441606,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.07334728,
+            "f10_7": 71.1,
+            "ap_index": 4.0,
+            "kp_mean": 1.08325,
+            "f10_7_delta_7d": 2.8999999999999915,
+            "ap_delta_7d": 1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.010898,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.41641944963511635
+        }
+      }
+    },
+    {
+      "asof": "2018-12-03",
+      "cutoff": "2018-11-30",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.4185785428537251,
+          "window_end": "2018-12-02 09:50:08.657952",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 14.16426168
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.905307776373747,
+            "hurst_exponent_sma": 0.828977607745877,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7347553920855125,
+            "adf_pvalue": 1.401515569773742e-06,
+            "delta_sma_7d_km": 0.01483162939621252,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 14.16426168,
+            "f10_7": 68.4,
+            "ap_index": 8.0,
+            "kp_mean": 2.041625,
+            "f10_7_delta_7d": -0.19999999999998863,
+            "ap_delta_7d": 3.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.013704,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.41039534428417634
+        }
+      }
+    },
+    {
+      "asof": "2018-12-17",
+      "cutoff": "2018-12-14",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.41698526069209213,
+          "window_end": "2018-12-15 22:02:43.200384",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 25.95466656
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.720582776146014,
+            "hurst_exponent_sma": 0.8558722094604846,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7073442434395905,
+            "adf_pvalue": 0.9969022010101096,
+            "delta_sma_7d_km": 0.03478386644565035,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 25.95466656,
+            "f10_7": 70.1,
+            "ap_index": 5.0,
+            "kp_mean": 1.25,
+            "f10_7_delta_7d": -0.9000000000000057,
+            "ap_delta_7d": 0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.165186,
+            "pair_risk": 0.3459,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3778883673114415
+        }
+      }
+    },
+    {
+      "asof": "2018-12-31",
+      "cutoff": "2018-12-28",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.43052765986532177,
+          "window_end": "2018-12-30 20:14:33.413856",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.7573850400000004
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.9698110652780971,
+            "hurst_exponent_sma": 0.8359263503023778,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.717240313409726,
+            "adf_pvalue": 0.4910297718102852,
+            "delta_sma_7d_km": 0.00971133455823292,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.7573850400000004,
+            "f10_7": 69.3,
+            "ap_index": 7.0,
+            "kp_mean": 1.625,
+            "f10_7_delta_7d": -0.20000000000000284,
+            "ap_delta_7d": -0.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.239182,
+            "pair_risk": 0.32,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3697374469393948
+        }
+      }
+    },
+    {
+      "asof": "2019-01-14",
+      "cutoff": "2019-01-11",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.44753186722103405,
+          "window_end": "2019-01-12 20:51:39.149568",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 27.139125120000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.5229571181374095,
+            "hurst_exponent_sma": 0.7762600265811006,
+            "kolmogorov_proxy_7d": 0.42105263157894735,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7138432896139746,
+            "adf_pvalue": 0.13789882674868148,
+            "delta_sma_7d_km": 0.03063499661584501,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 27.139125120000003,
+            "f10_7": 70.0,
+            "ap_index": 6.0,
+            "kp_mean": 1.7085,
+            "f10_7_delta_7d": -1.5,
+            "ap_delta_7d": 1.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.100212,
+            "pair_risk": 0.3686,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.40411934024946533
+        }
+      }
+    },
+    {
+      "asof": "2019-01-28",
+      "cutoff": "2019-01-25",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.44253500323011596,
+          "window_end": "2019-01-27 17:52:58.276416",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 6.11714544
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.8795064608120067,
+            "hurst_exponent_sma": 0.810854856232553,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.6770027705660994,
+            "adf_pvalue": 0.738400599520443,
+            "delta_sma_7d_km": 0.033195574240380665,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 6.11714544,
+            "f10_7": 75.8,
+            "ap_index": 1.0,
+            "kp_mean": 0.20825,
+            "f10_7_delta_7d": 5.8999999999999915,
+            "ap_delta_7d": -6.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 7.1e-05,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.42117575145355224
+        }
+      }
+    },
+    {
+      "asof": "2019-02-11",
+      "cutoff": "2019-02-08",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.4326722020742066,
+          "window_end": "2019-02-10 18:46:04.060416",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.2322054399999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.8248169862168622,
+            "hurst_exponent_sma": 0.8004953025066525,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.8018327933117619,
+            "adf_pvalue": 0.6264336800244585,
+            "delta_sma_7d_km": 0.029222907414805377,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.2322054399999995,
+            "f10_7": 69.9,
+            "ap_index": 8.0,
+            "kp_mean": 1.875,
+            "f10_7_delta_7d": -0.7999999999999972,
+            "ap_delta_7d": 1.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 5.5e-05,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.41673749093339296
+        }
+      }
+    },
+    {
+      "asof": "2019-02-25",
+      "cutoff": "2019-02-22",
+      "n_train_ok": true,
+      "targets": {
+        "28874": {
+          "ok": true,
+          "anomaly_score": 0.42007560473415523,
+          "window_end": "2019-02-24 11:15:34.637760",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_147h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 12.7403784
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.5842622253153325,
+            "hurst_exponent_sma": 0.8778053849900094,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7848630999605961,
+            "adf_pvalue": 0.24416203210829412,
+            "delta_sma_7d_km": 0.012095390477043111,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 12.7403784,
+            "f10_7": 70.4,
+            "ap_index": 1.0,
+            "kp_mean": 0.25,
+            "f10_7_delta_7d": 0.5,
+            "ap_delta_7d": -2.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28874,
+          "object_name": "GPS BIIRM-1 (PRN 17)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.000806,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.4110690221303699
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "28874": {
+      "norad_id": 28874,
+      "object_name": "GPS BIIRM-1 (PRN 17)",
+      "n_folds_scored": 31,
+      "anomaly_score_mean": 0.44884816123668064,
+      "anomaly_score_max": 0.5394571034754128,
+      "anomaly_score_at_nearest_peak": 0.5394571034754128,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "n_hits_in_window": 1,
+      "first_fold_hit": false,
+      "first_hit_asof": "2018-04-23",
+      "first_scorable_asof": "2018-01-01",
+      "n_folds_above_thr_pre_peak": 2,
+      "lead_time_days": 131.0,
+      "lead_time_note": "days_from_first_thr_cross_to_t_peak",
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 2.2716702268288476,
+          "late_mean": 2.377694594241112
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.8474782712381708,
+          "late_mean": 0.8648545177800009
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.08771929824561403,
+          "late_mean": 0.05263157894736842
+        }
+      },
+      "pair_risk_max": 0.4037,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 18,
+        "pre_peak_anomaly_mean": 0.45348679360726213,
+        "pre_peak_anomaly_max": 0.5394571034754128,
+        "early_pre_peak_mean": 0.4425127002437161,
+        "late_pre_peak_mean": 0.4592320617049397,
+        "noise_ramp": 0.016719361461223603,
+        "pre_peak_pair_risk_max": 0.4037,
+        "elevated_noise_before_peak": true
+      },
+      "is_placebo": true
+    }
+  }
+}

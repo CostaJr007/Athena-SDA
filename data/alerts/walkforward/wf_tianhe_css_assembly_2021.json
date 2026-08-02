@@ -1,0 +1,1228 @@
+{
+  "event_id": "tianhe_css_assembly_2021",
+  "type": "crewed_station_ops",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) are CASE STUDIES to read how quant noise features (Hurst, Shannon, CUSUM, IF score) behave — not prediction targets. Primary claim: continuous normality-vs-deviation monitoring. first_fold_hit=true means elevated from first scorable fold (regime level), not necessarily a rising ramp into t_peak. Not a classified ground-truth claim.",
+  "t_start": "2021-04-01",
+  "t_peak": "2021-10-15",
+  "t_end": "2022-03-01",
+  "norad_ids": [
+    48274
+  ],
+  "pair_with": [],
+  "sources": [
+    "Public CNSA/open press: Tianhe core module launch Apr 2021; multiple cargo/crew dockings 2021–22",
+    "Open SSA timelines of CSS assembly sequence (2021)"
+  ],
+  "notes": "Independent NORAD (CSS Tianhe). Case: high-cadence docking/station-keeping — micro-trajectory noise reading, not hostile intent.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 24,
+  "folds": [
+    {
+      "asof": "2021-04-01",
+      "cutoff": "2021-03-29",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": false,
+          "reason": "insufficient_history",
+          "anomaly_score": null,
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": false
+        }
+      }
+    },
+    {
+      "asof": "2021-04-15",
+      "cutoff": "2021-04-12",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": false,
+          "reason": "insufficient_history",
+          "anomaly_score": null,
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": false
+        }
+      }
+    },
+    {
+      "asof": "2021-04-29",
+      "cutoff": "2021-04-26",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": false,
+          "reason": "insufficient_history",
+          "anomaly_score": null,
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": false
+        }
+      }
+    },
+    {
+      "asof": "2021-05-13",
+      "cutoff": "2021-05-10",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.585059739410686,
+          "window_end": "2021-05-11 13:32:44.788992",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 34.45422528
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.3134597501718246,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8580930300600866,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35809303006008664,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7299314137712052,
+            "delta_sma_7d_km": -0.11194839964082348,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 34.45422528,
+            "f10_7": 74.7,
+            "ap_index": 6.0,
+            "kp_mean": 1.625,
+            "f10_7_delta_7d": 3.9000000000000057,
+            "ap_delta_7d": -2.375,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 881.679,
+            "cointegration_pvalue": 0.000834,
+            "pair_risk": 0.4607,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5166618827348087
+        }
+      }
+    },
+    {
+      "asof": "2021-05-27",
+      "cutoff": "2021-05-24",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.6199485848562805,
+          "window_end": "2021-05-24 16:36:04.791168",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "tle_aging_55h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 55.39866912
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8453603598795012,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3453603598795012,
+            "kolmogorov_proxy_7d": 0.3157894736842105,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -19.040567900988208,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 55.39866912,
+            "f10_7": 83.3,
+            "ap_index": 14.0,
+            "kp_mean": 2.70825,
+            "f10_7_delta_7d": 11.0,
+            "ap_delta_7d": 5.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 362.515,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.6222,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6211868631853262
+        }
+      }
+    },
+    {
+      "asof": "2021-06-10",
+      "cutoff": "2021-06-07",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.569946203037854,
+          "window_end": "2021-06-09 18:36:44.732736",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 5.387574239999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.4854607607459134,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8327364154533287,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33273641545332866,
+            "kolmogorov_proxy_7d": 0.3684210526315789,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0,
+            "delta_sma_7d_km": -0.05007517005651607,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 5.387574239999999,
+            "f10_7": 73.3,
+            "ap_index": 4.0,
+            "kp_mean": 0.9998750000000001,
+            "f10_7_delta_7d": -2.200000000000003,
+            "ap_delta_7d": -0.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 556.211,
+            "cointegration_pvalue": 0.206713,
+            "pair_risk": 0.4646,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.5120057913670344
+        }
+      }
+    },
+    {
+      "asof": "2021-06-24",
+      "cutoff": "2021-06-21",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5698599260683836,
+          "window_end": "2021-06-23 15:30:59.973408",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 8.48334072
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.860320777833045,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.7379254014895665,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.23792540148956653,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8818359110573144,
+            "delta_sma_7d_km": -0.14606616987930465,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 8.48334072,
+            "f10_7": 80.6,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": -4.400000000000006,
+            "ap_delta_7d": -0.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 495.994,
+            "cointegration_pvalue": 0.202357,
+            "pair_risk": 0.4883,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5250019667307727
+        }
+      }
+    },
+    {
+      "asof": "2021-07-08",
+      "cutoff": "2021-07-05",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5254993104296173,
+          "window_end": "2021-07-07 19:50:32.163360",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.1577323999999996
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.694781460584273,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.842649070191829,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.342649070191829,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9961889024354479,
+            "delta_sma_7d_km": -0.06592726322651288,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 4.1577323999999996,
+            "f10_7": 73.4,
+            "ap_index": 4.0,
+            "kp_mean": 0.875,
+            "f10_7_delta_7d": -20.69999999999999,
+            "ap_delta_7d": -0.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 933.514,
+            "cointegration_pvalue": 0.100608,
+            "pair_risk": 0.4181,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.46642968969332776
+        }
+      }
+    },
+    {
+      "asof": "2021-07-22",
+      "cutoff": "2021-07-19",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5400974823502925,
+          "window_end": "2021-07-21 21:27:49.813056",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.53616304
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9847696187067436,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.8930299371526851,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3930299371526851,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.15556174021192543,
+            "delta_sma_7d_km": -0.07855448100872309,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.53616304,
+            "f10_7": 89.0,
+            "ap_index": 8.0,
+            "kp_mean": 1.791625,
+            "f10_7_delta_7d": 15.5,
+            "ap_delta_7d": 1.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 565.545,
+            "cointegration_pvalue": 0.719594,
+            "pair_risk": 0.2819,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.3980888670576317
+        }
+      }
+    },
+    {
+      "asof": "2021-08-05",
+      "cutoff": "2021-08-02",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5292730094440384,
+          "window_end": "2021-08-04 16:50:30.494976",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 7.158195839999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8603207778330444,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8669428358406396,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3669428358406396,
+            "kolmogorov_proxy_7d": 0.10526315789473684,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.39016393418531703,
+            "delta_sma_7d_km": -0.07972222373064142,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 7.158195839999999,
+            "f10_7": 74.3,
+            "ap_index": 1.0,
+            "kp_mean": 0.291625,
+            "f10_7_delta_7d": -1.5,
+            "ap_delta_7d": -5.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 451.705,
+            "cointegration_pvalue": 0.021956,
+            "pair_risk": 0.5778,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.5559628542498173
+        }
+      }
+    },
+    {
+      "asof": "2021-08-19",
+      "cutoff": "2021-08-16",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.45445819684230115,
+          "window_end": "2021-08-18 15:10:30.855648",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 8.82476232
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7603136973125117,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8676017613984651,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3676017613984651,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8818967794768711,
+            "delta_sma_7d_km": -0.035466660250676796,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 8.82476232,
+            "f10_7": 74.9,
+            "ap_index": 4.0,
+            "kp_mean": 0.87475,
+            "f10_7_delta_7d": 1.3000000000000114,
+            "ap_delta_7d": -1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.007201,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.42654118857903556
+        }
+      }
+    },
+    {
+      "asof": "2021-09-02",
+      "cutoff": "2021-08-30",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.6213884493875227,
+          "window_end": "2021-09-01 20:42:53.293248",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.28519632
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8168194489611041,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31681944896110414,
+            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.8635479933646616,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 4.809921783245954,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.28519632,
+            "f10_7": 85.8,
+            "ap_index": 3.0,
+            "kp_mean": 0.791625,
+            "f10_7_delta_7d": -2.799999999999997,
+            "ap_delta_7d": -5.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 350.831,
+            "cointegration_pvalue": 0.629654,
+            "pair_risk": 0.4084,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5042448022243853
+        }
+      }
+    },
+    {
+      "asof": "2021-09-16",
+      "cutoff": "2021-09-13",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5158701120309425,
+          "window_end": "2021-09-15 22:50:14.504928",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.1626375199999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.647592147308497,
+            "shannon_entropy_sma_short": 2.113283334294875,
+            "hurst_exponent_sma": 0.8255092349141142,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3255092349141142,
+            "kolmogorov_proxy_7d": 0.3157894736842105,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9966443777928751,
+            "delta_sma_7d_km": -0.08640519411801506,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.1626375199999999,
+            "f10_7": 73.2,
+            "ap_index": 3.0,
+            "kp_mean": 0.666625,
+            "f10_7_delta_7d": -26.5,
+            "ap_delta_7d": -2.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 810.665,
+            "cointegration_pvalue": 0.375549,
+            "pair_risk": 0.341,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.41969155041392414
+        }
+      }
+    },
+    {
+      "asof": "2021-09-30",
+      "cutoff": "2021-09-27",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5418862894164284,
+          "window_end": "2021-09-29 18:21:01.039968",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 5.64971112
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8407559034843687,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3407559034843687,
+            "kolmogorov_proxy_7d": 0.2631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6297409640855416,
+            "delta_sma_7d_km": -0.05818876976445608,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.64971112,
+            "f10_7": 94.6,
+            "ap_index": 8.0,
+            "kp_mean": 1.5,
+            "f10_7_delta_7d": 4.8999999999999915,
+            "ap_delta_7d": 1.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 39.084,
+            "cointegration_pvalue": 0.772441,
+            "pair_risk": 0.6284,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.5894688302373927
+        }
+      }
+    },
+    {
+      "asof": "2021-10-14",
+      "cutoff": "2021-10-11",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.6041470452961114,
+          "window_end": "2021-10-13 17:51:56.000160",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 6.1344444000000005
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.163540201121071,
+            "shannon_entropy_sma_short": 1.8799649487271113,
+            "hurst_exponent_sma": 0.8790678019084894,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37906780190848943,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.48449399931108655,
+            "delta_sma_7d_km": -0.3845132100450428,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 6.1344444000000005,
+            "f10_7": 84.0,
+            "ap_index": 6.0,
+            "kp_mean": 1.749875,
+            "f10_7_delta_7d": -1.7000000000000028,
+            "ap_delta_7d": -5.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.119849,
+            "pair_risk": 0.3618,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4708561703832501
+        }
+      }
+    },
+    {
+      "asof": "2021-10-28",
+      "cutoff": "2021-10-25",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5680542108561193,
+          "window_end": "2021-10-27 18:36:51.820992",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 5.38560528
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6550505394177746,
+            "shannon_entropy_sma_short": 2.0588138903312014,
+            "hurst_exponent_sma": 0.8187587587489585,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31875875874895854,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9870990512962385,
+            "delta_sma_7d_km": -0.07050658804382692,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 5.38560528,
+            "f10_7": 112.7,
+            "ap_index": 1.0,
+            "kp_mean": 0.20825,
+            "f10_7_delta_7d": 30.299999999999997,
+            "ap_delta_7d": -2.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 287.575,
+            "cointegration_pvalue": 0.741562,
+            "pair_risk": 0.4085,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4802993948852537
+        }
+      }
+    },
+    {
+      "asof": "2021-11-11",
+      "cutoff": "2021-11-08",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.6111699576787134,
+          "window_end": "2021-11-10 18:52:01.100640",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 5.1330276
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8052778149524772,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3052778149524772,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.556104131267043,
+            "delta_sma_7d_km": 0.82862351057247,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 5.1330276,
+            "f10_7": 84.2,
+            "ap_index": 3.0,
+            "kp_mean": 0.83325,
+            "f10_7_delta_7d": -8.200000000000003,
+            "ap_delta_7d": -12.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 275.055,
+            "cointegration_pvalue": 0.593473,
+            "pair_risk": 0.4688,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5328664809554211
+        }
+      }
+    },
+    {
+      "asof": "2021-11-25",
+      "cutoff": "2021-11-22",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5522173689186832,
+          "window_end": "2021-11-24 14:36:48.440736",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 9.386544240000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.5907239186406503,
+            "shannon_entropy_sma_short": 2.113283334294875,
+            "hurst_exponent_sma": 0.8616002537171974,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3616002537171974,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0,
+            "delta_sma_7d_km": -0.22728997029025777,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 9.386544240000001,
+            "f10_7": 84.9,
+            "ap_index": 4.0,
+            "kp_mean": 1.04175,
+            "f10_7_delta_7d": 6.0,
+            "ap_delta_7d": -2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 383.866,
+            "cointegration_pvalue": 0.659048,
+            "pair_risk": 0.38,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.45749781601340744
+        }
+      }
+    },
+    {
+      "asof": "2021-12-09",
+      "cutoff": "2021-12-06",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5194296146745343,
+          "window_end": "2021-12-08 19:06:16.796736",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.8953342399999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.710070621397606,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8616562989960347,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3616562989960347,
+            "kolmogorov_proxy_7d": 0.3684210526315789,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9803337591788613,
+            "delta_sma_7d_km": -0.08344048751769151,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.8953342399999995,
+            "f10_7": 76.7,
+            "ap_index": 1.0,
+            "kp_mean": 0.29175,
+            "f10_7_delta_7d": -9.899999999999991,
+            "ap_delta_7d": -4.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 1e-06,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.45577832660354045
+        }
+      }
+    },
+    {
+      "asof": "2021-12-23",
+      "cutoff": "2021-12-20",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.6436651876060406,
+          "window_end": "2021-12-22 21:23:41.999712",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.60500008
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.7742433029172696,
+            "shannon_entropy_sma_short": 1.2243944454059863,
+            "hurst_exponent_sma": 0.7452200367852843,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.24522003678528426,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.43053768978989265,
+            "delta_sma_7d_km": -0.2249736590019893,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 2.60500008,
+            "f10_7": 129.8,
+            "ap_index": 4.0,
+            "kp_mean": 0.83325,
+            "f10_7_delta_7d": 11.900000000000006,
+            "ap_delta_7d": -3.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 475.627,
+            "cointegration_pvalue": 0.333861,
+            "pair_risk": 0.4506,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5374793344227183
+        }
+      }
+    },
+    {
+      "asof": "2022-01-06",
+      "cutoff": "2022-01-03",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5549382160020623,
+          "window_end": "2022-01-05 18:34:54.646176",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 5.41815384
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.8795064608120067,
+            "shannon_entropy_sma_short": 0.9864267287308426,
+            "hurst_exponent_sma": 0.8411963870491884,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3411963870491884,
+            "kolmogorov_proxy_7d": 0.2631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.547114764250915,
+            "delta_sma_7d_km": -0.4164577668416314,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.41815384,
+            "f10_7": 93.7,
+            "ap_index": 0.0,
+            "kp_mean": 0.041625,
+            "f10_7_delta_7d": -8.700000000000003,
+            "ap_delta_7d": -6.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 813.166,
+            "cointegration_pvalue": 0.301942,
+            "pair_risk": 0.3663,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.45118719720092804
+        }
+      }
+    },
+    {
+      "asof": "2022-01-20",
+      "cutoff": "2022-01-17",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5716091861954916,
+          "window_end": "2022-01-19 19:43:39.000288",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.2724999200000005
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.824816986216862,
+            "shannon_entropy_sma_short": 2.113283334294875,
+            "hurst_exponent_sma": 0.8367902286660233,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33679022866602326,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.11720460739133887,
+            "delta_sma_7d_km": -0.14506020045610057,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.2724999200000005,
+            "f10_7": 99.3,
+            "ap_index": 4.0,
+            "kp_mean": 0.7915000000000001,
+            "f10_7_delta_7d": -6.200000000000003,
+            "ap_delta_7d": -9.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 450.322,
+            "cointegration_pvalue": 0.108301,
+            "pair_risk": 0.5405,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.5544991337879712
+        }
+      }
+    },
+    {
+      "asof": "2022-02-03",
+      "cutoff": "2022-01-31",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5779987651793767,
+          "window_end": "2022-02-02 23:17:40.951968",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 0.70529112
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4995443056081323,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8579405132032719,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3579405132032719,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9949978214951489,
+            "delta_sma_7d_km": -0.02147043901914003,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 0.70529112,
+            "f10_7": 126.5,
+            "ap_index": 26.0,
+            "kp_mean": 3.666625,
+            "f10_7_delta_7d": 19.400000000000006,
+            "ap_delta_7d": 15.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 714.433,
+            "cointegration_pvalue": 0.387188,
+            "pair_risk": 0.3567,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.4562844443307196
+        }
+      }
+    },
+    {
+      "asof": "2022-02-17",
+      "cutoff": "2022-02-14",
+      "n_train_ok": true,
+      "targets": {
+        "48274": {
+          "ok": true,
+          "anomaly_score": 0.5629644083283376,
+          "window_end": "2022-02-16 23:46:53.392800",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 0.218502
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4650694618158373,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8611692254268177,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36116922542681773,
+            "kolmogorov_proxy_7d": 0.3157894736842105,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9951762178356639,
+            "delta_sma_7d_km": -0.07351704614029586,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 0.218502,
+            "f10_7": 96.7,
+            "ap_index": 4.0,
+            "kp_mean": 1.124875,
+            "f10_7_delta_7d": -21.299999999999997,
+            "ap_delta_7d": -7.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 475.532,
+            "cointegration_pvalue": 0.311379,
+            "pair_risk": 0.4585,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.505508983747752
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "48274": {
+      "norad_id": 48274,
+      "object_name": "CSS (TIANHE)",
+      "n_folds_scored": 21,
+      "anomaly_score_mean": 0.5637848220957056,
+      "anomaly_score_max": 0.6436651876060406,
+      "anomaly_score_at_nearest_peak": 0.6041470452961114,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "n_hits_in_window": 7,
+      "first_fold_hit": true,
+      "first_hit_asof": "2021-05-13",
+      "first_scorable_asof": "2021-05-13",
+      "n_folds_above_thr_pre_peak": 11,
+      "lead_time_days": 155.0,
+      "lead_time_note": "already_elevated_at_window_open",
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 1.4891783844175182,
+          "late_mean": 1.1015192115670367
+        },
+        "shannon_entropy_sma_short": {
+          "early_mean": 2.0934003486044386,
+          "late_mean": 1.7289721408610008
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.8185288017206208,
+          "late_mean": 0.8405380973170191
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.3185288017206208,
+          "late_mean": 0.3405380973170191
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.47368421052631576,
+          "late_mean": 0.39473684210526316
+        }
+      },
+      "pair_risk_max": 0.6284,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 12,
+        "pre_peak_anomaly_mean": 0.5564528623808714,
+        "pre_peak_anomaly_max": 0.6213884493875227,
+        "early_pre_peak_mean": 0.5862036133433011,
+        "late_pre_peak_mean": 0.5708229740327513,
+        "noise_ramp": -0.015380639310549782,
+        "pre_peak_pair_risk_max": 0.6284,
+        "elevated_noise_before_peak": true
+      },
+      "is_placebo": false
+    }
+  }
+}

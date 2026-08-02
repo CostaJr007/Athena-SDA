@@ -15,7 +15,20 @@ const TABS: { id: PocTab; label: string }[] = [
   { id: 'placebos', label: 'Placebos' },
 ]
 
-const CASES = [
+type RefLink = { label: string; url: string }
+
+const CASES: {
+  id: string
+  title: string
+  norad: number
+  firstHit: string
+  peak: string
+  lead: number
+  score: number
+  why: string
+  report: string
+  refs: RefLink[]
+}[] = [
   {
     id: 'luch-mid',
     title: 'Luch-1 · Intelsat mid-2015',
@@ -25,7 +38,22 @@ const CASES = [
     lead: 182,
     score: 0.646,
     why: 'ΔSMA ≈ −72 km (GEO slot move) + Hurst 0.80. Quiet weather (Ap=9).',
-    report: 'Gunter: first colocation between Intelsat 7 and 901 (~April 2015).',
+    report:
+      'Open catalog history: Olymp-K moved ~Apr 2015 between Intelsat 7 and 901 (~18.1°W).',
+    refs: [
+      {
+        label: "Gunter's Space Page — Olimp-K / Luch-Kh",
+        url: 'https://space.skyrocket.de/doc_sdat/olimp-k.htm',
+      },
+      {
+        label: 'CSIS Aerospace — Unusual Behavior in GEO: Luch (Olymp-K)',
+        url: 'https://aerospace.csis.org/data/unusual-behavior-in-geo-olymp-k/',
+      },
+      {
+        label: 'Wikipedia — Olymp-K (timeline & sources)',
+        url: 'https://en.wikipedia.org/wiki/Olymp-K',
+      },
+    ],
   },
   {
     id: 'luch-2015',
@@ -36,7 +64,22 @@ const CASES = [
     lead: 243,
     score: 0.537,
     why: 'Hurst 0.94 + 6 maneuvers/30d + Shannon elevated. Later ΔSMA +62 km fold.',
-    report: 'Gunter / CSIS: proximity to Intelsat 905 ~24.5°W (~Sep 2015).',
+    report:
+      'Open sources: late Sep 2015 move to ~24.4°W next to Intelsat 905 at 24.5°W; Intelsat criticism of non-normal behavior.',
+    refs: [
+      {
+        label: "Gunter's Space Page — Olimp-K (Intelsat 905 colocation)",
+        url: 'https://space.skyrocket.de/doc_sdat/olimp-k.htm',
+      },
+      {
+        label: 'CSIS Aerospace — Unusual Behavior in GEO: Luch (Olymp-K)',
+        url: 'https://aerospace.csis.org/data/unusual-behavior-in-geo-olymp-k/',
+      },
+      {
+        label: 'Wikipedia — Olymp-K (Intelsat statements)',
+        url: 'https://en.wikipedia.org/wiki/Olymp-K',
+      },
+    ],
   },
   {
     id: 'luch-fidus',
@@ -47,7 +90,22 @@ const CASES = [
     lead: 229,
     score: 0.524,
     why: 'Hurst 0.96 + Kolmogorov 0.58 under quiet Sun (F10.7≈70). Later ΔSMA −110 km.',
-    report: 'Open press / Gunter: concerns near Athena-Fidus (FR military satcom).',
+    report:
+      'French MoD (Florence Parly, Sep 2018) publicly described Luch-Olymp proximity to Athena-Fidus as espionage-like; also noted on Gunter.',
+    refs: [
+      {
+        label: "Gunter's Space Page — Olimp-K (Athena-Fidus 2018)",
+        url: 'https://space.skyrocket.de/doc_sdat/olimp-k.htm',
+      },
+      {
+        label: 'Wikipedia — Olymp-K (Parly / Athena-Fidus statement)',
+        url: 'https://en.wikipedia.org/wiki/Olymp-K',
+      },
+      {
+        label: 'CSIS Aerospace — Unusual Behavior in GEO: Luch (Olymp-K)',
+        url: 'https://aerospace.csis.org/data/unusual-behavior-in-geo-olymp-k/',
+      },
+    ],
   },
   {
     id: 'sy12',
@@ -58,7 +116,18 @@ const CASES = [
     lead: 154,
     score: 0.534,
     why: 'Kolmogorov 0.63 + 6 maneuvers/30d + Hurst 0.89 — inspection-like control.',
-    report: 'AMOS / SWF open SSA: SY-12 GEO RPO / proximity reporting.',
+    report:
+      'Secure World Foundation tracks SY-12 among Chinese military/intelligence GEO RPO missions; open SSA literature discusses SY-12 proximity ops.',
+    refs: [
+      {
+        label: 'SWF — Chinese Military & Intelligence RPO Fact Sheet',
+        url: 'https://www.swfound.org/publications-and-reports/chinese-military-and-intelligence-rendezvous-and-proximity-operations-fact-sheet',
+      },
+      {
+        label: 'SWF — Global Counterspace Capabilities (program context)',
+        url: 'https://www.swfound.org/publications-and-reports/2025-global-counterspace-capabilities-report',
+      },
+    ],
   },
   {
     id: 'luch2',
@@ -69,7 +138,18 @@ const CASES = [
     lead: 197,
     score: 0.551,
     why: 'Shannon 2.12 + Hurst 0.91 weeks after launch. Max 0.569 on 2023-09-02.',
-    report: 'Breaking Defense (Oct 2023): second Luch trailing Western GEO systems.',
+    report:
+      'Breaking Defense (17 Oct 2023): second Russian Luch/Olymp reported trailing Western systems in GEO.',
+    refs: [
+      {
+        label: 'Breaking Defense — Second Luch/Olymp trailing Western systems (Oct 2023)',
+        url: 'https://breakingdefense.com/2023/10/second-russian-luch-olymp-satellite-now-trailing-western-systems-in-orbit/',
+      },
+      {
+        label: "Gunter's Space Page — Olimp-K series",
+        url: 'https://space.skyrocket.de/doc_sdat/olimp-k.htm',
+      },
+    ],
   },
 ]
 
@@ -85,14 +165,27 @@ export default function WalkforwardPocPanel({
 
   if (!open) return null
 
+  const fullHtml = `${import.meta.env.BASE_URL}reports/walkforward_poc.html`
+
   return (
-    <div
-      className="pointer-events-auto absolute inset-x-3 top-[100px] z-40 flex max-h-[min(720px,calc(100vh-190px))] flex-col overflow-hidden border border-emerald-400/25 bg-black/92 shadow-[0_0_40px_rgba(0,0,0,0.65)] backdrop-blur-md md:inset-x-auto md:left-1/2 md:w-[min(720px,calc(100vw-2rem))] md:-translate-x-1/2 md:top-[110px]"
-      role="dialog"
-      aria-label="Walk-forward ML proof of concept"
-    >
+    <>
+      {/* Dim globe so PoC text is readable */}
+      <button
+        type="button"
+        aria-label="Close proof of concept"
+        className="pointer-events-auto absolute inset-0 z-[39] cursor-default border-0 bg-black/88"
+        onClick={onClose}
+      />
+
+      <div
+        className="pointer-events-auto absolute inset-x-3 top-[88px] z-40 flex max-h-[min(780px,calc(100vh-120px))] flex-col overflow-hidden border border-emerald-400/30 bg-[#05070c] shadow-[0_12px_48px_rgba(0,0,0,0.85)] md:inset-x-auto md:left-1/2 md:w-[min(760px,calc(100vw-2rem))] md:-translate-x-1/2 md:top-[96px]"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Walk-forward ML proof of concept"
+        onClick={(e) => e.stopPropagation()}
+      >
       {/* Header */}
-      <div className="flex shrink-0 items-start justify-between gap-3 border-b border-white/10 bg-gradient-to-b from-emerald-500/10 to-transparent px-3 py-2.5 md:px-4">
+      <div className="flex shrink-0 items-start justify-between gap-3 border-b border-white/12 bg-[#0a1018] px-3 py-2.5 md:px-4">
         <div className="min-w-0">
           <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-300/90">
             ML proof of concept · walk-forward
@@ -103,17 +196,28 @@ export default function WalkforwardPocPanel({
           <p className="mt-1 text-[12px] leading-relaxed text-zinc-400 md:text-[13px]">
             Isolation Forest past-only · thr 0.50 ·{' '}
             <span className="text-emerald-300">5/5 interest</span> ·{' '}
-            <span className="text-zinc-300">0/3 placebos</span> · ~201 day mean
-            lead-time
+            <span className="text-zinc-300">GEO 5/5 vs civil EO 0/7</span> ·
+            persistent regime (honest panel)
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          className="athena-btn shrink-0 px-2.5 py-1 text-[12px]"
-        >
-          Close
-        </button>
+        <div className="flex shrink-0 flex-col gap-1.5 sm:flex-row">
+          <a
+            href={fullHtml}
+            target="_blank"
+            rel="noreferrer"
+            className="athena-btn px-2.5 py-1 text-center text-[12px]"
+            title="Open full HTML report in a new browser tab"
+          >
+            New tab ↗
+          </a>
+          <button
+            type="button"
+            onClick={onClose}
+            className="athena-btn athena-btn-active px-2.5 py-1 text-[12px]"
+          >
+            Close
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -137,8 +241,8 @@ export default function WalkforwardPocPanel({
         })}
       </div>
 
-      {/* Body */}
-      <div className="athena-scroll min-h-0 flex-1 overflow-y-auto px-3 py-3 text-[13px] leading-relaxed text-zinc-300 md:px-4 md:text-[14px]">
+      {/* Body — solid surface for readability */}
+      <div className="athena-scroll min-h-0 flex-1 overflow-y-auto bg-[#070a10] px-3 py-3 text-[13px] leading-relaxed text-zinc-200 md:px-4 md:text-[14px]">
         {tab === 'overview' && <OverviewTab />}
         {tab === 'method' && <MethodTab />}
         {tab === 'math' && <MathTab />}
@@ -146,12 +250,12 @@ export default function WalkforwardPocPanel({
         {tab === 'placebos' && <PlacebosTab />}
       </div>
 
-      <div className="shrink-0 border-t border-white/10 px-3 py-2 text-[11px] text-zinc-500 md:px-4">
-        Full static HTML still available at{' '}
-        <code className="text-emerald-400/80">/reports/walkforward_poc.html</code>{' '}
-        · run 2026-07-26 · Athena-SDA
+      <div className="shrink-0 border-t border-white/12 bg-[#0a1018] px-3 py-2 text-[11px] text-zinc-500 md:px-4">
+        Use <strong className="text-zinc-400">New tab</strong> for full-page HTML · backdrop
+        click or Esc closes · run 2026-07-26 · Athena-SDA
       </div>
-    </div>
+      </div>
+    </>
   )
 }
 
@@ -168,27 +272,27 @@ function OverviewTab() {
       <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
         <Stat k="Interest hits" v="5/5" ok />
         <Stat k="Placebo hits" v="0/3" />
-        <Stat k="Mean lead" v="~201 d" ok />
+        <Stat k="Noise ramp" v="~0 (level)" ok />
         <Stat k="Mean max score" v="0.603" />
       </div>
 
       <div className="grid gap-2 md:grid-cols-2">
-        <div className="border border-emerald-400/25 bg-emerald-500/5 p-2.5">
+        <div className="border border-emerald-400/35 bg-[#0c1814] p-2.5">
           <div className="text-[11px] uppercase tracking-[0.14em] text-emerald-300/90">
             We claim
           </div>
-          <ul className="mt-1.5 list-disc space-y-1 pl-4 text-[12px] text-zinc-300 md:text-[13px]">
+          <ul className="mt-1.5 list-disc space-y-1 pl-4 text-[12px] text-zinc-200 md:text-[13px]">
             <li>Real public TLE + GFZ weather</li>
             <li>Past-only training at each test date</li>
             <li>Hard anomaly before report anchors on 5/5 cases</li>
             <li>Civil placebos on same calendars did not hard-hit</li>
           </ul>
         </div>
-        <div className="border border-white/10 bg-black/40 p-2.5">
+        <div className="border border-white/15 bg-[#0c0e12] p-2.5">
           <div className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">
             We do not claim
           </div>
-          <ul className="mt-1.5 list-disc space-y-1 pl-4 text-[12px] text-zinc-400 md:text-[13px]">
+          <ul className="mt-1.5 list-disc space-y-1 pl-4 text-[12px] text-zinc-300 md:text-[13px]">
             <li>Classified ground-truth of hostile intent</li>
             <li>XGB accuracy = espionage detection</li>
             <li>Lead-time = single discrete burn prediction</li>
@@ -197,7 +301,7 @@ function OverviewTab() {
         </div>
       </div>
 
-      <p className="border border-sky-400/20 bg-sky-500/5 p-2.5 text-[12px] text-zinc-300 md:text-[13px]">
+      <p className="border border-sky-400/30 bg-[#0a1218] p-2.5 text-[12px] text-zinc-200 md:text-[13px]">
         <strong className="text-sky-200">Jury one-liner:</strong> multi-year public orbits →
         quantitative noise vector → Isolation Forest on the past only → Luch/Shiyan
         statistically loud months before Gunter/CSIS/Breaking Defense — TERRA/NOAA placebos not.
@@ -212,7 +316,7 @@ function MethodTab() {
     '20-epoch window → Kepler + math noise + weather features',
     'Train Isolation Forest only on windows ending before asof − 3 days',
     'anomaly_score = clip(0.5 − decision_function) · hard hit if ≥ 0.50 near public peak',
-    'Story: first hit date → lead-time → open-source report confirmation',
+    'Story: quant noise features → IF score vs placebo → open-source case reading',
   ]
   return (
     <div className="space-y-3">
@@ -224,7 +328,7 @@ function MethodTab() {
         {steps.map((s, i) => (
           <li
             key={s}
-            className="flex gap-2 border border-white/10 bg-black/50 px-2.5 py-2 font-mono text-[11px] text-zinc-300 md:text-[12px]"
+            className="flex gap-2 border border-white/12 bg-[#0c0e12] px-2.5 py-2 font-mono text-[11px] text-zinc-200 md:text-[12px]"
           >
             <span className="text-emerald-400">{i + 1}</span>
             <span>{s}</span>
@@ -263,10 +367,10 @@ function MathTab() {
         Forest learns their joint “normal” envelope. Almost the full toolkit enters the ML vector;
         distance/cointegration go to XGBoost/pair priority, not IF.
       </p>
-      <div className="overflow-x-auto border border-white/10">
+      <div className="overflow-x-auto border border-white/12 bg-[#0c0e12]">
         <table className="w-full min-w-[480px] text-left text-[12px]">
           <thead>
-            <tr className="border-b border-white/10 text-[10px] uppercase tracking-[0.12em] text-zinc-500">
+            <tr className="border-b border-white/12 bg-[#0a1018] text-[10px] uppercase tracking-[0.12em] text-zinc-500">
               <th className="px-2 py-1.5 font-medium">Tool</th>
               <th className="px-2 py-1.5 font-medium">Plain meaning</th>
               <th className="px-2 py-1.5 font-medium">Orbit cue</th>
@@ -274,9 +378,9 @@ function MathTab() {
           </thead>
           <tbody>
             {rows.map(([a, b, c]) => (
-              <tr key={a} className="border-t border-white/5">
+              <tr key={a} className="border-t border-white/10">
                 <td className="px-2 py-1.5 font-medium text-emerald-200/90">{a}</td>
-                <td className="px-2 py-1.5 text-zinc-300">{b}</td>
+                <td className="px-2 py-1.5 text-zinc-200">{b}</td>
                 <td className="px-2 py-1.5 text-zinc-400">{c}</td>
               </tr>
             ))}
@@ -294,16 +398,16 @@ function CasesTab() {
   return (
     <div className="space-y-3">
       <p className="text-[12px] text-zinc-400">
-        Each case: Athena hard hit → lead-time → public open-source anchor. NORADs match the
+        Each case: elevated IF score on known atypical regimes → public anchor as case study. NORADs match the
         watchlist (Luch / SY-12).
       </p>
       {CASES.map((c) => (
         <article
           key={c.id}
-          className="border border-l-[3px] border-white/10 border-l-emerald-400/70 bg-black/40 p-2.5"
+          className="border border-l-[3px] border-white/12 border-l-emerald-400/80 bg-[#0c0e12] p-2.5"
         >
           <div className="flex flex-wrap items-baseline justify-between gap-1">
-            <h3 className="text-[13px] font-semibold text-zinc-100 md:text-[14px]">
+            <h3 className="text-[13px] font-semibold text-zinc-50 md:text-[14px]">
               {c.title}{' '}
               <span className="font-mono text-[11px] font-normal text-zinc-500">
                 #{c.norad}
@@ -315,22 +419,46 @@ function CasesTab() {
           </div>
           <div className="mt-2 grid gap-1 text-[12px] md:grid-cols-2">
             <div>
-              <span className="text-emerald-400/90">★ First hit</span>{' '}
-              <span className="font-mono text-zinc-200">{c.firstHit}</span>
+              <span className="text-emerald-400">★ First hit</span>{' '}
+              <span className="font-mono text-zinc-100">{c.firstHit}</span>
             </div>
             <div>
-              <span className="text-rose-300/90">══ Public peak</span>{' '}
-              <span className="font-mono text-zinc-200">{c.peak}</span>
+              <span className="text-rose-300">══ Public peak</span>{' '}
+              <span className="font-mono text-zinc-100">{c.peak}</span>
             </div>
           </div>
-          <p className="mt-1.5 text-[12px] text-zinc-300">
-            <strong className="text-zinc-100">Why IF fired:</strong> {c.why}
+          <p className="mt-1.5 text-[12px] text-zinc-200">
+            <strong className="text-zinc-50">Why IF fired:</strong> {c.why}
           </p>
-          <p className="mt-1 text-[12px] text-zinc-400">
-            <strong className="text-zinc-300">Report story:</strong> {c.report}
+          <p className="mt-1 text-[12px] text-zinc-300">
+            <strong className="text-zinc-100">Report story:</strong> {c.report}
           </p>
+          <div className="mt-2 border-t border-white/10 pt-2">
+            <div className="text-[10px] uppercase tracking-[0.12em] text-zinc-500">
+              Open-source references
+            </div>
+            <ul className="mt-1 space-y-1">
+              {c.refs.map((r) => (
+                <li key={r.url}>
+                  <a
+                    href={r.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="text-[12px] text-emerald-300/95 underline-offset-2 hover:text-emerald-200 hover:underline"
+                  >
+                    {r.label} ↗
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </article>
       ))}
+      <p className="text-[11px] leading-relaxed text-zinc-500">
+        References are public open-source anchors for narrative validation only. They are not
+        classified ground truth. Athena scores use past-only TLE/features; links document what the
+        public later reported.
+      </p>
     </div>
   )
 }
@@ -347,10 +475,10 @@ function PlacebosTab() {
         Same solar/geomagnetic calendars as interest cases. If weather alone caused alerts,
         placebos would hard-hit. They did not.
       </p>
-      <div className="overflow-x-auto border border-white/10">
+      <div className="overflow-x-auto border border-white/12 bg-[#0c0e12]">
         <table className="w-full min-w-[420px] text-left text-[12px]">
           <thead>
-            <tr className="border-b border-white/10 text-[10px] uppercase tracking-[0.12em] text-zinc-500">
+            <tr className="border-b border-white/12 bg-[#0a1018] text-[10px] uppercase tracking-[0.12em] text-zinc-500">
               <th className="px-2 py-1.5">Placebo</th>
               <th className="px-2 py-1.5">Shared peak</th>
               <th className="px-2 py-1.5">Max score</th>
@@ -359,17 +487,17 @@ function PlacebosTab() {
           </thead>
           <tbody>
             {rows.map(([a, b, c, d]) => (
-              <tr key={a + b} className="border-t border-white/5">
-                <td className="px-2 py-1.5 text-zinc-200">{a}</td>
+              <tr key={a + b} className="border-t border-white/10">
+                <td className="px-2 py-1.5 text-zinc-100">{a}</td>
                 <td className="px-2 py-1.5 font-mono text-zinc-400">{b}</td>
-                <td className="px-2 py-1.5 font-mono">{c}</td>
+                <td className="px-2 py-1.5 font-mono text-zinc-200">{c}</td>
                 <td className="px-2 py-1.5 text-zinc-500">{d}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p className="border border-white/10 bg-black/40 p-2.5 text-[12px] text-zinc-400">
+      <p className="border border-white/12 bg-[#0c0e12] p-2.5 text-[12px] text-zinc-300">
         Discriminator = orbital regime features (Hurst / Shannon / ΔSMA / joint IF profile), not
         F10.7 alone.
       </p>
@@ -387,11 +515,11 @@ function Stat({
   ok?: boolean
 }) {
   return (
-    <div className="border border-white/10 bg-black/50 px-2 py-1.5">
+    <div className="border border-white/12 bg-[#0c0e12] px-2 py-1.5">
       <div className="text-[10px] uppercase tracking-[0.12em] text-zinc-500">{k}</div>
       <div
         className={`mt-0.5 font-mono text-[15px] ${
-          ok ? 'text-emerald-300' : 'text-zinc-100'
+          ok ? 'text-emerald-300' : 'text-zinc-50'
         }`}
       >
         {v}

@@ -1,0 +1,1762 @@
+{
+  "event_id": "placebo_landsat8_2018",
+  "type": "placebo_baseline",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) are CASE STUDIES to read how quant noise features (Hurst, Shannon, CUSUM, IF score) behave — not prediction targets. Primary claim: continuous normality-vs-deviation monitoring. first_fold_hit=true means elevated from first scorable fold (regime level), not necessarily a rising ramp into t_peak. Not a classified ground-truth claim.",
+  "t_start": "2018-01-01",
+  "t_peak": "2018-09-01",
+  "t_end": "2019-03-01",
+  "norad_ids": [
+    39084
+  ],
+  "pair_with": [],
+  "sources": [
+    "Civil EO control vs Athena-Fidus calendar"
+  ],
+  "notes": "Placebo LEO EO — Landsat 8.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 31,
+  "folds": [
+    {
+      "asof": "2018-01-01",
+      "cutoff": "2017-12-29",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.35739575819941716,
+          "window_end": "2017-12-31 18:56:39.576480",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.0556732
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.050301855434982,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8138333385769384,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3138333385769384,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.4729903791066121,
+            "delta_sma_7d_km": -0.001849789916377631,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.0556732,
+            "f10_7": 69.1,
+            "ap_index": 10.0,
+            "kp_mean": 2.20825,
+            "f10_7_delta_7d": -6.6000000000000085,
+            "ap_delta_7d": 3.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.956,
+            "cointegration_pvalue": 0.164301,
+            "pair_risk": 0.7928,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5968680911897377
+        }
+      }
+    },
+    {
+      "asof": "2018-01-15",
+      "cutoff": "2018-01-12",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.3429895666264906,
+          "window_end": "2018-01-14 19:08:55.254336",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.8513182399999994
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.010570934268484,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8610370777640171,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36103707776401706,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.21536662560205982,
+            "delta_sma_7d_km": -0.00212514561280841,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.8513182399999994,
+            "f10_7": 70.2,
+            "ap_index": 9.0,
+            "kp_mean": 2.0001249999999997,
+            "f10_7_delta_7d": -0.09999999999999432,
+            "ap_delta_7d": 2.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 146.181,
+            "cointegration_pvalue": 0.602322,
+            "pair_risk": 0.5708,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.4682853049819208
+        }
+      }
+    },
+    {
+      "asof": "2018-01-29",
+      "cutoff": "2018-01-26",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.3335667409370105,
+          "window_end": "2018-01-28 22:38:54.653568",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.35148512
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7205827761460135,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8745392153229411,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3745392153229411,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6777340814021694,
+            "delta_sma_7d_km": -0.002303313593074563,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.35148512,
+            "f10_7": 68.2,
+            "ap_index": 3.0,
+            "kp_mean": 0.666625,
+            "f10_7_delta_7d": -1.8999999999999915,
+            "ap_delta_7d": -3.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.946,
+            "cointegration_pvalue": 0.058539,
+            "pair_risk": 0.9799,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6890500334216547
+        }
+      }
+    },
+    {
+      "asof": "2018-02-12",
+      "cutoff": "2018-02-09",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.366583492163315,
+          "window_end": "2018-02-11 19:33:24.852672",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.4430964799999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8161700650690101,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31617006506901013,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0001258629816308822,
+            "delta_sma_7d_km": -0.0015258337271006894,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.4430964799999995,
+            "f10_7": 78.6,
+            "ap_index": 3.0,
+            "kp_mean": 0.75,
+            "f10_7_delta_7d": 4.599999999999994,
+            "ap_delta_7d": -0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.951,
+            "cointegration_pvalue": 0.001053,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7149625714734917
+        }
+      }
+    },
+    {
+      "asof": "2018-02-26",
+      "cutoff": "2018-02-23",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.3371084727506433,
+          "window_end": "2018-02-25 18:06:47.725920",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.8867427999999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.2608281712244556,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8393617833862081,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33936178338620815,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6114870147571068,
+            "delta_sma_7d_km": -0.0008520020646756166,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.8867427999999995,
+            "f10_7": 69.8,
+            "ap_index": 6.0,
+            "kp_mean": 1.583375,
+            "f10_7_delta_7d": 0.7000000000000028,
+            "ap_delta_7d": -1.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.948,
+            "cointegration_pvalue": 0.038878,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7016988127377896
+        }
+      }
+    },
+    {
+      "asof": "2018-03-12",
+      "cutoff": "2018-03-09",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.34143979225759724,
+          "window_end": "2018-03-11 19:57:54.515808",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.03485672
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.050301855434982,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8402882448972063,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3402882448972063,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.004348257652639555,
+            "delta_sma_7d_km": -0.0012763795830323943,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.03485672,
+            "f10_7": 68.1,
+            "ap_index": 2.0,
+            "kp_mean": 0.41662499999999997,
+            "f10_7_delta_7d": 0.5,
+            "ap_delta_7d": -3.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.939,
+            "cointegration_pvalue": 0.138358,
+            "pair_risk": 0.8019,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5946929065159188
+        }
+      }
+    },
+    {
+      "asof": "2018-03-26",
+      "cutoff": "2018-03-23",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.35238888021098286,
+          "window_end": "2018-03-25 20:10:09.870528",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.83059152
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.2339979078388272,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.7857632699255988,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.28576326992559875,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.17781772738098428,
+            "delta_sma_7d_km": -0.0014318830899355817,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.83059152,
+            "f10_7": 67.8,
+            "ap_index": 10.0,
+            "kp_mean": 2.375,
+            "f10_7_delta_7d": -2.5,
+            "ap_delta_7d": 0.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 146.149,
+            "cointegration_pvalue": 0.13496,
+            "pair_risk": 0.7344,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5624949960949424
+        }
+      }
+    },
+    {
+      "asof": "2018-04-09",
+      "cutoff": "2018-04-06",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.3414063450633187,
+          "window_end": "2018-04-08 22:01:17.492448",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.9784743200000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.499544305608132,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.7836004014202684,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.28360040142026843,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7340685482745768,
+            "delta_sma_7d_km": -0.0010074986712425016,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.9784743200000001,
+            "f10_7": 68.7,
+            "ap_index": 11.0,
+            "kp_mean": 2.208125,
+            "f10_7_delta_7d": 0.29999999999999716,
+            "ap_delta_7d": 5.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.932,
+            "cointegration_pvalue": 0.454354,
+            "pair_risk": 0.6914,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5339028552784935
+        }
+      }
+    },
+    {
+      "asof": "2018-04-23",
+      "cutoff": "2018-04-20",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.4229723720481142,
+          "window_end": "2018-04-22 18:55:44.760864",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.07089976
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.0582770432263338,
+            "shannon_entropy_sma_short": 1.6577427265048887,
+            "hurst_exponent_sma": 0.8287189392930943,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32871893929309426,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.34413323426119535,
+            "delta_sma_7d_km": 0.00457100162475399,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 5.07089976,
+            "f10_7": 73.9,
+            "ap_index": 6.0,
+            "kp_mean": 1.41675,
+            "f10_7_delta_7d": 4.700000000000003,
+            "ap_delta_7d": -3.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 146.14,
+            "cointegration_pvalue": 0.014233,
+            "pair_risk": 0.9317,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7027725674216514
+        }
+      }
+    },
+    {
+      "asof": "2018-05-07",
+      "cutoff": "2018-05-04",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.37002284355458187,
+          "window_end": "2018-05-06 19:07:58.583712",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.86706008
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.9042788285498586,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.7956751361059692,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2956751361059692,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5144921389566622,
+            "delta_sma_7d_km": -0.00144807502238109,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.86706008,
+            "f10_7": 69.6,
+            "ap_index": 16.0,
+            "kp_mean": 3.041625,
+            "f10_7_delta_7d": -0.6000000000000085,
+            "ap_delta_7d": 5.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.947,
+            "cointegration_pvalue": 0.639431,
+            "pair_risk": 0.6266,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5111402795995619
+        }
+      }
+    },
+    {
+      "asof": "2018-05-21",
+      "cutoff": "2018-05-18",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.33452766419260754,
+          "window_end": "2018-05-20 19:20:10.252608",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.66381872
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.780858935500048,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8743954548853506,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37439545488535064,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.41783378321113457,
+            "delta_sma_7d_km": -0.0018627307827046025,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.66381872,
+            "f10_7": 69.6,
+            "ap_index": 2.0,
+            "kp_mean": 0.375,
+            "f10_7_delta_7d": -0.7000000000000028,
+            "ap_delta_7d": -1.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.936,
+            "cointegration_pvalue": 0.778513,
+            "pair_risk": 0.5779,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.46838244888667335
+        }
+      }
+    },
+    {
+      "asof": "2018-06-04",
+      "cutoff": "2018-06-01",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.43237932980095306,
+          "window_end": "2018-06-03 19:32:22.090848",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.46053032
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8923430223367721,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3923430223367721,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6364432295779011,
+            "delta_sma_7d_km": -3.2395710150012746e-06,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 4.46053032,
+            "f10_7": 70.5,
+            "ap_index": 4.0,
+            "kp_mean": 1.08325,
+            "f10_7_delta_7d": -6.400000000000006,
+            "ap_delta_7d": -5.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.958,
+            "cointegration_pvalue": 0.774417,
+            "pair_risk": 0.5793,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5131856984104289
+        }
+      }
+    },
+    {
+      "asof": "2018-06-18",
+      "cutoff": "2018-06-15",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.3810403821328651,
+          "window_end": "2018-06-17 18:05:59.028288",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.9002699199999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.4574248814091713,
+            "shannon_entropy_sma_short": 1.6577427265048887,
+            "hurst_exponent_sma": 0.821136877053601,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32113687705360106,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.996634342359707,
+            "delta_sma_7d_km": -0.0011662658753266442,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.9002699199999995,
+            "f10_7": 73.7,
+            "ap_index": 16.0,
+            "kp_mean": 2.9998750000000003,
+            "f10_7_delta_7d": 3.799999999999997,
+            "ap_delta_7d": 11.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.013,
+            "cointegration_pvalue": 0.408096,
+            "pair_risk": 0.7075,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5605931719597894
+        }
+      }
+    },
+    {
+      "asof": "2018-07-02",
+      "cutoff": "2018-06-29",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.33101260730211995,
+          "window_end": "2018-07-01 19:57:22.165920",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.0438428
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.720582776146013,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8792958757465337,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3792958757465337,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.3986789375093933,
+            "delta_sma_7d_km": -0.0018368637884123018,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.0438428,
+            "f10_7": 66.6,
+            "ap_index": 2.0,
+            "kp_mean": 0.374875,
+            "f10_7_delta_7d": -6.200000000000003,
+            "ap_delta_7d": -4.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.003,
+            "cointegration_pvalue": 0.711288,
+            "pair_risk": 0.6013,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.479670673285954
+        }
+      }
+    },
+    {
+      "asof": "2018-07-16",
+      "cutoff": "2018-07-13",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.33253787151411224,
+          "window_end": "2018-07-15 20:09:50.435712",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.8359900799999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.900051698999543,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8480042724383839,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34800427243838394,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.260263735693098,
+            "delta_sma_7d_km": -0.0009718831643112935,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.8359900799999997,
+            "f10_7": 71.9,
+            "ap_index": 7.0,
+            "kp_mean": 1.8335,
+            "f10_7_delta_7d": -1.0,
+            "ap_delta_7d": 1.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.007,
+            "cointegration_pvalue": 0.487038,
+            "pair_risk": 0.6798,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5235320421813505
+        }
+      }
+    },
+    {
+      "asof": "2018-07-30",
+      "cutoff": "2018-07-27",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.41989085006547355,
+          "window_end": "2018-07-29 22:01:11.192160",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.9802244000000002
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8891529452308202,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3891529452308202,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.0011079518644692143,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 1.9802244000000002,
+            "f10_7": 68.3,
+            "ap_index": 4.0,
+            "kp_mean": 1.0,
+            "f10_7_delta_7d": 1.2999999999999972,
+            "ap_delta_7d": -1.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.018,
+            "cointegration_pvalue": 0.001621,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7389508825294632
+        }
+      }
+    },
+    {
+      "asof": "2018-08-13",
+      "cutoff": "2018-08-10",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.34358006569059224,
+          "window_end": "2018-08-12 18:55:54.949152",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.06806968
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.670339700231107,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.784663064452187,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.28466306445218703,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7808626920917578,
+            "delta_sma_7d_km": -0.0006803198311899905,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.06806968,
+            "f10_7": 67.8,
+            "ap_index": 4.0,
+            "kp_mean": 0.83325,
+            "f10_7_delta_7d": -1.2999999999999972,
+            "ap_delta_7d": -1.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.017,
+            "cointegration_pvalue": 0.355539,
+            "pair_risk": 0.7258,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5538010295607665
+        }
+      }
+    },
+    {
+      "asof": "2018-08-27",
+      "cutoff": "2018-08-24",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.4596710838230848,
+          "window_end": "2018-08-26 19:08:23.218944",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.86021696
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7550576199383077,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8188859453789376,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31888594537893755,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.017413568047559298,
+            "delta_sma_7d_km": -0.0017105140823332476,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.86021696,
+            "f10_7": 69.6,
+            "ap_index": 25.0,
+            "kp_mean": 3.3751249999999997,
+            "f10_7_delta_7d": 1.5999999999999943,
+            "ap_delta_7d": 7.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.0,
+            "cointegration_pvalue": 0.639874,
+            "pair_risk": 0.6263,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5513169877203882
+        }
+      }
+    },
+    {
+      "asof": "2018-09-10",
+      "cutoff": "2018-09-07",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.3546885422744708,
+          "window_end": "2018-09-09 19:20:49.617312",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.652884080000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9450386975402454,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7637753061381558,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2637753061381558,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.0014059872937650653,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.652884080000001,
+            "f10_7": 69.0,
+            "ap_index": 20.0,
+            "kp_mean": 2.58325,
+            "f10_7_delta_7d": 0.9000000000000057,
+            "ap_delta_7d": 12.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 146.079,
+            "cointegration_pvalue": 0.127684,
+            "pair_risk": 0.737,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.564959844023512
+        }
+      }
+    },
+    {
+      "asof": "2018-09-24",
+      "cutoff": "2018-09-21",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.38797050162718705,
+          "window_end": "2018-09-23 19:33:15.555168",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.445679119999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.192250860234642,
+            "shannon_entropy_sma_short": 1.4466166676282084,
+            "hurst_exponent_sma": 0.7490823591046288,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.24908235910462884,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.021572546279458038,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.445679119999999,
+            "f10_7": 68.6,
+            "ap_index": 6.0,
+            "kp_mean": 1.5833750000000002,
+            "f10_7_delta_7d": 0.7999999999999972,
+            "ap_delta_7d": -2.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.017,
+            "cointegration_pvalue": 0.582996,
+            "pair_risk": 0.6462,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5299967257322342
+        }
+      }
+    },
+    {
+      "asof": "2018-10-08",
+      "cutoff": "2018-10-05",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.3807012535639722,
+          "window_end": "2018-10-07 14:49:05.030112",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 9.18193608
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6100635408770727,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.779789752212193,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.27978975221219304,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.11226209565284195,
+            "delta_sma_7d_km": -0.0014189500943757594,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 9.18193608,
+            "f10_7": 68.8,
+            "ap_index": 19.0,
+            "kp_mean": 3.208375,
+            "f10_7_delta_7d": -1.2999999999999972,
+            "ap_delta_7d": 9.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 146.058,
+            "cointegration_pvalue": 0.44967,
+            "pair_risk": 0.6244,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5147355641037875
+        }
+      }
+    },
+    {
+      "asof": "2018-10-22",
+      "cutoff": "2018-10-19",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.37752757317106467,
+          "window_end": "2018-10-21 18:19:17.798880",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.678389200000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.694781460584273,
+            "shannon_entropy_sma_short": 2.7254805569978675,
+            "hurst_exponent_sma": 0.7854673637113815,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2854673637113815,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9089405235586681,
+            "delta_sma_7d_km": -0.0006122848863014951,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 5.678389200000001,
+            "f10_7": 70.9,
+            "ap_index": 5.0,
+            "kp_mean": 1.2918749999999999,
+            "f10_7_delta_7d": 0.9000000000000057,
+            "ap_delta_7d": 1.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.984,
+            "cointegration_pvalue": 0.682749,
+            "pair_risk": 0.6114,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5061574079269792
+        }
+      }
+    },
+    {
+      "asof": "2018-11-05",
+      "cutoff": "2018-11-02",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.45536910417351417,
+          "window_end": "2018-11-04 18:31:42.380256",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.47156104
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9450386975402454,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.9203680175805822,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.4203680175805822,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7868977369109689,
+            "delta_sma_7d_km": 0.00020409433363965945,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 5.47156104,
+            "f10_7": 68.3,
+            "ap_index": 32.0,
+            "kp_mean": 4.041625,
+            "f10_7_delta_7d": -0.5,
+            "ap_delta_7d": 23.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 146.063,
+            "cointegration_pvalue": 0.153881,
+            "pair_risk": 0.7279,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6052610968780814
+        }
+      }
+    },
+    {
+      "asof": "2018-11-19",
+      "cutoff": "2018-11-16",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.3427318044289494,
+          "window_end": "2018-11-18 18:44:04.761024",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.26534416
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.294274067192862,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8208597910971297,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3208597910971297,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9168852171788535,
+            "delta_sma_7d_km": -0.0003045206512979348,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 5.26534416,
+            "f10_7": 71.1,
+            "ap_index": 4.0,
+            "kp_mean": 1.08325,
+            "f10_7_delta_7d": 2.8999999999999915,
+            "ap_delta_7d": 1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 146.066,
+            "cointegration_pvalue": 0.124968,
+            "pair_risk": 0.738,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5601293119930273
+        }
+      }
+    },
+    {
+      "asof": "2018-12-03",
+      "cutoff": "2018-11-30",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.36668041112312116,
+          "window_end": "2018-12-02 18:56:24.859104",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.05976136
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.1837548319239213,
+            "shannon_entropy_sma_short": 1.7527152789797051,
+            "hurst_exponent_sma": 0.7490341474886402,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.24903414748864017,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.0010269444746882073,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.05976136,
+            "f10_7": 68.4,
+            "ap_index": 8.0,
+            "kp_mean": 2.041625,
+            "f10_7_delta_7d": -0.19999999999998863,
+            "ap_delta_7d": 3.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 146.065,
+            "cointegration_pvalue": 0.005863,
+            "pair_risk": 0.9317,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6774411850054045
+        }
+      }
+    },
+    {
+      "asof": "2018-12-17",
+      "cutoff": "2018-12-14",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.37977563345119647,
+          "window_end": "2018-12-16 19:08:43.852128",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.854485520000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.755057619938308,
+            "shannon_entropy_sma_short": 1.836591668108979,
+            "hurst_exponent_sma": 0.8163563267034196,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3163563267034196,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7599778316587547,
+            "adf_pvalue": 0.42393455610825875,
+            "delta_sma_7d_km": 0.014526250256494677,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 4.854485520000001,
+            "f10_7": 70.1,
+            "ap_index": 5.0,
+            "kp_mean": 1.25,
+            "f10_7_delta_7d": -0.9000000000000057,
+            "ap_delta_7d": 0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.978,
+            "cointegration_pvalue": 0.708696,
+            "pair_risk": 0.6023,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5021640350530384
+        }
+      }
+    },
+    {
+      "asof": "2018-12-31",
+      "cutoff": "2018-12-28",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.32808607712563503,
+          "window_end": "2018-12-30 19:21:06.011712",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.64833008
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.755057619938308,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8325374470007719,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3325374470007719,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.48903054586409594,
+            "delta_sma_7d_km": -0.0036639656163970358,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 4.64833008,
+            "f10_7": 69.3,
+            "ap_index": 7.0,
+            "kp_mean": 1.625,
+            "f10_7_delta_7d": -0.20000000000000284,
+            "ap_delta_7d": -0.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.969,
+            "cointegration_pvalue": 0.229143,
+            "pair_risk": 0.7701,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5711937347065358
+        }
+      }
+    },
+    {
+      "asof": "2019-01-14",
+      "cutoff": "2019-01-11",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.34371057451960924,
+          "window_end": "2019-01-13 04:43:28.500960",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 19.275416399999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.3523479118118225,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8269214386777818,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3269214386777818,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.742922604669972,
+            "delta_sma_7d_km": -0.0012504745182013721,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 19.275416399999997,
+            "f10_7": 70.0,
+            "ap_index": 6.0,
+            "kp_mean": 1.7085,
+            "f10_7_delta_7d": -1.5,
+            "ap_delta_7d": 1.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.976,
+            "cointegration_pvalue": 0.177983,
+            "pair_risk": 0.788,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5880697585338243
+        }
+      }
+    },
+    {
+      "asof": "2019-01-28",
+      "cutoff": "2019-01-25",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.33281922784057055,
+          "window_end": "2019-01-27 03:16:53.329440",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 20.7185196
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4200824632751354,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8293934465814675,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3293934465814675,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8417621660369129,
+            "delta_sma_7d_km": 0.0016133028357216972,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 20.7185196,
+            "f10_7": 75.8,
+            "ap_index": 1.0,
+            "kp_mean": 0.20825,
+            "f10_7_delta_7d": 5.8999999999999915,
+            "ap_delta_7d": -6.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.974,
+            "cointegration_pvalue": 0.305373,
+            "pair_risk": 0.7435,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5586936525282568
+        }
+      }
+    },
+    {
+      "asof": "2019-02-11",
+      "cutoff": "2019-02-08",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.3944715707411938,
+          "window_end": "2019-02-10 18:19:10.650144",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.68037496
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.195295934496217,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7060776452796966,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.20607764527969663,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.992736094856952,
+            "delta_sma_7d_km": -0.006641138144004799,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 5.68037496,
+            "f10_7": 69.9,
+            "ap_index": 8.0,
+            "kp_mean": 1.875,
+            "f10_7_delta_7d": -0.7999999999999972,
+            "ap_delta_7d": 1.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.981,
+            "cointegration_pvalue": 0.143158,
+            "pair_risk": 0.8002,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6176222068335373
+        }
+      }
+    },
+    {
+      "asof": "2019-02-25",
+      "cutoff": "2019-02-22",
+      "n_train_ok": true,
+      "targets": {
+        "39084": {
+          "ok": true,
+          "anomaly_score": 0.3401791121008275,
+          "window_end": "2019-02-24 18:31:29.211168",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_193h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.475219119999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.689525383210069,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8235279534778749,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3235279534778749,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.07935419980263808,
+            "delta_sma_7d_km": -0.0034436580244801007,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.475219119999999,
+            "f10_7": 70.4,
+            "ap_index": 1.0,
+            "kp_mean": 0.25,
+            "f10_7_delta_7d": 0.5,
+            "ap_delta_7d": -2.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39084,
+          "object_name": "LANDSAT 8",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.941,
+            "cointegration_pvalue": 0.499201,
+            "pair_risk": 0.6756,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5246606004453724
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "39084": {
+      "norad_id": 39084,
+      "object_name": "LANDSAT 8",
+      "n_folds_scored": 31,
+      "anomaly_score_mean": 0.3672653388540191,
+      "anomaly_score_max": 0.4596710838230848,
+      "anomaly_score_at_nearest_peak": 0.4596710838230848,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "n_hits_in_window": 0,
+      "first_fold_hit": false,
+      "first_hit_asof": null,
+      "first_scorable_asof": "2018-01-01",
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 2.5650096402380345,
+          "late_mean": 2.133488154273905
+        },
+        "shannon_entropy_sma_short": {
+          "early_mean": 2.512336575436258,
+          "late_mean": 2.1771538815453346
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.8408716208360536,
+          "late_mean": 0.8401898300500772
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.34087162083605355,
+          "late_mean": 0.34018983005007725
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.05263157894736842,
+          "late_mean": 0.05263157894736842
+        }
+      },
+      "pair_risk_max": 1.0,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 18,
+        "pre_peak_anomaly_mean": 0.36669522879629324,
+        "pre_peak_anomaly_max": 0.4596710838230848,
+        "early_pre_peak_mean": 0.34651397048907895,
+        "late_pre_peak_mean": 0.377955476754708,
+        "noise_ramp": 0.03144150626562903,
+        "pre_peak_pair_risk_max": 1.0,
+        "elevated_noise_before_peak": false
+      },
+      "is_placebo": true
+    }
+  }
+}

@@ -92,7 +92,10 @@ def _score_window_if(
         k: float(feats.get(k, 0.0))
         for k in (
             "shannon_entropy_sma_30d",
+            "shannon_entropy_sma_short",
             "hurst_exponent_sma",
+            "hurst_exponent_sma_short",
+            "persistence_hurst_gap",
             "kolmogorov_proxy_7d",
             "l1_cusum_sma",
             "mandelbrot_tail_score",
@@ -122,22 +125,48 @@ def _fit_if_asof(
     hists: Dict[int, pd.DataFrame],
     cutoff: pd.Timestamp,
     *,
-    contamination: float = 0.08,
+    contamination: float = 0.06,
     names: Optional[Dict[int, str]] = None,
+    military_doctrine: bool = True,
 ) -> Optional[IsolationForest]:
+    """
+    Fit IF on past windows only. Military doctrine: use baseline+asset NORADs
+    as normality anchors when enough history exists.
+    """
+    train_hists = hists
+    if military_doctrine:
+        try:
+            from src.doctrine import ids_for_if_training
+
+            train_ids = set(ids_for_if_training(list(hists.keys()), min_ids=3))
+            filtered = {k: v for k, v in hists.items() if int(k) in train_ids}
+            if len(filtered) >= 3:
+                train_hists = filtered
+        except Exception:
+            pass
+
     X, meta = build_feature_windows(
-        hists,
+        train_hists,
         end_before=cutoff,
         step=3,
-        max_windows_per_sat=30,
+        max_windows_per_sat=40,
         names=names or {},
     )
     if len(X) < 20:
         X, meta = build_feature_windows(
-            hists,
+            train_hists,
             end_before=cutoff,
             step=1,
-            max_windows_per_sat=50,
+            max_windows_per_sat=60,
+            names=names or {},
+        )
+    # Fallback: all sats if anchors too thin for this cutoff
+    if len(X) < 15 and train_hists is not hists:
+        X, meta = build_feature_windows(
+            hists,
+            end_before=cutoff,
+            step=2,
+            max_windows_per_sat=40,
             names=names or {},
         )
     if len(X) < 15:
@@ -305,12 +334,14 @@ def run_event_walkforward(
 
         hits_in_window = []
         first_hit_before_peak = None
+        first_hit_asof = None
         for s in series:
             asof = _ts(s["asof"])
             if s.get("is_hit") and hit_lo <= asof <= hit_hi:
                 hits_in_window.append(s)
             if s.get("is_hit") and asof <= peak and first_hit_before_peak is None:
                 first_hit_before_peak = asof
+                first_hit_asof = asof
 
         # Soft hit: score above train-ish elevated (0.45) in window
         soft_hits = [
@@ -321,6 +352,23 @@ def run_event_walkforward(
             and hit_lo <= _ts(s["asof"]) <= hit_hi
         ]
 
+        # First scorable fold in the event window (for first_fold_hit honesty)
+        first_scorable_asof = _ts(series[0]["asof"]) if series else None
+        first_fold_hit = bool(
+            first_hit_asof is not None
+            and first_scorable_asof is not None
+            and first_hit_asof == first_scorable_asof
+        )
+        pre_peak_series = [s for s in series if _ts(s["asof"]) < peak]
+        n_folds_above_thr_pre_peak = sum(
+            1
+            for s in pre_peak_series
+            if s.get("anomaly_score") is not None
+            and float(s["anomaly_score"]) >= anomaly_threshold
+        )
+
+        # lead_time_days = days from first thr cross in window to t_peak.
+        # When first_fold_hit, this is "already elevated at window open", not onset detection.
         lead_days = None
         if first_hit_before_peak is not None:
             lead_days = float((peak - first_hit_before_peak).total_seconds() / 86400.0)
@@ -328,7 +376,10 @@ def run_event_walkforward(
         # Feature means in pre-peak vs early train-ish
         feat_keys = [
             "shannon_entropy_sma_30d",
+            "shannon_entropy_sma_short",
             "hurst_exponent_sma",
+            "hurst_exponent_sma_short",
+            "persistence_hurst_gap",
             "l1_cusum_sma",
             "kolmogorov_proxy_7d",
         ]
@@ -405,7 +456,18 @@ def run_event_walkforward(
             "hit_at_event": len(hits_in_window) > 0,
             "soft_hit_at_event": len(soft_hits) > 0,
             "n_hits_in_window": len(hits_in_window),
+            "first_fold_hit": first_fold_hit,
+            "first_hit_asof": str(first_hit_asof.date()) if first_hit_asof is not None else None,
+            "first_scorable_asof": (
+                str(first_scorable_asof.date()) if first_scorable_asof is not None else None
+            ),
+            "n_folds_above_thr_pre_peak": int(n_folds_above_thr_pre_peak),
             "lead_time_days": lead_days,
+            "lead_time_note": (
+                "already_elevated_at_window_open"
+                if first_fold_hit
+                else ("days_from_first_thr_cross_to_t_peak" if lead_days is not None else None)
+            ),
             "feature_early_vs_late": feat_delta,
             "pair_risk_max": float(np.max(pair_risks)) if pair_risks else None,
             "pre_peak_noise": pre_peak_noise,
@@ -417,9 +479,12 @@ def run_event_walkforward(
         "type": event.get("type"),
         "methodology": (
             "Walk-forward expanding window: at each asof, Isolation Forest is fit only on "
-            "feature windows with window_end < asof-holdout (past noise/regime). Target is "
-            "scored at asof. Metrics test whether anomalous noise rises before public report "
-            "anchors (t_peak), vs placebo baselines. Not a classified ground-truth claim."
+            "feature windows with window_end < asof-holdout (past-only). Target is scored at asof. "
+            "Public report anchors (t_peak) are CASE STUDIES to read how quant noise features "
+            "(Hurst, Shannon, CUSUM, IF score) behave — not prediction targets. "
+            "Primary claim: continuous normality-vs-deviation monitoring. "
+            "first_fold_hit=true means elevated from first scorable fold (regime level), "
+            "not necessarily a rising ramp into t_peak. Not a classified ground-truth claim."
         ),
         "t_start": event.get("t_start"),
         "t_peak": event.get("t_peak"),
@@ -475,7 +540,7 @@ def run_all_walkforward(
     print(f"Walk-forward: {len(events)} events, step={step_days}d thr={anomaly_threshold}")
     hists = history_as_sat_histories(min_epochs=WINDOW)
     if not hists:
-        raise RuntimeError("Sem history suficiente. Rode seed-history antes.")
+        raise RuntimeError("Insufficient history. Run seed-history before walk-forward.")
 
     results = []
     for ev in events:
@@ -568,11 +633,16 @@ def _summarize(results: List[Dict[str, Any]], anomaly_threshold: float) -> Dict[
         for x in placebo
         if (x.get("pre_peak_noise") or {}).get("noise_ramp") is not None
     ]
-    elev_pre_i = rate(
-        interest,
-        "elevated_noise_before_peak",
-    )
-    # elevated flag is nested
+    pre_mean_i = [
+        (x.get("pre_peak_noise") or {}).get("pre_peak_anomaly_mean")
+        for x in interest
+        if (x.get("pre_peak_noise") or {}).get("pre_peak_anomaly_mean") is not None
+    ]
+    pre_mean_p = [
+        (x.get("pre_peak_noise") or {}).get("pre_peak_anomaly_mean")
+        for x in placebo
+        if (x.get("pre_peak_noise") or {}).get("pre_peak_anomaly_mean") is not None
+    ]
     elev_pre_i = float(
         np.mean(
             [
@@ -589,36 +659,78 @@ def _summarize(results: List[Dict[str, Any]], anomaly_threshold: float) -> Dict[
             ]
         )
     ) if placebo else None
+    first_fold_rate = rate(interest, "first_fold_hit")
+    max_i = [x["anomaly_score_max"] for x in interest if x.get("anomaly_score_max") is not None]
+    max_p = [x["anomaly_score_max"] for x in placebo if x.get("anomaly_score_max") is not None]
+    p95_placebo = float(np.percentile(max_p, 95)) if max_p else None
+
+    n_unique_interest = len({int(x["norad_id"]) for x in interest if x.get("norad_id") is not None})
+    n_unique_placebo = len({int(x["norad_id"]) for x in placebo if x.get("norad_id") is not None})
+
+    geo_ids = {
+        "luch1_intelsat_2015",
+        "luch1_intelsat_mid2015",
+        "luch1_athena_fidus_2018",
+        "sy12_geo_rpo_2021_22",
+        "luch2_trailing_2023",
+    }
+    civil_eo_placebo = {
+        "placebo_terra_2015",
+        "placebo_terra_2018",
+        "placebo_aqua_2015",
+        "placebo_landsat8_2018",
+        "placebo_noaa20_2023",
+        "placebo_noaa18_2021",
+        "placebo_aqua_2020",
+    }
+    geo_i = [x for x in interest if x.get("event_id") in geo_ids]
+    eo_p = [x for x in placebo if x.get("event_id") in civil_eo_placebo]
+    max_geo = [x["anomaly_score_max"] for x in geo_i if x.get("anomaly_score_max") is not None]
+    max_eo = [x["anomaly_score_max"] for x in eo_p if x.get("anomaly_score_max") is not None]
+
+    def _mean(xs):
+        return float(np.mean(xs)) if xs else None
 
     return {
         "n_interest_targets": len(interest),
         "n_placebo_targets": len(placebo),
+        "n_unique_interest_norads": n_unique_interest,
+        "n_unique_placebo_norads": n_unique_placebo,
         "hit_rate_interest": rate(interest, "hit_at_event"),
         "soft_hit_rate_interest": rate(interest, "soft_hit_at_event"),
         "hit_rate_placebo": rate(placebo, "hit_at_event"),
         "soft_hit_rate_placebo": rate(placebo, "soft_hit_at_event"),
+        "first_fold_hit_rate_interest": first_fold_rate,
         "elevated_pre_peak_noise_rate_interest": elev_pre_i,
         "elevated_pre_peak_noise_rate_placebo": elev_pre_p,
         "mean_noise_ramp_interest": float(np.mean(noise_ramp_i)) if noise_ramp_i else None,
         "mean_noise_ramp_placebo": float(np.mean(noise_ramp_p)) if noise_ramp_p else None,
+        "mean_pre_peak_anomaly_interest": float(np.mean(pre_mean_i)) if pre_mean_i else None,
+        "mean_pre_peak_anomaly_placebo": float(np.mean(pre_mean_p)) if pre_mean_p else None,
         "mean_lead_time_days_interest": float(np.mean(leads)) if leads else None,
         "median_lead_time_days_interest": float(np.median(leads)) if leads else None,
-        "mean_max_anomaly_interest": float(
-            np.mean([x["anomaly_score_max"] for x in interest if x.get("anomaly_score_max") is not None])
-        )
-        if interest
-        else None,
-        "mean_max_anomaly_placebo": float(
-            np.mean([x["anomaly_score_max"] for x in placebo if x.get("anomaly_score_max") is not None])
-        )
-        if placebo
-        else None,
+        "mean_max_anomaly_interest": float(np.mean(max_i)) if max_i else None,
+        "mean_max_anomaly_placebo": float(np.mean(max_p)) if max_p else None,
+        "p95_max_anomaly_placebo": p95_placebo,
+        "subgroup_geo_interest_vs_civil_eo_placebo": {
+            "n_geo_interest": len(geo_i),
+            "n_civil_eo_placebo": len(eo_p),
+            "hit_rate_geo_interest": rate(geo_i, "hit_at_event"),
+            "hit_rate_civil_eo_placebo": rate(eo_p, "hit_at_event"),
+            "mean_max_geo_interest": _mean(max_geo),
+            "mean_max_civil_eo_placebo": _mean(max_eo),
+            "p95_max_civil_eo_placebo": float(np.percentile(max_eo, 95)) if max_eo else None,
+            "note": (
+                "Starlink/GPS placebos can hard-hit (station-keeping). "
+                "Civil EO placebos are quieter controls for the GEO Luch/SY-12 narrative."
+            ),
+        },
         "anomaly_threshold": anomaly_threshold,
         "interpretation": (
-            "Walk-forward trains only on PAST folds (noise/regime before asof). "
-            "Hit@event = anomaly_score >= thr inside ±hit_window of public t_peak. "
-            "pre_peak_noise compares early vs late scores BEFORE the report anchor. "
-            "Placebo baselines should show lower elevated_pre_peak / hit rates. "
-            "Soft hit uses thr-0.1 floor 0.45. Pair_risk is fused when assets available."
+            "Past-only IF at each asof. Public t_peak anchors are case studies — not forecast targets. "
+            "Full panel includes active-constellation placebos (may hard-hit). "
+            "Use subgroup_geo_interest_vs_civil_eo_placebo for civil EO controls. "
+            "first_fold_hit + noise_ramp~0 => persistent elevated level, not ramp onset. "
+            "XGB accuracy is not used here."
         ),
     }

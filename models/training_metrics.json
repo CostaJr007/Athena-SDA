@@ -1,8 +1,8 @@
 {
   "n_samples": 960,
-  "n_features": 38,
+  "n_features": 41,
   "training_source": "history_store",
-  "iforest_contamination": 0.08,
+  "iforest_contamination": 0.06,
   "anomaly_score_formula": "clip(0.5 - decision_function)",
   "sample_weights": {
     "0": 1.0,
@@ -10,51 +10,53 @@
     "2": 3.0,
     "3": 5.0
   },
-  "log_loss_test": 0.1512584090232849,
-  "accuracy_test": 0.9479166666666666,
-  "macro_f1": 0.8749075037039789,
+  "split_mode": "temporal_purge_14d",
+  "purge_days": 14,
+  "log_loss_test": 0.10404693335294724,
+  "accuracy_test": 0.9583333333333334,
+  "macro_f1": 0.9577693441943409,
   "class_distribution": {
-    "NORMAL": 459,
-    "ANÔMALO": 42,
-    "SUSPEITO": 281,
-    "HOSTIL": 178
+    "NORMAL": 452,
+    "ANOMALOUS": 48,
+    "SUSPECT": 278,
+    "HOSTILE": 182
   },
   "classification_report": {
     "NORMAL": {
-      "precision": 0.9285714285714286,
-      "recall": 0.9891304347826086,
-      "f1-score": 0.9578947368421052,
-      "support": 92.0
+      "precision": 0.9895833333333334,
+      "recall": 1.0,
+      "f1-score": 0.9947643979057592,
+      "support": 95.0
     },
-    "ANÔMALO": {
-      "precision": 0.8,
-      "recall": 0.5,
-      "f1-score": 0.6153846153846154,
-      "support": 8.0
+    "ANOMALOUS": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1.0
     },
-    "SUSPEITO": {
-      "precision": 0.9811320754716981,
-      "recall": 0.9285714285714286,
-      "f1-score": 0.9541284403669725,
-      "support": 56.0
+    "SUSPECT": {
+      "precision": 0.9016393442622951,
+      "recall": 0.9649122807017544,
+      "f1-score": 0.9322033898305084,
+      "support": 57.0
     },
-    "HOSTIL": {
-      "precision": 0.9722222222222222,
-      "recall": 0.9722222222222222,
-      "f1-score": 0.9722222222222222,
-      "support": 36.0
+    "HOSTILE": {
+      "precision": 0.9705882352941176,
+      "recall": 0.8461538461538461,
+      "f1-score": 0.9041095890410958,
+      "support": 39.0
     },
-    "accuracy": 0.9479166666666666,
+    "accuracy": 0.9583333333333334,
     "macro avg": {
-      "precision": 0.9204814315663372,
-      "recall": 0.8474810213940649,
-      "f1-score": 0.8749075037039789,
+      "precision": 0.9654527282224366,
+      "recall": 0.9527665317139001,
+      "f1-score": 0.9577693441943409,
       "support": 192.0
     },
     "weighted avg": {
-      "precision": 0.9467289982030548,
-      "recall": 0.9479166666666666,
-      "f1-score": 0.9452113821515681,
+      "precision": 0.9596708357608753,
+      "recall": 0.9583333333333334,
+      "f1-score": 0.9578046093436918,
       "support": 192.0
     }
   },
@@ -69,8 +71,11 @@
     "delta_inc_30d_deg",
     "maneuver_count_30d",
     "shannon_entropy_sma_30d",
+    "shannon_entropy_sma_short",
     "kolmogorov_proxy_7d",
     "hurst_exponent_sma",
+    "hurst_exponent_sma_short",
+    "persistence_hurst_gap",
     "mandelbrot_tail_score",
     "adf_pvalue",
     "williams_threat",
@@ -109,13 +114,15 @@
     "delta_inc_30d_deg",
     "maneuver_count_30d",
     "shannon_entropy_sma_30d",
+    "shannon_entropy_sma_short",
     "kolmogorov_proxy_7d",
     "hurst_exponent_sma",
+    "hurst_exponent_sma_short",
+    "persistence_hurst_gap",
     "mandelbrot_tail_score",
     "adf_pvalue",
     "williams_threat",
     "l1_cusum_sma",
-    "spectral_anomaly_rkhs",
     "chern_simons_proxy",
     "ricci_mean",
     "h0_persistent",
@@ -134,11 +141,19 @@
     "geomagnetic_storm",
     "space_weather_available"
   ],
+  "homology_mode": "proxy",
+  "role": "priority_head_weak_labels",
+  "doctrine": "military_first_sda",
+  "disclaimer": "XGBoost is an operational priority head (weak labels), NOT military ground truth. Detection of persistent micro-trajectory noise is Isolation Forest vs normality anchors (baseline+asset). Validation: walk-forward on military interest cases vs civil EO controls.",
   "statistically_coherent_fixes": [
     "history_store_primary_training",
     "geometry_in_features_and_labels",
     "unified_anomaly_score",
-    "light_threat_boost_only",
+    "temporal_purge_split",
+    "if_fit_on_train_only",
+    "rkhs_excluded_from_iforest",
+    "monitor_if_not_overwritten",
+    "military_baseline_train_suspect_score",
     "asymmetric_class_weights"
   ]
 }

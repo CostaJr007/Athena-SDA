@@ -1,7 +1,7 @@
 {
   "event_id": "placebo_noaa20_2023",
   "type": "placebo_baseline",
-  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past noise/regime). Target is scored at asof. Metrics test whether anomalous noise rises before public report anchors (t_peak), vs placebo baselines. Not a classified ground-truth claim.",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) are CASE STUDIES to read how quant noise features (Hurst, Shannon, CUSUM, IF score) behave — not prediction targets. Primary claim: continuous normality-vs-deviation monitoring. first_fold_hit=true means elevated from first scorable fold (regime level), not necessarily a rising ramp into t_peak. Not a classified ground-truth claim.",
   "t_start": "2023-04-01",
   "t_peak": "2023-10-15",
   "t_end": "2024-03-01",
@@ -12,7 +12,7 @@
   "sources": [
     "Control vs Luch-2 2023 window"
   ],
-  "notes": "NOAA-20 existe desde 2017; controle 2023.",
+  "notes": "Placebo LEO meteo — NOAA-20.",
   "params": {
     "step_days": 14,
     "holdout_days": 3,
@@ -29,7 +29,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.36843784835641125,
+          "anomaly_score": 0.38141036029339215,
           "window_end": "2023-03-31 20:54:27.494784",
           "data_quality": {
             "score": 0.85,
@@ -41,7 +41,10 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.010570934268484,
-            "hurst_exponent_sma": 0.9365792697163257,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8722802088805542,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37228020888055424,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
@@ -69,7 +72,7 @@
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.568397031760385
+          "attention_score": 0.5742346621320265
         }
       }
     },
@@ -80,7 +83,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.37613871970313795,
+          "anomaly_score": 0.38458959891330813,
           "window_end": "2023-04-14 23:14:13.150464",
           "data_quality": {
             "score": 0.85,
@@ -92,11 +95,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.694781460584273,
-            "hurst_exponent_sma": 0.9410528262649149,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.814790767603697,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31479076760369695,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.19387854006193223,
+            "adf_pvalue": 0.19387854215735084,
             "delta_sma_7d_km": -0.0036578439830918796,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 0.7630137600000001,
@@ -120,7 +126,7 @@
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5561324238664122
+          "attention_score": 0.5599353195109887
         }
       }
     },
@@ -131,7 +137,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.4320883079708512,
+          "anomaly_score": 0.4564532817652312,
           "window_end": "2023-04-28 18:47:54.000096",
           "data_quality": {
             "score": 0.85,
@@ -143,11 +149,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.78324743853251,
-            "hurst_exponent_sma": 0.9366034000763374,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8038598131835313,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3038598131835313,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.18872539198102917,
+            "adf_pvalue": 0.1887253695760185,
             "delta_sma_7d_km": -0.001932112474605674,
             "maneuver_count_30d": 4.0,
             "tle_age_hours": 5.20166664,
@@ -171,7 +180,7 @@
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.7444397385868831
+          "attention_score": 0.7554039767943541
         }
       }
     },
@@ -182,7 +191,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.35718478813607113,
+          "anomaly_score": 0.3616767877498496,
           "window_end": "2023-05-12 21:07:30.067104",
           "data_quality": {
             "score": 0.85,
@@ -194,11 +203,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.525345621169872,
-            "hurst_exponent_sma": 0.9090289250899682,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8591945796463039,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35919457964630386,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.4352231123274936,
+            "adf_pvalue": 0.4352231094800565,
             "delta_sma_7d_km": -0.0026054606332763797,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 2.87498136,
@@ -216,13 +228,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.674,
-            "cointegration_pvalue": 0.146149,
-            "pair_risk": 0.8725,
+            "cointegration_pvalue": 0.146151,
+            "pair_risk": 0.8724,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.6406081546612321
+          "attention_score": 0.6425745544874324
         }
       }
     },
@@ -233,7 +245,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.3829263993936719,
+          "anomaly_score": 0.3965406379013394,
           "window_end": "2023-05-26 20:04:02.509824",
           "data_quality": {
             "score": 0.85,
@@ -245,11 +257,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.010570934268484,
-            "hurst_exponent_sma": 0.9130475824260946,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7902295500970055,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.29022955009700546,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.44929712020604984,
+            "adf_pvalue": 0.44929712020605034,
             "delta_sma_7d_km": -0.0007613322968609282,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 3.93263616,
@@ -267,13 +282,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.653,
-            "cointegration_pvalue": 0.019302,
+            "cointegration_pvalue": 0.019374,
             "pair_risk": 1.0,
             "risk_level": "CRITICAL",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.7223168797271524
+          "attention_score": 0.7284432870556028
         }
       }
     },
@@ -284,7 +299,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.42635656810464534,
+          "anomaly_score": 0.46319415451364815,
           "window_end": "2023-06-09 15:37:33.337056",
           "data_quality": {
             "score": 0.85,
@@ -296,11 +311,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 0.2974722489192897,
-            "hurst_exponent_sma": 0.9079486527906564,
-            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8168355457006663,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3168355457006663,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.41451573908168604,
-            "adf_pvalue": 0.8316431342902997,
+            "adf_pvalue": 0.8316431342705676,
             "delta_sma_7d_km": 0.0656408643535542,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 8.37407304,
@@ -318,13 +336,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.564,
-            "cointegration_pvalue": 0.947196,
+            "cointegration_pvalue": 0.947198,
             "pair_risk": 0.5922,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5175704556470904
+          "attention_score": 0.5341473695311416
         }
       }
     },
@@ -335,7 +353,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.3706672803116862,
+          "anomaly_score": 0.3636156488387267,
           "window_end": "2023-06-23 17:57:16.812864",
           "data_quality": {
             "score": 0.85,
@@ -347,11 +365,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.8205898566665466,
-            "hurst_exponent_sma": 0.9129777336709751,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8553325636026358,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35533256360263576,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.5523911747843058,
+            "adf_pvalue": 0.5523911742020743,
             "delta_sma_7d_km": -0.0020302489583627903,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 6.04532976,
@@ -369,13 +390,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.541,
-            "cointegration_pvalue": 0.653415,
+            "cointegration_pvalue": 0.653419,
             "pair_risk": 0.6951,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5491052761402588
+          "attention_score": 0.5459320419774271
         }
       }
     },
@@ -386,7 +407,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.34436366068867635,
+          "anomaly_score": 0.36742934886974876,
           "window_end": "2023-07-07 18:35:26.971872",
           "data_quality": {
             "score": 0.85,
@@ -398,11 +419,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.865576855207249,
-            "hurst_exponent_sma": 0.9100806108233789,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.7933721492279554,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2933721492279554,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.8492814507635575,
+            "adf_pvalue": 0.8492814397794872,
             "delta_sma_7d_km": -0.0020336239995231153,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 5.409174480000001,
@@ -420,13 +444,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.519,
-            "cointegration_pvalue": 0.229316,
+            "cointegration_pvalue": 0.229318,
             "pair_risk": 0.8435,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.6188886473099044
+          "attention_score": 0.629268206991387
         }
       }
     },
@@ -437,7 +461,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.35400915817674694,
+          "anomaly_score": 0.35928071300583647,
           "window_end": "2023-07-21 19:13:34.236480",
           "data_quality": {
             "score": 0.85,
@@ -449,7 +473,10 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.5445313041488338,
-            "hurst_exponent_sma": 0.8935690996583321,
+            "shannon_entropy_sma_short": 2.0588138903312014,
+            "hurst_exponent_sma": 0.8760651839037117,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3760651839037117,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
@@ -471,13 +498,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.497,
-            "cointegration_pvalue": 0.265167,
+            "cointegration_pvalue": 0.265163,
             "pair_risk": 0.831,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.6163541211795361
+          "attention_score": 0.6187263208526265
         }
       }
     },
@@ -488,7 +515,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.46308065833745665,
+          "anomaly_score": 0.4286988867077144,
           "window_end": "2023-08-04 18:10:08.302656",
           "data_quality": {
             "score": 0.85,
@@ -500,11 +527,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.9847696187067436,
-            "hurst_exponent_sma": 0.9198626117981188,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8583980257264291,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3583980257264291,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.4025048971177023,
+            "adf_pvalue": 0.40250489711770543,
             "delta_sma_7d_km": -0.001898257887660293,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 5.83102704,
@@ -522,13 +552,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.472,
-            "cointegration_pvalue": 0.017493,
+            "cointegration_pvalue": 0.017441,
             "pair_risk": 1.0,
             "risk_level": "CRITICAL",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.7583862962518555
+          "attention_score": 0.7429144990184715
         }
       }
     },
@@ -539,7 +569,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.35024883482714547,
+          "anomaly_score": 0.34633375486159457,
           "window_end": "2023-08-18 18:48:08.767584",
           "data_quality": {
             "score": 0.85,
@@ -551,11 +581,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.996641328663726,
-            "hurst_exponent_sma": 0.9315378082507608,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.822562302100478,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.322562302100478,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.5888464105589574,
+            "adf_pvalue": 0.5888464112488538,
             "delta_sma_7d_km": -0.0019625389541033655,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 5.19756456,
@@ -573,13 +606,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.448,
-            "cointegration_pvalue": 0.099613,
+            "cointegration_pvalue": 0.099647,
             "pair_risk": 1.0,
             "risk_level": "CRITICAL",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.7076119756722155
+          "attention_score": 0.7058501896877176
         }
       }
     },
@@ -590,7 +623,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.4615964123309352,
+          "anomaly_score": 0.4432537113083492,
           "window_end": "2023-09-01 19:26:05.957952",
           "data_quality": {
             "score": 0.85,
@@ -602,11 +635,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.462867147080763,
-            "hurst_exponent_sma": 0.9207804537478098,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.8868549360261095,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.38685493602610954,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.8469768040766075,
+            "adf_pvalue": 0.8469767886744421,
             "delta_sma_7d_km": -0.002040354494965868,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 4.56501168,
@@ -630,7 +666,7 @@
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.7577183855489209
+          "attention_score": 0.7494641700887572
         }
       }
     },
@@ -641,7 +677,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.36299208794558935,
+          "anomaly_score": 0.38538418812192876,
           "window_end": "2023-09-15 18:22:29.987904",
           "data_quality": {
             "score": 0.85,
@@ -653,11 +689,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.9655839357277816,
-            "hurst_exponent_sma": 0.9086278039555356,
+            "shannon_entropy_sma_short": 2.281036112553424,
+            "hurst_exponent_sma": 0.7641704521730809,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2641704521730809,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 6.803029098787839e-05,
+            "adf_pvalue": 6.803030167686748e-05,
             "delta_sma_7d_km": -0.0010117128940692055,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 5.62500336,
@@ -675,13 +714,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.402,
-            "cointegration_pvalue": 0.308068,
+            "cointegration_pvalue": 0.3081,
             "pair_risk": 0.8161,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.6122014395755153
+          "attention_score": 0.622277884654868
         }
       }
     },
@@ -692,7 +731,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.37008795411146667,
+          "anomaly_score": 0.36717145242645816,
           "window_end": "2023-09-29 19:00:19.379808",
           "data_quality": {
             "score": 0.85,
@@ -704,11 +743,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.4767967526855212,
-            "hurst_exponent_sma": 0.9102932338446367,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.812453567965395,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31245356796539503,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 6.804998127578167e-06,
+            "adf_pvalue": 6.804998672231207e-06,
             "delta_sma_7d_km": -0.0023008695752650965,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 4.99461672,
@@ -726,13 +768,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.376,
-            "cointegration_pvalue": 0.450248,
+            "cointegration_pvalue": 0.450366,
             "pair_risk": 0.7664,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.58805957935016
+          "attention_score": 0.5867471535919062
         }
       }
     },
@@ -743,7 +785,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.3448568350222817,
+          "anomaly_score": 0.3566294359100958,
           "window_end": "2023-10-13 21:19:32.483424",
           "data_quality": {
             "score": 0.85,
@@ -755,11 +797,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.050301855434982,
-            "hurst_exponent_sma": 0.9442204968806468,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8353152292837619,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3353152292837619,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.006873971403673617,
+            "adf_pvalue": 0.006873971440916837,
             "delta_sma_7d_km": -0.0030012530896783574,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 2.67431016,
@@ -777,13 +822,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.346,
-            "cointegration_pvalue": 0.470421,
-            "pair_risk": 0.7594,
+            "cointegration_pvalue": 0.470169,
+            "pair_risk": 0.7595,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5728555757600269
+          "attention_score": 0.5782082461595431
         }
       }
     },
@@ -794,7 +839,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.4285897767449591,
+          "anomaly_score": 0.4637039717585005,
           "window_end": "2023-10-27 20:15:46.912608",
           "data_quality": {
             "score": 0.85,
@@ -806,7 +851,10 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 0.2974722489192897,
-            "hurst_exponent_sma": 0.898263662707695,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8409447490264131,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34094474902641314,
             "kolmogorov_proxy_7d": 0.15789473684210525,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
@@ -828,13 +876,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.141,
-            "cointegration_pvalue": 0.934545,
+            "cointegration_pvalue": 0.934546,
             "pair_risk": 0.5972,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5213253995352316
+          "attention_score": 0.5371267872913252
         }
       }
     },
@@ -845,7 +893,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.4109025275928253,
+          "anomaly_score": 0.4565455876933816,
           "window_end": "2023-11-10 20:54:05.004000",
           "data_quality": {
             "score": 0.85,
@@ -857,11 +905,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.6100635408770727,
-            "hurst_exponent_sma": 0.913204092216834,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7323227225887196,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.23232272258871955,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.035651035658367684,
+            "adf_pvalue": 0.035651024879618826,
             "delta_sma_7d_km": -0.001411029240443895,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 3.09861,
@@ -879,13 +930,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.117,
-            "cointegration_pvalue": 0.759834,
+            "cointegration_pvalue": 0.759833,
             "pair_risk": 0.6584,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5470261374167714
+          "attention_score": 0.5675655144620217
         }
       }
     },
@@ -896,7 +947,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.4538979521119454,
+          "anomaly_score": 0.4611685057621875,
           "window_end": "2023-11-24 21:32:17.605536",
           "data_quality": {
             "score": 0.85,
@@ -908,11 +959,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.0708470936225183,
-            "hurst_exponent_sma": 0.9317467061079483,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8276834018158405,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32768340181584055,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.36769459353728556,
+            "adf_pvalue": 0.3676946069716317,
             "delta_sma_7d_km": -0.0019997917934233556,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 2.4617762400000003,
@@ -930,13 +984,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.096,
-            "cointegration_pvalue": 0.668029,
+            "cointegration_pvalue": 0.668013,
             "pair_risk": 0.6906,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5840840784503755
+          "attention_score": 0.5873558275929844
         }
       }
     },
@@ -947,7 +1001,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.37669493399810355,
+          "anomaly_score": 0.3829479158129748,
           "window_end": "2023-12-08 18:47:24.622368",
           "data_quality": {
             "score": 0.85,
@@ -959,11 +1013,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.6292492238560348,
-            "hurst_exponent_sma": 0.9319952563714127,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8603437705029267,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36034377050292665,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.5015142433615087,
+            "adf_pvalue": 0.5015142797213581,
             "delta_sma_7d_km": -0.0014549974157489487,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 5.20982712,
@@ -987,7 +1044,7 @@
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5748627202991466
+          "attention_score": 0.5776765621158387
         }
       }
     },
@@ -998,7 +1055,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.39113484791780906,
+          "anomaly_score": 0.3743702380053344,
           "window_end": "2023-12-22 21:06:56.964672",
           "data_quality": {
             "score": 0.85,
@@ -1010,11 +1067,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.4370658315190226,
-            "hurst_exponent_sma": 0.8960415680955103,
+            "shannon_entropy_sma_short": 2.2810361125534233,
+            "hurst_exponent_sma": 0.8374962934208944,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3374962934208944,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.11376938469921022,
+            "adf_pvalue": 0.11376938668845599,
             "delta_sma_7d_km": -0.0019828455851893523,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 2.88417648,
@@ -1032,13 +1092,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.044,
-            "cointegration_pvalue": 0.545975,
-            "pair_risk": 0.7333,
+            "cointegration_pvalue": 0.545596,
+            "pair_risk": 0.7335,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5793256815630141
+          "attention_score": 0.5718916071024005
         }
       }
     },
@@ -1049,7 +1109,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.36453796499546953,
+          "anomaly_score": 0.3759939603950294,
           "window_end": "2024-01-05 21:44:54.585312",
           "data_quality": {
             "score": 0.85,
@@ -1061,11 +1121,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.0105709342684834,
-            "hurst_exponent_sma": 0.8903630277359434,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8387477662339506,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33874776623395064,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 3.4830303864046674e-05,
+            "adf_pvalue": 3.483030520461792e-05,
             "delta_sma_7d_km": -0.0013128657219567685,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 2.25150408,
@@ -1083,13 +1146,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 19.019,
-            "cointegration_pvalue": 0.585285,
-            "pair_risk": 0.7196,
+            "cointegration_pvalue": 0.586223,
+            "pair_risk": 0.7193,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5598220842479613
+          "attention_score": 0.5648122821777632
         }
       }
     },
@@ -1100,7 +1163,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.3942159196618729,
+          "anomaly_score": 0.42534870271894687,
           "window_end": "2024-01-19 22:22:51.760128",
           "data_quality": {
             "score": 0.85,
@@ -1112,7 +1175,10 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 0.2974722489192897,
-            "hurst_exponent_sma": 0.8004265482925704,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7695759254343869,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2695759254343869,
             "kolmogorov_proxy_7d": 0.21052631578947367,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
@@ -1134,13 +1200,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 18.89,
-            "cointegration_pvalue": 0.775464,
+            "cointegration_pvalue": 0.775466,
             "pair_risk": 0.6532,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5366571638478428
+          "attention_score": 0.5506669162235261
         }
       }
     },
@@ -1151,7 +1217,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.36643691795061223,
+          "anomaly_score": 0.3545954325543261,
           "window_end": "2024-02-02 21:19:34.862016",
           "data_quality": {
             "score": 0.85,
@@ -1163,11 +1229,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.010570934268484,
-            "hurst_exponent_sma": 0.8705655939410661,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7960625711905929,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.29606257119059287,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.8654181587648583,
+            "adf_pvalue": 0.8654181691320999,
             "delta_sma_7d_km": -0.0013095093854644801,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 2.67364944,
@@ -1185,13 +1254,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 18.864,
-            "cointegration_pvalue": 0.599147,
+            "cointegration_pvalue": 0.599148,
             "pair_risk": 0.715,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5581466130777755
+          "attention_score": 0.5528179446494468
         }
       }
     },
@@ -1202,7 +1271,7 @@
       "targets": {
         "43013": {
           "ok": true,
-          "anomaly_score": 0.36066663742867033,
+          "anomaly_score": 0.3642255769954933,
           "window_end": "2024-02-16 20:16:13.198080",
           "data_quality": {
             "score": 0.85,
@@ -1214,11 +1283,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.6100635408770727,
-            "hurst_exponent_sma": 0.906783187732064,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8365694551989808,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33656945519898085,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.2902127954284253,
+            "adf_pvalue": 0.29021279617872886,
             "delta_sma_7d_km": -0.0019727085700651514,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 3.7296672,
@@ -1236,13 +1308,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 18.834,
-            "cointegration_pvalue": 0.563391,
+            "cointegration_pvalue": 0.563328,
             "pair_risk": 0.7275,
             "risk_level": "ELEVATED",
             "asset_norad": 35951,
             "asset_name": "DMSP 5D-3 F18 (USA 210)"
           },
-          "attention_score": 0.5624249868429017
+          "attention_score": 0.5640265096479721
         }
       }
     }
@@ -1252,21 +1324,38 @@
       "norad_id": 43013,
       "object_name": "NOAA 20 (JPSS-1)",
       "n_folds_scored": 24,
-      "anomaly_score_mean": 0.38800470799246006,
-      "anomaly_score_max": 0.46308065833745665,
-      "anomaly_score_at_nearest_peak": 0.3448568350222817,
+      "anomaly_score_mean": 0.3966900772034749,
+      "anomaly_score_max": 0.4637039717585005,
+      "anomaly_score_at_nearest_peak": 0.3566294359100958,
       "hit_at_event": false,
       "soft_hit_at_event": true,
       "n_hits_in_window": 0,
+      "first_fold_hit": false,
+      "first_hit_asof": null,
+      "first_scorable_asof": "2023-04-01",
+      "n_folds_above_thr_pre_peak": 0,
       "lead_time_days": null,
+      "lead_time_note": null,
       "feature_early_vs_late": {
         "shannon_entropy_sma_30d": {
           "early_mean": 2.6049032777647243,
           "late_mean": 2.790438203918555
         },
+        "shannon_entropy_sma_short": {
+          "early_mean": 2.558596668012825,
+          "late_mean": 2.619816390283124
+        },
         "hurst_exponent_sma": {
-          "early_mean": 0.9272624007147282,
-          "late_mean": 0.923091959335878
+          "early_mean": 0.8280709838822183,
+          "late_mean": 0.8242712975097651
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.32807098388221834,
+          "late_mean": 0.3242712975097651
         },
         "l1_cusum_sma": {
           "early_mean": 0.0,
@@ -1281,11 +1370,11 @@
       "pre_peak_noise": {
         "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
         "n_pre_peak_folds": 15,
-        "pre_peak_anomaly_mean": 0.38433570089445157,
-        "pre_peak_anomaly_max": 0.46308065833745665,
-        "early_pre_peak_mean": 0.38335521271202866,
-        "late_pre_peak_mean": 0.3779564248474836,
-        "noise_ramp": -0.005398787864545063,
+        "pre_peak_anomaly_mean": 0.39077746407914815,
+        "pre_peak_anomaly_max": 0.46319415451364815,
+        "early_pre_peak_mean": 0.3961341333246241,
+        "late_pre_peak_mean": 0.3797545085256853,
+        "noise_ramp": -0.016379624798938786,
         "pre_peak_pair_risk_max": 1.0,
         "elevated_noise_before_peak": false
       },

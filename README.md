@@ -5,11 +5,13 @@
 | | |
 |--|--|
 | **Challenge** | IBM SkillsBuild AI Builders — *Advance Space Exploration with AI* |
-| **Focus** | Protect high-value assets · monitor suspects · not a generic consumer tracker |
+| **Focus** | **Military-first SDA**: protect **assets** · detect noise on **suspects** · **baseline** = normality for IF only |
 | **Repo** | [github.com/CostaJr007/Athena-SDA](https://github.com/CostaJr007/Athena-SDA) |
 | **Watchlist** | 24 NORADs (7 **asset** · 11 **suspect** · 6 **baseline**) |
-| **History** | **~12.5 years** of TLEs (2014-01-01 → 2026-07-25) · ~250k epochs |
-| **Validation** | Walk-forward: **5/5** interest hard hits · **0/3** placebo hard hits · **~201 day** mean lead-time |
+| **History** | **~12.5 years** of TLEs (2014-01-01 → 2026-07-27) · ~250k epochs |
+| **ML doctrine** | IF trains on **baseline+asset**; scores **suspects** for persistent micro-trajectory noise; XGB/pairs = **priority**, not proof |
+| **Validation** | **Claims A+B** (paper): military GEO cases **5/5** hard hits vs civil EO **0/7**; Mann–Whitney p≈0.001; reports = anchors not forecast |
+| **Paper pack** | [`docs/paper/METHODS_AND_CLAIMS.md`](docs/paper/METHODS_AND_CLAIMS.md) · [`RESULTS_TABLES.md`](docs/paper/RESULTS_TABLES.md) · `python scripts/run_paper_validation.py` |
 
 ### For judges — open these first
 
@@ -26,16 +28,16 @@
 
 There are tens of thousands of objects in Earth orbit. Human operators cannot watch all of them equally.
 
-Some satellites change how they fly — relocating in GEO, irregular station-keeping, or “following” another object — **months before** a newspaper or think-tank writes about it. Public catalogs (TLE) exist, but raw tables are not **intelligence**.
+Some satellites change how they fly — relocating in GEO, irregular station-keeping, persistent micro-maneuvers, or “following” another object. Public catalogs (TLE) exist, but raw tables are not **attention intelligence**.
 
 **Athena-SDA** turns public orbits + public space weather into:
 
-1. A **noise score** (“is this object’s behavior rare vs its own past?”)  
-2. A **priority tier** (“how urgent is attention, including proximity to protected assets?”)  
+1. A **noise / normality score** (“has this object left its statistical baseline?”) — continuous monitor  
+2. A **priority tier** (XGBoost weak labels + fuzzy + proximity — **operational ranking**, not scientific proof)  
 3. An **explanation** for the operator (Bob copilot + quant HTML reports)  
-4. A **validation story**: did noise rise **before** open-source report dates? (walk-forward)
+4. **Case studies** on open-source report windows: how Hurst / Shannon / CUSUM / IF scores behave on known atypical regimes (walk-forward, past-only) vs placebos  
 
-The 3D globe is the **demo**. The scientific argument is **quant noise + ML + real data + placebos**.
+The 3D globe is the **demo** (extra tracks may decorate the scene). The **models and proof** target the **military watchlist**: quant noise + Isolation Forest + multi-year TLE + military case studies vs civil EO baselines. See [`docs/FOUNDATION_QUANT_VALIDATION.md`](docs/FOUNDATION_QUANT_VALIDATION.md).
 
 ---
 
@@ -223,31 +225,43 @@ Code map:
 
 ## 7. Walk-forward validation (proof of concept)
 
+**What we claim:** continuous **normality → deviation → alert** using quant features + Isolation Forest.  
+**What open-source reports are:** *case-study anchors* to show how Hurst / Shannon / CUSUM / IF scores look on known atypical regimes (GEO relocation, RPO-like activity) — **not** labels the model is trained to “predict”.
+
 **Protocol**
 
 1. Pick an open-source episode (e.g. Olymp-K near Intelsat — Gunter / CSIS).  
-2. For each date `asof` on a 14-day grid, train IF **only** on windows ending before `asof − 3 days`.  
+2. For each date `asof` on a 14-day grid, train IF **only** on windows ending before `asof − 3 days` (past-only).  
 3. Score the window at `asof`.  
-4. **Hit** if score ≥ 0.50 near public `t_peak`.  
-5. Run **placebos** (TERRA, NOAA-20) on the **same calendars**.
+4. Compare **interest** vs **placebo** distributions (mean max score, pre-peak mean, `noise_ramp`, `first_fold_hit`).  
+5. Hard hit ≥ 0.50 near `t_peak` is a **secondary** flag; if `first_fold_hit` and `noise_ramp ≈ 0`, the honest reading is **persistent elevated regime**, not “ramp discovered just before the news”.
 
-**Results (run 2026-07-26, current ML + space weather)**
+**Results (expanded panel v3, thr=0.50, past-only IF)**
 
-| Group | Hard hit ≥ 0.50 | Elevated pre-peak noise | Mean max score | Mean lead-time |
-|-------|-----------------|-------------------------|----------------|----------------|
-| Interest (Luch ×4 + SY-12) | **5/5** | **5/5** | **0.603** | **~201 days** |
-| Placebo (TERRA ×2, NOAA-20) | **0/3** | **0/3** | **0.477** | — |
+| Group | N | Hard hit | Mean max | Note |
+|-------|---|----------|----------|------|
+| **GEO interest** (Luch×3 + SY-12 + Luch-2) | 5 | **5/5** | **~0.60** | persistent elevated regime |
+| **Civil EO placebos** (TERRA, AQUA, Landsat, NOAA…) | 7 | **0/7** | **~0.46** | quiet controls |
+| Full interest (incl. SY-7, Yaogan-29) | 7 | 5/7 | ~0.56 | LEO recon not always hard-hit |
+| Full placebos (incl. Starlink, GPS) | 9 | 2/9 | ~0.48 | constellation/GNSS can look “noisy” |
 
-**Interpretation for judges**
+**Honest takeaway:** separation is strong for **GEO Luch/SY-12 vs civil EO**. Active constellation / GNSS placebos can hard-hit (station-keeping) — report them, don’t hide them. `noise_ramp` mean ≈ 0 ⇒ **level**, not ramp forecast.
 
-- We did **not** “predict the future” with secret data.  
-- At each historical date, using **only the past**, the interest objects already looked statistically noisy — often **months before** public write-ups.  
-- Civil placebos under the **same solar weather** did not hard-hit ⇒ not “the whole sky / only the Sun.”
+**Metrics in JSON** (`data/alerts/walkforward/`): `noise_ramp`, `first_fold_hit`, `p95_max_anomaly_placebo`, `subgroup_geo_interest_vs_civil_eo_placebo`, unique NORAD counts.
+
+**Architecture (Palantir-inspired, not a patent claim)**
+
+- Micro-models versioned in `models/registry.json` (monitor IF ≠ pipeline IF — hot-swap pattern).  
+- DAG: Data → Features (math quant) → IF score → priority head (XGB weak labels) → LLM explains (Bob does not rewrite scores).  
+- XGBoost accuracy is **weak-label agreement only** — scientific validation is IF + walk-forward + placebos.
 
 Interactive write-up: [`src/frontend/public/reports/walkforward_poc.html`](src/frontend/public/reports/walkforward_poc.html)  
 Case-by-case markdown: [`docs/WALKFORWARD_DETECTION_CASE_REPORT.md`](docs/WALKFORWARD_DETECTION_CASE_REPORT.md)
 
 ```bash
+python scripts/smoke_test.py
+python scripts/run_anomaly_monitor.py train-baseline
+python -c "from src.models import train_and_save_models; train_and_save_models()"
 python scripts/run_walkforward.py run
 python scripts/run_walkforward.py summary
 ```
@@ -297,17 +311,14 @@ cp .env.example .env   # optional: WATSONX_*, SPACETRACK_*
 ```bash
 python scripts/run_anomaly_monitor.py run-daily
 PYTHONPATH=. python scripts/run_quant_report.py --all
-bash scripts/sync_frontend_data.sh   # or copy alerts → frontend/public
+bash scripts/sync_frontend_data.sh   # Windows: powershell scripts/sync_frontend_data.ps1
 python scripts/run_anomaly_monitor.py status
 ```
 
-### UIs
+### UI
 
 ```bash
-# Streamlit dashboard
-streamlit run app.py
-
-# Tactical globe + mission board
+# Tactical globe + mission board (the only UI)
 cd src/frontend && npm install && npm run dev
 # http://127.0.0.1:3000
 # Mission board → “Open PoC for judges” → walkforward_poc.html
@@ -320,9 +331,8 @@ cd src/frontend && npm install && npm run dev
 ```
 Athena-SDA/
 ├── README.md                 ← you are here (methodology for judges)
-├── app.py                    ← Streamlit dashboard
 ├── requirements.txt
-├── scripts/                  ← monitor, walkforward, quant, validate
+├── scripts/                  ← monitor, walkforward, quant, data sync, ingest
 ├── src/
 │   ├── engine.py             ← mathematical noise toolbox
 │   ├── models.py             ← features + IF + XGB
@@ -331,7 +341,7 @@ Athena-SDA/
 │   ├── pair_score.py         ← distance + cointegration
 │   ├── quant_report.py       ← per-object HTML
 │   ├── bob.py                ← copilot explanations
-│   └── frontend/             ← React globe + mission board
+│   └── frontend/             ← React globe + mission board (the UI)
 │       └── public/reports/   ← quant_*.html + walkforward_poc.html
 ├── models/                   ← isolation_forest*.joblib, xgboost_model.joblib
 ├── data/                     ← history, weather, catalog, alerts

@@ -69,6 +69,24 @@ FEATURES_DIR = DATA_DIR / "features"
 IFOREST_MONITOR_PATH = MODELS_DIR / "isolation_forest_monitor.joblib"
 MONITOR_META_PATH = MODELS_DIR / "anomaly_monitor_meta.json"
 WINDOW = 20  # epochs required by extract_satellite_features
+RKHS_REF_PATH = MODELS_DIR / "rkhs_reference.joblib"
+
+
+def _load_rkhs_reference() -> Optional[np.ndarray]:
+    """Normal-regime reference for spectral RKHS (optional diagnostic feature)."""
+    if not RKHS_REF_PATH.exists():
+        return None
+    try:
+        ref = joblib.load(RKHS_REF_PATH)
+        arr = np.asarray(ref, dtype=float)
+        if arr.ndim == 1:
+            arr = arr.reshape(1, -1)
+        if arr.size == 0 or arr.shape[1] < 10:
+            return None
+        # extract_satellite_features uses 10-dim subset
+        return arr[:, :10] if arr.shape[1] >= 10 else arr
+    except Exception:
+        return None
 
 
 # -- Data quality (light gate) -----------------------------------------------
@@ -209,6 +227,7 @@ def build_feature_windows(
     names = names or {}
     rows: List[Dict[str, float]] = []
     meta: List[Dict[str, Any]] = []
+    rkhs_ref = _load_rkhs_reference()
 
     for sid, hist in sat_histories.items():
         h = hist.sort_values("timestamp").reset_index(drop=True)
@@ -244,6 +263,7 @@ def build_feature_windows(
                     ),
                     min_distance_to_military_km=500.0,
                     reference_time=win_end if pd.notnull(win_end) else None,
+                    reference_matrix=rkhs_ref,
                 )
             except Exception:
                 continue
@@ -273,34 +293,47 @@ def build_feature_windows(
 def train_baseline_from_history(
     *,
     holdout_days: int = 1,
-    contamination: float = 0.08,
+    contamination: float = 0.06,
     n_estimators: int = 200,
     watchlist: Optional[Sequence[int]] = None,
-    max_windows_per_sat: int = 60,
+    max_windows_per_sat: int = 80,
     sample_mode: str = "hybrid",
+    military_doctrine: bool = True,
 ) -> Dict[str, Any]:
     """
     Fit Isolation Forest on feature windows that end BEFORE (now - holdout_days).
 
+    Military doctrine (default):
+      Train on baseline + asset roles only (= normality anchors).
+      Suspects are scored later for detection — not mixed into "normal".
+
     Protocol: series up to yesterday (holdout=1) defines normal.
     Today's data is NOT included in training — only in scoring.
-    sample_mode=hybrid: covers long history + recent tip.
     """
+    from src.doctrine import doctrine_summary, ids_for_if_training
+
     ensure_dirs()
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
     FEATURES_DIR.mkdir(parents=True, exist_ok=True)
 
     names = _watchlist_names()
-    ids = list(watchlist) if watchlist is not None else list(names.keys())
-    hists = history_as_sat_histories(norad_ids=ids, min_epochs=WINDOW)
+    all_ids = list(watchlist) if watchlist is not None else list(names.keys())
+    if military_doctrine:
+        train_ids = ids_for_if_training(all_ids, min_ids=4)
+    else:
+        train_ids = list(all_ids)
+
+    hists = history_as_sat_histories(norad_ids=train_ids, min_epochs=WINDOW)
     if not hists:
-        # fallback: all sats in store
+        hists = history_as_sat_histories(norad_ids=all_ids, min_epochs=WINDOW)
+    if not hists:
         hists = history_as_sat_histories(min_epochs=WINDOW)
     if not hists:
         raise RuntimeError(
             "Insufficient history. Run: seed-history and/or ingest-daily before training."
         )
 
+    train_norads = sorted(hists.keys())
     cutoff = pd.Timestamp.now(tz="UTC") - timedelta(days=holdout_days)
     X, meta = build_feature_windows(
         hists,
@@ -311,27 +344,26 @@ def train_baseline_from_history(
         names=names,
     )
     if len(X) < 30:
-        # relax: train on all available past windows without cutoff
-        print("Few windows with holdout -- training on all available history.")
+        print("Few windows with holdout -- training on all available history for train roles.")
         X, meta = build_feature_windows(
             hists,
             step=2,
-            max_windows_per_sat=max(80, max_windows_per_sat),
+            max_windows_per_sat=max(100, max_windows_per_sat),
             sample_mode=sample_mode,
             names=names,
         )
     if len(X) < 15:
         raise RuntimeError(f"Only {len(X)} feature windows -- collect more history.")
 
-    # temporal coverage of training windows
     win_ts = pd.to_datetime([m["window_end"] for m in meta], utc=True, errors="coerce")
     win_min = str(win_ts.min()) if win_ts.notna().any() else None
     win_max = str(win_ts.max()) if win_ts.notna().any() else None
 
     print(
-        f"IF Training (series=past): {len(X)} windows, {X.shape[1]} features, "
-        f"cutoff={cutoff.date()} sample={sample_mode}"
+        f"IF Training (military normality anchors): {len(X)} windows, {X.shape[1]} features, "
+        f"cutoff={cutoff.date()} sample={sample_mode} n_sats={len(train_norads)}"
     )
+    print(f"  train NORADs (baseline+asset): {train_norads}")
     if win_min and win_max:
         print(f"  window_end coverage: {win_min[:10]} -> {win_max[:10]}")
     iforest = IsolationForest(
@@ -343,39 +375,95 @@ def train_baseline_from_history(
     iforest.fit(X)
 
     joblib.dump(iforest, IFOREST_MONITOR_PATH)
-    # Also refresh main isolation_forest used by pipeline if desired
-    joblib.dump(iforest, MODELS_DIR / "isolation_forest.joblib")
 
     raw = iforest.decision_function(X)
     scores = np.clip(0.5 - raw, 0.0, 1.0)
+    try:
+        from src.engine import homology_backend
+        hom_mode = homology_backend()
+    except Exception:
+        hom_mode = "proxy"
+    # Orbit labels for calibration table (paper thr)
+    orbit_labels = []
+    for m in meta:
+        try:
+            orbit_labels.append(str(_watchlist_meta(int(m["norad_id"])).get("orbit_class") or "LEO"))
+        except Exception:
+            orbit_labels.append("LEO")
+    from src.calibration import build_calibration_table
+
+    calibration = build_calibration_table(list(scores), orbit_labels, floor=0.50)
     meta_out = {
-        "protocol": "series_past_train__latest_score",
+        "protocol": "military_baseline_train__suspect_score",
+        "doctrine": "military_first_sda",
         "description": (
-            "Baseline = series windows with end < cutoff (past). "
-            "Daily score = latest window vs baseline. "
-            "holdout_days=1 => yesterday and before train; today compares."
+            "IF trained on baseline+asset past windows only (normality anchors). "
+            "Daily scoring compares each sat (esp. suspects) to that baseline. "
+            "Hard thr calibrated as max(0.50, p95 of normality-anchor scores), per orbit when possible. "
+            "Does NOT overwrite isolation_forest.joblib (priority pipeline). "
+            "Palantir-style: Data→Quant→IF Inference→priority (XGB/pairs)→LLM explain."
         ),
         "trained_at": datetime.now(timezone.utc).isoformat(),
         "n_windows": int(len(X)),
         "n_sats": int(len({m["norad_id"] for m in meta})),
+        "train_norad_ids": train_norads,
+        "train_roles": ["baseline", "asset"],
+        "military_doctrine": bool(military_doctrine),
         "holdout_days": holdout_days,
         "contamination": contamination,
         "sample_mode": sample_mode,
         "max_windows_per_sat": max_windows_per_sat,
-        "feature_columns": IFOREST_COLUMNS,
+        "feature_columns": list(IFOREST_COLUMNS),
+        "homology_mode": hom_mode,
+        "rkhs_in_iforest": False,
         "score_mean": float(np.mean(scores)),
         "score_p95": float(np.percentile(scores, 95)),
         "score_p99": float(np.percentile(scores, 99)),
+        "calibration": calibration,
+        "recommended_anomaly_threshold": float(
+            (calibration.get("global") or {}).get("recommended_thr") or 0.50
+        ),
         "cutoff_utc": str(cutoff),
         "train_window_end_min": win_min,
         "train_window_end_max": win_max,
+        "doctrine_summary": doctrine_summary(),
     }
-    MONITOR_META_PATH.write_text(json.dumps(meta_out, indent=2), encoding="utf-8")
+    try:
+        from src.model_registry import register_model
+
+        register_model(
+            "monitor_if",
+            path=IFOREST_MONITOR_PATH,
+            feature_columns=IFOREST_COLUMNS,
+            extra={
+                "n_windows": meta_out["n_windows"],
+                "n_sats": meta_out["n_sats"],
+                "cutoff_utc": meta_out["cutoff_utc"],
+                "contamination": contamination,
+                "homology_mode": hom_mode,
+                "score_p95": meta_out["score_p95"],
+                "train_roles": meta_out["train_roles"],
+                "doctrine": "military_first_sda",
+                "random_state": 42,
+            },
+        )
+    except Exception as exc:
+        print(f"Warning: model registry update failed: {exc}")
+
+    MONITOR_META_PATH.write_text(json.dumps(meta_out, indent=2, default=str), encoding="utf-8")
 
     feat_path = FEATURES_DIR / "train_windows_latest.csv"
-    X.assign(**{k: [m[k] for m in meta] for k in ("norad_id", "window_end")}).to_csv(
-        feat_path, index=False
-    )
+    roles = []
+    for m in meta:
+        try:
+            roles.append(_watchlist_meta(int(m["norad_id"])).get("role", "unknown"))
+        except Exception:
+            roles.append("unknown")
+    X.assign(
+        norad_id=[m["norad_id"] for m in meta],
+        window_end=[m["window_end"] for m in meta],
+        role=roles,
+    ).to_csv(feat_path, index=False)
     print(f"Model saved: {IFOREST_MONITOR_PATH}")
     print(f"Train features: {feat_path}")
     return meta_out
@@ -625,7 +713,19 @@ def score_latest(
     alerts: List[Dict[str, Any]] = []
     day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     prev_scores = _load_previous_day_scores(day)
-    thr_elevated = float(mon_meta.get("score_p95") or max(0.45, anomaly_threshold - 0.05))
+    calibration = mon_meta.get("calibration") or {}
+    from src.calibration import threshold_for_orbit
+
+    thr_global = float(
+        mon_meta.get("recommended_anomaly_threshold")
+        or (calibration.get("global") or {}).get("recommended_thr")
+        or anomaly_threshold
+    )
+    thr_elevated = float(
+        (calibration.get("global") or {}).get("p90")
+        or mon_meta.get("score_p95")
+        or max(0.45, thr_global - 0.05)
+    )
 
     for sid, hist in hists.items():
         hist = hist.sort_values("timestamp").reset_index(drop=True)
@@ -697,13 +797,26 @@ def score_latest(
         anomaly_score = float(np.clip(0.5 - raw, 0.0, 1.0))
         feats["anomaly_score"] = anomaly_score
 
+        # Per-orbit calibrated hard threshold (paper A+B)
+        thr_use = threshold_for_orbit(calibration, str(orbit_guess), default=thr_global)
+
         # Delta vs yesterday = day-over-day shift
         prev = prev_scores.get(int(sid))
         score_delta = float(anomaly_score - prev) if prev is not None else None
         changed_relevant = bool(
             score_delta is not None and score_delta >= delta_relevance and anomaly_score >= thr_elevated * 0.85
         )
-        series_outlier = bool(anomaly_score >= anomaly_threshold)
+        series_outlier = bool(anomaly_score >= thr_use)
+
+        from src.doctrine import classify_military_status
+
+        mil = classify_military_status(
+            role=str(cat.get("role") or "unknown"),
+            reliable=bool(dq.get("reliable")),
+            series_outlier=series_outlier,
+            day_over_day_relevant=changed_relevant,
+            pair_elevated=False,
+        )
 
         rec: Dict[str, Any] = {
             "norad_id": int(sid),
@@ -714,13 +827,17 @@ def score_latest(
             "orbit_class": orbit_guess,
             "window_end": str(sub["timestamp"].iloc[-1]),
             "anomaly_score": anomaly_score,
+            "anomaly_threshold_used": float(thr_use),
             "score_prev_day": prev,
             "score_delta_1d": score_delta,
             "series_outlier": series_outlier,
             "day_over_day_relevant": changed_relevant,
-            "is_anomaly": bool(
-                dq["reliable"] and (series_outlier or changed_relevant)
-            ),
+            "is_anomaly": bool(mil.get("is_anomaly")),
+            "is_military_detection": bool(mil.get("is_military_detection")),
+            "is_platform_health_flag": bool(mil.get("is_platform_health_flag")),
+            "is_calibration_object": bool(mil.get("is_calibration_object")),
+            "military_alert_eligible": bool(mil.get("military_alert_eligible")),
+            "status": mil.get("status") or "NOMINAL",
             "data_quality": dq,
             "min_distance_to_asset_km": float(min_dist) if asset_hists else None,
             "closest_asset_norad": int(closest_asset) if closest_asset is not None else None,
@@ -750,16 +867,6 @@ def score_latest(
             },
         }
 
-        if not dq["reliable"]:
-            rec["status"] = "UNRELIABLE_DATA"
-            rec["is_anomaly"] = False
-        elif series_outlier:
-            rec["status"] = "ANOMALY"
-        elif changed_relevant:
-            rec["status"] = "CHANGE_RELEVANT"
-        else:
-            rec["status"] = "NOMINAL"
-
         if use_full_pipeline and xgb is not None:
             try:
                 ml = predict_threat(iforest, xgb, feats)
@@ -786,16 +893,28 @@ def score_latest(
 
         alerts.append(rec)
 
-    # Sort: anomalies first
-    alerts.sort(key=lambda a: (-float(a.get("anomaly_score", 0)), a.get("norad_id", 0)))
+    # Sort: military detections first, then score
+    alerts.sort(
+        key=lambda a: (
+            -int(bool(a.get("is_military_detection"))),
+            -int(bool(a.get("is_anomaly"))),
+            -float(a.get("anomaly_score", 0)),
+            a.get("norad_id", 0),
+        )
+    )
+
+    from src.doctrine import doctrine_summary
 
     report = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "day": day,
-        "protocol": "series_past_train__latest_score",
+        "protocol": "military_baseline_train__suspect_score",
+        "doctrine": "military_first_sda",
         "compare": {
-            "baseline": "IF on series windows ending before cutoff (past / D-holdout)",
+            "baseline": "IF trained on baseline+asset past windows (normality anchors)",
             "point": "latest WINDOW epochs per sat (includes today's inject)",
+            "military_alert": "suspects with series outlier / change; pair elevates priority",
+            "calibration": "baseline role scored but not threat-escalated",
             "relevance": (
                 f"anomaly_score>={anomaly_threshold} OR "
                 f"delta_score_1d>={delta_relevance} with elevated level"
@@ -805,12 +924,17 @@ def score_latest(
         },
         "n_scored": len(alerts),
         "n_anomalies": sum(1 for a in alerts if a.get("is_anomaly")),
+        "n_military_detections": sum(1 for a in alerts if a.get("is_military_detection")),
+        "n_platform_health_flags": sum(1 for a in alerts if a.get("is_platform_health_flag")),
         "n_series_outliers": sum(1 for a in alerts if a.get("series_outlier")),
         "n_day_over_day_relevant": sum(1 for a in alerts if a.get("day_over_day_relevant")),
         "n_unreliable": sum(1 for a in alerts if a.get("status") == "UNRELIABLE_DATA"),
-        "threshold": anomaly_threshold,
+        "threshold": thr_global,
+        "threshold_cli_default": anomaly_threshold,
+        "calibration": calibration,
         "model": str(IFOREST_MONITOR_PATH if IFOREST_MONITOR_PATH.exists() else MODELS_DIR / "isolation_forest.joblib"),
         "train_meta": mon_meta,
+        "doctrine_summary": doctrine_summary(),
         "alerts": alerts,
     }
 

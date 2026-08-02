@@ -1,0 +1,1300 @@
+{
+  "event_id": "placebo_starlink_2023",
+  "type": "placebo_baseline",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) are CASE STUDIES to read how quant noise features (Hurst, Shannon, CUSUM, IF score) behave — not prediction targets. Primary claim: continuous normality-vs-deviation monitoring. first_fold_hit=true means elevated from first scorable fold (regime level), not necessarily a rising ramp into t_peak. Not a classified ground-truth claim.",
+  "t_start": "2023-04-01",
+  "t_peak": "2023-10-15",
+  "t_end": "2024-03-01",
+  "norad_ids": [
+    44714
+  ],
+  "pair_with": [],
+  "sources": [
+    "Commercial constellation station-keeping control vs Luch-2 window"
+  ],
+  "notes": "Placebo LEO commercial — Starlink (expected mild station-keeping noise).",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 24,
+  "folds": [
+    {
+      "asof": "2023-04-01",
+      "cutoff": "2023-03-29",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.47375812672554896,
+          "window_end": "2023-03-31 21:07:34.579776",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.87372784
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.655050539417775,
+            "hurst_exponent_sma": 0.8034394910785645,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7197273039009837,
+            "adf_pvalue": 0.5467333850348672,
+            "delta_sma_7d_km": 0.4408929782994164,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 2.87372784,
+            "f10_7": 125.3,
+            "ap_index": 14.0,
+            "kp_mean": 2.66675,
+            "f10_7_delta_7d": -35.000000000000014,
+            "ap_delta_7d": 3.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 128.737,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9486,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7349211570264971
+        }
+      }
+    },
+    {
+      "asof": "2023-04-15",
+      "cutoff": "2023-04-12",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.4708303656772705,
+          "window_end": "2023-04-14 17:55:19.035840",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 6.0780456
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7205827761460135,
+            "hurst_exponent_sma": 0.8073763248489041,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0856825181263387,
+            "delta_sma_7d_km": 0.030585851312025625,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 6.0780456,
+            "f10_7": 175.8,
+            "ap_index": 7.0,
+            "kp_mean": 1.83325,
+            "f10_7_delta_7d": 39.900000000000006,
+            "ap_delta_7d": 1.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 129.739,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9476,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7330536645547718
+        }
+      }
+    },
+    {
+      "asof": "2023-04-29",
+      "cutoff": "2023-04-26",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.534097452235925,
+          "window_end": "2023-04-28 22:40:49.249344",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.31965296
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.905307776373747,
+            "hurst_exponent_sma": 0.8250186910271333,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.8501681013960688,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.15966470683179068,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 1.31965296,
+            "f10_7": 155.8,
+            "ap_index": 20.0,
+            "kp_mean": 3.4165,
+            "f10_7_delta_7d": 14.600000000000023,
+            "ap_delta_7d": -8.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 131.845,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9456,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7604238535061663
+        }
+      }
+    },
+    {
+      "asof": "2023-05-13",
+      "cutoff": "2023-05-10",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.43050367759607205,
+          "window_end": "2023-05-12 08:19:47.860608",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 15.670038719999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4650694618158377,
+            "hurst_exponent_sma": 0.8009378707762481,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 7.596072356758252e-09,
+            "delta_sma_7d_km": 0.01598021035442798,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 15.670038719999999,
+            "f10_7": 143.8,
+            "ap_index": 11.0,
+            "kp_mean": 2.291625,
+            "f10_7_delta_7d": -8.0,
+            "ap_delta_7d": -4.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 130.978,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9464,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7142466549182325
+        }
+      }
+    },
+    {
+      "asof": "2023-05-27",
+      "cutoff": "2023-05-24",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.47538440012350575,
+          "window_end": "2023-05-26 19:27:25.221312",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.54299408
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.3995372250875993,
+            "hurst_exponent_sma": 0.8442078645665171,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0003873918684144428,
+            "delta_sma_7d_km": -0.043226686470006825,
+            "maneuver_count_30d": 6.0,
+            "tle_age_hours": 4.54299408,
+            "f10_7": 156.9,
+            "ap_index": 4.0,
+            "kp_mean": 0.833375,
+            "f10_7_delta_7d": -12.699999999999989,
+            "ap_delta_7d": -11.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 131.032,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9464,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7344429800555776
+        }
+      }
+    },
+    {
+      "asof": "2023-06-10",
+      "cutoff": "2023-06-07",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.4414190678902214,
+          "window_end": "2023-06-09 21:01:48.202176",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.96994384
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.647592147308497,
+            "hurst_exponent_sma": 0.8512975950797047,
+            "kolmogorov_proxy_7d": 0.7368421052631579,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.014880645775952299,
+            "delta_sma_7d_km": -0.07831871874896024,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.96994384,
+            "f10_7": 161.2,
+            "ap_index": 4.0,
+            "kp_mean": 0.9165000000000001,
+            "f10_7_delta_7d": -3.4000000000000057,
+            "ap_delta_7d": -0.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 132.261,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9452,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7184985805505997
+        }
+      }
+    },
+    {
+      "asof": "2023-06-24",
+      "cutoff": "2023-06-21",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.48263313189094514,
+          "window_end": "2023-06-22 17:56:29.067360",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 30.0585924
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.752855305203233,
+            "hurst_exponent_sma": 0.7784229309577875,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.2678425116635329,
+            "adf_pvalue": 0.2733975496475085,
+            "delta_sma_7d_km": 0.02914717731619021,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 30.0585924,
+            "f10_7": 160.8,
+            "ap_index": 16.0,
+            "kp_mean": 2.916625,
+            "f10_7_delta_7d": 2.700000000000017,
+            "ap_delta_7d": 6.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 131.453,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9459,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7374299093509253
+        }
+      }
+    },
+    {
+      "asof": "2023-07-08",
+      "cutoff": "2023-07-05",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.4504986498192573,
+          "window_end": "2023-07-07 20:59:29.337504",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.0085173600000004
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.689525383210069,
+            "hurst_exponent_sma": 0.5714441778396359,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5153950973327401,
+            "delta_sma_7d_km": -0.035932487719037454,
+            "maneuver_count_30d": 6.0,
+            "tle_age_hours": 3.0085173600000004,
+            "f10_7": 160.5,
+            "ap_index": 6.0,
+            "kp_mean": 1.2915,
+            "f10_7_delta_7d": -5.0,
+            "ap_delta_7d": -0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 129.302,
+            "cointegration_pvalue": 1e-06,
+            "pair_risk": 0.9481,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7241793924186659
+        }
+      }
+    },
+    {
+      "asof": "2023-07-22",
+      "cutoff": "2023-07-19",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.442432860720867,
+          "window_end": "2023-07-21 01:51:50.978304",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 22.13583936
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.945038697540245,
+            "hurst_exponent_sma": 0.6835181738964773,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5647453937509548,
+            "delta_sma_7d_km": -0.04969979140514624,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 22.13583936,
+            "f10_7": 174.4,
+            "ap_index": 8.0,
+            "kp_mean": 1.833375,
+            "f10_7_delta_7d": -4.099999999999994,
+            "ap_delta_7d": -2.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 130.242,
+            "cointegration_pvalue": 6.3e-05,
+            "pair_risk": 0.9471,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7199997873243902
+        }
+      }
+    },
+    {
+      "asof": "2023-08-05",
+      "cutoff": "2023-08-02",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.5160545019882379,
+          "window_end": "2023-08-04 03:26:13.390656",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 20.562947039999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.839775539645508,
+            "hurst_exponent_sma": 0.694784112066239,
+            "kolmogorov_proxy_7d": 0.7368421052631579,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0011080798349223171,
+            "delta_sma_7d_km": -0.13165143886544683,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 20.562947039999997,
+            "f10_7": 175.8,
+            "ap_index": 33.0,
+            "kp_mean": 3.4583749999999998,
+            "f10_7_delta_7d": -2.799999999999983,
+            "ap_delta_7d": 21.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 130.703,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9467,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7529095258947072
+        }
+      }
+    },
+    {
+      "asof": "2023-08-19",
+      "cutoff": "2023-08-16",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.43774822102664446,
+          "window_end": "2023-08-18 22:31:33.959136",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.4739002399999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6100635408770727,
+            "hurst_exponent_sma": 0.7609506654344175,
+            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.1497271710770211,
+            "delta_sma_7d_km": 0.028745254709974688,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 1.4739002399999999,
+            "f10_7": 150.6,
+            "ap_index": 7.0,
+            "kp_mean": 1.7081250000000001,
+            "f10_7_delta_7d": 2.299999999999983,
+            "ap_delta_7d": 1.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 128.915,
+            "cointegration_pvalue": 0.000704,
+            "pair_risk": 0.9485,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.71866169946199
+        }
+      }
+    },
+    {
+      "asof": "2023-09-02",
+      "cutoff": "2023-08-30",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.5549326529912296,
+          "window_end": "2023-09-01 14:32:41.895744",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 9.45502896
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.0632025132158525,
+            "hurst_exponent_sma": 0.8346412030126905,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8159837657676076,
+            "delta_sma_7d_km": 0.06934172054570809,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 9.45502896,
+            "f10_7": 131.2,
+            "ap_index": 37.0,
+            "kp_mean": 4.499875,
+            "f10_7_delta_7d": -8.100000000000023,
+            "ap_delta_7d": 26.375,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 130.898,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9465,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7702946938460533
+        }
+      }
+    },
+    {
+      "asof": "2023-09-16",
+      "cutoff": "2023-09-13",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.4384823755120756,
+          "window_end": "2023-09-15 08:09:24.177024",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 15.843284160000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8655768552072485,
+            "hurst_exponent_sma": 0.8276552158272388,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6893050046838602,
+            "delta_sma_7d_km": 0.20809014564747486,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 15.843284160000001,
+            "f10_7": 140.4,
+            "ap_index": 6.0,
+            "kp_mean": 1.291625,
+            "f10_7_delta_7d": -21.0,
+            "ap_delta_7d": -4.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 128.533,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9488,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7191570689804341
+        }
+      }
+    },
+    {
+      "asof": "2023-09-30",
+      "cutoff": "2023-09-27",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.45844451636346584,
+          "window_end": "2023-09-29 08:08:15.054432",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 15.86248488
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.655050539417775,
+            "hurst_exponent_sma": 0.7735074851778619,
+            "kolmogorov_proxy_7d": 0.3684210526315789,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0,
+            "delta_sma_7d_km": 0.07215015017936821,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 15.86248488,
+            "f10_7": 159.1,
+            "ap_index": 8.0,
+            "kp_mean": 2.12475,
+            "f10_7_delta_7d": -13.900000000000006,
+            "ap_delta_7d": -6.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 129.234,
+            "cointegration_pvalue": 8e-06,
+            "pair_risk": 0.9482,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7278100323635597
+        }
+      }
+    },
+    {
+      "asof": "2023-10-14",
+      "cutoff": "2023-10-11",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.4292706788362188,
+          "window_end": "2023-10-13 22:26:56.598720",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.5509448
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8603207778330444,
+            "hurst_exponent_sma": 0.8906997937062519,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.09948954918456115,
+            "delta_sma_7d_km": -0.27707151399863506,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 1.5509448,
+            "f10_7": 148.2,
+            "ap_index": 6.0,
+            "kp_mean": 1.4165,
+            "f10_7_delta_7d": -9.0,
+            "ap_delta_7d": 0.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 130.945,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9465,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7137468054762984
+        }
+      }
+    },
+    {
+      "asof": "2023-10-28",
+      "cutoff": "2023-10-25",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.4785840106894715,
+          "window_end": "2023-10-27 20:50:13.432992",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.16293528
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.186808594563051,
+            "hurst_exponent_sma": 0.869837764212911,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 7.87021303441827e-08,
+            "delta_sma_7d_km": -0.0037237002961774124,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 3.16293528,
+            "f10_7": 128.0,
+            "ap_index": 17.0,
+            "kp_mean": 3.0001249999999997,
+            "f10_7_delta_7d": 5.400000000000006,
+            "ap_delta_7d": 6.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 129.542,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9478,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7366528048102622
+        }
+      }
+    },
+    {
+      "asof": "2023-11-11",
+      "cutoff": "2023-11-08",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.5123896259713153,
+          "window_end": "2023-11-10 12:51:24.123168",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 11.14329912
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6100635408770727,
+            "hurst_exponent_sma": 0.7955440976861634,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.27423478078595964,
+            "delta_sma_7d_km": -0.2942710497554799,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 11.14329912,
+            "f10_7": 141.5,
+            "ap_index": 4.0,
+            "kp_mean": 0.958375,
+            "f10_7_delta_7d": -13.800000000000011,
+            "ap_delta_7d": -16.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 128.079,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.9493,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.752690331687092
+        }
+      }
+    },
+    {
+      "asof": "2023-11-25",
+      "cutoff": "2023-11-22",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.5478933260939398,
+          "window_end": "2023-11-24 23:59:00.060864",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 0.01664976
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.80004461847901,
+            "hurst_exponent_sma": 0.8057062744210784,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8681335257374144,
+            "delta_sma_7d_km": 0.02738448307991348,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 0.01664976,
+            "f10_7": 176.4,
+            "ap_index": 37.0,
+            "kp_mean": 4.29175,
+            "f10_7_delta_7d": 49.30000000000001,
+            "ap_delta_7d": 23.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 129.545,
+            "cointegration_pvalue": 3e-06,
+            "pair_risk": 0.9478,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7678419967422729
+        }
+      }
+    },
+    {
+      "asof": "2023-12-09",
+      "cutoff": "2023-12-06",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.4980915580030416,
+          "window_end": "2023-12-08 19:11:14.746272",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.81257048
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.689525383210069,
+            "hurst_exponent_sma": 0.7514769372256752,
+            "kolmogorov_proxy_7d": 0.7368421052631579,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5977791760410048,
+            "delta_sma_7d_km": 0.04046515196841938,
+            "maneuver_count_30d": 6.0,
+            "tle_age_hours": 4.81257048,
+            "f10_7": 127.9,
+            "ap_index": 1.0,
+            "kp_mean": 0.25,
+            "f10_7_delta_7d": -20.299999999999983,
+            "ap_delta_7d": -7.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 131.306,
+            "cointegration_pvalue": 1.2e-05,
+            "pair_risk": 0.9461,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7444962011013688
+        }
+      }
+    },
+    {
+      "asof": "2023-12-23",
+      "cutoff": "2023-12-20",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.46906498795519,
+          "window_end": "2023-12-22 22:21:08.517312",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.64763408
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.155565013329719,
+            "hurst_exponent_sma": 0.8707989771707519,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.08391753354435905,
+            "delta_sma_7d_km": 0.011594143872571294,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 1.64763408,
+            "f10_7": 174.2,
+            "ap_index": 5.0,
+            "kp_mean": 1.208375,
+            "f10_7_delta_7d": 25.19999999999999,
+            "ap_delta_7d": -7.625,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 132.472,
+            "cointegration_pvalue": 1e-06,
+            "pair_risk": 0.9449,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7307742445798355
+        }
+      }
+    },
+    {
+      "asof": "2024-01-06",
+      "cutoff": "2024-01-03",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.4446869325634446,
+          "window_end": "2024-01-05 15:57:51.785280",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 8.0356152
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.900051698999543,
+            "hurst_exponent_sma": 0.8060859044787196,
+            "kolmogorov_proxy_7d": 0.3684210526315789,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.055514681648283944,
+            "delta_sma_7d_km": 0.022560698324014083,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 8.0356152,
+            "f10_7": 159.4,
+            "ap_index": 2.0,
+            "kp_mean": 0.375,
+            "f10_7_delta_7d": 19.700000000000017,
+            "ap_delta_7d": -3.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 130.819,
+            "cointegration_pvalue": 6e-06,
+            "pair_risk": 0.9466,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7207391196535501
+        }
+      }
+    },
+    {
+      "asof": "2024-01-20",
+      "cutoff": "2024-01-17",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.4344153405664778,
+          "window_end": "2024-01-19 11:10:04.172448",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 12.83217432
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.03111617245602,
+            "hurst_exponent_sma": 0.8448519081485942,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.4939150692485703,
+            "delta_sma_7d_km": 0.08134948345741577,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 12.83217432,
+            "f10_7": 166.3,
+            "ap_index": 6.0,
+            "kp_mean": 1.58325,
+            "f10_7_delta_7d": -19.099999999999994,
+            "ap_delta_7d": 1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 129.371,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.948,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.716886903254915
+        }
+      }
+    },
+    {
+      "asof": "2024-02-03",
+      "cutoff": "2024-01-31",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.46196566035634845,
+          "window_end": "2024-02-02 09:33:23.027616",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 14.44360344
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.1416354077249604,
+            "hurst_exponent_sma": 0.7408490065981095,
+            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.1482694237869766,
+            "adf_pvalue": 0.9913283857925778,
+            "delta_sma_7d_km": 0.0014956621744204313,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 14.44360344,
+            "f10_7": 156.4,
+            "ap_index": 2.0,
+            "kp_mean": 0.291625,
+            "f10_7_delta_7d": 8.300000000000011,
+            "ap_delta_7d": -2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 128.927,
+            "cointegration_pvalue": 1e-06,
+            "pair_risk": 0.9485,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7295595471603569
+        }
+      }
+    },
+    {
+      "asof": "2024-02-17",
+      "cutoff": "2024-02-14",
+      "n_train_ok": true,
+      "targets": {
+        "44714": {
+          "ok": true,
+          "anomaly_score": 0.4607625443373153,
+          "window_end": "2024-02-16 22:16:34.155840",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_84h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.7238456
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9655839357277816,
+            "hurst_exponent_sma": 0.8824575653080314,
+            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5555897769610902,
+            "delta_sma_7d_km": 0.1209477697229886,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 1.7238456,
+            "f10_7": 169.9,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": -23.900000000000006,
+            "ap_delta_7d": -1.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 44714,
+          "object_name": "STARLINK-1008",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 130.564,
+            "cointegration_pvalue": 2.1e-05,
+            "pair_risk": 0.9468,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.7280831449517918
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "44714": {
+      "norad_id": 44714,
+      "object_name": "STARLINK-1008",
+      "n_folds_scored": 24,
+      "anomaly_score_mean": 0.4726810277472513,
+      "anomaly_score_max": 0.5549326529912296,
+      "anomaly_score_at_nearest_peak": 0.4292706788362188,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "n_hits_in_window": 3,
+      "first_fold_hit": false,
+      "first_hit_asof": "2023-04-29",
+      "first_scorable_asof": "2023-04-01",
+      "n_folds_above_thr_pre_peak": 3,
+      "lead_time_days": 169.0,
+      "lead_time_note": "days_from_first_thr_cross_to_t_peak",
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 2.6291095557681943,
+          "late_mean": 2.6108428453101986
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.8161960484594735,
+          "late_mean": 0.817490872631692
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.5473684210526315,
+          "late_mean": 0.5052631578947369
+        }
+      },
+      "pair_risk_max": 0.9493,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 15,
+        "pre_peak_anomaly_mean": 0.46909937862649903,
+        "pre_peak_anomaly_max": 0.5549326529912296,
+        "early_pre_peak_mean": 0.4769148044716644,
+        "late_pre_peak_mean": 0.46377568894592686,
+        "noise_ramp": -0.013139115525737544,
+        "pre_peak_pair_risk_max": 0.9488,
+        "elevated_noise_before_peak": true
+      },
+      "is_placebo": true
+    }
+  }
+}

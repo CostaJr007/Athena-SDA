@@ -35,6 +35,5 @@ bash scripts/sync_frontend_data.sh
 echo ""
 echo "Demo ready:"
 echo "  Frontend:  cd src/frontend && npm run dev   → http://127.0.0.1:3000"
-echo "  Streamlit: streamlit run app.py             → http://localhost:8501"
 echo "  Board:     public/data/risk_report_latest.json"
 echo "  WF:        public/data/walkforward_summary.json"

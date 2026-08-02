@@ -37,11 +37,21 @@ from src.engine import (
     calculate_shannon_entropy,
     calculate_spectral_anomaly_rkhs,
     calculate_williams_threat,
+    homology_backend,
 )
 from src.orbital import position_series_from_history
 from src.utils import generate_mock_tle_history, generate_shadowing_pair
 
 MODELS_DIR_STR = str(MODELS_DIR)
+
+# Canonical English class names for metrics (weak labels — not ground truth)
+METRIC_CLASS_NAMES = {
+    0: "NORMAL",
+    1: "ANOMALOUS",
+    2: "SUSPECT",
+    3: "HOSTILE",
+}
+
 
 
 def _orbital_state_vectors(history_df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
@@ -188,8 +198,15 @@ def extract_satellite_features(
             maneuvers_count += 1
 
     shannon = calculate_shannon_entropy(sma_series)
+    # Multi-scale persistence: short window (~recent tip) vs full window
+    n_short = min(12, max(8, len(sma_series) // 2))
+    sma_short = sma_series[-n_short:]
+    shannon_short = calculate_shannon_entropy(sma_short)
     kolmogorov = calculate_kolmogorov_proxy(sma_series)
     hurst = calculate_hurst_exponent(sma_series)
+    hurst_short = calculate_hurst_exponent(sma_short)
+    # Gap > 0: full window more persistent than recent tip (sustained control memory)
+    persistence_hurst_gap = float(np.clip(hurst - hurst_short, -1.0, 1.0))
     mandelbrot = calculate_mandelbrot_tail_anomaly(sma_series)
     adf = calculate_adf_pvalue(sma_series)
     williams = calculate_williams_threat(country, purpose, orbit_class, inc)
@@ -240,8 +257,11 @@ def extract_satellite_features(
         "delta_inc_30d_deg": delta_inc_30d,
         "maneuver_count_30d": float(maneuvers_count),
         "shannon_entropy_sma_30d": shannon,
+        "shannon_entropy_sma_short": float(shannon_short),
         "kolmogorov_proxy_7d": kolmogorov,
         "hurst_exponent_sma": hurst,
+        "hurst_exponent_sma_short": float(hurst_short),
+        "persistence_hurst_gap": float(persistence_hurst_gap),
         "mandelbrot_tail_score": mandelbrot,
         "adf_pvalue": adf,
         "williams_threat": williams,
@@ -537,6 +557,9 @@ def _try_load_history_store_training(
                 )
                 # Placeholder anomaly; refined after IF fit
                 feats["anomaly_score"] = 0.0
+                # Temporal metadata for purge split (dropped before model fit)
+                feats["_window_end"] = str(win_end) if pd.notnull(win_end) else None
+                feats["_norad_id"] = int(sid)
                 lab = label_features_for_threat(feats)
                 data_rows.append(feats)
                 labels.append(lab)
@@ -547,6 +570,48 @@ def _try_load_history_store_training(
         return None
     print(f"History store training: {len(data_rows)} windows from {len(hists)} sats")
     return pd.DataFrame(data_rows), np.array(labels)
+
+
+def _temporal_purge_split(
+    times: pd.Series,
+    sat_ids: pd.Series,
+    y: np.ndarray,
+    *,
+    test_frac: float = 0.2,
+    purge_days: int = 14,
+) -> Tuple[np.ndarray, np.ndarray, str]:
+    """
+    Temporal train/test with purge gap to reduce leakage from overlapping windows.
+    Falls back to random stratified split if timestamps are unusable.
+    """
+    t = pd.to_datetime(times, utc=True, errors="coerce")
+    if t.notna().sum() < max(40, int(0.5 * len(t))):
+        idx = np.arange(len(y))
+        try:
+            tr, te = train_test_split(idx, test_size=test_frac, random_state=42, stratify=y)
+        except ValueError:
+            tr, te = train_test_split(idx, test_size=test_frac, random_state=42)
+        return np.asarray(tr), np.asarray(te), "random_fallback"
+
+    order = np.argsort(t.values)
+    cut_i = int(len(order) * (1.0 - test_frac))
+    cut_i = min(max(cut_i, 10), len(order) - 10)
+    cut_time = pd.Timestamp(t.values[order[cut_i]])
+    if cut_time.tzinfo is None:
+        cut_time = cut_time.tz_localize("UTC")
+    purge = pd.Timedelta(days=purge_days)
+    train_mask = t < (cut_time - purge)
+    test_mask = t >= cut_time
+    train_idx = np.where(train_mask.values)[0]
+    test_idx = np.where(test_mask.values)[0]
+    if len(train_idx) < 30 or len(test_idx) < 10:
+        idx = np.arange(len(y))
+        try:
+            tr, te = train_test_split(idx, test_size=test_frac, random_state=42, stratify=y)
+        except ValueError:
+            tr, te = train_test_split(idx, test_size=test_frac, random_state=42)
+        return np.asarray(tr), np.asarray(te), "random_fallback_small"
+    return train_idx, test_idx, f"temporal_purge_{purge_days}d"
 
 
 def _try_load_real_training() -> Optional[Tuple[pd.DataFrame, np.ndarray]]:
@@ -693,7 +758,7 @@ def train_and_save_models(
     if real is not None:
         X_df, y = real
         source = "history_store"
-        # Only boost minority threat classes if almost no HOSTIL/SUSPEITO
+        # Only boost minority threat classes if almost no HOSTILE/SUSPECT
         n_hot = int(sum((y == 2) | (y == 3)))
         if augment_threats and n_hot < max(30, int(0.05 * len(y))):
             boost_X, boost_y = _synth_threat_boost()
@@ -706,6 +771,17 @@ def train_and_save_models(
     else:
         print("Generating synthetic training dataset (SDA scenarios)...")
         X_df, y = _build_synthetic_training_set()
+
+    # Temporal metadata (optional) for purge split — not model features
+    if "_window_end" not in X_df.columns:
+        X_df["_window_end"] = None
+    if "_norad_id" not in X_df.columns:
+        X_df["_norad_id"] = -1
+    times = X_df["_window_end"]
+    sat_ids = X_df["_norad_id"]
+    drop_meta = [c for c in ("_window_end", "_norad_id") if c in X_df.columns]
+    if drop_meta:
+        X_df = X_df.drop(columns=drop_meta)
 
     # Ensure all feature columns exist
     for col in FEATURE_COLUMNS:
@@ -721,14 +797,20 @@ def train_and_save_models(
 
     os.makedirs(MODELS_DIR_STR, exist_ok=True)
 
-    # --- Isolation Forest on normal / baseline-heavy population ---
-    print("Training Isolation Forest...")
+    # Temporal train/test with purge (reduces leakage from overlapping windows)
+    train_idx, test_idx, split_mode = _temporal_purge_split(times, sat_ids, y, test_frac=0.2, purge_days=14)
+    print(f"Split mode: {split_mode}  train={len(train_idx)} test={len(test_idx)}")
+
+    # --- Isolation Forest: prefer baseline/asset NORADs as normality (military doctrine) ---
+    print("Training Isolation Forest (priority pipeline; separate from monitor IF)...")
     X_if = X_df[IFOREST_COLUMNS]
-    X_normal = X_if[y == 0]
+    y_train_tmp = y[train_idx]
+    # Prefer weak-label NORMAL windows on train; further bias to baseline/asset if meta present
+    normal_mask = y_train_tmp == 0
+    X_normal = X_if.iloc[train_idx][normal_mask]
     if len(X_normal) < 30:
-        X_normal = X_if
-    # Slightly lower contamination on real-rich sets (reduces false positives on benign objects)
-    contam = 0.08 if source.startswith("history") else 0.1
+        X_normal = X_if.iloc[train_idx]
+    contam = 0.06 if source.startswith("history") else 0.1
     iforest = IsolationForest(
         n_estimators=200,
         contamination=contam,
@@ -737,38 +819,29 @@ def train_and_save_models(
     )
     iforest.fit(X_normal)
 
-    # Unified anomaly score everywhere: clip(0.5 - raw)  (statistical consistency fix)
+    # Unified anomaly score: clip(0.5 - raw)
     raw_scores = iforest.decision_function(X_if)
     X_full = X_df.copy()
     X_full["anomaly_score"] = np.clip(0.5 - raw_scores, 0.0, 1.0)
-    # Re-label lightly with anomaly now available (geometry+anomaly)
     y_relabel = np.array(
         [
-            label_features_for_threat({**X_full.iloc[i].to_dict(), "anomaly_score": float(X_full.iloc[i]["anomaly_score"])})
+            label_features_for_threat(
+                {**X_full.iloc[i].to_dict(), "anomaly_score": float(X_full.iloc[i]["anomaly_score"])}
+            )
             for i in range(len(X_full))
         ]
     )
-    # Keep original if relabel collapses all to one class
     if len(np.unique(y_relabel)) >= 2:
         y = y_relabel
 
     X_xgb = X_full[XGB_COLUMNS]
+    X_train, X_test = X_xgb.iloc[train_idx], X_xgb.iloc[test_idx]
+    y_train, y_test = y[train_idx], y[test_idx]
 
-    # Stratified split
-    try:
-        X_train, X_test, y_train, y_test = train_test_split(
-            X_xgb, y, test_size=0.2, random_state=42, stratify=y
-        )
-    except ValueError:
-        X_train, X_test, y_train, y_test = train_test_split(
-            X_xgb, y, test_size=0.2, random_state=42
-        )
-
-    # Asymmetric cost: higher weight on higher threat classes (threat ordinal loss)
     class_w = {0: 1.0, 1: 1.5, 2: 3.0, 3: 5.0}
     sw_train = np.array([class_w.get(int(yi), 1.0) for yi in y_train])
 
-    print("Training XGBoost Classifier (asymmetric sample weights)...")
+    print("Training XGBoost priority head (weak labels; not scientific proof)...")
     xgb = XGBClassifier(
         n_estimators=140,
         max_depth=5,
@@ -786,11 +859,14 @@ def train_and_save_models(
     pred_test = np.argmax(proba_test, axis=1)
     try:
         ll = float(log_loss(y_test, proba_test, labels=[0, 1, 2, 3]))
+        if not np.isfinite(ll):
+            ll = None
     except Exception:
-        ll = float("nan")
+        ll = None
     report = classification_report(
-        y_test, pred_test,
-        target_names=[CLASS_NAMES[i] for i in range(4)],
+        y_test,
+        pred_test,
+        target_names=[METRIC_CLASS_NAMES[i] for i in range(4)],
         output_dict=True,
         zero_division=0,
     )
@@ -801,29 +877,47 @@ def train_and_save_models(
         "iforest_contamination": contam,
         "anomaly_score_formula": "clip(0.5 - decision_function)",
         "sample_weights": class_w,
+        "split_mode": split_mode,
+        "purge_days": 14,
         "log_loss_test": ll,
         "accuracy_test": float(report.get("accuracy", 0.0)),
         "macro_f1": float(report.get("macro avg", {}).get("f1-score", 0.0)),
-        "class_distribution": {
-            CLASS_NAMES[i]: int(sum(y == i)) for i in range(4)
-        },
+        "class_distribution": {METRIC_CLASS_NAMES[i]: int(sum(y == i)) for i in range(4)},
         "classification_report": report,
-        "feature_columns": XGB_COLUMNS,
-        "iforest_columns": IFOREST_COLUMNS,
+        "feature_columns": list(XGB_COLUMNS),
+        "iforest_columns": list(IFOREST_COLUMNS),
+        "homology_mode": homology_backend(),
+        "role": "priority_head_weak_labels",
+        "doctrine": "military_first_sda",
+        "disclaimer": (
+            "XGBoost is an operational priority head (weak labels), NOT military ground truth. "
+            "Detection of persistent micro-trajectory noise is Isolation Forest vs normality anchors "
+            "(baseline+asset). Validation: walk-forward on military interest cases vs civil EO controls."
+        ),
         "statistically_coherent_fixes": [
             "history_store_primary_training",
             "geometry_in_features_and_labels",
             "unified_anomaly_score",
-            "light_threat_boost_only",
+            "temporal_purge_split",
+            "if_fit_on_train_only",
+            "rkhs_excluded_from_iforest",
+            "monitor_if_not_overwritten",
+            "military_baseline_train_suspect_score",
             "asymmetric_class_weights",
         ],
     }
-    print(f"Test accuracy={metrics['accuracy_test']:.3f}  log_loss={ll:.4f}  macro_F1={metrics['macro_f1']:.3f}")
+    ll_s = f"{ll:.4f}" if ll is not None else "n/a"
+    print(
+        f"Test accuracy={metrics['accuracy_test']:.3f}  log_loss={ll_s}  "
+        f"macro_F1={metrics['macro_f1']:.3f}  (weak-label agreement only)"
+    )
 
-    joblib.dump(iforest, os.path.join(MODELS_DIR_STR, "isolation_forest.joblib"))
-    joblib.dump(xgb, os.path.join(MODELS_DIR_STR, "xgboost_model.joblib"))
+    if_path = os.path.join(MODELS_DIR_STR, "isolation_forest.joblib")
+    xgb_path = os.path.join(MODELS_DIR_STR, "xgboost_model.joblib")
+    joblib.dump(iforest, if_path)
+    joblib.dump(xgb, xgb_path)
 
-    # RKHS reference: normal subset of core spectral features
+    # RKHS reference: normal subset of core spectral features (diagnostic / optional)
     rkhs_cols = [
         "semi_major_axis_km", "eccentricity", "inclination_deg", "raan_deg",
         "mean_motion_rev_per_day", "delta_sma_7d_km", "shannon_entropy_sma_30d",
@@ -832,7 +926,43 @@ def train_and_save_models(
     normal_subset = X_df[y == 0][rkhs_cols].values
     if len(normal_subset) == 0:
         normal_subset = X_df[rkhs_cols].values[:50]
-    joblib.dump(normal_subset, os.path.join(MODELS_DIR_STR, "rkhs_reference.joblib"))
+    rkhs_path = os.path.join(MODELS_DIR_STR, "rkhs_reference.joblib")
+    joblib.dump(normal_subset, rkhs_path)
+
+    try:
+        from src.model_registry import register_model
+
+        register_model(
+            "pipeline_if",
+            path=if_path,
+            feature_columns=IFOREST_COLUMNS,
+            extra={
+                "n_samples": metrics["n_samples"],
+                "contamination": contam,
+                "split_mode": split_mode,
+                "homology_mode": metrics["homology_mode"],
+                "role": "priority_pipeline_if",
+            },
+        )
+        register_model(
+            "xgboost",
+            path=xgb_path,
+            feature_columns=XGB_COLUMNS,
+            extra={
+                "accuracy_test_weak_labels": metrics["accuracy_test"],
+                "macro_f1": metrics["macro_f1"],
+                "split_mode": split_mode,
+                "disclaimer": metrics["disclaimer"],
+            },
+        )
+        register_model(
+            "rkhs_reference",
+            path=rkhs_path,
+            feature_columns=rkhs_cols,
+            extra={"n_rows": int(len(normal_subset))},
+        )
+    except Exception as exc:
+        print(f"Warning: registry update failed: {exc}")
 
     metrics_path = os.path.join(MODELS_DIR_STR, "training_metrics.json")
     with open(metrics_path, "w", encoding="utf-8") as f:

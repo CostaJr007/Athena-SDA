@@ -1,0 +1,1339 @@
+{
+  "event_id": "yaogan29_recon_2020",
+  "type": "recon_maneuver_regime",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) are CASE STUDIES to read how quant noise features (Hurst, Shannon, CUSUM, IF score) behave — not prediction targets. Primary claim: continuous normality-vs-deviation monitoring. first_fold_hit=true means elevated from first scorable fold (regime level), not necessarily a rising ramp into t_peak. Not a classified ground-truth claim.",
+  "t_start": "2020-01-01",
+  "t_peak": "2020-07-01",
+  "t_end": "2020-12-01",
+  "norad_ids": [
+    41038
+  ],
+  "pair_with": [],
+  "sources": [
+    "Public dual-use Yaogan recon / EO catalog class",
+    "Open-source SSA listings of Yaogan-29 LEO recon operations"
+  ],
+  "notes": "Independent LEO recon NORAD — tests whether military-class series differ from civil placebos under same IF protocol.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 24,
+  "folds": [
+    {
+      "asof": "2020-01-01",
+      "cutoff": "2019-12-29",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.39363989160013574,
+          "window_end": "2019-12-31 19:19:45.306336",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.67074824
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.780858935500048,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7026483874325343,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.20264838743253433,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5427041265472006,
+            "delta_sma_7d_km": -0.0002902585983974859,
+            "maneuver_count_30d": 7.0,
+            "tle_age_hours": 4.67074824,
+            "f10_7": 71.8,
+            "ap_index": 2.0,
+            "kp_mean": 0.583375,
+            "f10_7_delta_7d": -0.29999999999999716,
+            "ap_delta_7d": -0.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.346,
+            "cointegration_pvalue": 7.7e-05,
+            "pair_risk": 0.717,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5714879512200611
+        }
+      }
+    },
+    {
+      "asof": "2020-01-15",
+      "cutoff": "2020-01-12",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.35836120482054185,
+          "window_end": "2020-01-14 20:43:59.658816",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.2667614400000002
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.294274067192862,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.7901907518823778,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.29019075188237775,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0002825111433247625,
+            "delta_sma_7d_km": -0.00018298879058420425,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 3.2667614400000002,
+            "f10_7": 71.2,
+            "ap_index": 3.0,
+            "kp_mean": 0.79175,
+            "f10_7_delta_7d": -2.5,
+            "ap_delta_7d": -1.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.342,
+            "cointegration_pvalue": 0.025455,
+            "pair_risk": 0.7171,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5556675421692439
+        }
+      }
+    },
+    {
+      "asof": "2020-01-29",
+      "cutoff": "2020-01-26",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.35121892252280856,
+          "window_end": "2020-01-28 20:30:53.050752",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.48526368
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.00531485689428,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8214408456369708,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32144084563697084,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 8.559107629216773e-13,
+            "delta_sma_7d_km": 0.0003628220638347557,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 3.48526368,
+            "f10_7": 74.3,
+            "ap_index": 8.0,
+            "kp_mean": 1.875,
+            "f10_7_delta_7d": 2.3999999999999915,
+            "ap_delta_7d": 4.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.336,
+            "cointegration_pvalue": 2.3e-05,
+            "pair_risk": 0.7171,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5524535151352639
+        }
+      }
+    },
+    {
+      "asof": "2020-02-12",
+      "cutoff": "2020-02-09",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.345671584069153,
+          "window_end": "2020-02-11 21:55:04.826784",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.08199256
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.675595777605311,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8161686744852542,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3161686744852542,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9939932149312951,
+            "delta_sma_7d_km": 0.00042276565272914013,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 2.08199256,
+            "f10_7": 71.6,
+            "ap_index": 4.0,
+            "kp_mean": 1.125,
+            "f10_7_delta_7d": 1.0,
+            "ap_delta_7d": -3.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.334,
+            "cointegration_pvalue": 0.000181,
+            "pair_risk": 0.7171,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5499572128311189
+        }
+      }
+    },
+    {
+      "asof": "2020-02-26",
+      "cutoff": "2020-02-23",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.33648556187241363,
+          "window_end": "2020-02-25 21:41:55.653504",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.30120736
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.010570934268484,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8464487660131371,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3464487660131371,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9563679482944414,
+            "delta_sma_7d_km": 0.00037228547807899304,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.30120736,
+            "f10_7": 70.1,
+            "ap_index": 3.0,
+            "kp_mean": 0.70825,
+            "f10_7_delta_7d": -0.9000000000000057,
+            "ap_delta_7d": -3.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 5.403,
+            "cointegration_pvalue": 0.609634,
+            "pair_risk": 0.7292,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5524785028425861
+        }
+      }
+    },
+    {
+      "asof": "2020-03-11",
+      "cutoff": "2020-03-08",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.34945873127689936,
+          "window_end": "2020-03-10 21:28:45.185952",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.5207816800000002
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7153266987718094,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.7954916386245098,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2954916386245098,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 9.008827883213937e-06,
+            "delta_sma_7d_km": -0.000457468549029727,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.5207816800000002,
+            "f10_7": 70.5,
+            "ap_index": 2.0,
+            "kp_mean": 0.541625,
+            "f10_7_delta_7d": 0.7000000000000028,
+            "ap_delta_7d": -2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.327,
+            "cointegration_pvalue": 0.000818,
+            "pair_risk": 0.7171,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5516614290746047
+        }
+      }
+    },
+    {
+      "asof": "2020-03-25",
+      "cutoff": "2020-03-22",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.36533842670914496,
+          "window_end": "2020-03-24 19:38:13.858080",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.3628172
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.80004461847901,
+            "shannon_entropy_sma_short": 3.1699250014423126,
+            "hurst_exponent_sma": 0.7328410120538984,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2328410120538984,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.06939286633061342,
+            "delta_sma_7d_km": -0.001460742191738973,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.3628172,
+            "f10_7": 71.2,
+            "ap_index": 3.0,
+            "kp_mean": 0.708375,
+            "f10_7_delta_7d": -0.7999999999999972,
+            "ap_delta_7d": -3.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.323,
+            "cointegration_pvalue": 0.152581,
+            "pair_risk": 0.6637,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5294372920191153
+        }
+      }
+    },
+    {
+      "asof": "2020-04-08",
+      "cutoff": "2020-04-05",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.3684040479776712,
+          "window_end": "2020-04-07 21:02:20.264352",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.96103768
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9450386975402454,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7145588725240098,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.21455887252400985,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.34869532827598443,
+            "delta_sma_7d_km": -0.0021611366437355173,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.96103768,
+            "f10_7": 70.4,
+            "ap_index": 13.0,
+            "kp_mean": 2.6251249999999997,
+            "f10_7_delta_7d": 1.2000000000000028,
+            "ap_delta_7d": 7.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.32,
+            "cointegration_pvalue": 0.014791,
+            "pair_risk": 0.7171,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.560186821589952
+        }
+      }
+    },
+    {
+      "asof": "2020-04-22",
+      "cutoff": "2020-04-19",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.3449492785997369,
+          "window_end": "2020-04-21 22:26:25.128384",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.55968656
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.036372249830224,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8588339854995447,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3588339854995447,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.0013471583024511347,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.55968656,
+            "f10_7": 70.7,
+            "ap_index": 7.0,
+            "kp_mean": 1.666625,
+            "f10_7_delta_7d": 2.299999999999997,
+            "ap_delta_7d": 0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.315,
+            "cointegration_pvalue": 0.045546,
+            "pair_risk": 0.7171,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5496321753698816
+        }
+      }
+    },
+    {
+      "asof": "2020-05-06",
+      "cutoff": "2020-05-03",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.3424196315006433,
+          "window_end": "2020-05-05 18:58:29.479872",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 5.02514448
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0761031709967224,
+            "shannon_entropy_sma_short": 2.7254805569978675,
+            "hurst_exponent_sma": 0.7998503860658956,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.29985038606589565,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9793228951128722,
+            "delta_sma_7d_km": -0.0012461979085856,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.02514448,
+            "f10_7": 69.8,
+            "ap_index": 5.0,
+            "kp_mean": 0.9998750000000001,
+            "f10_7_delta_7d": -0.10000000000000853,
+            "ap_delta_7d": 1.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 5.387,
+            "cointegration_pvalue": 0.981265,
+            "pair_risk": 0.5992,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4836488341752895
+        }
+      }
+    },
+    {
+      "asof": "2020-05-20",
+      "cutoff": "2020-05-17",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.35144474264884923,
+          "window_end": "2020-05-19 20:22:31.302624",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.62463816
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0761031709967224,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8175627158184655,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3175627158184655,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9799360956692582,
+            "delta_sma_7d_km": -9.780270556802861e-05,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 3.62463816,
+            "f10_7": 69.6,
+            "ap_index": 2.0,
+            "kp_mean": 0.5,
+            "f10_7_delta_7d": 0.7999999999999972,
+            "ap_delta_7d": -0.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 209.983,
+            "cointegration_pvalue": 0.054869,
+            "pair_risk": 0.7062,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.5465601341919821
+        }
+      }
+    },
+    {
+      "asof": "2020-06-03",
+      "cutoff": "2020-05-31",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.35190584466895547,
+          "window_end": "2020-06-02 21:46:31.871712",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.2244800799999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.755057619938308,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.7374358052911741,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.23743580529117414,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5176011796278407,
+            "delta_sma_7d_km": 0.00022399937279260485,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.2244800799999997,
+            "f10_7": 70.0,
+            "ap_index": 3.0,
+            "kp_mean": 0.58325,
+            "f10_7_delta_7d": 2.0,
+            "ap_delta_7d": -2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.29,
+            "cointegration_pvalue": 0.001639,
+            "pair_risk": 0.7171,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.55276263010103
+        }
+      }
+    },
+    {
+      "asof": "2020-06-17",
+      "cutoff": "2020-06-14",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.34249678937009814,
+          "window_end": "2020-06-16 21:33:11.630592",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.4467692800000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6100635408770727,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8698811338866357,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3698811338866357,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 2.7908166013170042e-11,
+            "delta_sma_7d_km": -0.0004795471340912627,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 2.4467692800000003,
+            "f10_7": 68.8,
+            "ap_index": 3.0,
+            "kp_mean": 0.833375,
+            "f10_7_delta_7d": -2.200000000000003,
+            "ap_delta_7d": -0.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 5.383,
+            "cointegration_pvalue": 0.104781,
+            "pair_risk": 0.906,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6524235552165443
+        }
+      }
+    },
+    {
+      "asof": "2020-07-01",
+      "cutoff": "2020-06-28",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.3173022047956196,
+          "window_end": "2020-06-30 22:57:10.045728",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.04720952
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6550505394177746,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8108712136007531,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3108712136007531,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.663701900827079,
+            "delta_sma_7d_km": -0.0009622478828532621,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.04720952,
+            "f10_7": 68.9,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": 2.0,
+            "ap_delta_7d": 0.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 5.382,
+            "cointegration_pvalue": 0.187286,
+            "pair_risk": 0.8771,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6251909921580289
+        }
+      }
+    },
+    {
+      "asof": "2020-07-15",
+      "cutoff": "2020-07-12",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.3464265415047414,
+          "window_end": "2020-07-14 22:43:47.890848",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.27003032
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.839775539645508,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7229354041151411,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.22293540411514112,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.030130562998291508,
+            "delta_sma_7d_km": -0.0012083293231626158,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.27003032,
+            "f10_7": 68.4,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": 1.2000000000000028,
+            "ap_delta_7d": 0.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 5.368,
+            "cointegration_pvalue": 0.195923,
+            "pair_risk": 0.8741,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6366469436771337
+        }
+      }
+    },
+    {
+      "asof": "2020-07-29",
+      "cutoff": "2020-07-26",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.33516793908380627,
+          "window_end": "2020-07-28 22:30:24.712128",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.49313552
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0053148568942794,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7998504111925882,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.29985041119258815,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.00015351286134990684,
+            "delta_sma_7d_km": -0.0013219043794379104,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.49313552,
+            "f10_7": 72.6,
+            "ap_index": 4.0,
+            "kp_mean": 0.958375,
+            "f10_7_delta_7d": 2.5999999999999943,
+            "ap_delta_7d": -1.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.25,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.7171,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5452305725877128
+        }
+      }
+    },
+    {
+      "asof": "2020-08-12",
+      "cutoff": "2020-08-09",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.32826672552388036,
+          "window_end": "2020-08-11 22:17:00.343680",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.7165712
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8603207778330444,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8336122401888759,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3336122401888759,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.909629554959613,
+            "delta_sma_7d_km": -0.0006183599834912457,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 1.7165712,
+            "f10_7": 73.1,
+            "ap_index": 3.0,
+            "kp_mean": 0.75,
+            "f10_7_delta_7d": -0.30000000000001137,
+            "ap_delta_7d": -0.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.24,
+            "cointegration_pvalue": 1e-06,
+            "pair_risk": 0.7171,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5421250264857462
+        }
+      }
+    },
+    {
+      "asof": "2020-08-26",
+      "cutoff": "2020-08-23",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.3334510050261414,
+          "window_end": "2020-08-25 20:26:14.998272",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.5625004799999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9450386975402454,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.7902292021086336,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.29022920210863357,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8357301662173898,
+            "delta_sma_7d_km": 0.0001892935215437319,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.5625004799999997,
+            "f10_7": 70.4,
+            "ap_index": 6.0,
+            "kp_mean": 1.54175,
+            "f10_7_delta_7d": -0.09999999999999432,
+            "ap_delta_7d": 1.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.234,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.7171,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5444579522617636
+        }
+      }
+    },
+    {
+      "asof": "2020-09-09",
+      "cutoff": "2020-09-06",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.3744054323074412,
+          "window_end": "2020-09-08 21:50:07.507968",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.1645811200000002
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.865576855207249,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8955544095198107,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3955544095198107,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.25888321306213513,
+            "delta_sma_7d_km": 5.0478175580792595e-05,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 2.1645811200000002,
+            "f10_7": 69.7,
+            "ap_index": 1.0,
+            "kp_mean": 0.125,
+            "f10_7_delta_7d": 1.4000000000000057,
+            "ap_delta_7d": -3.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 5.358,
+            "cointegration_pvalue": 0.454206,
+            "pair_risk": 0.7837,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5995174445383485
+        }
+      }
+    },
+    {
+      "asof": "2020-09-23",
+      "cutoff": "2020-09-20",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.3544615895124837,
+          "window_end": "2020-09-22 21:36:39.149568",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.3891251199999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0761031709967224,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8325924135209802,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33259241352098023,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9729000993144347,
+            "delta_sma_7d_km": 0.0003438819530856563,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.3891251199999997,
+            "f10_7": 73.3,
+            "ap_index": 10.0,
+            "kp_mean": 2.2085,
+            "f10_7_delta_7d": 3.799999999999997,
+            "ap_delta_7d": 6.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 5.335,
+            "cointegration_pvalue": 0.713047,
+            "pair_risk": 0.6931,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5407127152806177
+        }
+      }
+    },
+    {
+      "asof": "2020-10-07",
+      "cutoff": "2020-10-04",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.3459097272024082,
+          "window_end": "2020-10-06 19:45:49.802112",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.23616608
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.647592147308496,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.8671319312776512,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3671319312776512,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.20498338111662556,
+            "delta_sma_7d_km": -0.000656213534057315,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.23616608,
+            "f10_7": 70.7,
+            "ap_index": 4.0,
+            "kp_mean": 0.95825,
+            "f10_7_delta_7d": -2.5999999999999943,
+            "ap_delta_7d": -3.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 5.33,
+            "cointegration_pvalue": 0.993218,
+            "pair_risk": 0.5951,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4829643772410837
+        }
+      }
+    },
+    {
+      "asof": "2020-10-21",
+      "cutoff": "2020-10-18",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.339605257285842,
+          "window_end": "2020-10-20 21:09:37.999584",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.83944456
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7756028581258443,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8749081215831805,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37490812158318054,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 2.758545117420149e-07,
+            "delta_sma_7d_km": -0.0014575483019143576,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.83944456,
+            "f10_7": 73.7,
+            "ap_index": 8.0,
+            "kp_mean": 1.79175,
+            "f10_7_delta_7d": -0.7999999999999972,
+            "ap_delta_7d": 4.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 220.221,
+            "cointegration_pvalue": 0.000184,
+            "pair_risk": 0.7171,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5472273657786288
+        }
+      }
+    },
+    {
+      "asof": "2020-11-04",
+      "cutoff": "2020-11-01",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.37454477736055497,
+          "window_end": "2020-11-03 22:33:24.426720",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.4432147999999998
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.984769618706743,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7930150132395898,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2930150132395898,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.3286107408517679,
+            "delta_sma_7d_km": -0.0015679643511248287,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 1.4432147999999998,
+            "f10_7": 88.1,
+            "ap_index": 2.0,
+            "kp_mean": 0.333125,
+            "f10_7_delta_7d": 0.5,
+            "ap_delta_7d": -3.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 5.336,
+            "cointegration_pvalue": 0.903706,
+            "pair_risk": 0.6264,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5130651498122497
+        }
+      }
+    },
+    {
+      "asof": "2020-11-18",
+      "cutoff": "2020-11-15",
+      "n_train_ok": true,
+      "targets": {
+        "41038": {
+          "ok": true,
+          "anomaly_score": 0.41541292149626874,
+          "window_end": "2020-11-17 20:42:29.654208",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_78h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.29176272
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.2662704368960473,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.6889024643369301,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.18890246433693014,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.001015860989355133,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 3.29176272,
+            "f10_7": 77.3,
+            "ap_index": 3.0,
+            "kp_mean": 0.5832499999999999,
+            "f10_7_delta_7d": -10.799999999999997,
+            "ap_delta_7d": 0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 5.283,
+            "cointegration_pvalue": 1.0,
+            "pair_risk": 0.5928,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.512975814673321
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "41038": {
+      "norad_id": 41038,
+      "object_name": "YAOGAN-29",
+      "n_folds_scored": 24,
+      "anomaly_score_mean": 0.35278119911400996,
+      "anomaly_score_max": 0.41541292149626874,
+      "anomaly_score_at_nearest_peak": 0.3173022047956196,
+      "hit_at_event": false,
+      "soft_hit_at_event": false,
+      "n_hits_in_window": 0,
+      "first_fold_hit": false,
+      "first_hit_asof": null,
+      "first_scorable_asof": "2020-01-01",
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 2.6890109092981254,
+          "late_mean": 2.774068717807469
+        },
+        "shannon_entropy_sma_short": {
+          "early_mean": 2.648955904159994,
+          "late_mean": 2.4613201402110088
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.7826121648592842,
+          "late_mean": 0.8089377171492572
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.2826121648592843,
+          "late_mean": 0.3089377171492571
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.05263157894736842,
+          "late_mean": 0.05263157894736842
+        }
+      },
+      "pair_risk_max": 0.906,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 13,
+        "pre_peak_anomaly_mean": 0.3539842044336193,
+        "pre_peak_anomaly_max": 0.39363989160013574,
+        "early_pre_peak_mean": 0.36222290075315977,
+        "late_pre_peak_mean": 0.3470667520471365,
+        "noise_ramp": -0.015156148706023276,
+        "pre_peak_pair_risk_max": 0.906,
+        "elevated_noise_before_peak": false
+      },
+      "is_placebo": false
+    }
+  }
+}

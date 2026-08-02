@@ -29,7 +29,7 @@ source .venv/bin/activate
 pip install --upgrade pip setuptools wheel
 
 # Install scientific, ML, TDA, visualization, and AI libraries
-pip install numpy pandas scipy pandas-ta numba scikit-learn xgboost scikit-fuzzy ripser persim streamlit plotly watchdog ibm-watsonx-ai
+pip install numpy pandas scipy pandas-ta numba scikit-learn xgboost scikit-fuzzy ripser persim ibm-watsonx-ai
 
 echo "=========================================================="
 echo "    Setup complete!                                      "

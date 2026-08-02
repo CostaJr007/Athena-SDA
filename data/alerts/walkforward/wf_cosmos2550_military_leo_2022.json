@@ -1,0 +1,1361 @@
+{
+  "event_id": "cosmos2550_military_leo_2022",
+  "type": "military_leo_regime",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) are CASE STUDIES to read how quant noise features (Hurst, Shannon, CUSUM, IF score) behave — not prediction targets. Primary claim: continuous normality-vs-deviation monitoring. first_fold_hit=true means elevated from first scorable fold (regime level), not necessarily a rising ramp into t_peak. Not a classified ground-truth claim.",
+  "t_start": "2022-01-01",
+  "t_peak": "2022-07-01",
+  "t_end": "2022-12-01",
+  "norad_ids": [
+    48865
+  ],
+  "pair_with": [],
+  "sources": [
+    "Public catalog: COSMOS 2550 military LEO class (Russian MOD series identifiers in open catalogs)",
+    "Open-source space situational awareness listings of Cosmos military spacecraft"
+  ],
+  "notes": "Independent military LEO NORAD — tests quant noise on military-class LEO series.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 24,
+  "folds": [
+    {
+      "asof": "2022-01-01",
+      "cutoff": "2021-12-29",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.4575798116558097,
+          "window_end": "2021-12-31 22:13:36.494976",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.77319584
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9450386975402454,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8681566501990761,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36815665019907606,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.029188825057644863,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.77319584,
+            "f10_7": 93.9,
+            "ap_index": 12.0,
+            "kp_mean": 2.416625,
+            "f10_7_delta_7d": -36.79999999999998,
+            "ap_delta_7d": 5.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 407.541,
+            "cointegration_pvalue": 0.160874,
+            "pair_risk": 0.5422,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5041209152451144
+        }
+      }
+    },
+    {
+      "asof": "2022-01-15",
+      "cutoff": "2022-01-12",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.555051397599939,
+          "window_end": "2022-01-14 23:07:54.668352",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 0.86814768
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.647592147308496,
+            "shannon_entropy_sma_short": 2.0588138903312014,
+            "hurst_exponent_sma": 0.8098663792971732,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3098663792971732,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9386845203099488,
+            "delta_sma_7d_km": -0.14497064054739894,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 0.86814768,
+            "f10_7": 115.6,
+            "ap_index": 20.0,
+            "kp_mean": 3.29175,
+            "f10_7_delta_7d": 13.199999999999989,
+            "ap_delta_7d": 11.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 292.152,
+            "cointegration_pvalue": 0.010951,
+            "pair_risk": 0.6649,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.6154681289199726
+        }
+      }
+    },
+    {
+      "asof": "2022-01-29",
+      "cutoff": "2022-01-26",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.41589875536078896,
+          "window_end": "2022-01-28 22:00:31.862880",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.9911492000000002
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9847696187067436,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8015543521874912,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.30155435218749116,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.09416095214559916,
+            "delta_sma_7d_km": -0.004936923014611239,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 1.9911492000000002,
+            "f10_7": 125.3,
+            "ap_index": 14.0,
+            "kp_mean": 2.5001249999999997,
+            "f10_7_delta_7d": 30.099999999999994,
+            "ap_delta_7d": 5.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 485.47,
+            "cointegration_pvalue": 0.000325,
+            "pair_risk": 0.5634,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.49702443991235506
+        }
+      }
+    },
+    {
+      "asof": "2022-02-12",
+      "cutoff": "2022-02-09",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.4356270120212472,
+          "window_end": "2022-02-11 22:38:56.937120",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.3508508000000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4650694618158377,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8181196415335398,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3181196415335398,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.2932565552828864,
+            "delta_sma_7d_km": -0.0011122922142021707,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 1.3508508000000001,
+            "f10_7": 110.5,
+            "ap_index": 13.0,
+            "kp_mean": 2.75,
+            "f10_7_delta_7d": -15.400000000000006,
+            "ap_delta_7d": 1.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 273.796,
+            "cointegration_pvalue": 0.001365,
+            "pair_risk": 0.6774,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5686021554095613
+        }
+      }
+    },
+    {
+      "asof": "2022-02-26",
+      "cutoff": "2022-02-23",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.43542569815613996,
+          "window_end": "2022-02-25 22:56:36.233088",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.05660192
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.502598068247261,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8485329932188139,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3485329932188139,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.6925854247840586,
+            "adf_pvalue": 0.01310834825295679,
+            "delta_sma_7d_km": 0.006245514600777824,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 1.05660192,
+            "f10_7": 96.5,
+            "ap_index": 1.0,
+            "kp_mean": 0.125,
+            "f10_7_delta_7d": 0.7999999999999972,
+            "ap_delta_7d": -7.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 396.455,
+            "cointegration_pvalue": 0.00025,
+            "pair_risk": 0.6041,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5281965641702631
+        }
+      }
+    },
+    {
+      "asof": "2022-03-12",
+      "cutoff": "2022-03-09",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.41101080632145287,
+          "window_end": "2022-03-11 20:18:19.051776",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.69470784
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.010570934268484,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8146907365998233,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3146907365998233,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.19341681323697812,
+            "delta_sma_7d_km": -0.004068507029842294,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.69470784,
+            "f10_7": 124.7,
+            "ap_index": 12.0,
+            "kp_mean": 1.999875,
+            "f10_7_delta_7d": 4.6000000000000085,
+            "ap_delta_7d": -0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 433.917,
+            "cointegration_pvalue": 0.011182,
+            "pair_risk": 0.5859,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.5071998628446538
+        }
+      }
+    },
+    {
+      "asof": "2022-03-26",
+      "cutoff": "2022-03-23",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.42052408650071355,
+          "window_end": "2022-03-25 20:31:47.661600",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.470094
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.155565013329719,
+            "shannon_entropy_sma_short": 2.503258334775646,
+            "hurst_exponent_sma": 0.7923217484009778,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2923217484009778,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9301950457262543,
+            "delta_sma_7d_km": -0.013469469919982657,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.470094,
+            "f10_7": 118.7,
+            "ap_index": 6.0,
+            "kp_mean": 1.45825,
+            "f10_7_delta_7d": 24.299999999999997,
+            "ap_delta_7d": -0.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 305.502,
+            "cointegration_pvalue": 0.001012,
+            "pair_risk": 0.6563,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5502008389253211
+        }
+      }
+    },
+    {
+      "asof": "2022-04-09",
+      "cutoff": "2022-04-06",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.46934477308167977,
+          "window_end": "2022-04-08 21:08:17.729664",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.8617417599999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.562688039303908,
+            "shannon_entropy_sma_short": 1.4466166676282084,
+            "hurst_exponent_sma": 0.8477983367249095,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34779833672490945,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.14192012413166877,
+            "delta_sma_7d_km": 0.0006810582963225897,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 2.8617417599999997,
+            "f10_7": 107.1,
+            "ap_index": 17.0,
+            "kp_mean": 3.00025,
+            "f10_7_delta_7d": -36.20000000000002,
+            "ap_delta_7d": 6.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 745.804,
+            "cointegration_pvalue": 3.4e-05,
+            "pair_risk": 0.4852,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.4780651478867559
+        }
+      }
+    },
+    {
+      "asof": "2022-04-23",
+      "cutoff": "2022-04-20",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.47052630208166846,
+          "window_end": "2022-04-22 20:01:37.927200",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.972798
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7205827761460135,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8317741837646828,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3317741837646828,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.996344669723952,
+            "delta_sma_7d_km": 0.00033606669603614137,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.972798,
+            "f10_7": 159.8,
+            "ap_index": 11.0,
+            "kp_mean": 2.45825,
+            "f10_7_delta_7d": 37.400000000000006,
+            "ap_delta_7d": 2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 618.823,
+            "cointegration_pvalue": 0.000104,
+            "pair_risk": 0.5171,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4961418359367508
+        }
+      }
+    },
+    {
+      "asof": "2022-05-07",
+      "cutoff": "2022-05-04",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.4195278724091749,
+          "window_end": "2022-05-06 22:07:01.659072",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.8828724799999998
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8655768552072485,
+            "shannon_entropy_sma_short": 2.0588138903312014,
+            "hurst_exponent_sma": 0.7793349117184428,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2793349117184428,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.23150371779229523,
+            "delta_sma_7d_km": 0.008232153973949607,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 1.8828724799999998,
+            "f10_7": 118.1,
+            "ap_index": 1.0,
+            "kp_mean": 0.291625,
+            "f10_7_delta_7d": -1.6000000000000085,
+            "ap_delta_7d": -4.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 385.409,
+            "cointegration_pvalue": 3.8e-05,
+            "pair_risk": 0.6099,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5242325425841288
+        }
+      }
+    },
+    {
+      "asof": "2022-05-21",
+      "cutoff": "2022-05-18",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.4104450504061656,
+          "window_end": "2022-05-20 20:55:58.080864",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.0671997600000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.582059910580258,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.8478521812167551,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3478521812167551,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.06683305313374614,
+            "delta_sma_7d_km": -0.003488559171273664,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 3.0671997600000003,
+            "f10_7": 166.7,
+            "ap_index": 10.0,
+            "kp_mean": 2.2501249999999997,
+            "f10_7_delta_7d": 14.0,
+            "ap_delta_7d": 1.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 776.615,
+            "cointegration_pvalue": 0.001041,
+            "pair_risk": 0.4789,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.4480952726827745
+        }
+      }
+    },
+    {
+      "asof": "2022-06-04",
+      "cutoff": "2022-06-01",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.4217832003171689,
+          "window_end": "2022-06-03 19:55:51.153888",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.06912392
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6550505394177746,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.7997605375840388,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.29976053758403876,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 4.154200202452241e-05,
+            "delta_sma_7d_km": -0.011922936447263055,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 4.06912392,
+            "f10_7": 100.9,
+            "ap_index": 3.0,
+            "kp_mean": 0.541625,
+            "f10_7_delta_7d": -0.8999999999999915,
+            "ap_delta_7d": -5.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 473.904,
+            "cointegration_pvalue": 0.000102,
+            "pair_risk": 0.5682,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.5023124401427261
+        }
+      }
+    },
+    {
+      "asof": "2022-06-18",
+      "cutoff": "2022-06-15",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.43798614204876063,
+          "window_end": "2022-06-16 02:06:02.574720",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "tle_aging_46h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 45.8992848
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.2470847539170853,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.7693320420813397,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.26933204208133965,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7058058567572191,
+            "delta_sma_7d_km": -0.004107155727069767,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 45.8992848,
+            "f10_7": 140.2,
+            "ap_index": 13.0,
+            "kp_mean": 2.458375,
+            "f10_7_delta_7d": 28.099999999999994,
+            "ap_delta_7d": 2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 206.327,
+            "cointegration_pvalue": 0.000139,
+            "pair_risk": 0.7284,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5977137639219423
+        }
+      }
+    },
+    {
+      "asof": "2022-07-02",
+      "cutoff": "2022-06-29",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.39600983303293347,
+          "window_end": "2022-07-01 22:24:32.360832",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_92h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.59101088
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.2200683022340693,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8253656081365767,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32536560813657667,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8139288443800762,
+            "delta_sma_7d_km": -0.01036452126390941,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 1.59101088,
+            "f10_7": 100.2,
+            "ap_index": 17.0,
+            "kp_mean": 2.8751249999999997,
+            "f10_7_delta_7d": -7.8999999999999915,
+            "ap_delta_7d": 6.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 237.824,
+            "cointegration_pvalue": 0.000352,
+            "pair_risk": 0.7035,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5651294248648201
+        }
+      }
+    },
+    {
+      "asof": "2022-07-16",
+      "cutoff": "2022-07-13",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.4927119366368381,
+          "window_end": "2022-07-15 19:45:56.564640",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_92h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.2342876
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.8795064608120067,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8194199087396171,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3194199087396171,
+            "kolmogorov_proxy_7d": 0.10526315789473684,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.4153046658241365,
+            "delta_sma_7d_km": -0.0009338502350146882,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 4.2342876,
+            "f10_7": 176.2,
+            "ap_index": 6.0,
+            "kp_mean": 1.4585,
+            "f10_7_delta_7d": 39.29999999999998,
+            "ap_delta_7d": -1.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 409.918,
+            "cointegration_pvalue": 0.0001,
+            "pair_risk": 0.5974,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5502903714865772
+        }
+      }
+    },
+    {
+      "asof": "2022-07-30",
+      "cutoff": "2022-07-27",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.41937831778582957,
+          "window_end": "2022-07-29 15:32:49.532064",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_92h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 8.45290776
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.437065831519023,
+            "shannon_entropy_sma_short": 2.2810361125534238,
+            "hurst_exponent_sma": 0.8452946447372622,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34529464473726224,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6881041138642772,
+            "delta_sma_7d_km": 0.004523523448369815,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 8.45290776,
+            "f10_7": 90.8,
+            "ap_index": 6.0,
+            "kp_mean": 1.5415,
+            "f10_7_delta_7d": -19.700000000000003,
+            "ap_delta_7d": -1.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 775.171,
+            "cointegration_pvalue": 7e-06,
+            "pair_risk": 0.4792,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.45228024300362335
+        }
+      }
+    },
+    {
+      "asof": "2022-08-13",
+      "cutoff": "2022-08-10",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.42842791687800735,
+          "window_end": "2022-08-12 20:54:29.706624",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_92h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.09174816
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.5100564603565396,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8290366939418269,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3290366939418269,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9268575049312167,
+            "delta_sma_7d_km": -0.0032982162392727332,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.09174816,
+            "f10_7": 124.2,
+            "ap_index": 8.0,
+            "kp_mean": 2.0,
+            "f10_7_delta_7d": 7.900000000000006,
+            "ap_delta_7d": -6.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 424.345,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.5904,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5175125625951034
+        }
+      }
+    },
+    {
+      "asof": "2022-08-27",
+      "cutoff": "2022-08-24",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.4088214738211263,
+          "window_end": "2022-08-26 21:13:55.494912",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_92h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.76791808
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.794788541104806,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8299923048704315,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3299923048704315,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9491927474160984,
+            "delta_sma_7d_km": 0.006819468092544412,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 2.76791808,
+            "f10_7": 127.5,
+            "ap_index": 11.0,
+            "kp_mean": 2.25,
+            "f10_7_delta_7d": 26.0,
+            "ap_delta_7d": 4.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 113.941,
+            "cointegration_pvalue": 0.000548,
+            "pair_risk": 0.9637,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.714004663219507
+        }
+      }
+    },
+    {
+      "asof": "2022-09-10",
+      "cutoff": "2022-09-07",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.510528223732517,
+          "window_end": "2022-09-09 18:34:53.606784",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_92h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.41844256
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.670339700231107,
+            "shannon_entropy_sma_short": 2.0588138903312014,
+            "hurst_exponent_sma": 0.7578962319544701,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2578962319544701,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.892544613623949,
+            "delta_sma_7d_km": -0.06653121516410465,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 5.41844256,
+            "f10_7": 135.9,
+            "ap_index": 12.0,
+            "kp_mean": 2.625,
+            "f10_7_delta_7d": 12.5,
+            "ap_delta_7d": -12.375,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 433.981,
+            "cointegration_pvalue": 1.0,
+            "pair_risk": 0.2359,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.35948270067963267
+        }
+      }
+    },
+    {
+      "asof": "2022-09-24",
+      "cutoff": "2022-09-21",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.43058222715904493,
+          "window_end": "2022-09-23 18:48:22.565664",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_92h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.1937317599999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8000446184790104,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8406090116966597,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3406090116966597,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.987691126557644,
+            "delta_sma_7d_km": -0.015818960229808,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 5.1937317599999995,
+            "f10_7": 146.5,
+            "ap_index": 12.0,
+            "kp_mean": 2.666625,
+            "f10_7_delta_7d": 15.0,
+            "ap_delta_7d": 4.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 358.941,
+            "cointegration_pvalue": 0.213667,
+            "pair_risk": 0.5494,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4959320022215703
+        }
+      }
+    },
+    {
+      "asof": "2022-10-08",
+      "cutoff": "2022-10-05",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.4375891431555983,
+          "window_end": "2022-10-07 22:38:36.849984",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_92h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.35643056
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7205827761460135,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.8293687227125206,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3293687227125206,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6406297111145227,
+            "delta_sma_7d_km": 0.0018290381694896496,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 1.35643056,
+            "f10_7": 157.2,
+            "ap_index": 11.0,
+            "kp_mean": 2.3751249999999997,
+            "f10_7_delta_7d": 9.299999999999983,
+            "ap_delta_7d": -2.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 675.815,
+            "cointegration_pvalue": 0.245142,
+            "pair_risk": 0.4157,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4255501144200193
+        }
+      }
+    },
+    {
+      "asof": "2022-10-22",
+      "cutoff": "2022-10-19",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.4489467964953599,
+          "window_end": "2022-10-21 18:24:08.450208",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_92h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.59765272
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9655839357277816,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8205109451517875,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32051094515178746,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6292755558290162,
+            "delta_sma_7d_km": -0.003842464881927299,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 5.59765272,
+            "f10_7": 105.0,
+            "ap_index": 24.0,
+            "kp_mean": 3.41675,
+            "f10_7_delta_7d": -10.099999999999994,
+            "ap_delta_7d": 14.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 192.9,
+            "cointegration_pvalue": 0.008493,
+            "pair_risk": 0.7396,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.608806058422912
+        }
+      }
+    },
+    {
+      "asof": "2022-11-05",
+      "cutoff": "2022-11-02",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.4486698339326508,
+          "window_end": "2022-11-04 20:31:26.095296",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_92h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.4760846400000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8655768552072485,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.787628802286661,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.287628802286661,
+            "kolmogorov_proxy_7d": 0.10526315789473684,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9933583598985443,
+            "delta_sma_7d_km": 0.0304244527087576,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.4760846400000003,
+            "f10_7": 131.1,
+            "ap_index": 9.0,
+            "kp_mean": 2.0001249999999997,
+            "f10_7_delta_7d": -2.8000000000000114,
+            "ap_delta_7d": -5.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 465.986,
+            "cointegration_pvalue": 0.125175,
+            "pair_risk": 0.5278,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.49219142526969295
+        }
+      }
+    },
+    {
+      "asof": "2022-11-19",
+      "cutoff": "2022-11-16",
+      "n_train_ok": true,
+      "targets": {
+        "48865": {
+          "ok": true,
+          "anomaly_score": 0.4382163117730602,
+          "window_end": "2022-11-18 22:26:19.279968",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_92h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.56131112
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.689525383210069,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8411538411324709,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34115384113247094,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.000986093227223517,
+            "delta_sma_7d_km": -0.0021829484485351713,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 1.56131112,
+            "f10_7": 115.1,
+            "ap_index": 4.0,
+            "kp_mean": 0.95825,
+            "f10_7_delta_7d": -23.099999999999994,
+            "ap_delta_7d": 0.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 430.667,
+            "cointegration_pvalue": 0.04645,
+            "pair_risk": 0.5874,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.5202673402978771
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "48865": {
+      "norad_id": 48865,
+      "object_name": "COSMOS 2550",
+      "n_folds_scored": 24,
+      "anomaly_score_mean": 0.44252553843181985,
+      "anomaly_score_max": 0.555051397599939,
+      "anomaly_score_at_nearest_peak": 0.39600983303293347,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "n_hits_in_window": 0,
+      "first_fold_hit": false,
+      "first_hit_asof": "2022-01-15",
+      "first_scorable_asof": "2022-01-01",
+      "n_folds_above_thr_pre_peak": 1,
+      "lead_time_days": 167.0,
+      "lead_time_note": "days_from_first_thr_cross_to_t_peak",
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 2.7606174813428304,
+          "late_mean": 2.5874430147805914
+        },
+        "shannon_entropy_sma_short": {
+          "early_mean": 2.3502090290998976,
+          "late_mean": 2.2390979179887864
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.8244242558043201,
+          "late_mean": 0.799069918150144
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.32442425580432005,
+          "late_mean": 0.29906991815014405
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.22368421052631576,
+          "late_mean": 0.05263157894736842
+        }
+      },
+      "pair_risk_max": 0.9637,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 13,
+        "pre_peak_anomaly_mean": 0.4431331467662084,
+        "pre_peak_anomaly_max": 0.555051397599939,
+        "early_pre_peak_mean": 0.4660392441594462,
+        "late_pre_peak_mean": 0.42243556629531753,
+        "noise_ramp": -0.043603677864128665,
+        "pre_peak_pair_risk_max": 0.7284,
+        "elevated_noise_before_peak": true
+      },
+      "is_placebo": false
+    }
+  }
+}

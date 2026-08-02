@@ -1,13 +1,33 @@
 {
-  "protocol": "series_past_train__latest_score",
-  "description": "Baseline = series windows with end < cutoff (past). Daily score = latest window vs baseline. holdout_days=1 => yesterday and before train; today compares.",
-  "trained_at": "2026-07-27T18:17:52.809120+00:00",
-  "n_windows": 1440,
-  "n_sats": 24,
+  "protocol": "military_baseline_train__suspect_score",
+  "doctrine": "military_first_sda",
+  "description": "IF trained on baseline+asset past windows only (normality anchors). Daily scoring compares each sat (esp. suspects) to that baseline. Hard thr calibrated as max(0.50, p95 of normality-anchor scores), per orbit when possible. Does NOT overwrite isolation_forest.joblib (priority pipeline). Palantir-style: Data\u2192Quant\u2192IF Inference\u2192priority (XGB/pairs)\u2192LLM explain.",
+  "trained_at": "2026-08-01T21:20:08.917327+00:00",
+  "n_windows": 960,
+  "n_sats": 12,
+  "train_norad_ids": [
+    25544,
+    25994,
+    27424,
+    28054,
+    28654,
+    28874,
+    31598,
+    31698,
+    35951,
+    39084,
+    39166,
+    43013
+  ],
+  "train_roles": [
+    "baseline",
+    "asset"
+  ],
+  "military_doctrine": true,
   "holdout_days": 1,
   "contamination": 0.08,
   "sample_mode": "hybrid",
-  "max_windows_per_sat": 60,
+  "max_windows_per_sat": 80,
   "feature_columns": [
     "semi_major_axis_km",
     "eccentricity",
@@ -19,13 +39,15 @@
     "delta_inc_30d_deg",
     "maneuver_count_30d",
     "shannon_entropy_sma_30d",
+    "shannon_entropy_sma_short",
     "kolmogorov_proxy_7d",
     "hurst_exponent_sma",
+    "hurst_exponent_sma_short",
+    "persistence_hurst_gap",
     "mandelbrot_tail_score",
     "adf_pvalue",
     "williams_threat",
     "l1_cusum_sma",
-    "spectral_anomaly_rkhs",
     "chern_simons_proxy",
     "ricci_mean",
     "h0_persistent",
@@ -44,10 +66,115 @@
     "geomagnetic_storm",
     "space_weather_available"
   ],
-  "score_mean": 0.41171413942556,
-  "score_p95": 0.5138813432128247,
-  "score_p99": 0.5634574315775864,
-  "cutoff_utc": "2026-07-26 18:17:42.981332+00:00",
+  "homology_mode": "proxy",
+  "rkhs_in_iforest": false,
+  "score_mean": 0.3973285603370272,
+  "score_p95": 0.5179916031645592,
+  "score_p99": 0.5659580421121101,
+  "calibration": {
+    "method": "empirical_normality_anchor_quantiles",
+    "floor": 0.5,
+    "global": {
+      "n": 960,
+      "mean": 0.3973285603370272,
+      "std": 0.05980250278916442,
+      "p50": 0.3790553985249929,
+      "p90": 0.49138252652075476,
+      "p95": 0.5179916031645592,
+      "p99": 0.5659580421121101,
+      "max": 0.6284022895392548,
+      "recommended_thr": 0.5179916031645592
+    },
+    "by_orbit": {
+      "LEO": {
+        "n": 800,
+        "mean": 0.3836338417846951,
+        "std": 0.05286815059661113,
+        "p50": 0.36799914344245943,
+        "p90": 0.4636063894881071,
+        "p95": 0.4993407039778822,
+        "p99": 0.5632525410484959,
+        "max": 0.6284022895392548,
+        "recommended_thr": 0.5
+      },
+      "MEO": {
+        "n": 160,
+        "mean": 0.4658021530986879,
+        "std": 0.04308677076238879,
+        "p50": 0.4552186121878177,
+        "p90": 0.5277346684150634,
+        "p95": 0.5446837746287319,
+        "p99": 0.5774529681493167,
+        "max": 0.599066154621557,
+        "recommended_thr": 0.5446837746287319
+      }
+    },
+    "paper_note": "Hard hit if anomaly_score >= thr. thr = max(0.50, p95 of IF scores on baseline+asset training windows). Per-orbit thr used when available."
+  },
+  "recommended_anomaly_threshold": 0.5179916031645592,
+  "cutoff_utc": "2026-07-31 21:20:02.423614+00:00",
   "train_window_end_min": "2014-01-04 07:21:14.000256+00:00",
-  "train_window_end_max": "2026-07-26 05:48:33.695424+00:00"
+  "train_window_end_max": "2026-07-27 14:31:05.533824+00:00",
+  "doctrine_summary": {
+    "doctrine": "military_first_sda",
+    "if_train_roles": [
+      "asset",
+      "baseline"
+    ],
+    "if_alert_roles": [
+      "suspect"
+    ],
+    "if_platform_health_roles": [
+      "asset"
+    ],
+    "n_assets": 7,
+    "n_suspects": 11,
+    "n_baselines": 6,
+    "catalog": {
+      "source": "D:\\Athena-SDA\\data\\catalog\\watchlist.json",
+      "version": 1,
+      "updated": "2026-07-25",
+      "n_objects": 24,
+      "counts": {
+        "asset": 7,
+        "suspect": 11,
+        "baseline": 6
+      },
+      "norad_ids": [
+        25544,
+        39166,
+        28874,
+        28054,
+        35951,
+        31598,
+        31698,
+        41038,
+        32289,
+        39150,
+        41727,
+        39208,
+        50321,
+        40258,
+        55841,
+        48865,
+        43603,
+        48274,
+        25994,
+        27424,
+        43013,
+        39084,
+        28654,
+        44714
+      ]
+    },
+    "architecture": {
+      "data": "public TLE + GFZ space weather",
+      "quant": "engine features (Hurst, Shannon, CUSUM, \u2026)",
+      "inference": "Isolation Forest past-only (normality)",
+      "priority": "XGB weak labels + fuzzy + pair_risk + Kelly",
+      "llm": "Bob explains; never rewrites quant scores",
+      "ontology": "asset | suspect | baseline board roles"
+    },
+    "ui_note": "Globe decorative tracks (e.g. commercial constellations) are not the ML objective; models train/score the military-first watchlist."
+  }
 }

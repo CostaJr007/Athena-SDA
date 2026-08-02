@@ -1,0 +1,1383 @@
+{
+  "event_id": "shiyan7_experimental_2015",
+  "type": "rpo_inspection",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) are CASE STUDIES to read how quant noise features (Hurst, Shannon, CUSUM, IF score) behave — not prediction targets. Primary claim: continuous normality-vs-deviation monitoring. first_fold_hit=true means elevated from first scorable fold (regime level), not necessarily a rising ramp into t_peak. Not a classified ground-truth claim.",
+  "t_start": "2015-01-01",
+  "t_peak": "2015-07-01",
+  "t_end": "2015-12-01",
+  "norad_ids": [
+    39208
+  ],
+  "pair_with": [],
+  "sources": [
+    "Open SSA literature: Shiyan-7 (SY-7) experimental spacecraft associated with proximity-operations discussion in public sources",
+    "Public catalog notes on Chinese experimental Shiyan series maneuverability"
+  ],
+  "notes": "Independent interest NORAD (SY-7) — LEO experimental; case for quant reading, not classified intent.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 24,
+  "folds": [
+    {
+      "asof": "2015-01-01",
+      "cutoff": "2014-12-29",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.38998487622528066,
+          "window_end": "2014-12-31 18:30:12.829248",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 5.496436320000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.549787381523038,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8197279082202505,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31972790822025055,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7287568035918717,
+            "delta_sma_7d_km": -0.010295553544892755,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 5.496436320000001,
+            "f10_7": 137.5,
+            "ap_index": 6.0,
+            "kp_mean": 1.499875,
+            "f10_7_delta_7d": -7.800000000000011,
+            "ap_delta_7d": -5.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.671,
+            "cointegration_pvalue": 0.985915,
+            "pair_risk": 0.5468,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.47623319430137634
+        }
+      }
+    },
+    {
+      "asof": "2015-01-15",
+      "cutoff": "2015-01-12",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.44995556285493726,
+          "window_end": "2015-01-14 22:44:46.265280",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.2538152
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.5907239186406503,
+            "shannon_entropy_sma_short": 0.9864267287308426,
+            "hurst_exponent_sma": 0.8116424877042707,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3116424877042707,
+            "kolmogorov_proxy_7d": 0.2631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8038774630042028,
+            "delta_sma_7d_km": 0.42570333449202735,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.2538152,
+            "f10_7": 131.4,
+            "ap_index": 5.0,
+            "kp_mean": 1.124875,
+            "f10_7_delta_7d": -25.799999999999983,
+            "ap_delta_7d": -2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 45.109,
+            "cointegration_pvalue": 0.491811,
+            "pair_risk": 0.7192,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5980400032847217
+        }
+      }
+    },
+    {
+      "asof": "2015-01-29",
+      "cutoff": "2015-01-26",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.4052593431768888,
+          "window_end": "2015-01-28 17:11:50.876448",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 6.80253432
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.780858935500048,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.7876843961960613,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.28768439619606134,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.07549630111952958,
+            "delta_sma_7d_km": -0.0026941856704070233,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 6.80253432,
+            "f10_7": 171.8,
+            "ap_index": 8.0,
+            "kp_mean": 1.8752499999999999,
+            "f10_7_delta_7d": 51.500000000000014,
+            "ap_delta_7d": -1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 45.035,
+            "cointegration_pvalue": 0.9384,
+            "pair_risk": 0.563,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.49201670442959994
+        }
+      }
+    },
+    {
+      "asof": "2015-02-12",
+      "cutoff": "2015-02-09",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.38661946243022194,
+          "window_end": "2015-02-11 14:55:15.655872",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 9.07898448
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.720582776146014,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7928537488613134,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.29285374886131343,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.021960504675272587,
+            "delta_sma_7d_km": -0.01497811452645692,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 9.07898448,
+            "f10_7": 127.6,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": -14.300000000000011,
+            "ap_delta_7d": -3.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 45.059,
+            "cointegration_pvalue": 4e-06,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7239787580935999
+        }
+      }
+    },
+    {
+      "asof": "2015-02-26",
+      "cutoff": "2015-02-23",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.4257301337184737,
+          "window_end": "2015-02-25 17:33:06.109344",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_110h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 6.4483029599999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.378991986900062,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7886491521732562,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.28864915217325615,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.089397380477022,
+            "delta_sma_7d_km": -0.007093859966516902,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 6.4483029599999995,
+            "f10_7": 111.3,
+            "ap_index": 4.0,
+            "kp_mean": 0.8748750000000001,
+            "f10_7_delta_7d": -7.400000000000006,
+            "ap_delta_7d": -5.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 45.036,
+            "cointegration_pvalue": 0.084065,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7415785601733131
+        }
+      }
+    },
+    {
+      "asof": "2015-03-12",
+      "cutoff": "2015-03-09",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.4019367046923727,
+          "window_end": "2015-03-11 12:00:02.175552",
+          "data_quality": {
+            "score": 0.85,
+            "issues": [
+              "gap_110h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 11.99939568
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7550576199383077,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.9037844084246133,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.4037844084246133,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9527291624818967,
+            "delta_sma_7d_km": -0.016004965454158082,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 11.99939568,
+            "f10_7": 126.7,
+            "ap_index": 8.0,
+            "kp_mean": 1.83325,
+            "f10_7_delta_7d": -13.499999999999986,
+            "ap_delta_7d": -1.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.985,
+            "cointegration_pvalue": 0.868352,
+            "pair_risk": 0.5876,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5040515171115677
+        }
+      }
+    },
+    {
+      "asof": "2015-03-26",
+      "cutoff": "2015-03-23",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.43261728597856286,
+          "window_end": "2015-03-24 18:59:46.851936",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_268h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 29.003652239999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.755057619938308,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7821190767612282,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.28211907676122816,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.3134920352283562,
+            "delta_sma_7d_km": -0.048561819919996196,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 29.003652239999997,
+            "f10_7": 136.1,
+            "ap_index": 8.0,
+            "kp_mean": 1.916625,
+            "f10_7_delta_7d": 26.799999999999997,
+            "ap_delta_7d": -8.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 45.001,
+            "cointegration_pvalue": 0.992839,
+            "pair_risk": 0.544,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4938777786903533
+        }
+      }
+    },
+    {
+      "asof": "2015-04-09",
+      "cutoff": "2015-04-06",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.41931116262765905,
+          "window_end": "2015-04-04 15:05:58.271424",
+          "data_quality": {
+            "score": 0.35000000000000003,
+            "issues": [
+              "tle_stale_105h",
+              "gap_268h"
+            ],
+            "reliable": false,
+            "tle_age_hours": 104.90048016
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.925853014561283,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8555698308324365,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35556983083243654,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9434417555414023,
+            "delta_sma_7d_km": -0.04664494185180956,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 104.90048016,
+            "f10_7": 111.3,
+            "ap_index": 11.0,
+            "kp_mean": 2.54175,
+            "f10_7_delta_7d": -10.0,
+            "ap_delta_7d": 3.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.986,
+            "cointegration_pvalue": 0.993592,
+            "pair_risk": 0.5437,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4877250231824466
+        }
+      }
+    },
+    {
+      "asof": "2015-04-23",
+      "cutoff": "2015-04-20",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.4753642689882369,
+          "window_end": "2015-04-22 11:41:42.975744",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 12.304728959999998
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.655050539417775,
+            "shannon_entropy_sma_short": 2.2810361125534238,
+            "hurst_exponent_sma": 0.7690704612503239,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.26907046125032386,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.0776747981990411,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 12.304728959999998,
+            "f10_7": 140.5,
+            "ap_index": 6.0,
+            "kp_mean": 1.25,
+            "f10_7_delta_7d": -9.699999999999989,
+            "ap_delta_7d": -10.25,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.947,
+            "cointegration_pvalue": 1.0,
+            "pair_risk": 0.5415,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5117389210447066
+        }
+      }
+    },
+    {
+      "asof": "2015-05-07",
+      "cutoff": "2015-05-04",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.4741928465235747,
+          "window_end": "2015-05-05 12:08:29.261472",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 35.85853848
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8603207778330444,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.80436091492403,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.30436091492402995,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7619508485935382,
+            "delta_sma_7d_km": -0.018557575688646466,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 35.85853848,
+            "f10_7": 146.6,
+            "ap_index": 6.0,
+            "kp_mean": 1.5418749999999999,
+            "f10_7_delta_7d": 44.8,
+            "ap_delta_7d": -2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.87,
+            "cointegration_pvalue": 0.914071,
+            "pair_risk": 0.5717,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5278217809356086
+        }
+      }
+    },
+    {
+      "asof": "2015-05-21",
+      "cutoff": "2015-05-18",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.45080531698202425,
+          "window_end": "2015-05-19 11:29:13.198272",
+          "data_quality": {
+            "score": 0.55,
+            "issues": [
+              "tle_aging_37h",
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 36.513000479999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.900051698999543,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.848649591936854,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34864959193685396,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6630903806419732,
+            "delta_sma_7d_km": -0.04387861542727478,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 36.513000479999995,
+            "f10_7": 101.8,
+            "ap_index": 2.0,
+            "kp_mean": 0.45825,
+            "f10_7_delta_7d": -43.3,
+            "ap_delta_7d": -5.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.868,
+            "cointegration_pvalue": 0.970909,
+            "pair_risk": 0.5518,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5063523926419109
+        }
+      }
+    },
+    {
+      "asof": "2015-06-04",
+      "cutoff": "2015-06-01",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.4760830361484069,
+          "window_end": "2015-06-03 13:00:12.581856",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 10.99650504
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.575588697084778,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7504204193287455,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2504204193287455,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6203000663531859,
+            "delta_sma_7d_km": -0.01304764262476965,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 10.99650504,
+            "f10_7": 118.0,
+            "ap_index": 2.0,
+            "kp_mean": 0.333125,
+            "f10_7_delta_7d": 25.0,
+            "ap_delta_7d": -2.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.81,
+            "cointegration_pvalue": 0.761503,
+            "pair_risk": 0.6252,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5580973662667831
+        }
+      }
+    },
+    {
+      "asof": "2015-06-18",
+      "cutoff": "2015-06-15",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.41858878265116245,
+          "window_end": "2015-06-17 22:09:36.334080",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.8399072
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.5100564603565396,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8428907937672167,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34289079376721665,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.4359368284633378,
+            "delta_sma_7d_km": -0.018336221793106233,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.8399072,
+            "f10_7": 150.8,
+            "ap_index": 6.0,
+            "kp_mean": 1.5,
+            "f10_7_delta_7d": 10.900000000000006,
+            "ap_delta_7d": -4.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.796,
+            "cointegration_pvalue": 0.981059,
+            "pair_risk": 0.5484,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.48998495219302307
+        }
+      }
+    },
+    {
+      "asof": "2015-07-02",
+      "cutoff": "2015-06-29",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.4352446719943918,
+          "window_end": "2015-06-30 11:08:54.236832",
+          "data_quality": {
+            "score": 0.55,
+            "issues": [
+              "tle_aging_37h",
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 36.85160088
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.668980145022533,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8107617659498381,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31076176594983806,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.1259746050384482,
+            "delta_sma_7d_km": -0.02351609957349865,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 36.85160088,
+            "f10_7": 113.8,
+            "ap_index": 2.0,
+            "kp_mean": 0.37475,
+            "f10_7_delta_7d": 12.0,
+            "ap_delta_7d": -7.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.772,
+            "cointegration_pvalue": 0.607695,
+            "pair_risk": 0.6791,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5693651023974764
+        }
+      }
+    },
+    {
+      "asof": "2015-07-16",
+      "cutoff": "2015-07-13",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.45895613985740896,
+          "window_end": "2015-07-13 11:35:10.460544",
+          "data_quality": {
+            "score": 0.55,
+            "issues": [
+              "tle_aging_60h",
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 60.41376096
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.900051698999543,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8493564435407424,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34935644354074236,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0178868388418429,
+            "delta_sma_7d_km": -0.0037977385791236884,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 60.41376096,
+            "f10_7": 99.6,
+            "ap_index": 7.0,
+            "kp_mean": 1.7085,
+            "f10_7_delta_7d": -22.30000000000001,
+            "ap_delta_7d": -5.375,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.757,
+            "cointegration_pvalue": 0.909369,
+            "pair_risk": 0.5735,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.521955262935834
+        }
+      }
+    },
+    {
+      "asof": "2015-07-30",
+      "cutoff": "2015-07-27",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.44087111223631964,
+          "window_end": "2015-07-22 08:14:23.429472",
+          "data_quality": {
+            "score": 0.35000000000000003,
+            "issues": [
+              "tle_stale_184h",
+              "gap_381h"
+            ],
+            "reliable": false,
+            "tle_age_hours": 183.76015848
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0105709342684834,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7567122678797576,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.25671226787975765,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.030309430913487465,
+            "delta_sma_7d_km": -0.012445804836715979,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 183.76015848,
+            "f10_7": 102.0,
+            "ap_index": 12.0,
+            "kp_mean": 2.25,
+            "f10_7_delta_7d": 12.599999999999994,
+            "ap_delta_7d": 3.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.771,
+            "cointegration_pvalue": 0.99304,
+            "pair_risk": 0.5442,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.49770200050634383
+        }
+      }
+    },
+    {
+      "asof": "2015-08-13",
+      "cutoff": "2015-08-10",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.4538356900440985,
+          "window_end": "2015-08-11 12:26:05.218080",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 35.5652172
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.2210972500579573,
+            "shannon_entropy_sma_short": 2.7254805569978675,
+            "hurst_exponent_sma": 0.7742653881971273,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2742653881971273,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5307510814776571,
+            "delta_sma_7d_km": -0.023035777862787654,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 35.5652172,
+            "f10_7": 94.8,
+            "ap_index": 10.0,
+            "kp_mean": 2.08325,
+            "f10_7_delta_7d": -26.799999999999997,
+            "ap_delta_7d": -0.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.718,
+            "cointegration_pvalue": 0.983449,
+            "pair_risk": 0.5476,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5054060605198444
+        }
+      }
+    },
+    {
+      "asof": "2015-08-27",
+      "cutoff": "2015-08-24",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.4895448985041626,
+          "window_end": "2015-08-24 22:41:05.844192",
+          "data_quality": {
+            "score": 0.55,
+            "issues": [
+              "tle_aging_49h",
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 49.315043280000005
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.181366328891459,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7943264563571736,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2943264563571736,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9376660631005712,
+            "delta_sma_7d_km": -0.011405863247091474,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 49.315043280000005,
+            "f10_7": 110.2,
+            "ap_index": 52.0,
+            "kp_mean": 4.958375,
+            "f10_7_delta_7d": 7.400000000000006,
+            "ap_delta_7d": 34.125,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.723,
+            "cointegration_pvalue": 0.862476,
+            "pair_risk": 0.59,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5447952043268732
+        }
+      }
+    },
+    {
+      "asof": "2015-09-10",
+      "cutoff": "2015-09-07",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.40502946235699283,
+          "window_end": "2015-09-09 21:27:27.266112",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.5424260800000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.181366328891459,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.7947405940081804,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2947405940081804,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5522352842125472,
+            "delta_sma_7d_km": -0.009918057533468527,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 2.5424260800000003,
+            "f10_7": 83.5,
+            "ap_index": 12.0,
+            "kp_mean": 2.375,
+            "f10_7_delta_7d": -3.0,
+            "ap_delta_7d": -12.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.686,
+            "cointegration_pvalue": 0.985473,
+            "pair_risk": 0.5469,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.48305825806064684
+        }
+      }
+    },
+    {
+      "asof": "2015-09-24",
+      "cutoff": "2015-09-21",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.3945054362991505,
+          "window_end": "2015-09-23 12:36:45.061920",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 11.3874828
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.839775539645508,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8529245866227895,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35292458662278947,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8206438186110719,
+            "delta_sma_7d_km": -0.00023035404137772275,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 11.3874828,
+            "f10_7": 106.8,
+            "ap_index": 7.0,
+            "kp_mean": 1.708375,
+            "f10_7_delta_7d": 0.0,
+            "ap_delta_7d": -7.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.694,
+            "cointegration_pvalue": 0.139923,
+            "pair_risk": 0.8429,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6411224463346178
+        }
+      }
+    },
+    {
+      "asof": "2015-10-08",
+      "cutoff": "2015-10-05",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.4508380232417421,
+          "window_end": "2015-10-07 18:29:18.276288",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.51158992
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7947885411048063,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.819599354278466,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.319599354278466,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7965513980793559,
+            "delta_sma_7d_km": -0.00496858546466683,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 5.51158992,
+            "f10_7": 79.7,
+            "ap_index": 45.0,
+            "kp_mean": 4.875125000000001,
+            "f10_7_delta_7d": -40.0,
+            "ap_delta_7d": 19.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.655,
+            "cointegration_pvalue": 0.986186,
+            "pair_risk": 0.5467,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.503562110458784
+        }
+      }
+    },
+    {
+      "asof": "2015-10-22",
+      "cutoff": "2015-10-19",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.36798694253302816,
+          "window_end": "2015-10-21 22:43:40.110528",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.27219152
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.860320777833045,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7996109434088039,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2996109434088039,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.4315466211011854,
+            "delta_sma_7d_km": -0.0006622601495109848,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 1.27219152,
+            "f10_7": 120.5,
+            "ap_index": 4.0,
+            "kp_mean": 1.16675,
+            "f10_7_delta_7d": 13.700000000000003,
+            "ap_delta_7d": -4.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.668,
+            "cointegration_pvalue": 0.917988,
+            "pair_risk": 0.5706,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4794241241398627
+        }
+      }
+    },
+    {
+      "asof": "2015-11-05",
+      "cutoff": "2015-11-02",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.44986699182308926,
+          "window_end": "2015-11-04 22:03:30.957120",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.9414008
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.820589856666546,
+            "shannon_entropy_sma_short": 2.058813890331201,
+            "hurst_exponent_sma": 0.6529155257398581,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.15291552573985812,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5380256241217569,
+            "delta_sma_7d_km": -0.01053210722420772,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 1.9414008,
+            "f10_7": 109.9,
+            "ap_index": 16.0,
+            "kp_mean": 2.958375,
+            "f10_7_delta_7d": -3.0,
+            "ap_delta_7d": 2.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.589,
+            "cointegration_pvalue": 0.979669,
+            "pair_risk": 0.5491,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5044451463203902
+        }
+      }
+    },
+    {
+      "asof": "2015-11-19",
+      "cutoff": "2015-11-16",
+      "n_train_ok": true,
+      "targets": {
+        "39208": {
+          "ok": true,
+          "anomaly_score": 0.389599303827304,
+          "window_end": "2015-11-18 19:45:07.953408",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_381h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.24779072
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9450386975402454,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.807593644040333,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.30759364404033296,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0017946432477713836,
+            "delta_sma_7d_km": -0.006904035531988484,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 4.24779072,
+            "f10_7": 108.1,
+            "ap_index": 8.0,
+            "kp_mean": 1.708375,
+            "f10_7_delta_7d": 4.599999999999994,
+            "ap_delta_7d": -1.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 44.627,
+            "cointegration_pvalue": 0.989999,
+            "pair_risk": 0.5454,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.47528968672228683
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "39208": {
+      "norad_id": 39208,
+      "object_name": "SHIYAN-7 (SY-7)",
+      "n_folds_scored": 24,
+      "anomaly_score_mean": 0.43094697732147874,
+      "anomaly_score_max": 0.4895448985041626,
+      "anomaly_score_at_nearest_peak": 0.4352446719943918,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "n_hits_in_window": 0,
+      "first_fold_hit": false,
+      "first_hit_asof": null,
+      "first_scorable_asof": "2015-01-01",
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 2.1604882529524376,
+          "late_mean": 2.711504408568476
+        },
+        "shannon_entropy_sma_short": {
+          "early_mean": 2.2141924470932377,
+          "late_mean": 2.4613201402110088
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.802977135245474,
+          "late_mean": 0.8115804299892115
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.302977135245474,
+          "late_mean": 0.31158042998921154
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.10526315789473684,
+          "late_mean": 0.11842105263157894
+        }
+      },
+      "pair_risk_max": 1.0,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 13,
+        "pre_peak_anomaly_mean": 0.4312652909998309,
+        "pre_peak_anomaly_max": 0.4760830361484069,
+        "early_pre_peak_mean": 0.40795481117183213,
+        "late_pre_peak_mean": 0.4549174955762921,
+        "noise_ramp": 0.04696268440445994,
+        "pre_peak_pair_risk_max": 1.0,
+        "elevated_noise_before_peak": true
+      },
+      "is_placebo": false
+    }
+  }
+}

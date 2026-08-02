@@ -1,0 +1,789 @@
+{
+  "generated_at": "2026-08-02T00:35:10.392927+00:00",
+  "title": "Athena-SDA paper validation package (Claims A+B)",
+  "protocol_preregistration": "docs/paper/PROTOCOL_PREREGISTRATION.md",
+  "limitations_doc": "docs/paper/LIMITATIONS.md",
+  "figures_dir": "docs/paper/figures/",
+  "objective": "Demonstrate that a public-TLE quantitative noise pipeline + Isolation Forest (military normality anchors, past-only) detects elevated regimes on military interest cases aligned with open-source reports, versus civil EO controls.",
+  "threshold": 0.5,
+  "methods_summary": {
+    "data": "Public TLE history (~2014–2026) + GFZ F10.7/Ap/Kp",
+    "features": "Keplerian + multi-scale Hurst/Shannon + CUSUM + Kolmogorov + SW",
+    "model": "Isolation Forest trained on baseline+asset past windows only",
+    "protocol": "Walk-forward: at each asof, fit IF on past only; score target window",
+    "priority_layer": "XGB weak labels + suspect×asset pairs (not used for Claim A/B hits)",
+    "doctrine": "military_first_sda",
+    "preregistered": true
+  },
+  "claim_A": {
+    "statement": "Military-interest watchlist objects with open-source / dual-use anchors exhibit elevated past-only IF scores relative to civil EO placebos (report unique NORADs).",
+    "panel": "core_unique_interest",
+    "n_events": 11,
+    "n_unique_norads": 9,
+    "hard_hit_rate": 0.5454545454545454,
+    "mean_max_score": 0.5712291638135677,
+    "mean_pre_peak_score": 0.49645643401100165,
+    "mean_noise_ramp": -0.011858944945878625,
+    "supported": false
+  },
+  "claim_B": {
+    "statement": "Civil EO placebos under the same past-only protocol show lower scores and hard-hit rate near zero at thr=0.50 (primary table).",
+    "panel": "civil_eo_placebo",
+    "n_events": 7,
+    "n_unique_norads": 5,
+    "hard_hit_rate": 0.0,
+    "mean_max_score": 0.4619792951273824,
+    "mean_pre_peak_score": 0.38476724277341423,
+    "p95_max_score": 0.49550387121076866,
+    "supported": true
+  },
+  "claim_A_geo_headline": {
+    "statement": "GEO military-interest cases (Luch/SY-12 class) show hard hits and high max scores vs civil EO placebos under past-only IF.",
+    "panel": "geo_headline",
+    "n_events": 5,
+    "n_unique_norads": 3,
+    "hard_hit_rate": 1.0,
+    "mean_max_score": 0.6512469606429668,
+    "mean_pre_peak_score": 0.5668961468188431,
+    "mean_noise_ramp": -0.016582456400530778,
+    "supported": true
+  },
+  "claim_B_geo_headline": {
+    "statement": "Civil EO placebos under the same past-only protocol show lower scores and hard-hit rate near zero at thr=0.50 (primary table).",
+    "panel": "civil_eo_placebo",
+    "n_events": 7,
+    "n_unique_norads": 5,
+    "hard_hit_rate": 0.0,
+    "mean_max_score": 0.4619792951273824,
+    "mean_pre_peak_score": 0.38476724277341423,
+    "p95_max_score": 0.49550387121076866,
+    "supported": true
+  },
+  "separation": {
+    "mean_max_gap_interest_minus_placebo": 0.1092498686861853,
+    "mann_whitney_max_scores": {
+      "n_interest": 11,
+      "n_placebo": 7,
+      "mean_interest": 0.5712291638135677,
+      "mean_placebo": 0.4619792951273824,
+      "u_statistic": 64.0,
+      "p_value": 0.010212418300653595,
+      "effect_note": "H1: interest scores > placebo (one-sided). Small n: interpret p-value cautiously; report effect sizes (means/gaps)."
+    },
+    "mann_whitney_pre_peak_means": {
+      "n_interest": 11,
+      "n_placebo": 7,
+      "mean_interest": 0.49645643401100165,
+      "mean_placebo": 0.38476724277341423,
+      "u_statistic": 67.0,
+      "p_value": 0.004147812971342383,
+      "effect_note": "H1: interest scores > placebo (one-sided). Small n: interpret p-value cautiously; report effect sizes (means/gaps)."
+    },
+    "interest_max_distribution": {
+      "n": 11,
+      "mean": 0.5712291638135677,
+      "std": 0.09456481803800788,
+      "p50": 0.6233424703009158,
+      "p90": 0.6718680301965697,
+      "p95": 0.6733569065731235,
+      "p99": 0.6745480076743666,
+      "max": 0.6748457829496773
+    },
+    "placebo_max_distribution": {
+      "n": 7,
+      "mean": 0.4619792951273824,
+      "std": 0.03066339908347784,
+      "p50": 0.4637039717585005,
+      "p90": 0.4893606405237773,
+      "p95": 0.49550387121076866,
+      "p99": 0.5004184557603618,
+      "max": 0.5016471018977601
+    }
+  },
+  "separation_geo_headline": {
+    "mean_max_gap_interest_minus_placebo": 0.18926766551558444,
+    "mann_whitney_max_scores": {
+      "n_interest": 5,
+      "n_placebo": 7,
+      "mean_interest": 0.6512469606429668,
+      "mean_placebo": 0.4619792951273824,
+      "u_statistic": 35.0,
+      "p_value": 0.0012626262626262627,
+      "effect_note": "H1: interest scores > placebo (one-sided). Small n: interpret p-value cautiously; report effect sizes (means/gaps)."
+    },
+    "mann_whitney_pre_peak_means": {
+      "n_interest": 5,
+      "n_placebo": 7,
+      "mean_interest": 0.5668961468188431,
+      "mean_placebo": 0.38476724277341423,
+      "u_statistic": 35.0,
+      "p_value": 0.0012626262626262627,
+      "effect_note": "H1: interest scores > placebo (one-sided). Small n: interpret p-value cautiously; report effect sizes (means/gaps)."
+    },
+    "interest_max_distribution": {
+      "n": 5,
+      "mean": 0.6512469606429668,
+      "std": 0.021743478654362637,
+      "p50": 0.65841904545906,
+      "p90": 0.6736546818484342,
+      "p95": 0.6742502323990558,
+      "p99": 0.674726672839553,
+      "max": 0.6748457829496773
+    },
+    "placebo_max_distribution": {
+      "n": 7,
+      "mean": 0.4619792951273824,
+      "std": 0.03066339908347784,
+      "p50": 0.4637039717585005,
+      "p90": 0.4893606405237773,
+      "p95": 0.49550387121076866,
+      "p99": 0.5004184557603618,
+      "max": 0.5016471018977601
+    }
+  },
+  "events": [
+    {
+      "event_id": "luch1_intelsat_2015",
+      "type": "shadowing_geo_espionage",
+      "t_peak": "2015-09-15",
+      "sources": [
+        "Gunter: Olymp-K moved ~Apr 2015 between Intelsat 7/901 at 18.1W",
+        "Gunter/open press: ~Sep 2015 near Intelsat 905 at 24.4–24.5W",
+        "CSIS Unusual Behavior in GEO: Olymp-K / Luch"
+      ],
+      "norad_id": 40258,
+      "object_name": "LUCH (OLYMP-K 1)",
+      "is_placebo": false,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "first_fold_hit": true,
+      "anomaly_score_max": 0.6277594743086112,
+      "pre_peak_anomaly_mean": 0.5698061896892279,
+      "pre_peak_anomaly_max": 0.6277594743086112,
+      "noise_ramp": -0.012130177133332865,
+      "n_folds_above_thr_pre_peak": 18,
+      "lead_time_days": 243.0,
+      "lead_time_note": "already_elevated_at_window_open",
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.0314591550639824,
+        "shannon_entropy_sma_short": 2.090949769840638,
+        "hurst_exponent_sma": 0.7875196747277998,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.28751967472779977,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.5175438596491228
+      },
+      "panel": "core_military_geo"
+    },
+    {
+      "event_id": "luch1_intelsat_mid2015",
+      "type": "shadowing_geo_espionage",
+      "t_peak": "2015-04-15",
+      "sources": [
+        "Gunter: first colocation between Intelsat 7 and 901 ~April 2015"
+      ],
+      "norad_id": 40258,
+      "object_name": "LUCH (OLYMP-K 1)",
+      "is_placebo": false,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "first_fold_hit": true,
+      "anomaly_score_max": 0.6748457829496773,
+      "pre_peak_anomaly_mean": 0.5889999321284898,
+      "pre_peak_anomaly_max": 0.6498450642497736,
+      "noise_ramp": 0.006587521039351563,
+      "n_folds_above_thr_pre_peak": 13,
+      "lead_time_days": 182.0,
+      "lead_time_note": "already_elevated_at_window_open",
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 1.7033186805712401,
+        "shannon_entropy_sma_short": 1.6275420171275778,
+        "hurst_exponent_sma": 0.784557070879992,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.28455707087999205,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.4210526315789473
+      },
+      "panel": "core_military_geo"
+    },
+    {
+      "event_id": "luch1_athena_fidus_2018",
+      "type": "shadowing_geo_espionage",
+      "t_peak": "2018-09-01",
+      "sources": [
+        "Open press / Gunter: 2018 proximity concerns re Athena-Fidus (FR military comms)",
+        "French government space security statements (open reporting)"
+      ],
+      "norad_id": 40258,
+      "object_name": "LUCH (OLYMP-K 1)",
+      "is_placebo": false,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "first_fold_hit": true,
+      "anomaly_score_max": 0.6718680301965697,
+      "pre_peak_anomaly_mean": 0.5600459347921776,
+      "pre_peak_anomaly_max": 0.5991035655620303,
+      "noise_ramp": 0.010931974717967141,
+      "n_folds_above_thr_pre_peak": 18,
+      "lead_time_days": 243.0,
+      "lead_time_note": "already_elevated_at_window_open",
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 1.8683275713630163,
+        "shannon_entropy_sma_short": 1.9730881406443368,
+        "hurst_exponent_sma": 0.8025843407350332,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3025843407350332,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.4912280701754386
+      },
+      "panel": "core_military_geo"
+    },
+    {
+      "event_id": "sy12_geo_rpo_2021_22",
+      "type": "rpo_inspection",
+      "t_peak": "2022-06-15",
+      "sources": [
+        "AMOS papers / open SSA: SY-12 01/02 GEO proximity with US objects",
+        "SWF Chinese Military RPO fact sheet (SY-12)"
+      ],
+      "norad_id": 50321,
+      "object_name": "SHIYAN-12 01 (SY-12 01)",
+      "is_placebo": false,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "first_fold_hit": true,
+      "anomaly_score_max": 0.6233424703009158,
+      "pre_peak_anomaly_mean": 0.5292171883677838,
+      "pre_peak_anomaly_max": 0.6027985818332479,
+      "noise_ramp": -0.04829044357795087,
+      "n_folds_above_thr_pre_peak": 7,
+      "lead_time_days": 154.0,
+      "lead_time_note": "already_elevated_at_window_open",
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.7182585214892305,
+        "shannon_entropy_sma_short": 2.4613201402110088,
+        "hurst_exponent_sma": 0.834028900625237,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.33402890062523705,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.28947368421052627
+      },
+      "panel": "core_military_geo"
+    },
+    {
+      "event_id": "luch2_trailing_2023",
+      "type": "shadowing_geo_espionage",
+      "t_peak": "2023-10-15",
+      "sources": [
+        "Launch Luch/Olymp-K 2 ~12 Mar 2023",
+        "Breaking Defense Oct 2023: second Luch trailing Western systems in GEO"
+      ],
+      "norad_id": 55841,
+      "object_name": "LUCH-5X (OLYMP-K 2)",
+      "is_placebo": false,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "first_fold_hit": true,
+      "anomaly_score_max": 0.65841904545906,
+      "pre_peak_anomaly_mean": 0.5864114891165367,
+      "pre_peak_anomaly_max": 0.65841904545906,
+      "noise_ramp": -0.04001115704868885,
+      "n_folds_above_thr_pre_peak": 15,
+      "lead_time_days": 197.0,
+      "lead_time_note": "already_elevated_at_window_open",
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 1.7716286000851809,
+        "shannon_entropy_sma_short": 2.25616021302534,
+        "hurst_exponent_sma": 0.793708657584806,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.2937086575848059,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.5052631578947369
+      },
+      "panel": "core_military_geo"
+    },
+    {
+      "event_id": "shiyan7_experimental_2015",
+      "type": "rpo_inspection",
+      "t_peak": "2015-07-01",
+      "sources": [
+        "Open SSA literature: Shiyan-7 (SY-7) experimental spacecraft associated with proximity-operations discussion in public sources",
+        "Public catalog notes on Chinese experimental Shiyan series maneuverability"
+      ],
+      "norad_id": 39208,
+      "object_name": "SHIYAN-7 (SY-7)",
+      "is_placebo": false,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.4895448985041626,
+      "pre_peak_anomaly_mean": 0.4312652909998309,
+      "pre_peak_anomaly_max": 0.4760830361484069,
+      "noise_ramp": 0.04696268440445994,
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.711504408568476,
+        "shannon_entropy_sma_short": 2.4613201402110088,
+        "hurst_exponent_sma": 0.8115804299892115,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.31158042998921154,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.11842105263157894
+      },
+      "panel": "core_military_geo"
+    },
+    {
+      "event_id": "yaogan29_recon_2020",
+      "type": "recon_maneuver_regime",
+      "t_peak": "2020-07-01",
+      "sources": [
+        "Public dual-use Yaogan recon / EO catalog class",
+        "Open-source SSA listings of Yaogan-29 LEO recon operations"
+      ],
+      "norad_id": 41038,
+      "object_name": "YAOGAN-29",
+      "is_placebo": false,
+      "hit_at_event": false,
+      "soft_hit_at_event": false,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.41541292149626874,
+      "pre_peak_anomaly_mean": 0.3539842044336193,
+      "pre_peak_anomaly_max": 0.39363989160013574,
+      "noise_ramp": -0.015156148706023276,
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.774068717807469,
+        "shannon_entropy_sma_short": 2.4613201402110088,
+        "hurst_exponent_sma": 0.8089377171492572,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3089377171492571,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.05263157894736842
+      },
+      "panel": "core_military_geo"
+    },
+    {
+      "event_id": "tianhe_css_assembly_2021",
+      "type": "crewed_station_ops",
+      "t_peak": "2021-10-15",
+      "sources": [
+        "Public CNSA/open press: Tianhe core module launch Apr 2021; multiple cargo/crew dockings 2021–22",
+        "Open SSA timelines of CSS assembly sequence (2021)"
+      ],
+      "norad_id": 48274,
+      "object_name": "CSS (TIANHE)",
+      "is_placebo": false,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "first_fold_hit": true,
+      "anomaly_score_max": 0.6436651876060406,
+      "pre_peak_anomaly_mean": 0.5564528623808714,
+      "pre_peak_anomaly_max": 0.6213884493875227,
+      "noise_ramp": -0.015380639310549782,
+      "n_folds_above_thr_pre_peak": 11,
+      "lead_time_days": 155.0,
+      "lead_time_note": "already_elevated_at_window_open",
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 1.1015192115670367,
+        "shannon_entropy_sma_short": 1.7289721408610008,
+        "hurst_exponent_sma": 0.8405380973170191,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3405380973170191,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.39473684210526316
+      },
+      "panel": "core_military_geo"
+    },
+    {
+      "event_id": "yaogan3_recon_2016",
+      "type": "recon_maneuver_regime",
+      "t_peak": "2016-07-01",
+      "sources": [
+        "Public catalog / dual-use EO-SAR recon class (Yaogan series)",
+        "Open literature on Yaogan LEO recon constellation operations"
+      ],
+      "norad_id": 32289,
+      "object_name": "YAOGAN-3",
+      "is_placebo": false,
+      "hit_at_event": false,
+      "soft_hit_at_event": false,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.41948113017002464,
+      "pre_peak_anomaly_mean": 0.379531325843753,
+      "pre_peak_anomaly_max": 0.41948113017002464,
+      "noise_ramp": -0.013491288848050065,
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.646312060642382,
+        "shannon_entropy_sma_short": 2.1416041678685938,
+        "hurst_exponent_sma": 0.864098444009876,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.364098444009876,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.05263157894736842
+      },
+      "panel": "core_military_geo"
+    },
+    {
+      "event_id": "cosmos2550_military_leo_2022",
+      "type": "military_leo_regime",
+      "t_peak": "2022-07-01",
+      "sources": [
+        "Public catalog: COSMOS 2550 military LEO class (Russian MOD series identifiers in open catalogs)",
+        "Open-source space situational awareness listings of Cosmos military spacecraft"
+      ],
+      "norad_id": 48865,
+      "object_name": "COSMOS 2550",
+      "is_placebo": false,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.555051397599939,
+      "pre_peak_anomaly_mean": 0.4431331467662084,
+      "pre_peak_anomaly_max": 0.555051397599939,
+      "noise_ramp": -0.043603677864128665,
+      "n_folds_above_thr_pre_peak": 1,
+      "lead_time_days": 167.0,
+      "lead_time_note": "days_from_first_thr_cross_to_t_peak",
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.5874430147805914,
+        "shannon_entropy_sma_short": 2.2390979179887864,
+        "hurst_exponent_sma": 0.799069918150144,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.29906991815014405,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.05263157894736842
+      },
+      "panel": "core_military_geo"
+    },
+    {
+      "event_id": "beidou3_m11_meo_2019",
+      "type": "pnt_dual_use_regime",
+      "t_peak": "2019-07-01",
+      "sources": [
+        "Public BeiDou-3 constellation deployment timelines (MEO M-series)",
+        "Open documentation of BeiDou-3 PNT dual-use GNSS operations"
+      ],
+      "norad_id": 43603,
+      "object_name": "BEIDOU-3 M11",
+      "is_placebo": false,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.5041304633579746,
+      "pre_peak_anomaly_mean": 0.46217320960251923,
+      "pre_peak_anomaly_max": 0.5041304633579746,
+      "noise_ramp": -0.006867042077719154,
+      "n_folds_above_thr_pre_peak": 2,
+      "lead_time_days": 139.0,
+      "lead_time_note": "days_from_first_thr_cross_to_t_peak",
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.3503110624661,
+        "shannon_entropy_sma_short": 2.3711781263822163,
+        "hurst_exponent_sma": 0.8361186455926997,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3361186455926996,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.05263157894736842
+      },
+      "panel": "core_military_geo"
+    },
+    {
+      "event_id": "placebo_terra_2015",
+      "type": "placebo_baseline",
+      "t_peak": "2015-09-15",
+      "sources": [
+        "Control EO scientific same calendar as Luch Intelsat 2015"
+      ],
+      "norad_id": 25994,
+      "object_name": "TERRA",
+      "is_placebo": true,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.48116966627445545,
+      "pre_peak_anomaly_mean": 0.3946819536712406,
+      "pre_peak_anomaly_max": 0.45944376748282434,
+      "noise_ramp": 0.012064905436680706,
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.842856763402135,
+        "shannon_entropy_sma_short": 2.725480556997868,
+        "hurst_exponent_sma": 0.8381024474238838,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3381024474238838,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.05263157894736842
+      },
+      "panel": "core_civil_eo_placebo"
+    },
+    {
+      "event_id": "placebo_terra_2018",
+      "type": "placebo_baseline",
+      "t_peak": "2018-09-01",
+      "sources": [
+        "Control same calendar as Athena-Fidus window"
+      ],
+      "norad_id": 25994,
+      "object_name": "TERRA",
+      "is_placebo": true,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.5016471018977601,
+      "pre_peak_anomaly_mean": 0.3761247570339987,
+      "pre_peak_anomaly_max": 0.4590467135123147,
+      "noise_ramp": 0.022689808289846958,
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.8801256237134236,
+        "shannon_entropy_sma_short": 2.507435417908658,
+        "hurst_exponent_sma": 0.7622994973651974,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.26229949736519736,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.05263157894736842
+      },
+      "panel": "core_civil_eo_placebo"
+    },
+    {
+      "event_id": "placebo_aqua_2015",
+      "type": "placebo_baseline",
+      "t_peak": "2015-09-15",
+      "sources": [
+        "A-Train scientific control same calendar as Luch 2015"
+      ],
+      "norad_id": 27424,
+      "object_name": "AQUA",
+      "is_placebo": true,
+      "hit_at_event": false,
+      "soft_hit_at_event": false,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.47406315843471664,
+      "pre_peak_anomaly_mean": 0.42942676619685916,
+      "pre_peak_anomaly_max": 0.47406315843471664,
+      "noise_ramp": -0.019593964344064352,
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 1.192969089561546,
+        "shannon_entropy_sma_short": 2.1049291680288507,
+        "hurst_exponent_sma": 0.8546621204144386,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3546621204144385,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.13157894736842105
+      },
+      "panel": "core_civil_eo_placebo"
+    },
+    {
+      "event_id": "placebo_landsat8_2018",
+      "type": "placebo_baseline",
+      "t_peak": "2018-09-01",
+      "sources": [
+        "Civil EO control vs Athena-Fidus calendar"
+      ],
+      "norad_id": 39084,
+      "object_name": "LANDSAT 8",
+      "is_placebo": true,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.4596710838230848,
+      "pre_peak_anomaly_mean": 0.36669522879629324,
+      "pre_peak_anomaly_max": 0.4596710838230848,
+      "noise_ramp": 0.03144150626562903,
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.133488154273905,
+        "shannon_entropy_sma_short": 2.1771538815453346,
+        "hurst_exponent_sma": 0.8401898300500772,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.34018983005007725,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.05263157894736842
+      },
+      "panel": "core_civil_eo_placebo"
+    },
+    {
+      "event_id": "placebo_noaa20_2023",
+      "type": "placebo_baseline",
+      "t_peak": "2023-10-15",
+      "sources": [
+        "Control vs Luch-2 2023 window"
+      ],
+      "norad_id": 43013,
+      "object_name": "NOAA 20 (JPSS-1)",
+      "is_placebo": true,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.4637039717585005,
+      "pre_peak_anomaly_mean": 0.39077746407914815,
+      "pre_peak_anomaly_max": 0.46319415451364815,
+      "noise_ramp": -0.016379624798938786,
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.790438203918555,
+        "shannon_entropy_sma_short": 2.619816390283124,
+        "hurst_exponent_sma": 0.8242712975097651,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3242712975097651,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.05263157894736842
+      },
+      "panel": "core_civil_eo_placebo"
+    },
+    {
+      "event_id": "placebo_noaa18_2021",
+      "type": "placebo_baseline",
+      "t_peak": "2022-06-15",
+      "sources": [
+        "Control same calendar as SY-12 window"
+      ],
+      "norad_id": 28654,
+      "object_name": "NOAA 18",
+      "is_placebo": true,
+      "hit_at_event": false,
+      "soft_hit_at_event": false,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.45850509855638827,
+      "pre_peak_anomaly_mean": 0.3842710254884582,
+      "pre_peak_anomaly_max": 0.4273043665606796,
+      "noise_ramp": -0.01678114264970182,
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.748162651179849,
+        "shannon_entropy_sma_short": 2.286048612313038,
+        "hurst_exponent_sma": 0.8572522608798294,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3572522608798294,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.05263157894736842
+      },
+      "panel": "core_civil_eo_placebo"
+    },
+    {
+      "event_id": "placebo_starlink_2023",
+      "type": "placebo_baseline",
+      "t_peak": "2023-10-15",
+      "sources": [
+        "Commercial constellation station-keeping control vs Luch-2 window"
+      ],
+      "norad_id": 44714,
+      "object_name": "STARLINK-1008",
+      "is_placebo": true,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.5549326529912296,
+      "pre_peak_anomaly_mean": 0.46909937862649903,
+      "pre_peak_anomaly_max": 0.5549326529912296,
+      "noise_ramp": -0.013139115525737544,
+      "n_folds_above_thr_pre_peak": 3,
+      "lead_time_days": 169.0,
+      "lead_time_note": "days_from_first_thr_cross_to_t_peak",
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.6108428453101986,
+        "hurst_exponent_sma": 0.817490872631692,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.5052631578947369
+      },
+      "panel": "extended"
+    },
+    {
+      "event_id": "placebo_gps_meo_2018",
+      "type": "placebo_baseline",
+      "t_peak": "2018-09-01",
+      "sources": [
+        "MEO GNSS control calendar 2018 — stratified orbit class"
+      ],
+      "norad_id": 28874,
+      "object_name": "GPS BIIRM-1 (PRN 17)",
+      "is_placebo": true,
+      "hit_at_event": true,
+      "soft_hit_at_event": true,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.5394571034754128,
+      "pre_peak_anomaly_mean": 0.45348679360726213,
+      "pre_peak_anomaly_max": 0.5394571034754128,
+      "noise_ramp": 0.016719361461223603,
+      "n_folds_above_thr_pre_peak": 2,
+      "lead_time_days": 131.0,
+      "lead_time_note": "days_from_first_thr_cross_to_t_peak",
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 2.377694594241112,
+        "hurst_exponent_sma": 0.8648545177800009,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.05263157894736842
+      },
+      "panel": "extended"
+    },
+    {
+      "event_id": "placebo_aqua_2020",
+      "type": "placebo_baseline",
+      "t_peak": "2020-07-01",
+      "sources": [
+        "Scientific control vs Yaogan-29 2020 window"
+      ],
+      "norad_id": 27424,
+      "object_name": "AQUA",
+      "is_placebo": true,
+      "hit_at_event": false,
+      "soft_hit_at_event": false,
+      "first_fold_hit": false,
+      "anomaly_score_max": 0.395094985146771,
+      "pre_peak_anomaly_mean": 0.3513935041479014,
+      "pre_peak_anomaly_max": 0.395094985146771,
+      "noise_ramp": 0.0056903461645421705,
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "quant_features_late_prepeak": {
+        "shannon_entropy_sma_30d": 1.7109514498421672,
+        "shannon_entropy_sma_short": 2.537844793048883,
+        "hurst_exponent_sma": 0.8545086174771579,
+        "hurst_exponent_sma_short": 0.5,
+        "persistence_hurst_gap": 0.3545086174771579,
+        "l1_cusum_sma": 0.0,
+        "kolmogorov_proxy_7d": 0.09210526315789473
+      },
+      "panel": "core_civil_eo_placebo"
+    }
+  ],
+  "limitations": [
+    "See docs/paper/LIMITATIONS.md for full manuscript section.",
+    "Report n_events and n_unique_norads; Luch-1 multi-window is dependent.",
+    "Expanded LEO/MEO cases may not hard-hit; GEO headline remains strongest A+B.",
+    "first_fold_hit / noise_ramp~0 ⇒ persistent level, not ramp-to-news.",
+    "Open-source anchors are weak external labels, not classified intent.",
+    "TLE noise; homology/CS are proxies."
+  ],
+  "article_outline": [
+    "1. Introduction: SDA attention, public TLE, military-first watchlist",
+    "2. Related work: SSA, anomaly detection, weak open-source cases",
+    "3. Methods: quant features, IF past-only, doctrine roles, calibration (preregistered)",
+    "4. Case design: unique interest NORADs + civil EO placebos",
+    "5. Results: Claims A+B tables, pre-peak figures, MW tests, GEO headline",
+    "6. Discussion: persistence vs ramp, orbit class, operational priority layer",
+    "7. Limitations and ethics",
+    "8. Conclusion"
+  ]
+}

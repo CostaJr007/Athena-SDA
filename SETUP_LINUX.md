@@ -80,10 +80,7 @@ pip install scikit-learn xgboost scikit-fuzzy
 # 4. Topological data analysis (TDA — persistent homology)
 pip install ripser persim
 
-# 5. GUI and 3D visualizations
-pip install streamlit plotly watchdog
-
-# 6. IBM watsonx / Granite LLM integration
+# 5. IBM watsonx / Granite LLM integration
 pip install ibm-watsonx-ai
 ```
 
@@ -105,14 +102,16 @@ STEP 4: Create the ML pipeline (`athena/models.py`)
          - XGBoost for classification (🟢🟡🟠🔴)
 STEP 5: Create the uncertainty logic engine (`athena/fuzzy.py`)
 ETAPA 6: Ligar o copiloto inteligente Bob (`athena/bob.py`)
-ETAPA 7: Montar a tela Streamlit 3D (`app.py`)
+ETAPA 7: Montar o mission board React 3D (`src/frontend`)
 ```
 
 ---
 
-## 5. How to run the app for testing
+## 5. How to run the UI for testing
 After creating the code files, you can test the application by running:
 ```bash
-streamlit run app.py
+cd src/frontend
+npm install
+npm run dev
 ```
-This will open the browser on the interactive **Athena-SDA** panel.
+This will open the browser on the **Athena-SDA** mission board at http://127.0.0.1:3000.
