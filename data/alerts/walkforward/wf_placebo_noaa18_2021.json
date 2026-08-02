@@ -1,0 +1,1546 @@
+{
+  "event_id": "placebo_noaa18_2021",
+  "type": "placebo_baseline",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) mark evaluation windows for quant noise features (Hurst, Shannon, CUSUM, IF score). Metrics include hard hit, pre-peak mean, noise_ramp, and first_fold_hit for regime-level analysis.",
+  "t_start": "2021-12-01",
+  "t_peak": "2022-06-15",
+  "t_end": "2022-12-01",
+  "norad_ids": [
+    28654
+  ],
+  "pair_with": [],
+  "sources": [
+    "Control same calendar as SY-12 window"
+  ],
+  "notes": "Placebo LEO meteo legacy — NOAA-18.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 27,
+  "folds": [
+    {
+      "asof": "2021-12-01",
+      "cutoff": "2021-11-28",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.3932294805639841,
+          "window_end": "2021-11-30 21:27:17.506368",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.5451371199999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.879506460812007,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.792021459320538,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.292021459320538,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9897650458859065,
+            "delta_sma_7d_km": -0.000873280017003708,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.5451371199999997,
+            "f10_7": 86.4,
+            "ap_index": 18.0,
+            "kp_mean": 3.208375,
+            "f10_7_delta_7d": -0.19999999999998863,
+            "ap_delta_7d": 10.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.573,
+            "cointegration_pvalue": 0.02241,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7269532662537929
+        }
+      }
+    },
+    {
+      "asof": "2021-12-15",
+      "cutoff": "2021-12-12",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.37808725209278937,
+          "window_end": "2021-12-14 20:19:40.653984",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.6720405599999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7742433029172697,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8751601625567557,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37516016255675566,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.28618431973312,
+            "delta_sma_7d_km": -0.0009687899555501644,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.6720405599999997,
+            "f10_7": 102.5,
+            "ap_index": 9.0,
+            "kp_mean": 2.083375,
+            "f10_7_delta_7d": 25.599999999999994,
+            "ap_delta_7d": 5.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.57,
+            "cointegration_pvalue": 0.114723,
+            "pair_risk": 0.9063,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6686042634417553
+        }
+      }
+    },
+    {
+      "asof": "2021-12-29",
+      "cutoff": "2021-12-26",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.41908203982644676,
+          "window_end": "2021-12-28 20:53:58.495488",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.10041792
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.694781460584273,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.7361315643113855,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2361315643113855,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0005294276684658393,
+            "delta_sma_7d_km": -0.0012178026781839435,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.10041792,
+            "f10_7": 111.4,
+            "ap_index": 6.0,
+            "kp_mean": 1.45825,
+            "f10_7_delta_7d": -29.0,
+            "ap_delta_7d": -0.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.571,
+            "cointegration_pvalue": 0.590585,
+            "pair_risk": 0.7398,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.595476917921901
+        }
+      }
+    },
+    {
+      "asof": "2022-01-12",
+      "cutoff": "2022-01-09",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.4126141604177569,
+          "window_end": "2022-01-11 21:28:10.885152",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.53030968
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9655839357277816,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.708114980437379,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.20811498043737897,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.24866773692708838,
+            "delta_sma_7d_km": -0.0009039663937073783,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 2.53030968,
+            "f10_7": 103.2,
+            "ap_index": 3.0,
+            "kp_mean": 0.666625,
+            "f10_7_delta_7d": 19.5,
+            "ap_delta_7d": -1.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.573,
+            "cointegration_pvalue": 0.040175,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7356763721879906
+        }
+      }
+    },
+    {
+      "asof": "2022-01-26",
+      "cutoff": "2022-01-23",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.3368956481297435,
+          "window_end": "2022-01-25 18:38:19.533408",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.3612407200000005
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0708470936225183,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8541401083118498,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35414010831184983,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.309732960027994,
+            "delta_sma_7d_km": -0.0014019932932569645,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.3612407200000005,
+            "f10_7": 101.8,
+            "ap_index": 10.0,
+            "kp_mean": 2.333375,
+            "f10_7_delta_7d": -3.5,
+            "ap_delta_7d": 0.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.576,
+            "cointegration_pvalue": 0.050017,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7016030416583846
+        }
+      }
+    },
+    {
+      "asof": "2022-02-09",
+      "cutoff": "2022-02-06",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.4273043665606796,
+          "window_end": "2022-02-08 20:54:21.970368",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.09389712
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.050301855434982,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.7990988423821073,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.29909884238210727,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8683072844850969,
+            "delta_sma_7d_km": -0.001739688672387274,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.09389712,
+            "f10_7": 125.9,
+            "ap_index": 2.0,
+            "kp_mean": 0.374875,
+            "f10_7_delta_7d": -2.299999999999983,
+            "ap_delta_7d": -11.125,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.578,
+            "cointegration_pvalue": 0.013643,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7422869649523058
+        }
+      }
+    },
+    {
+      "asof": "2022-02-23",
+      "cutoff": "2022-02-20",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.35238812048631446,
+          "window_end": "2022-02-22 21:28:21.032832",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.5274908799999998
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8603207778330444,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8708956797259821,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37089567972598214,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5799945221176325,
+            "delta_sma_7d_km": -0.0011256739089731127,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.5274908799999998,
+            "f10_7": 95.5,
+            "ap_index": 6.0,
+            "kp_mean": 1.583375,
+            "f10_7_delta_7d": -7.400000000000006,
+            "ap_delta_7d": -3.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.581,
+            "cointegration_pvalue": 0.224416,
+            "pair_risk": 0.8679,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6359196542188416
+        }
+      }
+    },
+    {
+      "asof": "2022-03-09",
+      "cutoff": "2022-03-06",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.37270706475758886,
+          "window_end": "2022-03-08 22:02:16.993536",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.96194624
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7550576199383077,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.876604013298066,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37660401329806603,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.05302848727675996,
+            "delta_sma_7d_km": -0.0011086113800047315,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.96194624,
+            "f10_7": 114.8,
+            "ap_index": 5.0,
+            "kp_mean": 1.0835,
+            "f10_7_delta_7d": 5.299999999999997,
+            "ap_delta_7d": -5.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.583,
+            "cointegration_pvalue": 0.153519,
+            "pair_risk": 0.8927,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.658703179140915
+        }
+      }
+    },
+    {
+      "asof": "2022-03-23",
+      "cutoff": "2022-03-20",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.37185784987631654,
+          "window_end": "2022-03-22 20:54:10.141344",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.09718296
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.675595777605311,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8801711775233455,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3801711775233455,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7015526677897805,
+            "delta_sma_7d_km": -0.001715778244943067,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.09718296,
+            "f10_7": 105.6,
+            "ap_index": 6.0,
+            "kp_mean": 1.500125,
+            "f10_7_delta_7d": -1.0,
+            "ap_delta_7d": 0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.587,
+            "cointegration_pvalue": 0.535606,
+            "pair_risk": 0.759,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5847860324443425
+        }
+      }
+    },
+    {
+      "asof": "2022-04-06",
+      "cutoff": "2022-04-03",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.3797400118246242,
+          "window_end": "2022-04-05 21:27:58.529952",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.53374168
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.694781460584273,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.8642093302384624,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36420933023846236,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.997029491851321,
+            "delta_sma_7d_km": -0.002288823790877359,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.53374168,
+            "f10_7": 117.0,
+            "ap_index": 6.0,
+            "kp_mean": 1.416625,
+            "f10_7_delta_7d": -34.30000000000001,
+            "ap_delta_7d": -6.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.593,
+            "cointegration_pvalue": 0.676207,
+            "pair_risk": 0.7098,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5612730053210809
+        }
+      }
+    },
+    {
+      "asof": "2022-04-20",
+      "cutoff": "2022-04-17",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.42498734673042027,
+          "window_end": "2022-04-19 18:37:42.364992",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.37156528
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7153266987718094,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8296512970656991,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32965129706569907,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9970155159676829,
+            "delta_sma_7d_km": -0.0021864747041036026,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.37156528,
+            "f10_7": 165.5,
+            "ap_index": 8.0,
+            "kp_mean": 1.8331250000000001,
+            "f10_7_delta_7d": 66.8,
+            "ap_delta_7d": -5.625,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.598,
+            "cointegration_pvalue": 0.094354,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7412443060286892
+        }
+      }
+    },
+    {
+      "asof": "2022-05-04",
+      "cutoff": "2022-05-01",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.35049938010841836,
+          "window_end": "2022-05-03 20:53:17.457216",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.11181744
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7550576199383077,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.8585170884458112,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3585170884458112,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5346941960725689,
+            "delta_sma_7d_km": -0.0022001007846483844,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.11181744,
+            "f10_7": 130.1,
+            "ap_index": 5.0,
+            "kp_mean": 1.458375,
+            "f10_7_delta_7d": -11.400000000000006,
+            "ap_delta_7d": -5.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.605,
+            "cointegration_pvalue": 0.268263,
+            "pair_risk": 0.8525,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6265997210487884
+        }
+      }
+    },
+    {
+      "asof": "2022-05-18",
+      "cutoff": "2022-05-15",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.39230403578142764,
+          "window_end": "2022-05-17 19:44:46.945248",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.25362632
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.2210972500579573,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8887147555618201,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3887147555618201,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5462409879060143,
+            "delta_sma_7d_km": -0.001725956802147266,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.25362632,
+            "f10_7": 179.9,
+            "ap_index": 6.0,
+            "kp_mean": 1.375,
+            "f10_7_delta_7d": 47.0,
+            "ap_delta_7d": -1.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.612,
+            "cointegration_pvalue": 0.034412,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7265368161016424
+        }
+      }
+    },
+    {
+      "asof": "2022-06-01",
+      "cutoff": "2022-05-29",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.3680975996819036,
+          "window_end": "2022-05-31 20:18:08.246592",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.69770928
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.294274067192862,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8686754139197004,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3686754139197004,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.4398950940641881,
+            "delta_sma_7d_km": -0.002005640062634484,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.69770928,
+            "f10_7": 104.2,
+            "ap_index": 5.0,
+            "kp_mean": 1.20825,
+            "f10_7_delta_7d": -32.3,
+            "ap_delta_7d": -5.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.617,
+            "cointegration_pvalue": 0.020482,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7156439198568567
+        }
+      }
+    },
+    {
+      "asof": "2022-06-15",
+      "cutoff": "2022-06-12",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.42939122927535334,
+          "window_end": "2022-06-14 19:09:24.912000",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.84308
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.755057619938308,
+            "shannon_entropy_sma_short": 1.8910611120726528,
+            "hurst_exponent_sma": 0.8407027494061163,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34070274940611633,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.557727285188902,
+            "delta_sma_7d_km": -0.0024626918329886394,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.84308,
+            "f10_7": 140.0,
+            "ap_index": 17.0,
+            "kp_mean": 2.958375,
+            "f10_7_delta_7d": 40.099999999999994,
+            "ap_delta_7d": 8.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.622,
+            "cointegration_pvalue": 0.001694,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.743226053173909
+        }
+      }
+    },
+    {
+      "asof": "2022-06-29",
+      "cutoff": "2022-06-26",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.3776434491441217,
+          "window_end": "2022-06-28 19:42:36.390528",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.28989152
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0761031709967224,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8095863010365109,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.30958630103651086,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.20078371258139172,
+            "delta_sma_7d_km": -0.0017190980479426798,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.28989152,
+            "f10_7": 96.2,
+            "ap_index": 4.0,
+            "kp_mean": 1.16675,
+            "f10_7_delta_7d": -32.499999999999986,
+            "ap_delta_7d": -6.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.627,
+            "cointegration_pvalue": 0.00735,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7199395521148548
+        }
+      }
+    },
+    {
+      "asof": "2022-07-13",
+      "cutoff": "2022-07-10",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.40987286763544933,
+          "window_end": "2022-07-12 20:15:44.575488",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.73761792
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7947885411048063,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8699418041813685,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36994180418136846,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.30793603040482553,
+            "delta_sma_7d_km": -0.0017770720905900816,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.73761792,
+            "f10_7": 164.8,
+            "ap_index": 4.0,
+            "kp_mean": 0.958375,
+            "f10_7_delta_7d": 50.20000000000002,
+            "ap_delta_7d": -6.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.632,
+            "cointegration_pvalue": 0.026579,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7344427904359523
+        }
+      }
+    },
+    {
+      "asof": "2022-07-27",
+      "cutoff": "2022-07-24",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.37368590278916125,
+          "window_end": "2022-07-26 20:48:49.235328",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.1863235199999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.886122093394785,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8683417662639273,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36834176626392734,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.13123668356345108,
+            "delta_sma_7d_km": -0.0019305497535242466,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.1863235199999997,
+            "f10_7": 98.0,
+            "ap_index": 8.0,
+            "kp_mean": 2.166625,
+            "f10_7_delta_7d": -34.19999999999999,
+            "ap_delta_7d": -2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.637,
+            "cointegration_pvalue": 0.11623,
+            "pair_risk": 0.9057,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6662936562551226
+        }
+      }
+    },
+    {
+      "asof": "2022-08-10",
+      "cutoff": "2022-08-07",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.3727721724888825,
+          "window_end": "2022-08-09 19:39:51.439104",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.33571136
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6550505394177746,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8391961558230017,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33919615582300167,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 2.269886547571712e-12,
+            "delta_sma_7d_km": -0.0008561224649383803,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 4.33571136,
+            "f10_7": 107.6,
+            "ap_index": 12.0,
+            "kp_mean": 2.541625,
+            "f10_7_delta_7d": 7.699999999999989,
+            "ap_delta_7d": -0.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.641,
+            "cointegration_pvalue": 0.243283,
+            "pair_risk": 0.8612,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6414074776199972
+        }
+      }
+    },
+    {
+      "asof": "2022-08-24",
+      "cutoff": "2022-08-21",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.41251059660258715,
+          "window_end": "2022-08-23 20:12:48.604608",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.78649872
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.905307776373747,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8056283458453034,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3056283458453034,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.009837940166759807,
+            "delta_sma_7d_km": -0.0010096046644321177,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.78649872,
+            "f10_7": 107.8,
+            "ap_index": 2.0,
+            "kp_mean": 0.5,
+            "f10_7_delta_7d": -14.900000000000006,
+            "ap_delta_7d": -12.625,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.646,
+            "cointegration_pvalue": 0.019764,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7356297684711642
+        }
+      }
+    },
+    {
+      "asof": "2022-09-07",
+      "cutoff": "2022-09-04",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.45850509855638827,
+          "window_end": "2022-09-06 19:03:41.936832",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.93835088
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6100635408770727,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8526225994897194,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3526225994897194,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.04048287595239774,
+            "delta_sma_7d_km": -0.0014427715450437972,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.93835088,
+            "f10_7": 126.1,
+            "ap_index": 13.0,
+            "kp_mean": 2.666625,
+            "f10_7_delta_7d": 12.799999999999997,
+            "ap_delta_7d": -9.625,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.65,
+            "cointegration_pvalue": 0.410489,
+            "pair_risk": 0.8027,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6478122943503748
+        }
+      }
+    },
+    {
+      "asof": "2022-09-21",
+      "cutoff": "2022-09-18",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.37221665124342285,
+          "window_end": "2022-09-20 19:36:28.472544",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.39209096
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.3650623812953047,
+            "shannon_entropy_sma_short": 1.836591668108979,
+            "hurst_exponent_sma": 0.898832058498164,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.39883205849816405,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7628215699718354,
+            "delta_sma_7d_km": -0.0013813676641802886,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.39209096,
+            "f10_7": 136.9,
+            "ap_index": 4.0,
+            "kp_mean": 1.083375,
+            "f10_7_delta_7d": -7.400000000000006,
+            "ap_delta_7d": -2.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.655,
+            "cointegration_pvalue": 0.007911,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.7174974930595404
+        }
+      }
+    },
+    {
+      "asof": "2022-10-05",
+      "cutoff": "2022-10-02",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.38953644698519696,
+          "window_end": "2022-10-04 20:09:08.936928",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.8475175200000002
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4973419908730574,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8692351435187995,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3692351435187995,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6528048044724555,
+            "delta_sma_7d_km": -0.001998704465222545,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.8475175200000002,
+            "f10_7": 161.0,
+            "ap_index": 13.0,
+            "kp_mean": 2.7498750000000003,
+            "f10_7_delta_7d": 26.19999999999999,
+            "ap_delta_7d": 1.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.656,
+            "cointegration_pvalue": 0.330818,
+            "pair_risk": 0.8306,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6321214011433387
+        }
+      }
+    },
+    {
+      "asof": "2022-10-19",
+      "cutoff": "2022-10-16",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.41867477968700123,
+          "window_end": "2022-10-18 18:59:43.385568",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.0046151199999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0761031709967224,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7625062633940934,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.26250626339409344,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.3606759958620832e-14,
+            "delta_sma_7d_km": -0.002162400166525913,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.0046151199999995,
+            "f10_7": 113.2,
+            "ap_index": 4.0,
+            "kp_mean": 0.875,
+            "f10_7_delta_7d": -27.39999999999999,
+            "ap_delta_7d": -4.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.659,
+            "cointegration_pvalue": 0.429012,
+            "pair_risk": 0.7962,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6263136508591506
+        }
+      }
+    },
+    {
+      "asof": "2022-11-02",
+      "cutoff": "2022-10-30",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.35658363591574155,
+          "window_end": "2022-11-01 19:32:10.989312",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.46361408
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0503018554349817,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8558610784538632,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35586107845386317,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.45429531916841487,
+            "delta_sma_7d_km": -0.002636469789649709,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.46361408,
+            "f10_7": 129.7,
+            "ap_index": 13.0,
+            "kp_mean": 2.75,
+            "f10_7_delta_7d": 7.299999999999983,
+            "ap_delta_7d": 1.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.661,
+            "cointegration_pvalue": 0.51393,
+            "pair_risk": 0.7665,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.5820376361620837
+        }
+      }
+    },
+    {
+      "asof": "2022-11-16",
+      "cutoff": "2022-11-13",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.3771449292504798,
+          "window_end": "2022-11-15 20:04:32.888064",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.9241977599999998
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.925853014561283,
+            "shannon_entropy_sma_short": 2.2810361125534233,
+            "hurst_exponent_sma": 0.8086300232766087,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3086300232766087,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.2200353044171916,
+            "delta_sma_7d_km": -0.0013403914435912156,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.9241977599999998,
+            "f10_7": 132.9,
+            "ap_index": 2.0,
+            "kp_mean": 0.458125,
+            "f10_7_delta_7d": -4.699999999999989,
+            "ap_delta_7d": -1.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.663,
+            "cointegration_pvalue": 0.350425,
+            "pair_risk": 0.8237,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6227502181627159
+        }
+      }
+    },
+    {
+      "asof": "2022-11-30",
+      "cutoff": "2022-11-27",
+      "n_train_ok": true,
+      "targets": {
+        "28654": {
+          "ok": true,
+          "anomaly_score": 0.4048487824459853,
+          "window_end": "2022-11-29 18:54:51.119424",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_191h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.08580016
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8397755396455087,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.7903802245912845,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.29038022459128454,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.510164504495646,
+            "delta_sma_7d_km": -0.0018997257611772511,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.08580016,
+            "f10_7": 111.0,
+            "ap_index": 24.0,
+            "kp_mean": 3.58325,
+            "f10_7_delta_7d": -2.299999999999997,
+            "ap_delta_7d": 9.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 28654,
+          "object_name": "NOAA 18",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2.662,
+            "cointegration_pvalue": 0.12653,
+            "pair_risk": 0.9021,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6783369521006934
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "28654": {
+      "norad_id": 28654,
+      "object_name": "NOAA 18",
+      "n_folds_scored": 27,
+      "anomaly_score_mean": 0.3901178110688217,
+      "anomaly_score_max": 0.45850509855638827,
+      "anomaly_score_at_nearest_peak": 0.42939122927535334,
+      "hit_at_event": false,
+      "soft_hit_at_event": false,
+      "n_hits_in_window": 0,
+      "first_fold_hit": false,
+      "first_hit_asof": null,
+      "first_scorable_asof": "2021-12-01",
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 2.87699245073277,
+          "late_mean": 2.748162651179849
+        },
+        "shannon_entropy_sma_short": {
+          "early_mean": 2.664260834727569,
+          "late_mean": 2.286048612313038
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.7931136549875817,
+          "late_mean": 0.8572522608798294
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.2931136549875816,
+          "late_mean": 0.3572522608798294
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.05263157894736842,
+          "late_mean": 0.05263157894736842
+        }
+      },
+      "pair_risk_max": 1.0,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 14,
+        "pre_peak_anomaly_mean": 0.3842710254884582,
+        "pre_peak_anomaly_max": 0.4273043665606796,
+        "early_pre_peak_mean": 0.40075323322524425,
+        "late_pre_peak_mean": 0.38397209057554244,
+        "noise_ramp": -0.01678114264970182,
+        "pre_peak_pair_risk_max": 1.0,
+        "elevated_noise_before_peak": false
+      },
+      "is_placebo": true
+    }
+  }
+}

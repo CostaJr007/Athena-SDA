@@ -1,0 +1,1337 @@
+{
+  "event_id": "yaogan3_recon_2016",
+  "type": "recon_maneuver_regime",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) mark evaluation windows for quant noise features (Hurst, Shannon, CUSUM, IF score). Metrics include hard hit, pre-peak mean, noise_ramp, and first_fold_hit for regime-level analysis.",
+  "t_start": "2016-01-01",
+  "t_peak": "2016-07-01",
+  "t_end": "2016-12-01",
+  "norad_ids": [
+    32289
+  ],
+  "pair_with": [],
+  "sources": [
+    "Public catalog / dual-use EO-SAR recon class (Yaogan series)",
+    "Open literature on Yaogan LEO recon constellation operations"
+  ],
+  "notes": "Independent NORAD Yaogan-3 — LEO recon-class regime case (unique object vs Yaogan-29).",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 24,
+  "folds": [
+    {
+      "asof": "2016-01-01",
+      "cutoff": "2015-12-29",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.41948113017002464,
+          "window_end": "2015-12-31 20:55:12.320832",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.0799108800000004
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8795064608120065,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.84423201718326,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34423201718326,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0003903401270198828,
+            "delta_sma_7d_km": 0.005579890544140653,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 3.0799108800000004,
+            "f10_7": 98.4,
+            "ap_index": 28.0,
+            "kp_mean": 3.25,
+            "f10_7_delta_7d": -28.0,
+            "ap_delta_7d": 14.875,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.785,
+            "cointegration_pvalue": 0.971357,
+            "pair_risk": 0.6035,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5206915085765111
+        }
+      }
+    },
+    {
+      "asof": "2016-01-15",
+      "cutoff": "2016-01-12",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3866550554190613,
+          "window_end": "2016-01-14 20:39:17.515296",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.34513464
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9708400131019856,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8415779448523154,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3415779448523154,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.13162110721097559,
+            "delta_sma_7d_km": 0.0024886844112188555,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 3.34513464,
+            "f10_7": 103.5,
+            "ap_index": 4.0,
+            "kp_mean": 1.16675,
+            "f10_7_delta_7d": -5.0,
+            "ap_delta_7d": -4.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.779,
+            "cointegration_pvalue": 0.914821,
+            "pair_risk": 0.6233,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5168097749385776
+        }
+      }
+    },
+    {
+      "asof": "2016-01-29",
+      "cutoff": "2016-01-26",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3767628987474884,
+          "window_end": "2016-01-28 20:23:14.846496",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.61254264
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8861220933947846,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8849037620734765,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.38490376207347654,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.04506870437216858,
+            "delta_sma_7d_km": -0.0019335193665028783,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 3.61254264,
+            "f10_7": 106.9,
+            "ap_index": 3.0,
+            "kp_mean": 0.5835,
+            "f10_7_delta_7d": 6.400000000000006,
+            "ap_delta_7d": -3.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.757,
+            "cointegration_pvalue": 0.672973,
+            "pair_risk": 0.708,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5589433044363699
+        }
+      }
+    },
+    {
+      "asof": "2016-02-12",
+      "cutoff": "2016-02-09",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3676772804102992,
+          "window_end": "2016-02-11 21:44:23.475264",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.26014576
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8655768552072485,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8710843054279082,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37108430542790816,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.02257659454550857,
+            "delta_sma_7d_km": -0.010121677431015996,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 2.26014576,
+            "f10_7": 112.2,
+            "ap_index": 12.0,
+            "kp_mean": 2.58325,
+            "f10_7_delta_7d": -7.5,
+            "ap_delta_7d": 2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.701,
+            "cointegration_pvalue": 0.969586,
+            "pair_risk": 0.6042,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.49776477618463466
+        }
+      }
+    },
+    {
+      "asof": "2016-02-26",
+      "cutoff": "2016-02-23",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.396659220133564,
+          "window_end": "2016-02-25 21:28:02.719488",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.53257792
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4842551447947994,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.774742762139491,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.274742762139491,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8159770196113132,
+            "delta_sma_7d_km": -0.01073660313795699,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.53257792,
+            "f10_7": 89.0,
+            "ap_index": 7.0,
+            "kp_mean": 1.500125,
+            "f10_7_delta_7d": -5.0,
+            "ap_delta_7d": 0.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.692,
+            "cointegration_pvalue": 0.754164,
+            "pair_risk": 0.6796,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5522766490601039
+        }
+      }
+    },
+    {
+      "asof": "2016-03-11",
+      "cutoff": "2016-03-08",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.39513112441938747,
+          "window_end": "2016-03-10 21:11:34.160928",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.80717752
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.794788541104806,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8599513172710016,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3599513172710016,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.03580839753316441,
+            "delta_sma_7d_km": -0.0041665374037620495,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 2.80717752,
+            "f10_7": 94.2,
+            "ap_index": 19.0,
+            "kp_mean": 3.08325,
+            "f10_7_delta_7d": -6.299999999999997,
+            "ap_delta_7d": 6.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.641,
+            "cointegration_pvalue": 0.991112,
+            "pair_risk": 0.5968,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5060490059887244
+        }
+      }
+    },
+    {
+      "asof": "2016-03-25",
+      "cutoff": "2016-03-22",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3584906916208848,
+          "window_end": "2016-03-24 20:54:56.644416",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.0842654400000002
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.694781460584273,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8586864906740019,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35868649067400193,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7933200911960965,
+            "delta_sma_7d_km": 0.006853736968878366,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.0842654400000002,
+            "f10_7": 85.5,
+            "ap_index": 5.0,
+            "kp_mean": 1.166625,
+            "f10_7_delta_7d": -4.799999999999997,
+            "ap_delta_7d": -3.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.645,
+            "cointegration_pvalue": 0.889996,
+            "pair_risk": 0.6322,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5090308112293982
+        }
+      }
+    },
+    {
+      "asof": "2016-04-08",
+      "cutoff": "2016-04-05",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.358037826713455,
+          "window_end": "2016-04-07 20:38:13.032384",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.36304656
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8603207778330444,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.8954706473596619,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.39547064735966186,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.780451271112521,
+            "delta_sma_7d_km": 0.004551247365270683,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.36304656,
+            "f10_7": 98.3,
+            "ap_index": 8.0,
+            "kp_mean": 1.333375,
+            "f10_7_delta_7d": 16.200000000000003,
+            "ap_delta_7d": -1.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.609,
+            "cointegration_pvalue": 0.881564,
+            "pair_risk": 0.6352,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5104770220210548
+        }
+      }
+    },
+    {
+      "asof": "2016-04-22",
+      "cutoff": "2016-04-19",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3784007989799513,
+          "window_end": "2016-04-21 20:21:42.719040",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.6381336
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.050301855434982,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8326898895757316,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33268988957573165,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6306672003655641,
+            "delta_sma_7d_km": -0.0027913714839087334,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 3.6381336,
+            "f10_7": 76.6,
+            "ap_index": 12.0,
+            "kp_mean": 2.458375,
+            "f10_7_delta_7d": -35.80000000000001,
+            "ap_delta_7d": 4.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.68,
+            "cointegration_pvalue": 0.666377,
+            "pair_risk": 0.7104,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5610003595409782
+        }
+      }
+    },
+    {
+      "asof": "2016-05-06",
+      "cutoff": "2016-05-03",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3901960390270427,
+          "window_end": "2016-05-05 21:42:30.267072",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.29159248
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9258530145612833,
+            "shannon_entropy_sma_short": 2.2810361125534238,
+            "hurst_exponent_sma": 0.8485069082518258,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34850690825182584,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9162006368399633,
+            "delta_sma_7d_km": -0.012401809390212293,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.29159248,
+            "f10_7": 89.6,
+            "ap_index": 15.0,
+            "kp_mean": 2.79175,
+            "f10_7_delta_7d": -2.8000000000000114,
+            "ap_delta_7d": 4.125,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.642,
+            "cointegration_pvalue": 0.734589,
+            "pair_risk": 0.6865,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5531632175621692
+        }
+      }
+    },
+    {
+      "asof": "2016-05-20",
+      "cutoff": "2016-05-17",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3630041286294369,
+          "window_end": "2016-05-19 18:11:15.702432",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 5.81230488
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4995443056081323,
+            "shannon_entropy_sma_short": 1.8910611120726528,
+            "hurst_exponent_sma": 0.8058007623219472,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3058007623219472,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.44480335337533017,
+            "delta_sma_7d_km": -0.008244679239396646,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 5.81230488,
+            "f10_7": 99.5,
+            "ap_index": 5.0,
+            "kp_mean": 1.374875,
+            "f10_7_delta_7d": 6.099999999999994,
+            "ap_delta_7d": -3.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.627,
+            "cointegration_pvalue": 0.874668,
+            "pair_risk": 0.6375,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5139768578832467
+        }
+      }
+    },
+    {
+      "asof": "2016-06-03",
+      "cutoff": "2016-05-31",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.38082005823747367,
+          "window_end": "2016-06-02 21:09:10.444896",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.8470986399999996
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.010570934268484,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8722719857071987,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37227198570719866,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.019559516818770672,
+            "delta_sma_7d_km": -0.0006339597148325993,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 2.8470986399999996,
+            "f10_7": 83.2,
+            "ap_index": 2.0,
+            "kp_mean": 0.4165,
+            "f10_7_delta_7d": -7.200000000000003,
+            "ap_delta_7d": -5.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.584,
+            "cointegration_pvalue": 0.991945,
+            "pair_risk": 0.5966,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.49949902620686315
+        }
+      }
+    },
+    {
+      "asof": "2016-06-17",
+      "cutoff": "2016-06-14",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3625909834607199,
+          "window_end": "2016-06-16 22:29:42.076320",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.5049788
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4200824632751354,
+            "shannon_entropy_sma_short": 1.974937501201927,
+            "hurst_exponent_sma": 0.8798809927129968,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3798809927129968,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.4690873492093401,
+            "delta_sma_7d_km": 0.007005049827057519,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.5049788,
+            "f10_7": 86.6,
+            "ap_index": 7.0,
+            "kp_mean": 1.833375,
+            "f10_7_delta_7d": 1.6999999999999886,
+            "ap_delta_7d": -2.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.59,
+            "cointegration_pvalue": 0.962394,
+            "pair_risk": 0.6069,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4969609425573239
+        }
+      }
+    },
+    {
+      "asof": "2016-07-01",
+      "cutoff": "2016-06-28",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3634418083414559,
+          "window_end": "2016-06-30 22:12:51.156576",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.7857898399999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6550505394177746,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8984400352973614,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3984400352973614,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.3771437441356616,
+            "delta_sma_7d_km": 0.002251949812489329,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.7857898399999999,
+            "f10_7": 72.0,
+            "ap_index": 6.0,
+            "kp_mean": 1.499875,
+            "f10_7_delta_7d": -3.700000000000003,
+            "ap_delta_7d": -1.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.578,
+            "cointegration_pvalue": 0.841009,
+            "pair_risk": 0.6494,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5207188137536551
+        }
+      }
+    },
+    {
+      "asof": "2016-07-15",
+      "cutoff": "2016-07-12",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3694554915392771,
+          "window_end": "2016-07-14 20:18:38.803680",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.6892211999999995
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.839775539645508,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7920606228098862,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2920606228098862,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 2.1328673899261664e-05,
+            "delta_sma_7d_km": -0.007244686514241039,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.6892211999999995,
+            "f10_7": 102.1,
+            "ap_index": 10.0,
+            "kp_mean": 2.3751249999999997,
+            "f10_7_delta_7d": 15.0,
+            "ap_delta_7d": -2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 331.219,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 0.6403,
+            "risk_level": "ELEVATED",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.5184199711926747
+        }
+      }
+    },
+    {
+      "asof": "2016-07-29",
+      "cutoff": "2016-07-26",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.38670767910702897,
+          "window_end": "2016-07-28 20:01:41.212128",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.9718855200000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.1158340921632206,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8684358725080141,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36843587250801413,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.08158228095515424,
+            "delta_sma_7d_km": -0.008818483131108223,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 3.9718855200000003,
+            "f10_7": 70.5,
+            "ap_index": 13.0,
+            "kp_mean": 2.75,
+            "f10_7_delta_7d": -19.900000000000006,
+            "ap_delta_7d": 3.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.532,
+            "cointegration_pvalue": 0.881258,
+            "pair_risk": 0.6354,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.523488455598163
+        }
+      }
+    },
+    {
+      "asof": "2016-08-12",
+      "cutoff": "2016-08-09",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.38299623697363083,
+          "window_end": "2016-08-11 19:44:40.619040",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.2553836
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9450386975402454,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8177137202913813,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31771372029138134,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.043226399103985895,
+            "delta_sma_7d_km": -0.0034062687227560673,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 4.2553836,
+            "f10_7": 94.8,
+            "ap_index": 10.0,
+            "kp_mean": 2.125,
+            "f10_7_delta_7d": 15.0,
+            "ap_delta_7d": -1.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.538,
+            "cointegration_pvalue": 0.926231,
+            "pair_risk": 0.6196,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5131283066381339
+        }
+      }
+    },
+    {
+      "asof": "2016-08-26",
+      "cutoff": "2016-08-23",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3482368340620334,
+          "window_end": "2016-08-25 19:27:36.495648",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.53986232
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8603207778330444,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8193455788636314,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31934557886363135,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.2136022968030809,
+            "delta_sma_7d_km": 0.0048444458425365156,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 4.53986232,
+            "f10_7": 81.9,
+            "ap_index": 6.0,
+            "kp_mean": 1.4585,
+            "f10_7_delta_7d": 1.1000000000000085,
+            "ap_delta_7d": -3.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.542,
+            "cointegration_pvalue": 0.967167,
+            "pair_risk": 0.6053,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.48962157532791506
+        }
+      }
+    },
+    {
+      "asof": "2016-09-09",
+      "cutoff": "2016-09-06",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.41495815953652704,
+          "window_end": "2016-09-08 20:47:47.044608",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.20359872
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.925853014561283,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.7981822513618688,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2981822513618688,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5337756279483875,
+            "delta_sma_7d_km": 0.004223092294523667,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 3.20359872,
+            "f10_7": 91.0,
+            "ap_index": 3.0,
+            "kp_mean": 0.8333750000000001,
+            "f10_7_delta_7d": -3.5999999999999943,
+            "ap_delta_7d": -16.375,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.483,
+            "cointegration_pvalue": 0.907406,
+            "pair_risk": 0.6263,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5311961717914372
+        }
+      }
+    },
+    {
+      "asof": "2016-09-23",
+      "cutoff": "2016-09-20",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.3859480669857395,
+          "window_end": "2016-09-22 20:30:34.400448",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.49044432
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0761031709967224,
+            "shannon_entropy_sma_short": 2.7254805569978675,
+            "hurst_exponent_sma": 0.8543058821782807,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35430588217828074,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.09905278371462806,
+            "delta_sma_7d_km": -0.001971183283785649,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 3.49044432,
+            "f10_7": 85.5,
+            "ap_index": 3.0,
+            "kp_mean": 0.666625,
+            "f10_7_delta_7d": 1.7999999999999972,
+            "ap_delta_7d": -3.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.484,
+            "cointegration_pvalue": 0.935668,
+            "pair_risk": 0.6164,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5126966301435828
+        }
+      }
+    },
+    {
+      "asof": "2016-10-07",
+      "cutoff": "2016-10-04",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.37764309561210285,
+          "window_end": "2016-10-06 20:13:17.380992",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.77850528
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0503018554349817,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.8277265001471434,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32772650014714344,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0011252851542623834,
+            "delta_sma_7d_km": -0.009326007617346477,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.77850528,
+            "f10_7": 104.2,
+            "ap_index": 5.0,
+            "kp_mean": 1.3335,
+            "f10_7_delta_7d": 23.60000000000001,
+            "ap_delta_7d": -8.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.475,
+            "cointegration_pvalue": 0.901297,
+            "pair_risk": 0.6284,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5155593930254463
+        }
+      }
+    },
+    {
+      "asof": "2016-10-21",
+      "cutoff": "2016-10-18",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.40096455304913947,
+          "window_end": "2016-10-20 19:55:54.975360",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.0680624
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.141635407724961,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8113603152808064,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31136031528080643,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.06094462147377472,
+            "delta_sma_7d_km": -0.00697316648074775,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 4.0680624,
+            "f10_7": 77.8,
+            "ap_index": 1.0,
+            "kp_mean": 0.166625,
+            "f10_7_delta_7d": -15.0,
+            "ap_delta_7d": -9.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.423,
+            "cointegration_pvalue": 0.988494,
+            "pair_risk": 0.598,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5093340488721128
+        }
+      }
+    },
+    {
+      "asof": "2016-11-04",
+      "cutoff": "2016-11-01",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.40361138593227236,
+          "window_end": "2016-11-03 19:38:27.614688",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.35899592
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0761031709967224,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8053579964187675,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3053579964187675,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 3.8303062907651225e-05,
+            "delta_sma_7d_km": 0.0017945308645721525,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 4.35899592,
+            "f10_7": 76.7,
+            "ap_index": 4.0,
+            "kp_mean": 0.91675,
+            "f10_7_delta_7d": -2.5,
+            "ap_delta_7d": -9.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.433,
+            "cointegration_pvalue": 0.919668,
+            "pair_risk": 0.6221,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5237801236695226
+        }
+      }
+    },
+    {
+      "asof": "2016-11-18",
+      "cutoff": "2016-11-15",
+      "n_train_ok": true,
+      "targets": {
+        "32289": {
+          "ok": true,
+          "anomaly_score": 0.37905511569194117,
+          "window_end": "2016-11-17 22:35:32.674560",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.4075904
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.353190671338323,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7477309748429659,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2477309748429659,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.0069762379134772345,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 1.4075904,
+            "f10_7": 77.6,
+            "ap_index": 2.0,
+            "kp_mean": 0.49987499999999996,
+            "f10_7_delta_7d": -0.8000000000000114,
+            "ap_delta_7d": -7.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 4.414,
+            "cointegration_pvalue": 0.865282,
+            "pair_risk": 0.6411,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5231798020613736
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "32289": {
+      "norad_id": 32289,
+      "object_name": "YAOGAN-3",
+      "n_folds_scored": 24,
+      "anomaly_score_mean": 0.38112190261666407,
+      "anomaly_score_max": 0.41948113017002464,
+      "anomaly_score_at_nearest_peak": 0.3634418083414559,
+      "hit_at_event": false,
+      "soft_hit_at_event": false,
+      "n_hits_in_window": 0,
+      "first_fold_hit": false,
+      "first_hit_asof": null,
+      "first_scorable_asof": "2016-01-01",
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 2.900511355629006,
+          "late_mean": 2.646312060642382
+        },
+        "shannon_entropy_sma_short": {
+          "early_mean": 2.648955904159994,
+          "late_mean": 2.1416041678685938
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.8604495073842401,
+          "late_mean": 0.864098444009876
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.36044950738424,
+          "late_mean": 0.364098444009876
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.05263157894736842,
+          "late_mean": 0.05263157894736842
+        }
+      },
+      "pair_risk_max": 0.7104,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 13,
+        "pre_peak_anomaly_mean": 0.379531325843753,
+        "pre_peak_anomaly_max": 0.41948113017002464,
+        "early_pre_peak_mean": 0.3876440911867184,
+        "late_pre_peak_mean": 0.3741528023386683,
+        "noise_ramp": -0.013491288848050065,
+        "pre_peak_pair_risk_max": 0.7104,
+        "elevated_noise_before_peak": false
+      },
+      "is_placebo": false
+    }
+  }
+}

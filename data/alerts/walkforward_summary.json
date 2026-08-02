@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-26T04:57:45.025367+00:00",
+  "generated_at": "2026-08-02T00:34:58.684473+00:00",
   "params": {
     "step_days": 14,
     "holdout_days": 3,
@@ -7,288 +7,101 @@
     "hit_window_days": 45
   },
   "summary": {
-    "n_interest_targets": 5,
-    "n_placebo_targets": 3,
-    "hit_rate_interest": 1.0,
-    "soft_hit_rate_interest": 1.0,
-    "hit_rate_placebo": 0.0,
-    "soft_hit_rate_placebo": 0.6666666666666666,
-    "elevated_pre_peak_noise_rate_interest": 1.0,
-    "elevated_pre_peak_noise_rate_placebo": 0.0,
-    "mean_noise_ramp_interest": -0.01445799583046794,
-    "mean_noise_ramp_placebo": 0.00822134187766732,
-    "mean_lead_time_days_interest": 201.0,
-    "median_lead_time_days_interest": 197.0,
-    "mean_max_anomaly_interest": 0.6030205233729087,
-    "mean_max_anomaly_placebo": 0.4765237756891421,
+    "n_interest_targets": 6,
+    "n_placebo_targets": 0,
+    "n_unique_interest_norads": 6,
+    "n_unique_placebo_norads": 0,
+    "hit_rate_interest": 0.16666666666666666,
+    "soft_hit_rate_interest": 0.6666666666666666,
+    "hit_rate_placebo": null,
+    "soft_hit_rate_placebo": null,
+    "first_fold_hit_rate_interest": 0.16666666666666666,
+    "elevated_pre_peak_noise_rate_interest": 0.6666666666666666,
+    "elevated_pre_peak_noise_rate_placebo": null,
+    "mean_noise_ramp_interest": -0.007922685400335167,
+    "mean_noise_ramp_placebo": null,
+    "mean_pre_peak_anomaly_interest": 0.4377566733378004,
+    "mean_pre_peak_anomaly_placebo": null,
+    "mean_lead_time_days_interest": 153.66666666666666,
+    "median_lead_time_days_interest": 155.0,
+    "mean_max_anomaly_interest": 0.504547666455735,
+    "mean_max_anomaly_placebo": null,
+    "p95_max_anomaly_placebo": null,
+    "subgroup_geo_interest_vs_civil_eo_placebo": {
+      "n_geo_interest": 0,
+      "n_civil_eo_placebo": 0,
+      "hit_rate_geo_interest": null,
+      "hit_rate_civil_eo_placebo": null,
+      "mean_max_geo_interest": null,
+      "mean_max_civil_eo_placebo": null,
+      "p95_max_civil_eo_placebo": null,
+      "note": "Starlink/GPS placebos can hard-hit (station-keeping). Civil EO placebos are quieter controls for the GEO Luch/SY-12 narrative."
+    },
     "anomaly_threshold": 0.5,
-    "interpretation": "Walk-forward trains only on PAST folds (noise/regime before asof). Hit@event = anomaly_score >= thr inside ±hit_window of public t_peak. pre_peak_noise compares early vs late scores BEFORE the report anchor. Placebo baselines should show lower elevated_pre_peak / hit rates. Soft hit uses thr-0.1 floor 0.45. Pair_risk is fused when assets available."
+    "interpretation": "Past-only IF at each asof. Public t_peak anchors are case studies — not forecast targets. Full panel includes active-constellation placebos (may hard-hit). Use subgroup_geo_interest_vs_civil_eo_placebo for civil EO controls. first_fold_hit + noise_ramp~0 => persistent elevated level, not ramp onset. XGB accuracy is not used here."
   },
   "events": [
     {
-      "event_id": "luch1_intelsat_2015",
-      "type": "shadowing_geo_espionage",
-      "t_peak": "2015-09-15",
+      "event_id": "shiyan7_experimental_2015",
+      "type": "rpo_inspection",
+      "t_peak": "2015-07-01",
       "metrics": {
-        "40258": {
-          "norad_id": 40258,
-          "object_name": "LUCH (OLYMP-K 1)",
-          "n_folds_scored": 30,
-          "anomaly_score_mean": 0.5225615778291443,
-          "anomaly_score_max": 0.5993969560570622,
-          "anomaly_score_at_nearest_peak": 0.506904733784962,
-          "hit_at_event": true,
+        "39208": {
+          "norad_id": 39208,
+          "object_name": "SHIYAN-7 (SY-7)",
+          "n_folds_scored": 24,
+          "anomaly_score_mean": 0.43094697732147874,
+          "anomaly_score_max": 0.4895448985041626,
+          "anomaly_score_at_nearest_peak": 0.4352446719943918,
+          "hit_at_event": false,
           "soft_hit_at_event": true,
-          "n_hits_in_window": 3,
-          "lead_time_days": 243.0,
+          "n_hits_in_window": 0,
+          "first_fold_hit": false,
+          "first_hit_asof": null,
+          "first_scorable_asof": "2015-01-01",
+          "n_folds_above_thr_pre_peak": 0,
+          "lead_time_days": null,
+          "lead_time_note": null,
           "feature_early_vs_late": {
             "shannon_entropy_sma_30d": {
-              "early_mean": 1.9374199307787852,
-              "late_mean": 2.0314591550639824
+              "early_mean": 2.1604882529524376,
+              "late_mean": 2.711504408568476
+            },
+            "shannon_entropy_sma_short": {
+              "early_mean": 2.2141924470932377,
+              "late_mean": 2.4613201402110088
             },
             "hurst_exponent_sma": {
-              "early_mean": 0.9000648306901743,
-              "late_mean": 0.7644851642877771
+              "early_mean": 0.802977135245474,
+              "late_mean": 0.8115804299892115
+            },
+            "hurst_exponent_sma_short": {
+              "early_mean": 0.5,
+              "late_mean": 0.5
+            },
+            "persistence_hurst_gap": {
+              "early_mean": 0.302977135245474,
+              "late_mean": 0.31158042998921154
             },
             "l1_cusum_sma": {
               "early_mean": 0.0,
               "late_mean": 0.0
             },
             "kolmogorov_proxy_7d": {
-              "early_mean": 0.5175438596491229,
-              "late_mean": 0.5701754385964911
+              "early_mean": 0.10526315789473684,
+              "late_mean": 0.11842105263157894
             }
           },
-          "pair_risk_max": 0.4037,
-          "pre_peak_noise": {
-            "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
-            "n_pre_peak_folds": 18,
-            "pre_peak_anomaly_mean": 0.5221484799710123,
-            "pre_peak_anomaly_max": 0.5777044305900535,
-            "early_pre_peak_mean": 0.5198997305982184,
-            "late_pre_peak_mean": 0.5216349626196647,
-            "noise_ramp": 0.0017352320214463202,
-            "pre_peak_pair_risk_max": 0.4037,
-            "elevated_noise_before_peak": true
-          },
-          "is_placebo": false
-        }
-      },
-      "n_folds": 30,
-      "sources": [
-        "Gunter: Olymp-K moved ~Apr 2015 between Intelsat 7/901 at 18.1W",
-        "Gunter/open press: ~Sep 2015 near Intelsat 905 at 24.4–24.5W",
-        "CSIS Unusual Behavior in GEO: Olymp-K / Luch"
-      ]
-    },
-    {
-      "event_id": "luch1_intelsat_mid2015",
-      "type": "shadowing_geo_espionage",
-      "t_peak": "2015-04-15",
-      "metrics": {
-        "40258": {
-          "norad_id": 40258,
-          "object_name": "LUCH (OLYMP-K 1)",
-          "n_folds_scored": 21,
-          "anomaly_score_mean": 0.5522019213732292,
-          "anomaly_score_max": 0.6462851661411383,
-          "anomaly_score_at_nearest_peak": 0.5943679781771795,
-          "hit_at_event": true,
-          "soft_hit_at_event": true,
-          "n_hits_in_window": 6,
-          "lead_time_days": 182.0,
-          "feature_early_vs_late": {
-            "shannon_entropy_sma_30d": {
-              "early_mean": 1.5090845019095207,
-              "late_mean": 1.7033186805712401
-            },
-            "hurst_exponent_sma": {
-              "early_mean": 0.8656753708098239,
-              "late_mean": 0.8512334227783683
-            },
-            "l1_cusum_sma": {
-              "early_mean": 0.0,
-              "late_mean": 0.0
-            },
-            "kolmogorov_proxy_7d": {
-              "early_mean": 0.39473684210526316,
-              "late_mean": 0.47368421052631576
-            }
-          },
-          "pair_risk_max": 0.4037,
+          "pair_risk_max": 1.0,
           "pre_peak_noise": {
             "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
             "n_pre_peak_folds": 13,
-            "pre_peak_anomaly_mean": 0.5547624767592689,
-            "pre_peak_anomaly_max": 0.6462851661411383,
-            "early_pre_peak_mean": 0.5686229108177542,
-            "late_pre_peak_mean": 0.5356146636802995,
-            "noise_ramp": -0.03300824713745465,
-            "pre_peak_pair_risk_max": 0.4037,
-            "elevated_noise_before_peak": true
-          },
-          "is_placebo": false
-        }
-      },
-      "n_folds": 22,
-      "sources": [
-        "Gunter: first colocation between Intelsat 7 and 901 ~April 2015"
-      ]
-    },
-    {
-      "event_id": "luch1_athena_fidus_2018",
-      "type": "shadowing_geo_espionage",
-      "t_peak": "2018-09-01",
-      "metrics": {
-        "40258": {
-          "norad_id": 40258,
-          "object_name": "LUCH (OLYMP-K 1)",
-          "n_folds_scored": 31,
-          "anomaly_score_mean": 0.5137096206668403,
-          "anomaly_score_max": 0.6272191222154141,
-          "anomaly_score_at_nearest_peak": 0.5610095625581129,
-          "hit_at_event": true,
-          "soft_hit_at_event": true,
-          "n_hits_in_window": 4,
-          "lead_time_days": 229.0,
-          "feature_early_vs_late": {
-            "shannon_entropy_sma_30d": {
-              "early_mean": 1.5193379958069932,
-              "late_mean": 1.8683275713630163
-            },
-            "hurst_exponent_sma": {
-              "early_mean": 0.8913095744403218,
-              "late_mean": 0.8251601592365762
-            },
-            "l1_cusum_sma": {
-              "early_mean": 0.0,
-              "late_mean": 0.0
-            },
-            "kolmogorov_proxy_7d": {
-              "early_mean": 0.42982456140350883,
-              "late_mean": 0.5614035087719299
-            }
-          },
-          "pair_risk_max": 0.4037,
-          "pre_peak_noise": {
-            "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
-            "n_pre_peak_folds": 18,
-            "pre_peak_anomaly_mean": 0.5161256701890627,
-            "pre_peak_anomaly_max": 0.5610095625581129,
-            "early_pre_peak_mean": 0.5085698792825543,
-            "late_pre_peak_mean": 0.5257365307824547,
-            "noise_ramp": 0.017166651499900487,
-            "pre_peak_pair_risk_max": 0.4037,
-            "elevated_noise_before_peak": true
-          },
-          "is_placebo": false
-        }
-      },
-      "n_folds": 31,
-      "sources": [
-        "Open press / Gunter: 2018 proximity concerns re Athena-Fidus (FR military comms)",
-        "French government space security statements (open reporting)"
-      ]
-    },
-    {
-      "event_id": "sy12_geo_rpo_2021_22",
-      "type": "rpo_inspection",
-      "t_peak": "2022-06-15",
-      "metrics": {
-        "50321": {
-          "norad_id": 50321,
-          "object_name": "SHIYAN-12 01 (SY-12 01)",
-          "n_folds_scored": 24,
-          "anomaly_score_mean": 0.49152725545520887,
-          "anomaly_score_max": 0.5727234313995673,
-          "anomaly_score_at_nearest_peak": 0.5053421659578768,
-          "hit_at_event": true,
-          "soft_hit_at_event": true,
-          "n_hits_in_window": 2,
-          "lead_time_days": 154.0,
-          "feature_early_vs_late": {
-            "shannon_entropy_sma_30d": {
-              "early_mean": 1.513328171876104,
-              "late_mean": 2.7182585214892305
-            },
-            "hurst_exponent_sma": {
-              "early_mean": 0.8599802555770403,
-              "late_mean": 0.9197044085900284
-            },
-            "l1_cusum_sma": {
-              "early_mean": 0.0,
-              "late_mean": 0.0
-            },
-            "kolmogorov_proxy_7d": {
-              "early_mean": 0.35526315789473684,
-              "late_mean": 0.35526315789473684
-            }
-          },
-          "pair_risk_max": 0.4037,
-          "pre_peak_noise": {
-            "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
-            "n_pre_peak_folds": 11,
-            "pre_peak_anomaly_mean": 0.4852433062897568,
-            "pre_peak_anomaly_max": 0.5337480715085808,
-            "early_pre_peak_mean": 0.49858641762221256,
-            "late_pre_peak_mean": 0.47311545436123126,
-            "noise_ramp": -0.025470963260981305,
-            "pre_peak_pair_risk_max": 0.4037,
-            "elevated_noise_before_peak": true
-          },
-          "is_placebo": false
-        }
-      },
-      "n_folds": 27,
-      "sources": [
-        "AMOS papers / open SSA: SY-12 01/02 GEO proximity with US objects",
-        "SWF Chinese Military RPO fact sheet (SY-12)"
-      ]
-    },
-    {
-      "event_id": "luch2_trailing_2023",
-      "type": "shadowing_geo_espionage",
-      "t_peak": "2023-10-15",
-      "metrics": {
-        "55841": {
-          "norad_id": 55841,
-          "object_name": "LUCH-5X (OLYMP-K 2)",
-          "n_folds_scored": 24,
-          "anomaly_score_mean": 0.5038008135656198,
-          "anomaly_score_max": 0.5694779410513618,
-          "anomaly_score_at_nearest_peak": 0.43897413355720766,
-          "hit_at_event": true,
-          "soft_hit_at_event": true,
-          "n_hits_in_window": 5,
-          "lead_time_days": 197.0,
-          "feature_early_vs_late": {
-            "shannon_entropy_sma_30d": {
-              "early_mean": 1.8975471750956363,
-              "late_mean": 1.7716286000851809
-            },
-            "hurst_exponent_sma": {
-              "early_mean": 0.9025405915212442,
-              "late_mean": 0.8010071952733597
-            },
-            "l1_cusum_sma": {
-              "early_mean": 0.0,
-              "late_mean": 0.0
-            },
-            "kolmogorov_proxy_7d": {
-              "early_mean": 0.3578947368421052,
-              "late_mean": 0.5684210526315789
-            }
-          },
-          "pair_risk_max": 0.4037,
-          "pre_peak_noise": {
-            "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
-            "n_pre_peak_folds": 15,
-            "pre_peak_anomaly_mean": 0.5039332009440656,
-            "pre_peak_anomaly_max": 0.5694779410513618,
-            "early_pre_peak_mean": 0.526927413609744,
-            "late_pre_peak_mean": 0.4942147613344935,
-            "noise_ramp": -0.03271265227525055,
-            "pre_peak_pair_risk_max": 0.4037,
+            "pre_peak_anomaly_mean": 0.4312652909998309,
+            "pre_peak_anomaly_max": 0.4760830361484069,
+            "early_pre_peak_mean": 0.40795481117183213,
+            "late_pre_peak_mean": 0.4549174955762921,
+            "noise_ramp": 0.04696268440445994,
+            "pre_peak_pair_risk_max": 1.0,
             "elevated_noise_before_peak": true
           },
           "is_placebo": false
@@ -296,88 +109,51 @@
       },
       "n_folds": 24,
       "sources": [
-        "Launch Luch/Olymp-K 2 ~12 Mar 2023",
-        "Breaking Defense Oct 2023: second Luch trailing Western systems in GEO"
+        "Open SSA literature: Shiyan-7 (SY-7) experimental spacecraft associated with proximity-operations discussion in public sources",
+        "Public catalog notes on Chinese experimental Shiyan series maneuverability"
       ]
     },
     {
-      "event_id": "placebo_terra_2015",
-      "type": "placebo_baseline",
-      "t_peak": "2015-09-15",
+      "event_id": "yaogan29_recon_2020",
+      "type": "recon_maneuver_regime",
+      "t_peak": "2020-07-01",
       "metrics": {
-        "25994": {
-          "norad_id": 25994,
-          "object_name": "TERRA",
-          "n_folds_scored": 30,
-          "anomaly_score_mean": 0.3760816315148626,
-          "anomaly_score_max": 0.4776837146714765,
-          "anomaly_score_at_nearest_peak": 0.39373144288974093,
-          "hit_at_event": false,
-          "soft_hit_at_event": true,
-          "n_hits_in_window": 0,
-          "lead_time_days": null,
-          "feature_early_vs_late": {
-            "shannon_entropy_sma_30d": {
-              "early_mean": 2.690934426393508,
-              "late_mean": 2.842856763402135
-            },
-            "hurst_exponent_sma": {
-              "early_mean": 0.9011126567917537,
-              "late_mean": 0.8899883042658953
-            },
-            "l1_cusum_sma": {
-              "early_mean": 0.0,
-              "late_mean": 0.0
-            },
-            "kolmogorov_proxy_7d": {
-              "early_mean": 0.12280701754385963,
-              "late_mean": 0.05263157894736842
-            }
-          },
-          "pair_risk_max": 1.0,
-          "pre_peak_noise": {
-            "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
-            "n_pre_peak_folds": 18,
-            "pre_peak_anomaly_mean": 0.3750750199851967,
-            "pre_peak_anomaly_max": 0.45012628105339825,
-            "early_pre_peak_mean": 0.36353257548333534,
-            "late_pre_peak_mean": 0.3863596857038198,
-            "noise_ramp": 0.022827110220484448,
-            "pre_peak_pair_risk_max": 1.0,
-            "elevated_noise_before_peak": false
-          },
-          "is_placebo": true
-        }
-      },
-      "n_folds": 30,
-      "sources": [
-        "Control EO scientific same calendar as Luch Intelsat 2015"
-      ]
-    },
-    {
-      "event_id": "placebo_terra_2018",
-      "type": "placebo_baseline",
-      "t_peak": "2018-09-01",
-      "metrics": {
-        "25994": {
-          "norad_id": 25994,
-          "object_name": "TERRA",
-          "n_folds_scored": 31,
-          "anomaly_score_mean": 0.35936864882747627,
-          "anomaly_score_max": 0.48880695405849317,
-          "anomaly_score_at_nearest_peak": 0.43622635843488317,
+        "41038": {
+          "norad_id": 41038,
+          "object_name": "YAOGAN-29",
+          "n_folds_scored": 24,
+          "anomaly_score_mean": 0.35278119911400996,
+          "anomaly_score_max": 0.41541292149626874,
+          "anomaly_score_at_nearest_peak": 0.3173022047956196,
           "hit_at_event": false,
           "soft_hit_at_event": false,
           "n_hits_in_window": 0,
+          "first_fold_hit": false,
+          "first_hit_asof": null,
+          "first_scorable_asof": "2020-01-01",
+          "n_folds_above_thr_pre_peak": 0,
           "lead_time_days": null,
+          "lead_time_note": null,
           "feature_early_vs_late": {
             "shannon_entropy_sma_30d": {
-              "early_mean": 2.8197936889890585,
-              "late_mean": 2.8801256237134236
+              "early_mean": 2.6890109092981254,
+              "late_mean": 2.774068717807469
+            },
+            "shannon_entropy_sma_short": {
+              "early_mean": 2.648955904159994,
+              "late_mean": 2.4613201402110088
             },
             "hurst_exponent_sma": {
-              "early_mean": 0.8361263513486786,
-              "late_mean": 0.8562775138515871
+              "early_mean": 0.7826121648592842,
+              "late_mean": 0.8089377171492572
+            },
+            "hurst_exponent_sma_short": {
+              "early_mean": 0.5,
+              "late_mean": 0.5
+            },
+            "persistence_hurst_gap": {
+              "early_mean": 0.2826121648592843,
+              "late_mean": 0.3089377171492571
             },
             "l1_cusum_sma": {
               "early_mean": 0.0,
@@ -388,78 +164,313 @@
               "late_mean": 0.05263157894736842
             }
           },
-          "pair_risk_max": 1.0,
+          "pair_risk_max": 0.906,
           "pre_peak_noise": {
             "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
-            "n_pre_peak_folds": 18,
-            "pre_peak_anomaly_mean": 0.3548794535401615,
-            "pre_peak_anomaly_max": 0.43622635843488317,
-            "early_pre_peak_mean": 0.35578788380578535,
-            "late_pre_peak_mean": 0.36302358708284793,
-            "noise_ramp": 0.007235703277062577,
-            "pre_peak_pair_risk_max": 1.0,
+            "n_pre_peak_folds": 13,
+            "pre_peak_anomaly_mean": 0.3539842044336193,
+            "pre_peak_anomaly_max": 0.39363989160013574,
+            "early_pre_peak_mean": 0.36222290075315977,
+            "late_pre_peak_mean": 0.3470667520471365,
+            "noise_ramp": -0.015156148706023276,
+            "pre_peak_pair_risk_max": 0.906,
             "elevated_noise_before_peak": false
           },
-          "is_placebo": true
-        }
-      },
-      "n_folds": 31,
-      "sources": [
-        "Control same calendar as Athena-Fidus window"
-      ]
-    },
-    {
-      "event_id": "placebo_noaa20_2023",
-      "type": "placebo_baseline",
-      "t_peak": "2023-10-15",
-      "metrics": {
-        "43013": {
-          "norad_id": 43013,
-          "object_name": "NOAA 20 (JPSS-1)",
-          "n_folds_scored": 24,
-          "anomaly_score_mean": 0.38800470799246006,
-          "anomaly_score_max": 0.46308065833745665,
-          "anomaly_score_at_nearest_peak": 0.3448568350222817,
-          "hit_at_event": false,
-          "soft_hit_at_event": true,
-          "n_hits_in_window": 0,
-          "lead_time_days": null,
-          "feature_early_vs_late": {
-            "shannon_entropy_sma_30d": {
-              "early_mean": 2.6049032777647243,
-              "late_mean": 2.790438203918555
-            },
-            "hurst_exponent_sma": {
-              "early_mean": 0.9272624007147282,
-              "late_mean": 0.923091959335878
-            },
-            "l1_cusum_sma": {
-              "early_mean": 0.0,
-              "late_mean": 0.0
-            },
-            "kolmogorov_proxy_7d": {
-              "early_mean": 0.05263157894736842,
-              "late_mean": 0.05263157894736842
-            }
-          },
-          "pair_risk_max": 1.0,
-          "pre_peak_noise": {
-            "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
-            "n_pre_peak_folds": 15,
-            "pre_peak_anomaly_mean": 0.38433570089445157,
-            "pre_peak_anomaly_max": 0.46308065833745665,
-            "early_pre_peak_mean": 0.38335521271202866,
-            "late_pre_peak_mean": 0.3779564248474836,
-            "noise_ramp": -0.005398787864545063,
-            "pre_peak_pair_risk_max": 1.0,
-            "elevated_noise_before_peak": false
-          },
-          "is_placebo": true
+          "is_placebo": false
         }
       },
       "n_folds": 24,
       "sources": [
-        "Control vs Luch-2 2023 window"
+        "Public dual-use Yaogan recon / EO catalog class",
+        "Open-source SSA listings of Yaogan-29 LEO recon operations"
+      ]
+    },
+    {
+      "event_id": "tianhe_css_assembly_2021",
+      "type": "crewed_station_ops",
+      "t_peak": "2021-10-15",
+      "metrics": {
+        "48274": {
+          "norad_id": 48274,
+          "object_name": "CSS (TIANHE)",
+          "n_folds_scored": 21,
+          "anomaly_score_mean": 0.5637848220957056,
+          "anomaly_score_max": 0.6436651876060406,
+          "anomaly_score_at_nearest_peak": 0.6041470452961114,
+          "hit_at_event": true,
+          "soft_hit_at_event": true,
+          "n_hits_in_window": 7,
+          "first_fold_hit": true,
+          "first_hit_asof": "2021-05-13",
+          "first_scorable_asof": "2021-05-13",
+          "n_folds_above_thr_pre_peak": 11,
+          "lead_time_days": 155.0,
+          "lead_time_note": "already_elevated_at_window_open",
+          "feature_early_vs_late": {
+            "shannon_entropy_sma_30d": {
+              "early_mean": 1.4891783844175182,
+              "late_mean": 1.1015192115670367
+            },
+            "shannon_entropy_sma_short": {
+              "early_mean": 2.0934003486044386,
+              "late_mean": 1.7289721408610008
+            },
+            "hurst_exponent_sma": {
+              "early_mean": 0.8185288017206208,
+              "late_mean": 0.8405380973170191
+            },
+            "hurst_exponent_sma_short": {
+              "early_mean": 0.5,
+              "late_mean": 0.5
+            },
+            "persistence_hurst_gap": {
+              "early_mean": 0.3185288017206208,
+              "late_mean": 0.3405380973170191
+            },
+            "l1_cusum_sma": {
+              "early_mean": 0.0,
+              "late_mean": 0.0
+            },
+            "kolmogorov_proxy_7d": {
+              "early_mean": 0.47368421052631576,
+              "late_mean": 0.39473684210526316
+            }
+          },
+          "pair_risk_max": 0.6284,
+          "pre_peak_noise": {
+            "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+            "n_pre_peak_folds": 12,
+            "pre_peak_anomaly_mean": 0.5564528623808714,
+            "pre_peak_anomaly_max": 0.6213884493875227,
+            "early_pre_peak_mean": 0.5862036133433011,
+            "late_pre_peak_mean": 0.5708229740327513,
+            "noise_ramp": -0.015380639310549782,
+            "pre_peak_pair_risk_max": 0.6284,
+            "elevated_noise_before_peak": true
+          },
+          "is_placebo": false
+        }
+      },
+      "n_folds": 24,
+      "sources": [
+        "Public CNSA/open press: Tianhe core module launch Apr 2021; multiple cargo/crew dockings 2021–22",
+        "Open SSA timelines of CSS assembly sequence (2021)"
+      ]
+    },
+    {
+      "event_id": "yaogan3_recon_2016",
+      "type": "recon_maneuver_regime",
+      "t_peak": "2016-07-01",
+      "metrics": {
+        "32289": {
+          "norad_id": 32289,
+          "object_name": "YAOGAN-3",
+          "n_folds_scored": 24,
+          "anomaly_score_mean": 0.38112190261666407,
+          "anomaly_score_max": 0.41948113017002464,
+          "anomaly_score_at_nearest_peak": 0.3634418083414559,
+          "hit_at_event": false,
+          "soft_hit_at_event": false,
+          "n_hits_in_window": 0,
+          "first_fold_hit": false,
+          "first_hit_asof": null,
+          "first_scorable_asof": "2016-01-01",
+          "n_folds_above_thr_pre_peak": 0,
+          "lead_time_days": null,
+          "lead_time_note": null,
+          "feature_early_vs_late": {
+            "shannon_entropy_sma_30d": {
+              "early_mean": 2.900511355629006,
+              "late_mean": 2.646312060642382
+            },
+            "shannon_entropy_sma_short": {
+              "early_mean": 2.648955904159994,
+              "late_mean": 2.1416041678685938
+            },
+            "hurst_exponent_sma": {
+              "early_mean": 0.8604495073842401,
+              "late_mean": 0.864098444009876
+            },
+            "hurst_exponent_sma_short": {
+              "early_mean": 0.5,
+              "late_mean": 0.5
+            },
+            "persistence_hurst_gap": {
+              "early_mean": 0.36044950738424,
+              "late_mean": 0.364098444009876
+            },
+            "l1_cusum_sma": {
+              "early_mean": 0.0,
+              "late_mean": 0.0
+            },
+            "kolmogorov_proxy_7d": {
+              "early_mean": 0.05263157894736842,
+              "late_mean": 0.05263157894736842
+            }
+          },
+          "pair_risk_max": 0.7104,
+          "pre_peak_noise": {
+            "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+            "n_pre_peak_folds": 13,
+            "pre_peak_anomaly_mean": 0.379531325843753,
+            "pre_peak_anomaly_max": 0.41948113017002464,
+            "early_pre_peak_mean": 0.3876440911867184,
+            "late_pre_peak_mean": 0.3741528023386683,
+            "noise_ramp": -0.013491288848050065,
+            "pre_peak_pair_risk_max": 0.7104,
+            "elevated_noise_before_peak": false
+          },
+          "is_placebo": false
+        }
+      },
+      "n_folds": 24,
+      "sources": [
+        "Public catalog / dual-use EO-SAR recon class (Yaogan series)",
+        "Open literature on Yaogan LEO recon constellation operations"
+      ]
+    },
+    {
+      "event_id": "cosmos2550_military_leo_2022",
+      "type": "military_leo_regime",
+      "t_peak": "2022-07-01",
+      "metrics": {
+        "48865": {
+          "norad_id": 48865,
+          "object_name": "COSMOS 2550",
+          "n_folds_scored": 24,
+          "anomaly_score_mean": 0.44252553843181985,
+          "anomaly_score_max": 0.555051397599939,
+          "anomaly_score_at_nearest_peak": 0.39600983303293347,
+          "hit_at_event": false,
+          "soft_hit_at_event": true,
+          "n_hits_in_window": 0,
+          "first_fold_hit": false,
+          "first_hit_asof": "2022-01-15",
+          "first_scorable_asof": "2022-01-01",
+          "n_folds_above_thr_pre_peak": 1,
+          "lead_time_days": 167.0,
+          "lead_time_note": "days_from_first_thr_cross_to_t_peak",
+          "feature_early_vs_late": {
+            "shannon_entropy_sma_30d": {
+              "early_mean": 2.7606174813428304,
+              "late_mean": 2.5874430147805914
+            },
+            "shannon_entropy_sma_short": {
+              "early_mean": 2.3502090290998976,
+              "late_mean": 2.2390979179887864
+            },
+            "hurst_exponent_sma": {
+              "early_mean": 0.8244242558043201,
+              "late_mean": 0.799069918150144
+            },
+            "hurst_exponent_sma_short": {
+              "early_mean": 0.5,
+              "late_mean": 0.5
+            },
+            "persistence_hurst_gap": {
+              "early_mean": 0.32442425580432005,
+              "late_mean": 0.29906991815014405
+            },
+            "l1_cusum_sma": {
+              "early_mean": 0.0,
+              "late_mean": 0.0
+            },
+            "kolmogorov_proxy_7d": {
+              "early_mean": 0.22368421052631576,
+              "late_mean": 0.05263157894736842
+            }
+          },
+          "pair_risk_max": 0.9637,
+          "pre_peak_noise": {
+            "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+            "n_pre_peak_folds": 13,
+            "pre_peak_anomaly_mean": 0.4431331467662084,
+            "pre_peak_anomaly_max": 0.555051397599939,
+            "early_pre_peak_mean": 0.4660392441594462,
+            "late_pre_peak_mean": 0.42243556629531753,
+            "noise_ramp": -0.043603677864128665,
+            "pre_peak_pair_risk_max": 0.7284,
+            "elevated_noise_before_peak": true
+          },
+          "is_placebo": false
+        }
+      },
+      "n_folds": 24,
+      "sources": [
+        "Public catalog: COSMOS 2550 military LEO class (Russian MOD series identifiers in open catalogs)",
+        "Open-source space situational awareness listings of Cosmos military spacecraft"
+      ]
+    },
+    {
+      "event_id": "beidou3_m11_meo_2019",
+      "type": "pnt_dual_use_regime",
+      "t_peak": "2019-07-01",
+      "metrics": {
+        "43603": {
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "n_folds_scored": 24,
+          "anomaly_score_mean": 0.45801421080030075,
+          "anomaly_score_max": 0.5041304633579746,
+          "anomaly_score_at_nearest_peak": 0.453314861430286,
+          "hit_at_event": false,
+          "soft_hit_at_event": true,
+          "n_hits_in_window": 0,
+          "first_fold_hit": false,
+          "first_hit_asof": "2019-02-12",
+          "first_scorable_asof": "2019-01-01",
+          "n_folds_above_thr_pre_peak": 2,
+          "lead_time_days": 139.0,
+          "lead_time_note": "days_from_first_thr_cross_to_t_peak",
+          "feature_early_vs_late": {
+            "shannon_entropy_sma_30d": {
+              "early_mean": 2.417671792449833,
+              "late_mean": 2.3503110624661
+            },
+            "shannon_entropy_sma_short": {
+              "early_mean": 2.3820214465367493,
+              "late_mean": 2.3711781263822163
+            },
+            "hurst_exponent_sma": {
+              "early_mean": 0.8519995912417103,
+              "late_mean": 0.8361186455926997
+            },
+            "hurst_exponent_sma_short": {
+              "early_mean": 0.5,
+              "late_mean": 0.5
+            },
+            "persistence_hurst_gap": {
+              "early_mean": 0.3519995912417103,
+              "late_mean": 0.3361186455926996
+            },
+            "l1_cusum_sma": {
+              "early_mean": 0.0,
+              "late_mean": 0.0
+            },
+            "kolmogorov_proxy_7d": {
+              "early_mean": 0.09210526315789473,
+              "late_mean": 0.05263157894736842
+            }
+          },
+          "pair_risk_max": 0.4191,
+          "pre_peak_noise": {
+            "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+            "n_pre_peak_folds": 13,
+            "pre_peak_anomaly_mean": 0.46217320960251923,
+            "pre_peak_anomaly_max": 0.5041304633579746,
+            "early_pre_peak_mean": 0.461218074847448,
+            "late_pre_peak_mean": 0.4543510327697288,
+            "noise_ramp": -0.006867042077719154,
+            "pre_peak_pair_risk_max": 0.419,
+            "elevated_noise_before_peak": true
+          },
+          "is_placebo": false
+        }
+      },
+      "n_folds": 24,
+      "sources": [
+        "Public BeiDou-3 constellation deployment timelines (MEO M-series)",
+        "Open documentation of BeiDou-3 PNT dual-use GNSS operations"
       ]
     }
   ]

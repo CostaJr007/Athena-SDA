@@ -162,6 +162,42 @@ def tool_list_alerts(processed: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     ]
 
 
+def tool_get_case_study_citations(norad_id: int, max_cases: int = 3) -> List[Dict[str, Any]]:
+    """
+    Load open-source case anchors for this NORAD (events_walkforward).
+    Citations are explanatory only — Bob must NEVER rewrite quant scores from them.
+    """
+    from pathlib import Path
+    import json
+
+    path = Path(__file__).resolve().parent.parent / "data" / "catalog" / "events_walkforward.json"
+    if not path.exists():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    out: List[Dict[str, Any]] = []
+    for ev in data.get("events") or []:
+        ids = [int(x) for x in (ev.get("norad_ids") or [])]
+        if int(norad_id) not in ids:
+            continue
+        if str(ev.get("type", "")).startswith("placebo"):
+            continue
+        out.append(
+            {
+                "event_id": ev.get("id"),
+                "t_peak": ev.get("t_peak"),
+                "type": ev.get("type"),
+                "sources": list(ev.get("sources") or [])[:3],
+                "notes": ev.get("notes"),
+            }
+        )
+        if len(out) >= max_cases:
+            break
+    return out
+
+
 def generate_bob_briefing(
     features: Dict[str, float],
     fuzzy_result: Dict[str, Any],
@@ -170,7 +206,7 @@ def generate_bob_briefing(
     sat_metadata: Optional[Dict[str, Any]] = None,
     ml_context: Optional[Dict[str, Any]] = None,
 ) -> str:
-    """Stage 3–4: qualitative brief from quantitative state."""
+    """Stage 3–4: qualitative brief from quantitative state (LLM never edits scores)."""
     if sat_metadata is None:
         sat_metadata = {
             "name": f"OBJ-{norad_id}",
@@ -193,6 +229,7 @@ def generate_bob_briefing(
     coint = features.get("cointegration_pvalue", 1.0)
     ricci = features.get("ricci_mean", 0.0)
     rkhs = features.get("spectral_anomaly_rkhs", 0.0)
+    cases = tool_get_case_study_citations(int(norad_id))
 
     xgb_line = ""
     if ml_context:
@@ -202,26 +239,44 @@ def generate_bob_briefing(
             f"anomaly_score={float(ml_context.get('anomaly_score', 0)):.3f}\n"
         )
 
+    case_block = ""
+    if cases:
+        lines = []
+        for c in cases:
+            src0 = (c.get("sources") or ["open-source SSA"])[0]
+            lines.append(
+                f"  · pattern compatible with case `{c.get('event_id')}` "
+                f"(public anchor ~{c.get('t_peak')}): {src0}"
+            )
+        case_block = (
+            "CASE-STUDY CONTEXT (do NOT change quant scores; citations only):\n"
+            + "\n".join(lines)
+            + "\n"
+        )
+
     prompt = f"""[ATHENA-SDA SYSTEM — SPACE DOMAIN AWARENESS]
 You are BOB, a senior SDA analyst. Produce a tactical briefing in English.
+CRITICAL: Never invent or modify anomaly_score / threat numbers — only explain the given quant state.
+Open-source cases are historical analogies, not proof of current hostile intent.
 
 METADATA:
 - NORAD #{norad_id} | {sat_metadata.get('name')} | {sat_metadata.get('country')} | {sat_metadata.get('purpose')}
 
-QUANTITATIVE:
+QUANTITATIVE (immutable):
 - Distance to protected military asset: {min_dist_mil:.2f} km
 - ΔSMA 7d: {delta_sma:.4f} km | TLE age: {tle_age:.1f}h
 - Shannon: {shannon:.2f} | Kolmogorov: {kolmogorov:.2f} | Hurst: {hurst:.2f}
 - ADF p: {adf:.4f} | CUSUM L1: {l1_cusum:.2f} | Cointegration p: {coint:.4f}
 - Ricci: {ricci:.3f} | RKHS anomaly: {rkhs:.3f}
 {xgb_line}- Fuzzy: {classification} | threat={threat_level:.2f} | conf={confidence*100:.1f}%
-
+{case_block}
 INSTRUCTIONS:
-1. Header with classification and confidence.
+1. Header with classification and confidence (use given numbers only).
 2. Justify with physics/math (Hurst, Kolmogorov, CUSUM, cointegration).
-3. Assess RPO / conjunction box (~10 km).
-4. List 3 prioritized tactical actions.
-5. Formal military tone. English only.
+3. If case studies listed, cite as "pattern compatible with {{source}}" without claiming confirmed espionage.
+4. Assess RPO / conjunction box (~10 km).
+5. List 3 prioritized tactical actions.
+6. Formal military tone. English only.
 
 BRIEFING:"""
 
@@ -237,14 +292,14 @@ BRIEFING:"""
     return _local_briefing(
         sat_metadata, norad_id, classification, threat_level, confidence, ambiguity,
         hurst, kolmogorov, adf, l1_cusum, delta_sma, tle_age, min_dist_mil, coint,
-        ricci, rkhs, ml_context,
+        ricci, rkhs, ml_context, cases=cases,
     )
 
 
 def _local_briefing(
     sat_metadata, norad_id, classification, threat_level, confidence, ambiguity,
     hurst, kolmogorov, adf, l1_cusum, delta_sma, tle_age, min_dist_mil, coint,
-    ricci, rkhs, ml_context,
+    ricci, rkhs, ml_context, cases: Optional[List[Dict[str, Any]]] = None,
 ) -> str:
     xgb_bit = ""
     if ml_context:
@@ -261,17 +316,31 @@ def _local_briefing(
             f"cointegrated with a high-value asset (escort / pursuit pattern).\n"
         )
 
+    case_bit = ""
+    if cases:
+        case_bit = "OPEN-SOURCE CASE ANALOGIES (citations only — scores unchanged):\n"
+        for c in cases:
+            src = (c.get("sources") or ["public SSA"])[0]
+            case_bit += (
+                f"- Pattern compatible with **{c.get('event_id')}** "
+                f"(anchor ~{c.get('t_peak')}): {src}\n"
+            )
+        case_bit += (
+            "- These anchors calibrate operator intuition on quant noise features; "
+            "they do not re-label current intent.\n"
+        )
+
     body = f"""SDA BRIEFING — ATHENA
 OBJECT: {sat_metadata.get('name')} (#{norad_id}) | ORIGIN: {sat_metadata.get('country')}
 CLASSIFICATION: **{classification}** (risk {threat_level:.2f}) | CONFIDENCE: {confidence*100:.1f}% | AMBIGUITY: {ambiguity*100:.1f}%
 
-QUANTITATIVE ANALYSIS:
+QUANTITATIVE ANALYSIS (immutable scores from ML pipeline):
 {xgb_bit}- **Hurst H={hurst:.2f}:** {"active propulsion persistence (low thrust)" if hurst > 0.55 else "near-noise / mean-reverting behavior"}.
 - **Kolmogorov K={kolmogorov:.2f}:** {"high-complexity trajectory (active control)" if kolmogorov > 0.5 else "compressible / Keplerian dynamics"}.
 - **ADF p={adf:.4f} | CUSUM L1={l1_cusum:.2f}:** structural break {"detected" if (adf > 0.05 or l1_cusum > 0.5) else "not dominant"}.
 - **ΔSMA 7d = {delta_sma:.4f} km** | TLE age **{tle_age:.1f} h**
 - **Military proximity: {min_dist_mil:.2f} km** | Ricci≈{ricci:.2f} | RKHS≈{rkhs:.2f}
-{shadow}
+{shadow}{case_bit}
 """
 
     if classification in ("HOSTILE", "HOSTIL"):

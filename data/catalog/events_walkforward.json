@@ -1,15 +1,23 @@
 {
-  "version": 2,
-  "updated": "2026-07-26",
-  "description": "Anchors = Dates of open-source report publications and documented events. Walk-forward evaluates model predictions strictly using historical data prior to t_peak.",
+  "version": 4,
+  "updated": "2026-08-01",
+  "description": "Case-study anchors v4: unique military-interest NORADs + civil EO placebos. Public reports = behavior anchors for quant noise reading (past-only IF). Not training labels or intent claims.",
   "data_coverage_required": {
     "min_start": "2014-01-01",
     "note": "Seed HF years 2014–2026 for watchlist NORADs"
   },
+  "validation_notes": {
+    "primary_claim": "interest vs placebo score separation under past-only scoring",
+    "secondary": "first_fold_hit / noise_ramp honesty metrics",
+    "object_dependence": "Luch-1 (40258) appears in multiple interest windows — count unique NORADs for independence",
+    "unique_interest_goal": "Maximize unique suspect NORADs with citable open-source anchors for paper N"
+  },
   "events": [
     {
       "id": "luch1_intelsat_2015",
-      "norad_ids": [40258],
+      "norad_ids": [
+        40258
+      ],
       "pair_with": null,
       "t_start": "2015-01-15",
       "t_peak": "2015-09-15",
@@ -21,12 +29,20 @@
         "Gunter/open press: ~Sep 2015 near Intelsat 905 at 24.4–24.5W",
         "CSIS Unusual Behavior in GEO: Olymp-K / Luch"
       ],
-      "expected_signals": ["shannon", "cusum", "hurst", "anomaly_score", "maneuver_count"],
-      "notes": "Peak ~Sep 2015 (Intelsat 905). Early t_start to measure noise ramp prior to report."
+      "expected_signals": [
+        "shannon",
+        "cusum",
+        "hurst",
+        "anomaly_score",
+        "maneuver_count"
+      ],
+      "notes": "Case study: GEO Luch control regime around Intelsat-season public reporting."
     },
     {
       "id": "luch1_intelsat_mid2015",
-      "norad_ids": [40258],
+      "norad_ids": [
+        40258
+      ],
       "pair_with": null,
       "t_start": "2014-10-01",
       "t_peak": "2015-04-15",
@@ -36,12 +52,18 @@
       "sources": [
         "Gunter: first colocation between Intelsat 7 and 901 ~April 2015"
       ],
-      "expected_signals": ["shannon", "cusum", "anomaly_score"],
-      "notes": "First Intelsat episode mid-2015 — validate pre-April 2015 detection."
+      "expected_signals": [
+        "shannon",
+        "cusum",
+        "anomaly_score"
+      ],
+      "notes": "Earlier Intelsat episode — same object, independent calendar."
     },
     {
       "id": "luch1_athena_fidus_2018",
-      "norad_ids": [40258],
+      "norad_ids": [
+        40258
+      ],
       "pair_with": null,
       "t_start": "2018-01-01",
       "t_peak": "2018-09-01",
@@ -52,12 +74,19 @@
         "Open press / Gunter: 2018 proximity concerns re Athena-Fidus (FR military comms)",
         "French government space security statements (open reporting)"
       ],
-      "expected_signals": ["shannon", "cusum", "hurst", "anomaly_score"],
-      "notes": "2018 anchor — GEO Luch maneuvers near allied asset documented in open sources."
+      "expected_signals": [
+        "shannon",
+        "cusum",
+        "hurst",
+        "anomaly_score"
+      ],
+      "notes": "2018 GEO case — same NORAD, later regime."
     },
     {
       "id": "sy12_geo_rpo_2021_22",
-      "norad_ids": [50321],
+      "norad_ids": [
+        50321
+      ],
       "pair_with": null,
       "t_start": "2021-12-01",
       "t_peak": "2022-06-15",
@@ -68,12 +97,19 @@
         "AMOS papers / open SSA: SY-12 01/02 GEO proximity with US objects",
         "SWF Chinese Military RPO fact sheet (SY-12)"
       ],
-      "expected_signals": ["shannon", "hurst", "cusum", "anomaly_score"],
-      "notes": "Shiyan-12 01 launched late 2021; GEO RPO reported 2021–22."
+      "expected_signals": [
+        "shannon",
+        "hurst",
+        "cusum",
+        "anomaly_score"
+      ],
+      "notes": "Independent NORAD interest (Shiyan-12)."
     },
     {
       "id": "luch2_trailing_2023",
-      "norad_ids": [55841],
+      "norad_ids": [
+        55841
+      ],
       "pair_with": null,
       "t_start": "2023-04-01",
       "t_peak": "2023-10-15",
@@ -84,47 +120,308 @@
         "Launch Luch/Olymp-K 2 ~12 Mar 2023",
         "Breaking Defense Oct 2023: second Luch trailing Western systems in GEO"
       ],
-      "expected_signals": ["shannon", "cusum", "anomaly_score"],
-      "notes": "Second Luch satellite — post-launch noise window prior to/during late 2023 coverage."
+      "expected_signals": [
+        "shannon",
+        "cusum",
+        "anomaly_score"
+      ],
+      "notes": "Independent NORAD (Luch-2 / Olymp-K 2)."
+    },
+    {
+      "id": "shiyan7_experimental_2015",
+      "norad_ids": [
+        39208
+      ],
+      "pair_with": null,
+      "t_start": "2015-01-01",
+      "t_peak": "2015-07-01",
+      "t_end": "2015-12-01",
+      "type": "rpo_inspection",
+      "role_expected": "suspect",
+      "sources": [
+        "Open SSA literature: Shiyan-7 (SY-7) experimental spacecraft associated with proximity-operations discussion in public sources",
+        "Public catalog notes on Chinese experimental Shiyan series maneuverability"
+      ],
+      "expected_signals": [
+        "shannon",
+        "hurst",
+        "anomaly_score"
+      ],
+      "notes": "Independent interest NORAD (SY-7) — LEO experimental; case for quant reading, not classified intent."
+    },
+    {
+      "id": "yaogan29_recon_2020",
+      "norad_ids": [
+        41038
+      ],
+      "pair_with": null,
+      "t_start": "2020-01-01",
+      "t_peak": "2020-07-01",
+      "t_end": "2020-12-01",
+      "type": "recon_maneuver_regime",
+      "role_expected": "suspect",
+      "sources": [
+        "Public dual-use Yaogan recon / EO catalog class",
+        "Open-source SSA listings of Yaogan-29 LEO recon operations"
+      ],
+      "expected_signals": [
+        "shannon",
+        "cusum",
+        "anomaly_score"
+      ],
+      "notes": "Independent LEO recon NORAD — tests whether military-class series differ from civil placebos under same IF protocol."
+    },
+    {
+      "id": "tianhe_css_assembly_2021",
+      "norad_ids": [
+        48274
+      ],
+      "pair_with": null,
+      "t_start": "2021-04-01",
+      "t_peak": "2021-10-15",
+      "t_end": "2022-03-01",
+      "type": "crewed_station_ops",
+      "role_expected": "suspect",
+      "sources": [
+        "Public CNSA/open press: Tianhe core module launch Apr 2021; multiple cargo/crew dockings 2021–22",
+        "Open SSA timelines of CSS assembly sequence (2021)"
+      ],
+      "expected_signals": [
+        "shannon",
+        "cusum",
+        "hurst",
+        "anomaly_score",
+        "maneuver_count"
+      ],
+      "notes": "Independent NORAD (CSS Tianhe). Case: high-cadence docking/station-keeping — micro-trajectory noise reading, not hostile intent."
+    },
+    {
+      "id": "yaogan3_recon_2016",
+      "norad_ids": [
+        32289
+      ],
+      "pair_with": null,
+      "t_start": "2016-01-01",
+      "t_peak": "2016-07-01",
+      "t_end": "2016-12-01",
+      "type": "recon_maneuver_regime",
+      "role_expected": "suspect",
+      "sources": [
+        "Public catalog / dual-use EO-SAR recon class (Yaogan series)",
+        "Open literature on Yaogan LEO recon constellation operations"
+      ],
+      "expected_signals": [
+        "shannon",
+        "cusum",
+        "anomaly_score"
+      ],
+      "notes": "Independent NORAD Yaogan-3 — LEO recon-class regime case (unique object vs Yaogan-29)."
+    },
+    {
+      "id": "cosmos2550_military_leo_2022",
+      "norad_ids": [
+        48865
+      ],
+      "pair_with": null,
+      "t_start": "2022-01-01",
+      "t_peak": "2022-07-01",
+      "t_end": "2022-12-01",
+      "type": "military_leo_regime",
+      "role_expected": "suspect",
+      "sources": [
+        "Public catalog: COSMOS 2550 military LEO class (Russian MOD series identifiers in open catalogs)",
+        "Open-source space situational awareness listings of Cosmos military spacecraft"
+      ],
+      "expected_signals": [
+        "shannon",
+        "hurst",
+        "anomaly_score"
+      ],
+      "notes": "Independent military LEO NORAD — tests quant noise on military-class LEO series."
+    },
+    {
+      "id": "beidou3_m11_meo_2019",
+      "norad_ids": [
+        43603
+      ],
+      "pair_with": null,
+      "t_start": "2019-01-01",
+      "t_peak": "2019-07-01",
+      "t_end": "2019-12-01",
+      "type": "pnt_dual_use_regime",
+      "role_expected": "suspect",
+      "sources": [
+        "Public BeiDou-3 constellation deployment timelines (MEO M-series)",
+        "Open documentation of BeiDou-3 PNT dual-use GNSS operations"
+      ],
+      "expected_signals": [
+        "shannon",
+        "delta_sma",
+        "anomaly_score"
+      ],
+      "notes": "Independent MEO dual-use PNT NORAD — orbit-class diversity for paper N."
     },
     {
       "id": "placebo_terra_2015",
-      "norad_ids": [25994],
+      "norad_ids": [
+        25994
+      ],
       "pair_with": null,
       "t_start": "2015-01-15",
       "t_peak": "2015-09-15",
       "t_end": "2016-03-01",
       "type": "placebo_baseline",
       "role_expected": "baseline",
-      "sources": ["Control EO scientific same calendar as Luch Intelsat 2015"],
+      "orbit_class": "LEO",
+      "sources": [
+        "Control EO scientific same calendar as Luch Intelsat 2015"
+      ],
       "expected_signals": [],
-      "notes": "Placebo control: should remain within normal baseline."
+      "notes": "Placebo LEO EO — TERRA."
     },
     {
       "id": "placebo_terra_2018",
-      "norad_ids": [25994],
+      "norad_ids": [
+        25994
+      ],
       "pair_with": null,
       "t_start": "2018-01-01",
       "t_peak": "2018-09-01",
       "t_end": "2019-03-01",
       "type": "placebo_baseline",
       "role_expected": "baseline",
-      "sources": ["Control same calendar as Athena-Fidus window"],
+      "orbit_class": "LEO",
+      "sources": [
+        "Control same calendar as Athena-Fidus window"
+      ],
       "expected_signals": [],
-      "notes": "Placebo control 2018."
+      "notes": "Placebo LEO EO — TERRA 2018."
+    },
+    {
+      "id": "placebo_aqua_2015",
+      "norad_ids": [
+        27424
+      ],
+      "pair_with": null,
+      "t_start": "2015-01-15",
+      "t_peak": "2015-09-15",
+      "t_end": "2016-03-01",
+      "type": "placebo_baseline",
+      "role_expected": "baseline",
+      "orbit_class": "LEO",
+      "sources": [
+        "A-Train scientific control same calendar as Luch 2015"
+      ],
+      "expected_signals": [],
+      "notes": "Placebo LEO scientific — AQUA."
+    },
+    {
+      "id": "placebo_landsat8_2018",
+      "norad_ids": [
+        39084
+      ],
+      "pair_with": null,
+      "t_start": "2018-01-01",
+      "t_peak": "2018-09-01",
+      "t_end": "2019-03-01",
+      "type": "placebo_baseline",
+      "role_expected": "baseline",
+      "orbit_class": "LEO",
+      "sources": [
+        "Civil EO control vs Athena-Fidus calendar"
+      ],
+      "expected_signals": [],
+      "notes": "Placebo LEO EO — Landsat 8."
     },
     {
       "id": "placebo_noaa20_2023",
-      "norad_ids": [43013],
+      "norad_ids": [
+        43013
+      ],
       "pair_with": null,
       "t_start": "2023-04-01",
       "t_peak": "2023-10-15",
       "t_end": "2024-03-01",
       "type": "placebo_baseline",
       "role_expected": "baseline",
-      "sources": ["Control vs Luch-2 2023 window"],
+      "orbit_class": "LEO",
+      "sources": [
+        "Control vs Luch-2 2023 window"
+      ],
       "expected_signals": [],
-      "notes": "NOAA-20 active since 2017; control 2023."
+      "notes": "Placebo LEO meteo — NOAA-20."
+    },
+    {
+      "id": "placebo_noaa18_2021",
+      "norad_ids": [
+        28654
+      ],
+      "pair_with": null,
+      "t_start": "2021-12-01",
+      "t_peak": "2022-06-15",
+      "t_end": "2022-12-01",
+      "type": "placebo_baseline",
+      "role_expected": "baseline",
+      "orbit_class": "LEO",
+      "sources": [
+        "Control same calendar as SY-12 window"
+      ],
+      "expected_signals": [],
+      "notes": "Placebo LEO meteo legacy — NOAA-18."
+    },
+    {
+      "id": "placebo_starlink_2023",
+      "norad_ids": [
+        44714
+      ],
+      "pair_with": null,
+      "t_start": "2023-04-01",
+      "t_peak": "2023-10-15",
+      "t_end": "2024-03-01",
+      "type": "placebo_baseline",
+      "role_expected": "baseline",
+      "orbit_class": "LEO",
+      "sources": [
+        "Commercial constellation station-keeping control vs Luch-2 window"
+      ],
+      "expected_signals": [],
+      "notes": "Placebo LEO commercial — Starlink (expected mild station-keeping noise)."
+    },
+    {
+      "id": "placebo_gps_meo_2018",
+      "norad_ids": [
+        28874
+      ],
+      "pair_with": null,
+      "t_start": "2018-01-01",
+      "t_peak": "2018-09-01",
+      "t_end": "2019-03-01",
+      "type": "placebo_baseline",
+      "role_expected": "asset",
+      "orbit_class": "MEO",
+      "sources": [
+        "MEO GNSS control calendar 2018 — stratified orbit class"
+      ],
+      "expected_signals": [],
+      "notes": "Placebo MEO — GPS BIIRM-1 (asset role; quiet PNT reference)."
+    },
+    {
+      "id": "placebo_aqua_2020",
+      "norad_ids": [
+        27424
+      ],
+      "pair_with": null,
+      "t_start": "2020-01-01",
+      "t_peak": "2020-07-01",
+      "t_end": "2020-12-01",
+      "type": "placebo_baseline",
+      "role_expected": "baseline",
+      "orbit_class": "LEO",
+      "sources": [
+        "Scientific control vs Yaogan-29 2020 window"
+      ],
+      "expected_signals": [],
+      "notes": "Placebo LEO scientific — AQUA 2020."
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "event_id": "luch1_intelsat_2015",
   "type": "shadowing_geo_espionage",
-  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past noise/regime). Target is scored at asof. Metrics test whether anomalous noise rises before public report anchors (t_peak), vs placebo baselines. Not a classified ground-truth claim.",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) mark evaluation windows for quant noise features (Hurst, Shannon, CUSUM, IF score). Metrics include hard hit, pre-peak mean, noise_ramp, and first_fold_hit for regime-level analysis.",
   "t_start": "2015-01-15",
   "t_peak": "2015-09-15",
   "t_end": "2016-03-01",
@@ -14,7 +14,7 @@
     "Gunter/open press: ~Sep 2015 near Intelsat 905 at 24.4–24.5W",
     "CSIS Unusual Behavior in GEO: Olymp-K / Luch"
   ],
-  "notes": "Pico ~set/2015 (Intelsat 905). t_start cedo para medir rampa de ruído ANTES do report de colocação.",
+  "notes": "Case study: GEO Luch control regime around Intelsat-season public reporting.",
   "params": {
     "step_days": 14,
     "holdout_days": 3,
@@ -31,7 +31,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5374875060537689,
+          "anomaly_score": 0.6053463906012626,
           "window_end": "2015-01-12 02:40:59.489760",
           "data_quality": {
             "score": 0.6,
@@ -44,11 +44,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.3605273114437084,
-            "hurst_exponent_sma": 0.9414925495302248,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7838702882515994,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.28387028825159943,
             "kolmogorov_proxy_7d": 0.47368421052631576,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.001545345315539802,
+            "adf_pvalue": 0.0015453453155345972,
             "delta_sma_7d_km": 0.5371019448139123,
             "maneuver_count_30d": 6.0,
             "tle_age_hours": 69.3168084,
@@ -72,7 +75,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.463904377724196
+          "attention_score": 0.49444087577056817
         }
       }
     },
@@ -83,7 +86,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.4960415451400576,
+          "anomaly_score": 0.5533853635890159,
           "window_end": "2015-01-28 04:31:10.867008",
           "data_quality": {
             "score": 0.6,
@@ -96,11 +99,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.6100635408770727,
-            "hurst_exponent_sma": 0.9142187850663945,
-            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8043175596703215,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3043175596703215,
+            "kolmogorov_proxy_7d": 0.631578947368421,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.47339085442390755,
+            "adf_pvalue": 0.4733908542303413,
             "delta_sma_7d_km": -0.13007631179061718,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 19.48031472,
@@ -114,7 +120,7 @@
           },
           "norad_id": 40258,
           "object_name": "LUCH (OLYMP-K 1)",
-          "is_hit": false,
+          "is_hit": true,
           "pair": {
             "ok": true,
             "min_distance_km": 2000.0,
@@ -124,7 +130,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.44525369531302594
+          "attention_score": 0.4710584136150572
         }
       }
     },
@@ -135,7 +141,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5631298156759702,
+          "anomaly_score": 0.5772063033325262,
           "window_end": "2015-02-11 23:23:34.423008",
           "data_quality": {
             "score": 0.6,
@@ -148,8 +154,11 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.0345723658114663,
-            "hurst_exponent_sma": 0.9002685390114051,
-            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "shannon_entropy_sma_short": 1.4466166676282084,
+            "hurst_exponent_sma": 0.8115708499257124,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3115708499257124,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
             "adf_pvalue": 0.9801477772761045,
@@ -176,7 +185,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.39332841705418664
+          "attention_score": 0.39966283649963685
         }
       }
     },
@@ -187,7 +196,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5307979862015118,
+          "anomaly_score": 0.6008331059291782,
           "window_end": "2015-02-25 17:21:56.818656",
           "data_quality": {
             "score": 0.6,
@@ -200,11 +209,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.030087224632132,
-            "hurst_exponent_sma": 0.8978312398886708,
-            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.9330186506040377,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.43301865060403766,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.1963202641201488,
+            "adf_pvalue": 0.19632026412014741,
             "delta_sma_7d_km": 0.29998081849043956,
             "maneuver_count_30d": 2.0,
             "tle_age_hours": 6.63421704,
@@ -228,7 +240,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.4608940937906803
+          "attention_score": 0.49240989766813015
         }
       }
     },
@@ -239,7 +251,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.47278824651812956,
+          "anomaly_score": 0.5315955104423085,
           "window_end": "2015-03-11 22:38:26.831040",
           "data_quality": {
             "score": 0.6,
@@ -252,11 +264,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.4657904693384456,
-            "hurst_exponent_sma": 0.8942148970424922,
-            "kolmogorov_proxy_7d": 0.3157894736842105,
+            "shannon_entropy_sma_short": 0.9864267287308426,
+            "hurst_exponent_sma": 0.8427681699683511,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34276816996835113,
+            "kolmogorov_proxy_7d": 0.2631578947368421,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.8399357892225072,
-            "adf_pvalue": 0.48255833353557487,
+            "adf_pvalue": 0.48255833353557526,
             "delta_sma_7d_km": 1.7379023524190416,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 1.3592136,
@@ -270,7 +285,7 @@
           },
           "norad_id": 40258,
           "object_name": "LUCH (OLYMP-K 1)",
-          "is_hit": false,
+          "is_hit": true,
           "pair": {
             "ok": true,
             "min_distance_km": 2000.0,
@@ -280,7 +295,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.4073447109331583
+          "attention_score": 0.43380797969903884
         }
       }
     },
@@ -291,7 +306,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5191532839998719,
+          "anomaly_score": 0.537344972167613,
           "window_end": "2015-03-25 12:25:48.215424",
           "data_quality": {
             "score": 0.6,
@@ -304,11 +319,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.123478672569887,
-            "hurst_exponent_sma": 0.8523629736018582,
+            "shannon_entropy_sma_short": 2.503258334775646,
+            "hurst_exponent_sma": 0.7665916738292002,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.26659167382920024,
             "kolmogorov_proxy_7d": 0.47368421052631576,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.1330790920984144,
-            "adf_pvalue": 2.0114138343619903e-10,
+            "adf_pvalue": 2.0114139484927753e-10,
             "delta_sma_7d_km": 0.22878700296860188,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 11.56994016,
@@ -332,7 +350,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.4191339777999424
+          "attention_score": 0.4273202374754259
         }
       }
     },
@@ -343,7 +361,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5451106646902956,
+          "anomaly_score": 0.6277594743086112,
           "window_end": "2015-04-08 20:11:04.838208",
           "data_quality": {
             "score": 0.6,
@@ -356,8 +374,11 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.2920717524577876,
-            "hurst_exponent_sma": 0.7857922876178896,
-            "kolmogorov_proxy_7d": 0.42105263157894735,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.5861080804447433,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.08610808044474327,
+            "kolmogorov_proxy_7d": 0.3157894736842105,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
             "adf_pvalue": 6.21864041899959e-05,
@@ -384,7 +405,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.467334799110633
+          "attention_score": 0.504526763438875
         }
       }
     },
@@ -395,7 +416,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5606459185381466,
+          "anomaly_score": 0.6255206778986512,
           "window_end": "2015-04-21 15:44:55.394016",
           "data_quality": {
             "score": 0.6,
@@ -408,11 +429,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.5055213905049438,
-            "hurst_exponent_sma": 0.8658502540764237,
-            "kolmogorov_proxy_7d": 0.631578947368421,
+            "shannon_entropy_sma_short": 1.879964948727111,
+            "hurst_exponent_sma": 0.6809605439782703,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.18096054397827033,
+            "kolmogorov_proxy_7d": 0.47368421052631576,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.504972594441912,
+            "adf_pvalue": 0.5049725944387801,
             "delta_sma_7d_km": -4.426831345146638,
             "maneuver_count_30d": 4.0,
             "tle_age_hours": 32.25127944,
@@ -436,7 +460,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.431315663342166
+          "attention_score": 0.460509305054393
         }
       }
     },
@@ -447,7 +471,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.48637933382034626,
+          "anomaly_score": 0.5553344215211515,
           "window_end": "2015-05-06 21:00:49.655808",
           "data_quality": {
             "score": 0.6,
@@ -460,11 +484,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.9293092079167293,
-            "hurst_exponent_sma": 0.8820348937130309,
+            "shannon_entropy_sma_short": 1.8799649487271113,
+            "hurst_exponent_sma": 0.6971958706624434,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.19719587066244337,
             "kolmogorov_proxy_7d": 0.2631578947368421,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.4904305742666409,
+            "adf_pvalue": 0.4904305741724338,
             "delta_sma_7d_km": -0.9278831922929385,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 2.98620672,
@@ -478,7 +505,7 @@
           },
           "norad_id": 40258,
           "object_name": "LUCH (OLYMP-K 1)",
-          "is_hit": false,
+          "is_hit": true,
           "pair": {
             "ok": true,
             "min_distance_km": 2000.0,
@@ -488,7 +515,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.3945407002191559
+          "attention_score": 0.4255704896845182
         }
       }
     },
@@ -499,7 +526,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5044236228878534,
+          "anomaly_score": 0.5739896573710885,
           "window_end": "2015-05-20 19:13:02.485344",
           "data_quality": {
             "score": 0.6,
@@ -512,11 +539,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 0.2974722489192897,
-            "hurst_exponent_sma": 0.9391033032103453,
-            "kolmogorov_proxy_7d": 0.3684210526315789,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8292724470359983,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32927244703599834,
+            "kolmogorov_proxy_7d": 0.2631578947368421,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.996983658806771,
+            "adf_pvalue": 0.9969836588068255,
             "delta_sma_7d_km": -9.661276726379583,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 4.7826429599999996,
@@ -540,7 +570,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.415640630299534
+          "attention_score": 0.4469453458169899
         }
       }
     },
@@ -551,7 +581,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.51911934008731,
+          "anomaly_score": 0.572990009266406,
           "window_end": "2015-06-03 20:20:39.825024",
           "data_quality": {
             "score": 0.6,
@@ -564,11 +594,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.655050539417775,
-            "hurst_exponent_sma": 0.9027209263093082,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8771890311881714,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3771890311881714,
             "kolmogorov_proxy_7d": 0.21052631578947367,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.44164297114627127,
+            "adf_pvalue": 0.4416429710408306,
             "delta_sma_7d_km": -17.517537887746585,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 3.65560416,
@@ -592,7 +625,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.42186870303928947
+          "attention_score": 0.44611050416988274
         }
       }
     },
@@ -603,7 +636,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5337856001469736,
+          "anomaly_score": 0.5622749447163814,
           "window_end": "2015-06-16 07:30:07.096896",
           "data_quality": {
             "score": 0.44999999999999996,
@@ -617,11 +650,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.8397755396455087,
-            "hurst_exponent_sma": 0.9031881640495277,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8232672917398334,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3232672917398334,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.987780720553926,
+            "adf_pvalue": 0.9877807205543537,
             "delta_sma_7d_km": -20.852692634929554,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 40.49802864,
@@ -645,7 +681,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.31313352006613815
+          "attention_score": 0.32595372512237164
         }
       }
     },
@@ -656,7 +692,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5382260022345833,
+          "anomaly_score": 0.5806245227639497,
           "window_end": "2015-07-01 08:50:02.728032",
           "data_quality": {
             "score": 0.6,
@@ -669,8 +705,11 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.9732285161344476,
-            "hurst_exponent_sma": 0.8933854099638902,
-            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.838705635100576,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33870563510057605,
+            "kolmogorov_proxy_7d": 0.42105263157894735,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
             "adf_pvalue": 1.0,
@@ -697,7 +736,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.2777317010055625
+          "attention_score": 0.2968110352437774
         }
       }
     },
@@ -708,7 +747,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5068217225091709,
+          "anomaly_score": 0.5626905042994974,
           "window_end": "2015-07-15 19:24:35.243136",
           "data_quality": {
             "score": 0.6,
@@ -721,11 +760,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 0.8795064608120067,
-            "hurst_exponent_sma": 0.7930615305232824,
+            "shannon_entropy_sma_short": 2.2810361125534233,
+            "hurst_exponent_sma": 0.8299147177848512,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32991471778485115,
             "kolmogorov_proxy_7d": 0.6842105263157895,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.04116369823167898,
-            "adf_pvalue": 0.000541843820538944,
+            "adf_pvalue": 0.000541843820538945,
             "delta_sma_7d_km": 0.08578426980966469,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 4.590210239999999,
@@ -749,7 +791,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.3420297751291269
+          "attention_score": 0.36717072693477387
         }
       }
     },
@@ -760,7 +802,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5100943492616087,
+          "anomaly_score": 0.5278197303834706,
           "window_end": "2015-07-29 20:42:01.652832",
           "data_quality": {
             "score": 0.6,
@@ -773,11 +815,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.0387607528626863,
-            "hurst_exponent_sma": 0.6831925214008359,
-            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7662013502479323,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.26620135024793234,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.2564573391856529,
+            "adf_pvalue": 0.25645733918467645,
             "delta_sma_7d_km": 0.08269842737354338,
             "maneuver_count_30d": 5.0,
             "tle_age_hours": 3.29954088,
@@ -801,7 +846,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.32799245716772396
+          "attention_score": 0.3359688786725618
         }
       }
     },
@@ -812,7 +857,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.49005853733760985,
+          "anomaly_score": 0.5047835201375429,
           "window_end": "2015-08-12 05:01:18.603840",
           "data_quality": {
             "score": 0.6,
@@ -825,11 +870,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.4842551447947994,
-            "hurst_exponent_sma": 0.729966721247503,
-            "kolmogorov_proxy_7d": 0.42105263157894735,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8031354732239261,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3031354732239261,
+            "kolmogorov_proxy_7d": 0.3684210526315789,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.9538060799233073,
+            "adf_pvalue": 0.9538060799243561,
             "delta_sma_7d_km": -0.01682014702237211,
             "maneuver_count_30d": 5.0,
             "tle_age_hours": 18.9781656,
@@ -843,7 +891,7 @@
           },
           "norad_id": 40258,
           "object_name": "LUCH (OLYMP-K 1)",
-          "is_hit": false,
+          "is_hit": true,
           "pair": {
             "ok": true,
             "min_distance_km": 2000.0,
@@ -853,7 +901,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.34323134180192444
+          "attention_score": 0.3498575840618943
         }
       }
     },
@@ -864,7 +912,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5777044305900535,
+          "anomaly_score": 0.6222597910972786,
           "window_end": "2015-08-26 18:51:23.859648",
           "data_quality": {
             "score": 0.6,
@@ -877,11 +925,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.839775539645508,
-            "hurst_exponent_sma": 0.5904261322009685,
-            "kolmogorov_proxy_7d": 0.5263157894736842,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.6513819579809424,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.15138195798094245,
+            "kolmogorov_proxy_7d": 0.42105263157894735,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 5.144801501136998e-06,
+            "adf_pvalue": 5.1448015011369785e-06,
             "delta_sma_7d_km": -0.5567416105550365,
             "maneuver_count_30d": 6.0,
             "tle_age_hours": 5.143372319999999,
@@ -905,7 +956,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.4820019937655241
+          "attention_score": 0.5020519059937754
         }
       }
     },
@@ -916,7 +967,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.506904733784962,
+          "anomaly_score": 0.5347525145801689,
           "window_end": "2015-09-08 08:26:15.040608",
           "data_quality": {
             "score": 0.44999999999999996,
@@ -930,11 +981,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.9732285161344478,
-            "hurst_exponent_sma": 0.8968786703901821,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8357789140285706,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33577891402857063,
             "kolmogorov_proxy_7d": 0.631578947368421,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.0495869901964033,
+            "adf_pvalue": 0.04958699017521542,
             "delta_sma_7d_km": -0.0653193586258567,
             "maneuver_count_30d": 2.0,
             "tle_age_hours": 39.56248872,
@@ -958,7 +1012,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.4501421302032329
+          "attention_score": 0.462673631561076
         }
       }
     },
@@ -969,7 +1023,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.49188536387363435,
+          "anomaly_score": 0.5490101583526057,
           "window_end": "2015-09-23 20:38:15.279648",
           "data_quality": {
             "score": 0.6,
@@ -982,11 +1036,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.1868085945630504,
-            "hurst_exponent_sma": 0.864243195593947,
-            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "shannon_entropy_sma_short": 1.6577427265048887,
+            "hurst_exponent_sma": 0.823813898910257,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.323813898910257,
+            "kolmogorov_proxy_7d": 0.631578947368421,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.19746355689297101,
-            "adf_pvalue": 0.21173996185345678,
+            "adf_pvalue": 0.21173996189672994,
             "delta_sma_7d_km": 0.06643914401502116,
             "maneuver_count_30d": 5.0,
             "tle_age_hours": 3.3624223200000003,
@@ -1000,7 +1057,7 @@
           },
           "norad_id": 40258,
           "object_name": "LUCH (OLYMP-K 1)",
-          "is_hit": false,
+          "is_hit": true,
           "pair": {
             "ok": true,
             "min_distance_km": 2000.0,
@@ -1010,7 +1067,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.4433834137431355
+          "attention_score": 0.46908957125867257
         }
       }
     },
@@ -1021,7 +1078,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5825929582651114,
+          "anomaly_score": 0.5956789956887617,
           "window_end": "2015-10-07 04:14:51.819360",
           "data_quality": {
             "score": 0.6,
@@ -1034,11 +1091,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.865576855207248,
-            "hurst_exponent_sma": 0.9390956615882418,
-            "kolmogorov_proxy_7d": 0.3157894736842105,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8090929408085608,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.30909294080856076,
+            "kolmogorov_proxy_7d": 0.2631578947368421,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.9958200789799274,
+            "adf_pvalue": 0.9958200789799353,
             "delta_sma_7d_km": -1.855237737261632,
             "maneuver_count_30d": 3.0,
             "tle_age_hours": 19.752272400000003,
@@ -1062,7 +1122,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.4659418312193001
+          "attention_score": 0.47183054805994273
         }
       }
     },
@@ -1073,7 +1133,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5033782165831597,
+          "anomaly_score": 0.5078691852938882,
           "window_end": "2015-10-21 06:15:55.941696",
           "data_quality": {
             "score": 0.6,
@@ -1086,7 +1146,10 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.465255650113225,
-            "hurst_exponent_sma": 0.6829760149174544,
+            "shannon_entropy_sma_short": 2.113283334294875,
+            "hurst_exponent_sma": 0.8254720960712649,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3254720960712649,
             "kolmogorov_proxy_7d": 0.631578947368421,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.05976415092907217,
@@ -1114,7 +1177,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.4346401974624219
+          "attention_score": 0.43666113338224977
         }
       }
     },
@@ -1125,7 +1188,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5066197972036972,
+          "anomaly_score": 0.5510492526418819,
           "window_end": "2015-11-04 08:50:55.032864",
           "data_quality": {
             "score": 0.6,
@@ -1138,11 +1201,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.9290929654978,
-            "hurst_exponent_sma": 0.8953769493067706,
-            "kolmogorov_proxy_7d": 0.631578947368421,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8234491628749091,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3234491628749091,
+            "kolmogorov_proxy_7d": 0.5789473684210527,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.8530426277486227,
+            "adf_pvalue": 0.8530426279649499,
             "delta_sma_7d_km": 0.01457753854629118,
             "maneuver_count_30d": 9.0,
             "tle_age_hours": 15.15137976,
@@ -1166,7 +1232,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.4325239087416638
+          "attention_score": 0.45251716368884687
         }
       }
     },
@@ -1177,7 +1243,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5083365201160827,
+          "anomaly_score": 0.5664120548721597,
           "window_end": "2015-11-18 12:22:18.063840",
           "data_quality": {
             "score": 0.6,
@@ -1190,11 +1256,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.2363864108712896,
-            "hurst_exponent_sma": 0.9712822187256317,
-            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.9075285785329225,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.40752857853292246,
+            "kolmogorov_proxy_7d": 0.42105263157894735,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.6199803971590463,
-            "adf_pvalue": 0.025062254101343565,
+            "adf_pvalue": 0.025062254079005523,
             "delta_sma_7d_km": 0.22987603050569305,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 11.628315599999999,
@@ -1218,7 +1287,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.4507864340522372
+          "attention_score": 0.47692042469247187
         }
       }
     },
@@ -1229,7 +1298,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5084226695798311,
+          "anomaly_score": 0.5292922116202292,
           "window_end": "2015-12-02 12:38:00.354336",
           "data_quality": {
             "score": 0.6,
@@ -1242,11 +1311,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.5239860659612985,
-            "hurst_exponent_sma": 0.7751949201775277,
-            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.821372315639293,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.321372315639293,
+            "kolmogorov_proxy_7d": 0.5263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.2246385466914042,
+            "adf_pvalue": 0.22463854669424227,
             "delta_sma_7d_km": -0.8715729556715814,
             "maneuver_count_30d": 5.0,
             "tle_age_hours": 11.366568240000001,
@@ -1270,7 +1342,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.45082520131092396
+          "attention_score": 0.46021649522910313
         }
       }
     },
@@ -1281,7 +1353,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5118495413974018,
+          "anomaly_score": 0.5572788106095563,
           "window_end": "2015-12-16 18:03:57.197376",
           "data_quality": {
             "score": 0.6,
@@ -1294,11 +1366,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.51005646035654,
-            "hurst_exponent_sma": 0.9332704048342481,
+            "shannon_entropy_sma_short": 2.0588138903312014,
+            "hurst_exponent_sma": 0.7887452374450267,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.28874523744502667,
             "kolmogorov_proxy_7d": 0.21052631578947367,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.4728537773906233,
+            "adf_pvalue": 0.472853777365316,
             "delta_sma_7d_km": -9.133007943535631,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 5.93411184,
@@ -1322,7 +1397,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.2809872936288308
+          "attention_score": 0.30143046477430036
         }
       }
     },
@@ -1333,7 +1408,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5993969560570622,
+          "anomaly_score": 0.6163603324427026,
           "window_end": "2015-12-30 19:39:29.344032",
           "data_quality": {
             "score": 0.6,
@@ -1346,8 +1421,11 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.2319817814011402,
-            "hurst_exponent_sma": 0.9276214253967267,
-            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "shannon_entropy_sma_short": 1.836591668108979,
+            "hurst_exponent_sma": 0.8018326597809345,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.30183265978093454,
+            "kolmogorov_proxy_7d": 0.631578947368421,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.8519807992136487,
             "adf_pvalue": 1.0,
@@ -1374,7 +1452,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.407833630225678
+          "attention_score": 0.41546714959921616
         }
       }
     },
@@ -1385,7 +1463,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5083453589332072,
+          "anomaly_score": 0.5516623770827053,
           "window_end": "2016-01-13 19:14:28.341888",
           "data_quality": {
             "score": 0.6,
@@ -1398,11 +1476,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.562688039303908,
-            "hurst_exponent_sma": 0.7177160710187253,
-            "kolmogorov_proxy_7d": 0.5789473684210527,
+            "shannon_entropy_sma_short": 2.0588138903312014,
+            "hurst_exponent_sma": 0.8391301850634465,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3391301850634465,
+            "kolmogorov_proxy_7d": 0.42105263157894735,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.9920621227344867,
+            "adf_pvalue": 0.9920621227334148,
             "delta_sma_7d_km": -0.06868612524704076,
             "maneuver_count_30d": 5.0,
             "tle_age_hours": 4.7587939200000005,
@@ -1426,7 +1507,7 @@
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.32979041151994326
+          "attention_score": 0.3492830696872174
         }
       }
     },
@@ -1437,7 +1518,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5190922546827543,
+          "anomaly_score": 0.5358813561448936,
           "window_end": "2016-01-27 20:16:41.039616",
           "data_quality": {
             "score": 0.6,
@@ -1450,11 +1531,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.030087224632132,
-            "hurst_exponent_sma": 0.7545151731968536,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.7784908019731434,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.27849080197314335,
             "kolmogorov_proxy_7d": 0.5789473684210527,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.010894081973055216,
+            "adf_pvalue": 0.01089408196423225,
             "delta_sma_7d_km": -0.4303123562349356,
             "maneuver_count_30d": 3.0,
             "tle_age_hours": 3.72193344,
@@ -1472,13 +1556,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 2000.0,
-            "cointegration_pvalue": 0.410233,
+            "cointegration_pvalue": 0.410234,
             "pair_risk": 0.2601,
             "risk_level": "LOW",
             "asset_norad": 28874,
             "asset_name": "GPS BIIRM-1 (PRN 17)"
           },
-          "attention_score": 0.37664651460723947
+          "attention_score": 0.38420161026520216
         }
       }
     },
@@ -1489,7 +1573,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.507770747231495,
+          "anomaly_score": 0.5211174533655187,
           "window_end": "2016-02-10 03:19:23.507328",
           "data_quality": {
             "score": 0.6,
@@ -1502,11 +1586,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.8205898566665466,
-            "hurst_exponent_sma": 0.5877819303428301,
-            "kolmogorov_proxy_7d": 0.6842105263157895,
+            "shannon_entropy_sma_short": 2.0588138903312014,
+            "hurst_exponent_sma": 0.7430196561681209,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.24301965616812093,
+            "kolmogorov_proxy_7d": 0.631578947368421,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.006293103608791914,
+            "adf_pvalue": 0.00629310360850043,
             "delta_sma_7d_km": -0.19819784227001946,
             "maneuver_count_30d": 8.0,
             "tle_age_hours": 20.676803519999996,
@@ -1530,7 +1617,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.3700118362541728
+          "attention_score": 0.3760178540144834
         }
       }
     },
@@ -1541,7 +1628,7 @@
       "targets": {
         "40258": {
           "ok": true,
-          "anomaly_score": 0.5304843114726688,
+          "anomaly_score": 0.5645069882423142,
           "window_end": "2016-02-24 22:04:54.848928",
           "data_quality": {
             "score": 0.6,
@@ -1554,11 +1641,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.2319817814011402,
-            "hurst_exponent_sma": 0.8131190392552665,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8013939030205194,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3013939030205194,
             "kolmogorov_proxy_7d": 0.5263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.45331350612700194,
-            "adf_pvalue": 0.1741353863494149,
+            "adf_pvalue": 0.17413538634647363,
             "delta_sma_7d_km": 0.6450553030517767,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 1.91809752,
@@ -1582,7 +1672,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.446617940162701
+          "attention_score": 0.4619281447090414
         }
       }
     }
@@ -1592,40 +1682,57 @@
       "norad_id": 40258,
       "object_name": "LUCH (OLYMP-K 1)",
       "n_folds_scored": 30,
-      "anomaly_score_mean": 0.5225615778291443,
-      "anomaly_score_max": 0.5993969560570622,
-      "anomaly_score_at_nearest_peak": 0.506904733784962,
+      "anomaly_score_mean": 0.5634210196921107,
+      "anomaly_score_max": 0.6277594743086112,
+      "anomaly_score_at_nearest_peak": 0.5347525145801689,
       "hit_at_event": true,
       "soft_hit_at_event": true,
-      "n_hits_in_window": 3,
+      "n_hits_in_window": 5,
+      "first_fold_hit": true,
+      "first_hit_asof": "2015-01-15",
+      "first_scorable_asof": "2015-01-15",
+      "n_folds_above_thr_pre_peak": 18,
       "lead_time_days": 243.0,
+      "lead_time_note": "already_elevated_at_window_open",
       "feature_early_vs_late": {
         "shannon_entropy_sma_30d": {
           "early_mean": 1.9374199307787852,
           "late_mean": 2.0314591550639824
         },
+        "shannon_entropy_sma_short": {
+          "early_mean": 1.852123900354717,
+          "late_mean": 2.090949769840638
+        },
         "hurst_exponent_sma": {
-          "early_mean": 0.9000648306901743,
-          "late_mean": 0.7644851642877771
+          "early_mean": 0.823689532041537,
+          "late_mean": 0.7875196747277998
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.32368953204153705,
+          "late_mean": 0.28751967472779977
         },
         "l1_cusum_sma": {
           "early_mean": 0.0,
           "late_mean": 0.0
         },
         "kolmogorov_proxy_7d": {
-          "early_mean": 0.5175438596491229,
-          "late_mean": 0.5701754385964911
+          "early_mean": 0.48245614035087714,
+          "late_mean": 0.5175438596491228
         }
       },
       "pair_risk_max": 0.4037,
       "pre_peak_noise": {
         "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
         "n_pre_peak_folds": 18,
-        "pre_peak_anomaly_mean": 0.5221484799710123,
-        "pre_peak_anomaly_max": 0.5777044305900535,
-        "early_pre_peak_mean": 0.5198997305982184,
-        "late_pre_peak_mean": 0.5216349626196647,
-        "noise_ramp": 0.0017352320214463202,
+        "pre_peak_anomaly_mean": 0.5698061896892279,
+        "pre_peak_anomaly_max": 0.6277594743086112,
+        "early_pre_peak_mean": 0.5676186076769841,
+        "late_pre_peak_mean": 0.5554884305436513,
+        "noise_ramp": -0.012130177133332865,
         "pre_peak_pair_risk_max": 0.4037,
         "elevated_noise_before_peak": true
       },

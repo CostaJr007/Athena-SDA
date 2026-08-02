@@ -41,10 +41,13 @@ FEATURE_COLUMNS = [
     "delta_sma_30d_km",
     "delta_inc_30d_deg",
     "maneuver_count_30d",
-    # Math framework (Shannon → RKHS)
+    # Math framework (Shannon → RKHS) + multi-scale persistence (paper / micro-trajectory)
     "shannon_entropy_sma_30d",
+    "shannon_entropy_sma_short",
     "kolmogorov_proxy_7d",
     "hurst_exponent_sma",
+    "hurst_exponent_sma_short",
+    "persistence_hurst_gap",
     "mandelbrot_tail_score",
     "adf_pvalue",
     "williams_threat",
@@ -75,10 +78,13 @@ FEATURE_COLUMNS = [
 
 # Isolation Forest trains WITHOUT multi-object context (proximity / coint)
 # Space weather IS included in IF — part of the "normal climate" background
+# spectral_anomaly_rkhs excluded: requires a live reference matrix; dead constant
+# features must not enter the IF baseline (honest quant vector).
 IFOREST_COLUMNS = [c for c in FEATURE_COLUMNS if c not in (
     "min_distance_to_military_km",
     "cointegration_pvalue",
     "lukasiewicz_implication",
+    "spectral_anomaly_rkhs",
 )]
 
 # XGBoost uses full feature set including anomaly_score injected after IF

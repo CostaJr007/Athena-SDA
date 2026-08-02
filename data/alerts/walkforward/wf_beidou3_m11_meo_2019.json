@@ -1,0 +1,1337 @@
+{
+  "event_id": "beidou3_m11_meo_2019",
+  "type": "pnt_dual_use_regime",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) mark evaluation windows for quant noise features (Hurst, Shannon, CUSUM, IF score). Metrics include hard hit, pre-peak mean, noise_ramp, and first_fold_hit for regime-level analysis.",
+  "t_start": "2019-01-01",
+  "t_peak": "2019-07-01",
+  "t_end": "2019-12-01",
+  "norad_ids": [
+    43603
+  ],
+  "pair_with": [],
+  "sources": [
+    "Public BeiDou-3 constellation deployment timelines (MEO M-series)",
+    "Open documentation of BeiDou-3 PNT dual-use GNSS operations"
+  ],
+  "notes": "Independent MEO dual-use PNT NORAD — orbit-class diversity for paper N.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 24,
+  "folds": [
+    {
+      "asof": "2019-01-01",
+      "cutoff": "2018-12-29",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.4484028345312108,
+          "window_end": "2018-12-31 21:11:49.928928",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.8027975200000004
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.615319618251277,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8865406213505614,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.38654062135056144,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9936729104098971,
+            "delta_sma_7d_km": 0.002497443991160253,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.8027975200000004,
+            "f10_7": 71.9,
+            "ap_index": 5.0,
+            "kp_mean": 1.208375,
+            "f10_7_delta_7d": 2.3000000000000114,
+            "ap_delta_7d": -2.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.011772,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.4238162755390449
+        }
+      }
+    },
+    {
+      "asof": "2019-01-15",
+      "cutoff": "2019-01-12",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.46189003135807494,
+          "window_end": "2019-01-14 09:58:47.324064",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 14.02018776
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.00531485689428,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.7515294535375702,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.25152945353757017,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9554071894931211,
+            "delta_sma_7d_km": -0.0006992845410422888,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 14.02018776,
+            "f10_7": 69.5,
+            "ap_index": 5.0,
+            "kp_mean": 1.16675,
+            "f10_7_delta_7d": -1.7999999999999972,
+            "ap_delta_7d": 0.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1345.825,
+            "cointegration_pvalue": 0.000362,
+            "pair_risk": 0.419,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.43830051411113374
+        }
+      }
+    },
+    {
+      "asof": "2019-01-29",
+      "cutoff": "2019-01-26",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.43147430183614444,
+          "window_end": "2019-01-28 09:44:09.099168",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 14.26413912
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7550576199383077,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8706176587440453,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3706176587440453,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9967006676700858,
+            "delta_sma_7d_km": 0.0034964203405252192,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 14.26413912,
+            "f10_7": 73.1,
+            "ap_index": 2.0,
+            "kp_mean": 0.375,
+            "f10_7_delta_7d": 2.3999999999999915,
+            "ap_delta_7d": -5.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1345.732,
+            "cointegration_pvalue": 0.048703,
+            "pair_risk": 0.419,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.424613435826265
+        }
+      }
+    },
+    {
+      "asof": "2019-02-12",
+      "cutoff": "2019-02-09",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.5031051316643618,
+          "window_end": "2019-02-11 14:46:06.688416",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 9.23147544
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.29499507471547,
+            "shannon_entropy_sma_short": 1.6577427265048887,
+            "hurst_exponent_sma": 0.8993106313346643,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.39931063133466427,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0010230237435894767,
+            "delta_sma_7d_km": -0.0019979551288997754,
+            "maneuver_count_30d": 7.0,
+            "tle_age_hours": 9.23147544,
+            "f10_7": 70.2,
+            "ap_index": 4.0,
+            "kp_mean": 1.124875,
+            "f10_7_delta_7d": -0.3999999999999915,
+            "ap_delta_7d": -2.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1345.657,
+            "cointegration_pvalue": 0.031056,
+            "pair_risk": 0.419,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.45684730924896283
+        }
+      }
+    },
+    {
+      "asof": "2019-02-26",
+      "cutoff": "2019-02-23",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.46258053418100586,
+          "window_end": "2019-02-25 22:07:25.599648",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 1.8762223199999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.689525383210069,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8585361637649311,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35853616376493114,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9834683770173724,
+            "delta_sma_7d_km": 0.003896009631716879,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 1.8762223199999999,
+            "f10_7": 70.6,
+            "ap_index": 2.0,
+            "kp_mean": 0.41675,
+            "f10_7_delta_7d": 0.3999999999999915,
+            "ap_delta_7d": -1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1345.568,
+            "cointegration_pvalue": 0.009694,
+            "pair_risk": 0.419,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.43861124038145266
+        }
+      }
+    },
+    {
+      "asof": "2019-03-12",
+      "cutoff": "2019-03-09",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.4414891435753119,
+          "window_end": "2019-03-11 08:26:01.945824",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 15.56612616
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.331802673624286,
+            "shannon_entropy_sma_short": 2.0588138903312014,
+            "hurst_exponent_sma": 0.8068273535730313,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.30682735357303126,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.020865314506118806,
+            "delta_sma_7d_km": -0.0012986702131456695,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 15.56612616,
+            "f10_7": 70.7,
+            "ap_index": 6.0,
+            "kp_mean": 1.541625,
+            "f10_7_delta_7d": -1.2999999999999972,
+            "ap_delta_7d": 1.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1345.488,
+            "cointegration_pvalue": 0.013407,
+            "pair_risk": 0.419,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4291201146088904
+        }
+      }
+    },
+    {
+      "asof": "2019-03-26",
+      "cutoff": "2019-03-23",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.46150404505655285,
+          "window_end": "2019-03-25 20:21:34.466976",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.6404258400000002
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.0750742231728343,
+            "shannon_entropy_sma_short": 2.281036112553424,
+            "hurst_exponent_sma": 0.87799008608262,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37799008608261997,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7908107926859353,
+            "adf_pvalue": 0.94218024130878,
+            "delta_sma_7d_km": 0.008191610100766411,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.6404258400000002,
+            "f10_7": 69.0,
+            "ap_index": 4.0,
+            "kp_mean": 1.0415,
+            "f10_7_delta_7d": -0.7000000000000028,
+            "ap_delta_7d": 1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1345.411,
+            "cointegration_pvalue": 0.001607,
+            "pair_risk": 0.419,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4381268202754488
+        }
+      }
+    },
+    {
+      "asof": "2019-04-09",
+      "cutoff": "2019-04-06",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.4762711081931979,
+          "window_end": "2019-04-08 19:41:46.065984",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 4.30387056
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.1922508602346424,
+            "shannon_entropy_sma_short": 1.6577427265048887,
+            "hurst_exponent_sma": 0.8099360000830582,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3099360000830582,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.09053381966663976,
+            "delta_sma_7d_km": -0.004495396293350495,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 4.30387056,
+            "f10_7": 79.0,
+            "ap_index": 9.0,
+            "kp_mean": 2.20825,
+            "f10_7_delta_7d": 8.200000000000003,
+            "ap_delta_7d": 0.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1345.33,
+            "cointegration_pvalue": 0.030346,
+            "pair_risk": 0.419,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.44477199868693906
+        }
+      }
+    },
+    {
+      "asof": "2019-04-23",
+      "cutoff": "2019-04-20",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.5041304633579746,
+          "window_end": "2019-04-22 05:48:09.342720",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 18.1974048
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.074087044559035,
+            "shannon_entropy_sma_short": 1.4466166676282084,
+            "hurst_exponent_sma": 0.9029578706083766,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.4029578706083766,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7826650984215415,
+            "adf_pvalue": 0.002577583498153435,
+            "delta_sma_7d_km": 0.0033965203183470294,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 18.1974048,
+            "f10_7": 68.8,
+            "ap_index": 7.0,
+            "kp_mean": 1.499875,
+            "f10_7_delta_7d": -5.400000000000006,
+            "ap_delta_7d": 3.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": true,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1345.256,
+            "cointegration_pvalue": 0.034868,
+            "pair_risk": 0.419,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4573087085110886
+        }
+      }
+    },
+    {
+      "asof": "2019-05-07",
+      "cutoff": "2019-05-04",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.4202138313595055,
+          "window_end": "2019-05-06 16:13:59.865312",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 7.766704079999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4650694618158377,
+            "shannon_entropy_sma_short": 2.2810361125534238,
+            "hurst_exponent_sma": 0.8598647759347599,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35986477593475985,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.4078194940772277,
+            "delta_sma_7d_km": -0.004894985628197901,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 7.766704079999999,
+            "f10_7": 78.7,
+            "ap_index": 4.0,
+            "kp_mean": 1.125,
+            "f10_7_delta_7d": 10.200000000000003,
+            "ap_delta_7d": -2.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1345.183,
+            "cointegration_pvalue": 0.003414,
+            "pair_risk": 0.419,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4195462241117775
+        }
+      }
+    },
+    {
+      "asof": "2019-05-21",
+      "cutoff": "2019-05-18",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.4934993875158764,
+          "window_end": "2019-05-20 16:44:49.272864",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 7.2529797600000006
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.499544305608132,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8563983117204385,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35639831172043845,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7192442706095736,
+            "adf_pvalue": 0.8014824533715886,
+            "delta_sma_7d_km": 0.0016982591805572156,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 7.2529797600000006,
+            "f10_7": 68.0,
+            "ap_index": 3.0,
+            "kp_mean": 0.666625,
+            "f10_7_delta_7d": -6.400000000000006,
+            "ap_delta_7d": -4.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.004335,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4441097243821444
+        }
+      }
+    },
+    {
+      "asof": "2019-06-04",
+      "cutoff": "2019-06-01",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.42906081639576193,
+          "window_end": "2019-06-03 17:29:34.817280",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 6.5069952
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.970840013101985,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.7893328722708709,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2893328722708709,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.0056941649127111305,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 6.5069952,
+            "f10_7": 70.0,
+            "ap_index": 6.0,
+            "kp_mean": 1.6665,
+            "f10_7_delta_7d": 1.9000000000000057,
+            "ap_delta_7d": 0.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.041529,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4151123673780929
+        }
+      }
+    },
+    {
+      "asof": "2019-06-18",
+      "cutoff": "2019-06-15",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.4746300958077714,
+          "window_end": "2019-06-17 14:57:03.439872",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 9.049044480000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.4657904693384451,
+            "shannon_entropy_sma_short": 1.7527152789797047,
+            "hurst_exponent_sma": 0.8388786224447291,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3388786224447291,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.00019979512580903247,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 9.049044480000001,
+            "f10_7": 67.0,
+            "ap_index": 3.0,
+            "kp_mean": 0.624875,
+            "f10_7_delta_7d": -2.700000000000003,
+            "ap_delta_7d": -1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.000444,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4356185431134971
+        }
+      }
+    },
+    {
+      "asof": "2019-07-02",
+      "cutoff": "2019-06-29",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.453314861430286,
+          "window_end": "2019-07-01 14:20:04.762176",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 9.66534384
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7205827761460135,
+            "shannon_entropy_sma_short": 1.6577427265048887,
+            "hurst_exponent_sma": 0.818112565706513,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31811256570651303,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.1909391862269626e-06,
+            "delta_sma_7d_km": -0.002597336653707316,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 9.66534384,
+            "f10_7": 67.3,
+            "ap_index": 4.0,
+            "kp_mean": 1.166625,
+            "f10_7_delta_7d": -0.6000000000000085,
+            "ap_delta_7d": -0.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1344.909,
+            "cointegration_pvalue": 0.004227,
+            "pair_risk": 0.4191,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4344966876436287
+        }
+      }
+    },
+    {
+      "asof": "2019-07-16",
+      "cutoff": "2019-07-13",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.4396464656111964,
+          "window_end": "2019-07-15 11:44:13.660800",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 12.262872
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.3598063039211006,
+            "shannon_entropy_sma_short": 2.7254805569978675,
+            "hurst_exponent_sma": 0.821631595935745,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.321631595935745,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7889279137274345,
+            "adf_pvalue": 0.3309989542996793,
+            "delta_sma_7d_km": 0.00299692730550305,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 12.262872,
+            "f10_7": 67.2,
+            "ap_index": 4.0,
+            "kp_mean": 1.166625,
+            "f10_7_delta_7d": -0.29999999999999716,
+            "ap_delta_7d": -3.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1344.858,
+            "cointegration_pvalue": 0.001639,
+            "pair_risk": 0.4191,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.42834590952503837
+        }
+      }
+    },
+    {
+      "asof": "2019-07-30",
+      "cutoff": "2019-07-27",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.42072054558812977,
+          "window_end": "2019-07-29 21:19:16.500288",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 2.67874992
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.80004461847901,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8431856259538067,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34318562595380675,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7387704920423626,
+            "delta_sma_7d_km": -0.002597337486804463,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 2.67874992,
+            "f10_7": 66.2,
+            "ap_index": 8.0,
+            "kp_mean": 1.666625,
+            "f10_7_delta_7d": -1.2000000000000028,
+            "ap_delta_7d": 3.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1344.783,
+            "cointegration_pvalue": 0.004942,
+            "pair_risk": 0.4191,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4198292455146584
+        }
+      }
+    },
+    {
+      "asof": "2019-08-13",
+      "cutoff": "2019-08-10",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.4662990445360828,
+          "window_end": "2019-08-12 20:52:57.851328",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.11726352
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.7832474385325103,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.7451110093656143,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.24511100936561425,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8432828811129331,
+            "delta_sma_7d_km": 0.0018980535751325078,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.11726352,
+            "f10_7": 66.8,
+            "ap_index": 6.0,
+            "kp_mean": 1.583375,
+            "f10_7_delta_7d": -1.2999999999999972,
+            "ap_delta_7d": 0.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.369594,
+            "pair_risk": 0.2743,
+            "risk_level": "LOW",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.36069957004123726
+        }
+      }
+    },
+    {
+      "asof": "2019-08-27",
+      "cutoff": "2019-08-24",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.4262534903159092,
+          "window_end": "2019-08-26 20:17:41.684640",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 3.7050876
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.755057619938308,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7909470066029197,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2909470066029197,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9961753178462344,
+            "delta_sma_7d_km": -0.0031967230897862464,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.7050876,
+            "f10_7": 66.1,
+            "ap_index": 10.0,
+            "kp_mean": 2.333375,
+            "f10_7_delta_7d": -1.2000000000000028,
+            "ap_delta_7d": 5.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1346.982,
+            "cointegration_pvalue": 0.033042,
+            "pair_risk": 0.419,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.42226407064215915
+        }
+      }
+    },
+    {
+      "asof": "2019-09-10",
+      "cutoff": "2019-09-07",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.47100525118608255,
+          "window_end": "2019-09-09 15:24:56.007360",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 8.5844424
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.905307776373747,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.9239848736009892,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.42398487360098924,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7005723206945416,
+            "adf_pvalue": 0.994654822313966,
+            "delta_sma_7d_km": 0.004894982954283478,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 8.5844424,
+            "f10_7": 70.0,
+            "ap_index": 4.0,
+            "kp_mean": 0.95825,
+            "f10_7_delta_7d": 1.4000000000000057,
+            "ap_delta_7d": -4.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 1346.937,
+            "cointegration_pvalue": 0.001483,
+            "pair_risk": 0.419,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.44240236303373714
+        }
+      }
+    },
+    {
+      "asof": "2019-09-24",
+      "cutoff": "2019-09-21",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.46445266922321254,
+          "window_end": "2019-09-23 14:56:34.863936",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 9.05698224
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.900051698999543,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.7460249844997617,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.24602498449976173,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.2282184392751952,
+            "delta_sma_7d_km": -0.0034964173355547246,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 9.05698224,
+            "f10_7": 67.1,
+            "ap_index": 12.0,
+            "kp_mean": 2.375,
+            "f10_7_delta_7d": -0.4000000000000057,
+            "ap_delta_7d": 6.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.060024,
+            "pair_risk": 0.3827,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.4194887011504457
+        }
+      }
+    },
+    {
+      "asof": "2019-10-08",
+      "cutoff": "2019-10-05",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.48136583080338435,
+          "window_end": "2019-10-07 15:52:52.281408",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 8.11881072
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.3727069617019705,
+            "shannon_entropy_sma_short": 1.7527152789797047,
+            "hurst_exponent_sma": 0.7570986471086107,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.25709864710861074,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.12040123306391548,
+            "adf_pvalue": 0.001033801181420217,
+            "delta_sma_7d_km": 0.003696213370858459,
+            "maneuver_count_30d": 1.0,
+            "tle_age_hours": 8.11881072,
+            "f10_7": 67.1,
+            "ap_index": 4.0,
+            "kp_mean": 1.125,
+            "f10_7_delta_7d": -1.6000000000000085,
+            "ap_delta_7d": -1.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.202583,
+            "pair_risk": 0.3328,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.39965462386152295
+        }
+      }
+    },
+    {
+      "asof": "2019-10-22",
+      "cutoff": "2019-10-19",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.46601125058851944,
+          "window_end": "2019-10-21 12:40:37.007904",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 11.323053360000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.9732285161344478,
+            "shannon_entropy_sma_short": 1.7527152789797047,
+            "hurst_exponent_sma": 0.6769382825749101,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.17693828257491007,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.004195701800199458,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 11.323053360000001,
+            "f10_7": 65.6,
+            "ap_index": 2.0,
+            "kp_mean": 0.5832499999999999,
+            "f10_7_delta_7d": -1.6000000000000085,
+            "ap_delta_7d": -2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.027791,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.4317400627648338
+        }
+      }
+    },
+    {
+      "asof": "2019-11-05",
+      "cutoff": "2019-11-02",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.4467246372117046,
+          "window_end": "2019-11-04 07:28:24.985920",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 16.5263928
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.7120954362128467,
+            "shannon_entropy_sma_short": 2.0588138903312014,
+            "hurst_exponent_sma": 0.9005712008769039,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.4005712008769039,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.036956690180510954,
+            "adf_pvalue": 0.02936124850492289,
+            "delta_sma_7d_km": 0.011188548545760568,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 16.5263928,
+            "f10_7": 70.4,
+            "ap_index": 5.0,
+            "kp_mean": 1.333375,
+            "f10_7_delta_7d": 1.2000000000000028,
+            "ap_delta_7d": 0.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 6.5e-05,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4230610867452671
+        }
+      }
+    },
+    {
+      "asof": "2019-11-19",
+      "cutoff": "2019-11-16",
+      "n_train_ok": true,
+      "targets": {
+        "43603": {
+          "ok": true,
+          "anomaly_score": 0.4482952878799608,
+          "window_end": "2019-11-18 12:56:55.867200",
+          "data_quality": {
+            "score": 1.0,
+            "issues": [],
+            "reliable": true,
+            "tle_age_hours": 11.051148
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.247927513443585,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.8005726020465078,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3005726020465078,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.00839140990137821,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 11.051148,
+            "f10_7": 69.2,
+            "ap_index": 2.0,
+            "kp_mean": 0.45825,
+            "f10_7_delta_7d": -1.5999999999999943,
+            "ap_delta_7d": -0.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 43603,
+          "object_name": "BEIDOU-3 M11",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.008846,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4237678795459824
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "43603": {
+      "norad_id": 43603,
+      "object_name": "BEIDOU-3 M11",
+      "n_folds_scored": 24,
+      "anomaly_score_mean": 0.45801421080030075,
+      "anomaly_score_max": 0.5041304633579746,
+      "anomaly_score_at_nearest_peak": 0.453314861430286,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "n_hits_in_window": 0,
+      "first_fold_hit": false,
+      "first_hit_asof": "2019-02-12",
+      "first_scorable_asof": "2019-01-01",
+      "n_folds_above_thr_pre_peak": 2,
+      "lead_time_days": 139.0,
+      "lead_time_note": "days_from_first_thr_cross_to_t_peak",
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 2.417671792449833,
+          "late_mean": 2.3503110624661
+        },
+        "shannon_entropy_sma_short": {
+          "early_mean": 2.3820214465367493,
+          "late_mean": 2.3711781263822163
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.8519995912417103,
+          "late_mean": 0.8361186455926997
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.3519995912417103,
+          "late_mean": 0.3361186455926996
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.09210526315789473,
+          "late_mean": 0.05263157894736842
+        }
+      },
+      "pair_risk_max": 0.4191,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 13,
+        "pre_peak_anomaly_mean": 0.46217320960251923,
+        "pre_peak_anomaly_max": 0.5041304633579746,
+        "early_pre_peak_mean": 0.461218074847448,
+        "late_pre_peak_mean": 0.4543510327697288,
+        "noise_ramp": -0.006867042077719154,
+        "pre_peak_pair_risk_max": 0.419,
+        "elevated_noise_before_peak": true
+      },
+      "is_placebo": false
+    }
+  }
+}

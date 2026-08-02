@@ -15,7 +15,7 @@
     "Watchlist Athena pair scoring (Yaogan × COSMO-SkyMed SSO neighborhood)",
     "Open literature on Yaogan recon series"
   ],
-  "notes": "Âncora de par recon LEO SSO; testa se attention/pair sobe na janela — não é report de espionagem datado.",
+  "notes": "LEO SSO recon pair anchor; evaluates attention/pair in-window.",
   "params": {
     "step_days": 14,
     "holdout_days": 3,

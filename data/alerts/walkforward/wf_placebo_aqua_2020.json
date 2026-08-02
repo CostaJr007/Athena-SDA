@@ -1,0 +1,1384 @@
+{
+  "event_id": "placebo_aqua_2020",
+  "type": "placebo_baseline",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) mark evaluation windows for quant noise features (Hurst, Shannon, CUSUM, IF score). Metrics include hard hit, pre-peak mean, noise_ramp, and first_fold_hit for regime-level analysis.",
+  "t_start": "2020-01-01",
+  "t_peak": "2020-07-01",
+  "t_end": "2020-12-01",
+  "norad_ids": [
+    27424
+  ],
+  "pair_with": [],
+  "sources": [
+    "Scientific control vs Yaogan-29 2020 window"
+  ],
+  "notes": "Placebo LEO scientific — AQUA 2020.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 24,
+  "folds": [
+    {
+      "asof": "2020-01-01",
+      "cutoff": "2019-12-29",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.32212552193265925,
+          "window_end": "2019-12-31 21:33:47.852928",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.43670752
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.155565013329719,
+            "shannon_entropy_sma_short": 2.7254805569978675,
+            "hurst_exponent_sma": 0.8760441372838037,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3760441372838037,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.82819524978304,
+            "delta_sma_7d_km": -0.002782802666843054,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.43670752,
+            "f10_7": 71.8,
+            "ap_index": 2.0,
+            "kp_mean": 0.583375,
+            "f10_7_delta_7d": -0.29999999999999716,
+            "ap_delta_7d": -0.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.986,
+            "cointegration_pvalue": 0.320278,
+            "pair_risk": 0.7382,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5509664848696967
+        }
+      }
+    },
+    {
+      "asof": "2020-01-15",
+      "cutoff": "2020-01-12",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.37429249309274676,
+          "window_end": "2020-01-14 21:45:51.590304",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.2356693599999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8309650538482805,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33096505384828045,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6910266749353842,
+            "delta_sma_7d_km": -0.0031974961302694282,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 2.2356693599999997,
+            "f10_7": 71.2,
+            "ap_index": 3.0,
+            "kp_mean": 0.79175,
+            "f10_7_delta_7d": -2.5,
+            "ap_delta_7d": -1.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.015,
+            "cointegration_pvalue": 0.331141,
+            "pair_risk": 0.7344,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5723516218917362
+        }
+      }
+    },
+    {
+      "asof": "2020-01-29",
+      "cutoff": "2020-01-26",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3254508286893615,
+          "window_end": "2020-01-28 20:10:28.441344",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.8254329599999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9708400131019856,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8581748636882272,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35817486368822715,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.32143542190147933,
+            "delta_sma_7d_km": -0.0014772573122172616,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.8254329599999997,
+            "f10_7": 74.3,
+            "ap_index": 8.0,
+            "kp_mean": 1.875,
+            "f10_7_delta_7d": 2.3999999999999915,
+            "ap_delta_7d": 4.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.001,
+            "cointegration_pvalue": 0.455741,
+            "pair_risk": 0.6908,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5263928729102126
+        }
+      }
+    },
+    {
+      "asof": "2020-02-12",
+      "cutoff": "2020-02-09",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3724367156767118,
+          "window_end": "2020-02-11 20:32:32.303616",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.4576934400000003
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.058813890331201,
+            "hurst_exponent_sma": 0.8542777560459298,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3542777560459298,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.0016716504533178522,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.4576934400000003,
+            "f10_7": 71.6,
+            "ap_index": 4.0,
+            "kp_mean": 1.125,
+            "f10_7_delta_7d": 1.0,
+            "ap_delta_7d": -3.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.047,
+            "cointegration_pvalue": 0.199884,
+            "pair_risk": 0.7803,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5967615220545204
+        }
+      }
+    },
+    {
+      "asof": "2020-02-26",
+      "cutoff": "2020-02-23",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.33360908859626387,
+          "window_end": "2020-02-25 18:48:52.815168",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.18532912
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7550576199383077,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8283828351153196,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3283828351153196,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6428325005342802,
+            "delta_sma_7d_km": -0.001337963333753578,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 5.18532912,
+            "f10_7": 70.1,
+            "ap_index": 3.0,
+            "kp_mean": 0.70825,
+            "f10_7_delta_7d": -0.9000000000000057,
+            "ap_delta_7d": -3.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.004,
+            "cointegration_pvalue": 0.241741,
+            "pair_risk": 0.7657,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5712590898683187
+        }
+      }
+    },
+    {
+      "asof": "2020-03-11",
+      "cutoff": "2020-03-08",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.395094985146771,
+          "window_end": "2020-03-10 20:49:54.975360",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.1680623999999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.757301756183078,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.25730175618307805,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.26292809373050585,
+            "delta_sma_7d_km": -0.001921053708429099,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.1680623999999997,
+            "f10_7": 70.5,
+            "ap_index": 2.0,
+            "kp_mean": 0.541625,
+            "f10_7_delta_7d": 0.7000000000000028,
+            "ap_delta_7d": -2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.947,
+            "cointegration_pvalue": 0.958446,
+            "pair_risk": 0.5149,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.46098774331604697
+        }
+      }
+    },
+    {
+      "asof": "2020-03-25",
+      "cutoff": "2020-03-22",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3369620964072851,
+          "window_end": "2020-03-24 19:19:49.217664",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.66966176
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.3942811477133947,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8652625813821221,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3652625813821221,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7639018202792415,
+            "delta_sma_7d_km": -0.0024944889501057332,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.66966176,
+            "f10_7": 71.2,
+            "ap_index": 3.0,
+            "kp_mean": 0.708375,
+            "f10_7_delta_7d": -0.7999999999999972,
+            "ap_delta_7d": -3.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 145.733,
+            "cointegration_pvalue": 0.069938,
+            "pair_risk": 0.9076,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6508129433832783
+        }
+      }
+    },
+    {
+      "asof": "2020-04-08",
+      "cutoff": "2020-04-05",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3455121084308508,
+          "window_end": "2020-04-07 19:32:20.362848",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.46101032
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4370658315190226,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8332923095754811,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33329230957548106,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.4065513219603642e-06,
+            "delta_sma_7d_km": -0.0015031654893391533,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.46101032,
+            "f10_7": 70.4,
+            "ap_index": 13.0,
+            "kp_mean": 2.6251249999999997,
+            "f10_7_delta_7d": 1.2000000000000028,
+            "ap_delta_7d": 7.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.982,
+            "cointegration_pvalue": 0.202586,
+            "pair_risk": 0.7794,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5841504487938829
+        }
+      }
+    },
+    {
+      "asof": "2020-04-22",
+      "cutoff": "2020-04-19",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3455647719004204,
+          "window_end": "2020-04-21 19:44:42.920736",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.25474424
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6550505394177746,
+            "shannon_entropy_sma_short": 1.836591668108979,
+            "hurst_exponent_sma": 0.8201862064315436,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3201862064315436,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.031236994410767462,
+            "delta_sma_7d_km": -0.00238756127509987,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.25474424,
+            "f10_7": 70.7,
+            "ap_index": 7.0,
+            "kp_mean": 1.666625,
+            "f10_7_delta_7d": 2.299999999999997,
+            "ap_delta_7d": 0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.973,
+            "cointegration_pvalue": 0.178649,
+            "pair_risk": 0.7878,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5887941473551892
+        }
+      }
+    },
+    {
+      "asof": "2020-05-06",
+      "cutoff": "2020-05-03",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.33959851987070816,
+          "window_end": "2020-05-05 21:40:45.605568",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.3206651199999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.9450386975402454,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8792256160438143,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37922561604381433,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.0014448405690927757,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.3206651199999997,
+            "f10_7": 69.8,
+            "ap_index": 5.0,
+            "kp_mean": 0.9998750000000001,
+            "f10_7_delta_7d": -0.10000000000000853,
+            "ap_delta_7d": 1.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 145.739,
+            "cointegration_pvalue": 0.047067,
+            "pair_risk": 0.9321,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6654743339418188
+        }
+      }
+    },
+    {
+      "asof": "2020-05-20",
+      "cutoff": "2020-05-17",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.38805147118962535,
+          "window_end": "2020-05-19 20:10:58.759104",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.81701136
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8661079729323284,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36610797293232844,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0,
+            "delta_sma_7d_km": -0.0024199683184633614,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 3.81701136,
+            "f10_7": 69.6,
+            "ap_index": 2.0,
+            "kp_mean": 0.5,
+            "f10_7_delta_7d": 0.7999999999999972,
+            "ap_delta_7d": -0.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.979,
+            "cointegration_pvalue": 0.651908,
+            "pair_risk": 0.6222,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5168331620353315
+        }
+      }
+    },
+    {
+      "asof": "2020-06-03",
+      "cutoff": "2020-05-31",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3592055506437667,
+          "window_end": "2020-06-02 20:24:23.079168",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.59358912
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.5907239186406503,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8902853405189867,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.39028534051898667,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 2.741619177427497e-22,
+            "delta_sma_7d_km": -0.002151087033780641,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 3.59358912,
+            "f10_7": 70.0,
+            "ap_index": 3.0,
+            "kp_mean": 0.58325,
+            "f10_7_delta_7d": 2.0,
+            "ap_delta_7d": -2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 145.68,
+            "cointegration_pvalue": 0.439441,
+            "pair_risk": 0.6283,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.507207497789695
+        }
+      }
+    },
+    {
+      "asof": "2020-06-17",
+      "cutoff": "2020-06-14",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3302114023455477,
+          "window_end": "2020-06-16 20:45:07.938144",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.2477949600000002
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8397755396455087,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.8041786098248226,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3041786098248226,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.3423881384819201,
+            "delta_sma_7d_km": -0.0014416117774089798,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.2477949600000002,
+            "f10_7": 68.8,
+            "ap_index": 3.0,
+            "kp_mean": 0.833375,
+            "f10_7_delta_7d": -2.200000000000003,
+            "ap_delta_7d": -0.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.988,
+            "cointegration_pvalue": 0.581813,
+            "pair_risk": 0.6467,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5042801310554965
+        }
+      }
+    },
+    {
+      "asof": "2020-07-01",
+      "cutoff": "2020-06-28",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.31922678963289536,
+          "window_end": "2020-06-30 20:52:07.398912",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.13127808
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.1158340921632206,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8574625466324938,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35746254663249377,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.48726674019187144,
+            "delta_sma_7d_km": -0.0014707637674291618,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.13127808,
+            "f10_7": 68.9,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": 2.0,
+            "ap_delta_7d": 0.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.983,
+            "cointegration_pvalue": 0.0,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6936520553348029
+        }
+      }
+    },
+    {
+      "asof": "2020-07-15",
+      "cutoff": "2020-07-12",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3604663870698256,
+          "window_end": "2020-07-14 21:09:29.261088",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.84187192
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8670952192668416,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36709521926684163,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0,
+            "delta_sma_7d_km": -0.001137097427090339,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 2.84187192,
+            "f10_7": 68.4,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": 1.2000000000000028,
+            "ap_delta_7d": 0.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.996,
+            "cointegration_pvalue": 0.567643,
+            "pair_risk": 0.6516,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5205898741814216
+        }
+      }
+    },
+    {
+      "asof": "2020-07-29",
+      "cutoff": "2020-07-26",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3193364332234664,
+          "window_end": "2020-07-28 19:25:16.449888",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.57876392
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7947885411048063,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.871005684594757,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.371005684594757,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.46661602064677954,
+            "delta_sma_7d_km": -0.0014059798995731398,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.57876392,
+            "f10_7": 72.6,
+            "ap_index": 4.0,
+            "kp_mean": 0.958375,
+            "f10_7_delta_7d": 2.5999999999999943,
+            "ap_delta_7d": -1.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.986,
+            "cointegration_pvalue": 0.47298,
+            "pair_risk": 0.6848,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.52034139495056
+        }
+      }
+    },
+    {
+      "asof": "2020-08-12",
+      "cutoff": "2020-08-09",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3663682712510755,
+          "window_end": "2020-08-11 23:08:29.283648",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 0.85853232
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8312933013827422,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33129330138274216,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5622964691635222,
+            "delta_sma_7d_km": -0.001256964565072849,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 0.85853232,
+            "f10_7": 73.1,
+            "ap_index": 3.0,
+            "kp_mean": 0.75,
+            "f10_7_delta_7d": -0.30000000000001137,
+            "ap_delta_7d": -0.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.004,
+            "cointegration_pvalue": 0.507896,
+            "pair_risk": 0.6725,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5347407220629841
+        }
+      }
+    },
+    {
+      "asof": "2020-08-26",
+      "cutoff": "2020-08-23",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.35370581953956864,
+          "window_end": "2020-08-25 21:46:07.999392",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.23111128
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.5907239186406503,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.8444817359559262,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34448173595592624,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.027459839891208312,
+            "delta_sma_7d_km": -0.0012440002165021724,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.23111128,
+            "f10_7": 70.4,
+            "ap_index": 6.0,
+            "kp_mean": 1.54175,
+            "f10_7_delta_7d": -0.09999999999999432,
+            "ap_delta_7d": 1.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.996,
+            "cointegration_pvalue": 0.622392,
+            "pair_risk": 0.6325,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5070426187928059
+        }
+      }
+    },
+    {
+      "asof": "2020-09-09",
+      "cutoff": "2020-09-06",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3368177118356815,
+          "window_end": "2020-09-08 20:20:14.879616",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.66253344
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7205827761460135,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8388728001668031,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3388728001668031,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 2.4672733156240986e-05,
+            "delta_sma_7d_km": -0.001684578321146546,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.66253344,
+            "f10_7": 69.7,
+            "ap_index": 1.0,
+            "kp_mean": 0.125,
+            "f10_7_delta_7d": 1.4000000000000057,
+            "ap_delta_7d": -3.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.985,
+            "cointegration_pvalue": 0.85784,
+            "pair_risk": 0.5501,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4541229703260567
+        }
+      }
+    },
+    {
+      "asof": "2020-09-23",
+      "cutoff": "2020-09-20",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.36085832832140124,
+          "window_end": "2020-09-22 20:23:53.320416",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.60185544
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.6832403580119772,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.8042098686381883,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.30420986863818833,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7816538782753488,
+            "delta_sma_7d_km": -0.0012375164305922226,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.60185544,
+            "f10_7": 73.3,
+            "ap_index": 10.0,
+            "kp_mean": 2.2085,
+            "f10_7_delta_7d": 3.799999999999997,
+            "ap_delta_7d": 6.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 145.595,
+            "cointegration_pvalue": 0.019669,
+            "pair_risk": 0.9322,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6750962477446307
+        }
+      }
+    },
+    {
+      "asof": "2020-10-07",
+      "cutoff": "2020-10-04",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3378007093982516,
+          "window_end": "2020-10-06 22:22:39.357408",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.6224007200000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.010570934268484,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8195647986322732,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31956479863227316,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.2399708042448112,
+            "delta_sma_7d_km": -0.002215857678493194,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.6224007200000001,
+            "f10_7": 70.7,
+            "ap_index": 4.0,
+            "kp_mean": 0.95825,
+            "f10_7_delta_7d": -2.5999999999999943,
+            "ap_delta_7d": -3.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.956,
+            "cointegration_pvalue": 0.526059,
+            "pair_risk": 0.6662,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5184203192292132
+        }
+      }
+    },
+    {
+      "asof": "2020-10-21",
+      "cutoff": "2020-10-18",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3337893991914466,
+          "window_end": "2020-10-20 20:39:59.828832",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.33338088
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7205827761460135,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8374555670252126,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3374555670252126,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9970295150228105,
+            "delta_sma_7d_km": -0.001652167643442226,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.33338088,
+            "f10_7": 73.7,
+            "ap_index": 8.0,
+            "kp_mean": 1.79175,
+            "f10_7_delta_7d": -0.7999999999999972,
+            "ap_delta_7d": 4.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 145.6,
+            "cointegration_pvalue": 0.00043,
+            "pair_risk": 0.9322,
+            "risk_level": "ELEVATED",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.6629152296361511
+        }
+      }
+    },
+    {
+      "asof": "2020-11-04",
+      "cutoff": "2020-11-01",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3527900528124416,
+          "window_end": "2020-11-03 21:09:28.772928",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.84200752
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.5650765423363704,
+            "shannon_entropy_sma_short": 2.113283334294875,
+            "hurst_exponent_sma": 0.8465487427745748,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3465487427745748,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9759666182049272,
+            "delta_sma_7d_km": -0.0009524365532342927,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.84200752,
+            "f10_7": 88.1,
+            "ap_index": 2.0,
+            "kp_mean": 0.333125,
+            "f10_7_delta_7d": 0.5,
+            "ap_delta_7d": -3.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.995,
+            "cointegration_pvalue": 0.548031,
+            "pair_risk": 0.6585,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5209305237655988
+        }
+      }
+    },
+    {
+      "asof": "2020-11-18",
+      "cutoff": "2020-11-15",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.36568652715950045,
+          "window_end": "2020-11-17 21:21:19.694592",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.64452928
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.8850931455708966,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8105152699672826,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3105152699672826,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 5.847192970856105e-13,
+            "delta_sma_7d_km": -0.0026499627410885296,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.64452928,
+            "f10_7": 77.3,
+            "ap_index": 3.0,
+            "kp_mean": 0.5832499999999999,
+            "f10_7_delta_7d": -10.799999999999997,
+            "ap_delta_7d": 0.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.935,
+            "cointegration_pvalue": 0.604145,
+            "pair_risk": 0.6389,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5159539372217753
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "27424": {
+      "norad_id": 27424,
+      "object_name": "AQUA",
+      "n_folds_scored": 24,
+      "anomaly_score_mean": 0.34895674930659465,
+      "anomaly_score_max": 0.395094985146771,
+      "anomaly_score_at_nearest_peak": 0.31922678963289536,
+      "hit_at_event": false,
+      "soft_hit_at_event": false,
+      "n_hits_in_window": 0,
+      "first_fold_hit": false,
+      "first_hit_asof": null,
+      "first_scorable_asof": "2020-01-01",
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 1.680337381067571,
+          "late_mean": 1.7109514498421672
+        },
+        "shannon_entropy_sma_short": {
+          "early_mean": 2.482289237493327,
+          "late_mean": 2.537844793048883
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.8548654527165602,
+          "late_mean": 0.8545086174771579
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.3548654527165603,
+          "late_mean": 0.3545086174771579
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.09210526315789473,
+          "late_mean": 0.09210526315789473
+        }
+      },
+      "pair_risk_max": 1.0,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 13,
+        "pre_peak_anomaly_mean": 0.3513935041479014,
+        "pre_peak_anomaly_max": 0.395094985146771,
+        "early_pre_peak_mean": 0.3485763898478698,
+        "late_pre_peak_mean": 0.354266736012412,
+        "noise_ramp": 0.0056903461645421705,
+        "pre_peak_pair_risk_max": 0.9321,
+        "elevated_noise_before_peak": false
+      },
+      "is_placebo": true
+    }
+  }
+}

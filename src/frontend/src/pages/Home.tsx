@@ -24,6 +24,7 @@ import CatalogPanel from '@/components/hud/CatalogPanel'
 import type { CatalogFocus } from '@/components/hud/CatalogPanel'
 import CrossRoutePanel from '@/components/hud/CrossRoutePanel'
 import type { CompareSlot } from '@/components/hud/CrossRoutePanel'
+import WalkforwardPocPanel from '@/components/hud/WalkforwardPocPanel'
 import {
   analyzeOrbitCross,
   sampleOrbitRing,
@@ -86,6 +87,7 @@ export default function Home() {
   const [rightOpen, setRightOpen] = useState(true)
   const [catalogOpen, setCatalogOpen] = useState(false)
   const [catalogFocus, setCatalogFocus] = useState<CatalogFocus>('all')
+  const [pocOpen, setPocOpen] = useState(false)
 
   // Dual-route compare
   const [compareOn, setCompareOn] = useState(false)
@@ -418,14 +420,25 @@ export default function Home() {
     engineRef.current?.setFollow(follow)
   }, [follow])
 
-  // Escape clears the selection
+  // Escape: close PoC first, else clear selection
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') selectSat(null)
+      if (e.key === 'Escape') {
+        if (pocOpen) {
+          setPocOpen(false)
+          return
+        }
+        selectSat(null)
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [selectSat])
+  }, [selectSat, pocOpen])
+
+  const openPoc = useCallback(() => {
+    setPocOpen(true)
+    setCatalogOpen(false)
+  }, [])
 
   const toggleGroup = (i: number) => {
     setGroupVisible((prev) => {
@@ -774,6 +787,16 @@ export default function Home() {
             >
               Conj {compareOn ? 'ON' : ''}
             </button>
+            <button
+              type="button"
+              onClick={() => (pocOpen ? setPocOpen(false) : openPoc())}
+              className={`px-2.5 py-1.5 text-[13px] ${
+                pocOpen ? 'athena-btn athena-btn-active' : 'athena-btn'
+              }`}
+              title="Walk-forward ML proof of concept (judges)"
+            >
+              PoC {pocOpen ? 'ON' : ''}
+            </button>
           </div>
         </div>
 
@@ -823,7 +846,19 @@ export default function Home() {
         >
           Intel
         </button>
+        <button
+          type="button"
+          onClick={() => (pocOpen ? setPocOpen(false) : openPoc())}
+          className={`athena-btn px-3 py-2 text-[13px] ${
+            pocOpen ? 'athena-btn-active' : ''
+          }`}
+        >
+          PoC
+        </button>
       </div>
+
+      {/* Walk-forward PoC — in-app panel (same console as globe) */}
+      <WalkforwardPocPanel open={pocOpen} onClose={() => setPocOpen(false)} />
 
       {/* Floating catalog (layers + focus) — not buried under board scroll */}
       <div
@@ -866,6 +901,8 @@ export default function Home() {
           report={riskReport}
           reportStatus={riskStatus}
           reportError={riskError}
+          onOpenPoc={openPoc}
+          pocOpen={pocOpen}
           extra={
             <CrossRoutePanel
               enabled={compareOn}

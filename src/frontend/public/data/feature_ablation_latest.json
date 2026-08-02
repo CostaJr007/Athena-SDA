@@ -1,0 +1,160 @@
+{
+  "generated_at": "2026-08-01T20:11:14.222628+00:00",
+  "n_windows": 960,
+  "n_features": 33,
+  "feature_columns": [
+    "semi_major_axis_km",
+    "eccentricity",
+    "inclination_deg",
+    "raan_deg",
+    "mean_motion_rev_per_day",
+    "delta_sma_7d_km",
+    "delta_sma_30d_km",
+    "delta_inc_30d_deg",
+    "maneuver_count_30d",
+    "shannon_entropy_sma_30d",
+    "kolmogorov_proxy_7d",
+    "hurst_exponent_sma",
+    "mandelbrot_tail_score",
+    "adf_pvalue",
+    "williams_threat",
+    "l1_cusum_sma",
+    "chern_simons_proxy",
+    "ricci_mean",
+    "h0_persistent",
+    "h1_persistent",
+    "tle_age_hours",
+    "f10_7",
+    "f10_7_adj",
+    "ap_index",
+    "kp_mean",
+    "sunspot_number",
+    "f10_7_delta_7d",
+    "f10_7_mean_7d",
+    "ap_mean_7d",
+    "ap_max_7d",
+    "ap_delta_7d",
+    "geomagnetic_storm",
+    "space_weather_available"
+  ],
+  "full_model": {
+    "score_mean": 0.4154355151179993,
+    "score_p95": 0.5142767714574735,
+    "separation_high_minus_low": 0.16873540265753678
+  },
+  "simple_delta_maneuver_baseline_separation": 0.19902032530305147,
+  "ablation": [
+    {
+      "block": "topology_proxy",
+      "dropped_features": [
+        "chern_simons_proxy",
+        "ricci_mean",
+        "h0_persistent",
+        "h1_persistent"
+      ],
+      "n_features_kept": 29,
+      "mean_score_all": 0.41633253546947413,
+      "mean_score_on_full_model_high_tail": 0.5286994423511476,
+      "mean_score_on_full_model_low_half": 0.37645893319511625,
+      "separation_high_minus_low": 0.15224050915603138,
+      "full_model_separation": 0.16873540265753678,
+      "separation_drop": 0.016494893501505403,
+      "corr_with_full_scores": 0.9600508796682532
+    },
+    {
+      "block": "keplerian_level",
+      "dropped_features": [
+        "semi_major_axis_km",
+        "eccentricity",
+        "inclination_deg",
+        "raan_deg",
+        "mean_motion_rev_per_day"
+      ],
+      "n_features_kept": 28,
+      "mean_score_all": 0.4150179104798392,
+      "mean_score_on_full_model_high_tail": 0.5376219625713426,
+      "mean_score_on_full_model_low_half": 0.3773272415961177,
+      "separation_high_minus_low": 0.16029472097522496,
+      "full_model_separation": 0.16873540265753678,
+      "separation_drop": 0.008440681682311824,
+      "corr_with_full_scores": 0.9375929979977718
+    },
+    {
+      "block": "deltas_maneuvers",
+      "dropped_features": [
+        "delta_sma_7d_km",
+        "delta_sma_30d_km",
+        "delta_inc_30d_deg",
+        "maneuver_count_30d"
+      ],
+      "n_features_kept": 29,
+      "mean_score_all": 0.4148924164485092,
+      "mean_score_on_full_model_high_tail": 0.5302473819770223,
+      "mean_score_on_full_model_low_half": 0.36988956901582715,
+      "separation_high_minus_low": 0.1603578129611951,
+      "full_model_separation": 0.16873540265753678,
+      "separation_drop": 0.00837758969634167,
+      "corr_with_full_scores": 0.973508434236074
+    },
+    {
+      "block": "complexity_quant",
+      "dropped_features": [
+        "shannon_entropy_sma_30d",
+        "kolmogorov_proxy_7d",
+        "hurst_exponent_sma",
+        "mandelbrot_tail_score",
+        "adf_pvalue",
+        "l1_cusum_sma"
+      ],
+      "n_features_kept": 27,
+      "mean_score_all": 0.4166659707532755,
+      "mean_score_on_full_model_high_tail": 0.539529041808687,
+      "mean_score_on_full_model_low_half": 0.37603768693539824,
+      "separation_high_minus_low": 0.16349135487328875,
+      "full_model_separation": 0.16873540265753678,
+      "separation_drop": 0.005244047784248029,
+      "corr_with_full_scores": 0.961381292022453
+    },
+    {
+      "block": "metadata_context",
+      "dropped_features": [
+        "williams_threat",
+        "tle_age_hours"
+      ],
+      "n_features_kept": 31,
+      "mean_score_all": 0.41716836064598145,
+      "mean_score_on_full_model_high_tail": 0.5397553242897303,
+      "mean_score_on_full_model_low_half": 0.3722210112386435,
+      "separation_high_minus_low": 0.1675343130510868,
+      "full_model_separation": 0.16873540265753678,
+      "separation_drop": 0.0012010896064499899,
+      "corr_with_full_scores": 0.9850754596587713
+    },
+    {
+      "block": "space_weather",
+      "dropped_features": [
+        "f10_7",
+        "f10_7_adj",
+        "ap_index",
+        "kp_mean",
+        "sunspot_number",
+        "f10_7_delta_7d",
+        "f10_7_mean_7d",
+        "ap_mean_7d",
+        "ap_max_7d",
+        "ap_delta_7d",
+        "geomagnetic_storm",
+        "space_weather_available"
+      ],
+      "n_features_kept": 21,
+      "mean_score_all": 0.40389821667325376,
+      "mean_score_on_full_model_high_tail": 0.526470812798031,
+      "mean_score_on_full_model_low_half": 0.355838611930297,
+      "separation_high_minus_low": 0.170632200867734,
+      "full_model_separation": 0.16873540265753678,
+      "separation_drop": -0.0018967982101972258,
+      "corr_with_full_scores": 0.86132125682516
+    }
+  ],
+  "interpretation": "Larger separation_drop when removing a block ⇒ that block helped isolate the full-model high-score tail. complexity_quant (Hurst/Shannon/CUSUM/…) should matter for persistent micro-maneuver / regime noise. Compare full_model.separation vs simple_delta_maneuver_baseline_separation."
+}

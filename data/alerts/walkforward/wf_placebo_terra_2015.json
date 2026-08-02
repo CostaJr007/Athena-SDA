@@ -1,7 +1,7 @@
 {
   "event_id": "placebo_terra_2015",
   "type": "placebo_baseline",
-  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past noise/regime). Target is scored at asof. Metrics test whether anomalous noise rises before public report anchors (t_peak), vs placebo baselines. Not a classified ground-truth claim.",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) mark evaluation windows for quant noise features (Hurst, Shannon, CUSUM, IF score). Metrics include hard hit, pre-peak mean, noise_ramp, and first_fold_hit for regime-level analysis.",
   "t_start": "2015-01-15",
   "t_peak": "2015-09-15",
   "t_end": "2016-03-01",
@@ -12,7 +12,7 @@
   "sources": [
     "Control EO scientific same calendar as Luch Intelsat 2015"
   ],
-  "notes": "Placebo: não deve mostrar rampa de anomalia como Luch no mesmo período.",
+  "notes": "Placebo LEO EO — TERRA.",
   "params": {
     "step_days": 14,
     "holdout_days": 3,
@@ -29,7 +29,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.36234857080531835,
+          "anomaly_score": 0.3861468478440753,
           "window_end": "2015-01-14 16:08:55.207680",
           "data_quality": {
             "score": 1.0,
@@ -39,11 +39,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.0761031709967224,
-            "hurst_exponent_sma": 0.906733383909131,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8428564123166458,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34285641231664576,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 2.442469049546347e-05,
+            "adf_pvalue": 2.4424688927521708e-05,
             "delta_sma_7d_km": -0.007664914360248076,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 7.8513312,
@@ -67,7 +70,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.5718718568623933
+          "attention_score": 0.5825810815298339
         }
       }
     },
@@ -78,7 +81,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3705575922725173,
+          "anomaly_score": 0.3836010793597153,
           "window_end": "2015-01-28 21:17:55.762944",
           "data_quality": {
             "score": 1.0,
@@ -88,11 +91,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.8205898566665466,
-            "hurst_exponent_sma": 0.9392019734387067,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.8204555982586986,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3204555982586986,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.9080049224599684,
+            "adf_pvalue": 0.9080049218935173,
             "delta_sma_7d_km": -0.005332324564733426,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 2.70117696,
@@ -116,7 +122,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.5575809165226328
+          "attention_score": 0.563450485711872
         }
       }
     },
@@ -127,7 +133,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.37099227876605195,
+          "anomaly_score": 0.3768049029926025,
           "window_end": "2015-02-11 19:51:21.582432",
           "data_quality": {
             "score": 1.0,
@@ -137,11 +143,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.418722908066561,
-            "hurst_exponent_sma": 0.9000762847520196,
+            "shannon_entropy_sma_short": 2.113283334294875,
+            "hurst_exponent_sma": 0.8814606603026885,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.38146066030268855,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 1.9929263326183444e-10,
+            "adf_pvalue": 1.9929264040195292e-10,
             "delta_sma_7d_km": -0.009148578318672662,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 4.14400488,
@@ -165,7 +174,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.7014365254447235
+          "attention_score": 0.7040522063466712
         }
       }
     },
@@ -176,7 +185,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.36406576084310704,
+          "anomaly_score": 0.4347805104377635,
           "window_end": "2015-02-25 20:03:35.051904",
           "data_quality": {
             "score": 1.0,
@@ -186,11 +195,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.6100635408770723,
-            "hurst_exponent_sma": 0.8842571482119813,
+            "shannon_entropy_sma_short": 2.2810361125534233,
+            "hurst_exponent_sma": 0.74138763838937,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.24138763838937005,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.007887291958787903,
+            "adf_pvalue": 0.00788729203640003,
             "delta_sma_7d_km": -0.005432670915979543,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 3.94026336,
@@ -214,7 +226,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.5111545923793982
+          "attention_score": 0.5429762296969936
         }
       }
     },
@@ -225,7 +237,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.34854226873377586,
+          "anomaly_score": 0.3877579901408981,
           "window_end": "2015-03-11 20:15:57.867264",
           "data_quality": {
             "score": 1.0,
@@ -235,11 +247,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.394281147713395,
-            "hurst_exponent_sma": 0.8690136936707145,
-            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.8717790411087456,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3717790411087456,
+            "kolmogorov_proxy_7d": 0.3157894736842105,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.20961694834445682,
+            "adf_pvalue": 0.20961694811817794,
             "delta_sma_7d_km": -0.004425391663062328,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 3.73392576,
@@ -263,7 +278,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.5734690209301991
+          "attention_score": 0.5911160955634042
         }
       }
     },
@@ -274,7 +289,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3646889814792415,
+          "anomaly_score": 0.37358274391645935,
           "window_end": "2015-03-25 20:28:32.333664",
           "data_quality": {
             "score": 1.0,
@@ -284,11 +299,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.8258459340407502,
-            "hurst_exponent_sma": 0.9073934567679689,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.8206543557811289,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3206543557811289,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.8443312977022095,
+            "adf_pvalue": 0.8443312977622444,
             "delta_sma_7d_km": -0.007162793388488353,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 3.52435176,
@@ -312,7 +330,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.4898750416656587
+          "attention_score": 0.49387723476240675
         }
       }
     },
@@ -323,7 +341,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.36838178718865144,
+          "anomaly_score": 0.3694755513506313,
           "window_end": "2015-04-08 17:23:06.772416",
           "data_quality": {
             "score": 1.0,
@@ -333,11 +351,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.181366328891459,
-            "hurst_exponent_sma": 0.9186085447345613,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.8311618891945594,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33116188919455936,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.8729440795101913,
+            "adf_pvalue": 0.8729440803760671,
             "delta_sma_7d_km": -0.007587029949718271,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 6.61478544,
@@ -355,13 +376,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 79.994,
-            "cointegration_pvalue": 0.070243,
+            "cointegration_pvalue": 0.070242,
             "pair_risk": 0.9757,
             "risk_level": "CRITICAL",
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.7024068042348932
+          "attention_score": 0.7028989981077842
         }
       }
     },
@@ -372,7 +393,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3837369228716843,
+          "anomaly_score": 0.4143826898521544,
           "window_end": "2015-04-22 19:14:06.478368",
           "data_quality": {
             "score": 1.0,
@@ -382,11 +403,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.6550505394177746,
-            "hurst_exponent_sma": 0.9201409898005498,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8553629708207573,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3553629708207573,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.9932254160773681,
+            "adf_pvalue": 0.993225416067771,
             "delta_sma_7d_km": -0.008983097650343552,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 4.76486712,
@@ -410,7 +434,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.452081615292258
+          "attention_score": 0.4658722104334695
         }
       }
     },
@@ -421,7 +445,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.35879137037159414,
+          "anomaly_score": 0.3816744382088035,
           "window_end": "2015-05-06 21:05:45.276000",
           "data_quality": {
             "score": 1.0,
@@ -431,11 +455,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.9053077763737467,
-            "hurst_exponent_sma": 0.896096207223063,
+            "shannon_entropy_sma_short": 2.503258334775646,
+            "hurst_exponent_sma": 0.8106416713069284,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31064167130692844,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.9965143213994213,
+            "adf_pvalue": 0.9965143213929839,
             "delta_sma_7d_km": -0.0037483006562979426,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 2.90409,
@@ -459,7 +486,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.5305061166672174
+          "attention_score": 0.5408034971939616
         }
       }
     },
@@ -470,7 +497,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.38301933724487036,
+          "anomaly_score": 0.37647591508444184,
           "window_end": "2015-05-20 21:18:18.185472",
           "data_quality": {
             "score": 1.0,
@@ -480,11 +507,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.155565013329719,
-            "hurst_exponent_sma": 0.8953164143338547,
+            "shannon_entropy_sma_short": 2.6416041678685938,
+            "hurst_exponent_sma": 0.8324376256502198,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33243762565021984,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.05650348579482563,
+            "adf_pvalue": 0.056503473429974985,
             "delta_sma_7d_km": -0.00613905625687039,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 2.6949484800000003,
@@ -508,7 +538,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.5913487017601917
+          "attention_score": 0.5884041617879989
         }
       }
     },
@@ -519,7 +549,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3477472534156442,
+          "anomaly_score": 0.39665554510830575,
           "window_end": "2015-06-03 19:51:53.778528",
           "data_quality": {
             "score": 1.0,
@@ -529,11 +559,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.563716987127796,
-            "hurst_exponent_sma": 0.9288956651887947,
+            "shannon_entropy_sma_short": 2.113283334294875,
+            "hurst_exponent_sma": 0.8554235078250139,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35542350782501386,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.6562381258634925,
+            "adf_pvalue": 0.6562381256022005,
             "delta_sma_7d_km": -0.0020409685566846747,
             "maneuver_count_30d": 2.0,
             "tle_age_hours": 4.13506152,
@@ -551,13 +584,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 80.016,
-            "cointegration_pvalue": 0.793779,
+            "cointegration_pvalue": 0.793778,
             "pair_risk": 0.5725,
             "risk_level": "ELEVATED",
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.47136126403703993
+          "attention_score": 0.4933699952987376
         }
       }
     },
@@ -568,7 +601,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.41032012151816694,
+          "anomaly_score": 0.4078734444748804,
           "window_end": "2015-06-17 20:04:22.831968",
           "data_quality": {
             "score": 1.0,
@@ -578,11 +611,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.6282202760321465,
-            "hurst_exponent_sma": 0.8425057886478652,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.8359012391517004,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33590123915170045,
             "kolmogorov_proxy_7d": 0.15789473684210525,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.7781553490269432,
-            "adf_pvalue": 0.4077179078746482,
+            "adf_pvalue": 0.4077179031900929,
             "delta_sma_7d_km": 0.05268602003616252,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 3.92699112,
@@ -606,7 +642,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.6223340546831752
+          "attention_score": 0.6212330500136962
         }
       }
     },
@@ -617,7 +653,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3832745158737377,
+          "anomaly_score": 0.3842695746780934,
           "window_end": "2015-07-01 18:38:02.592960",
           "data_quality": {
             "score": 1.0,
@@ -627,11 +663,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.6550505394177746,
-            "hurst_exponent_sma": 0.9336108497272655,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8312069796625926,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3312069796625926,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.9436602367163509,
+            "adf_pvalue": 0.9436602367163508,
             "delta_sma_7d_km": -0.004023616060294444,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 5.3659463999999994,
@@ -655,7 +694,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.722473532143182
+          "attention_score": 0.722921308605142
         }
       }
     },
@@ -666,7 +705,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.37440373512119696,
+          "anomaly_score": 0.40985892112412736,
           "window_end": "2015-07-15 17:11:36.674880",
           "data_quality": {
             "score": 1.0,
@@ -676,11 +715,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.615319618251277,
-            "hurst_exponent_sma": 0.9264060808302099,
+            "shannon_entropy_sma_short": 2.7254805569978675,
+            "hurst_exponent_sma": 0.8956131027598472,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3956131027598472,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.052301367319090276,
+            "adf_pvalue": 0.05230136766243234,
             "delta_sma_7d_km": -0.00533884796914208,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 6.8064792,
@@ -704,7 +746,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.6083716808045386
+          "attention_score": 0.6243265145058573
         }
       }
     },
@@ -715,7 +757,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3615204607797675,
+          "anomaly_score": 0.3766686340818643,
           "window_end": "2015-07-29 17:23:57.717312",
           "data_quality": {
             "score": 1.0,
@@ -725,11 +767,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.865576855207249,
-            "hurst_exponent_sma": 0.9180587075800307,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8614518919552732,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36145189195527316,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.2663728323459378,
+            "adf_pvalue": 0.26637278545885024,
             "delta_sma_7d_km": -0.002316294600859692,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 6.60063408,
@@ -753,7 +798,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.46848420735089547
+          "attention_score": 0.475300885336839
         }
       }
     },
@@ -764,7 +809,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.35510167850507685,
+          "anomaly_score": 0.3862315747015401,
           "window_end": "2015-08-12 17:36:13.974912",
           "data_quality": {
             "score": 1.0,
@@ -774,11 +819,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.860320777833045,
-            "hurst_exponent_sma": 0.8762242436214844,
+            "shannon_entropy_sma_short": 2.7254805569978675,
+            "hurst_exponent_sma": 0.9035257752364367,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.40352577523643673,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.9939009649366437,
+            "adf_pvalue": 0.993900964840249,
             "delta_sma_7d_km": -0.002941510126220237,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 6.39611808,
@@ -796,13 +844,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 79.949,
-            "cointegration_pvalue": 0.931305,
+            "cointegration_pvalue": 0.9313,
             "pair_risk": 0.5244,
             "risk_level": "WATCH",
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.4482157553272846
+          "attention_score": 0.4622242086156931
         }
       }
     },
@@ -813,7 +861,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.45012628105339825,
+          "anomaly_score": 0.45944376748282434,
           "window_end": "2015-08-26 17:48:25.366464",
           "data_quality": {
             "score": 1.0,
@@ -823,11 +871,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.0503018554349817,
-            "hurst_exponent_sma": 0.7548646949712129,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.781199770000749,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.281199770000749,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.19679385423048218,
+            "adf_pvalue": 0.19679385303003338,
             "delta_sma_7d_km": -0.002860505005628511,
             "maneuver_count_30d": 2.0,
             "tle_age_hours": 6.19295376,
@@ -851,7 +902,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.4982368264740292
+          "attention_score": 0.5024296953672709
         }
       }
     },
@@ -862,7 +913,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.39373144288974093,
+          "anomaly_score": 0.39859103524314904,
           "window_end": "2015-09-09 21:18:17.757792",
           "data_quality": {
             "score": 1.0,
@@ -872,11 +923,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.0105709342684834,
-            "hurst_exponent_sma": 0.9307652488651679,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7556171649284038,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2556171649284038,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.010143959634582929,
+            "adf_pvalue": 0.010143960871909368,
             "delta_sma_7d_km": -0.00021380744601628976,
             "maneuver_count_30d": 2.0,
             "tle_age_hours": 2.69506728,
@@ -894,13 +948,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 79.91,
-            "cointegration_pvalue": 0.953735,
+            "cointegration_pvalue": 0.953736,
             "pair_risk": 0.5166,
             "risk_level": "WATCH",
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.4613091493003834
+          "attention_score": 0.4634959658594171
         }
       }
     },
@@ -911,7 +965,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3622616513362243,
+          "anomaly_score": 0.38750487382562904,
           "window_end": "2015-09-23 21:30:19.425888",
           "data_quality": {
             "score": 1.0,
@@ -921,11 +975,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.9708400131019856,
-            "hurst_exponent_sma": 0.8838335459146123,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.7534060113618031,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2534060113618031,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.24416441248345744,
+            "adf_pvalue": 0.24416440892724284,
             "delta_sma_7d_km": -0.000793674000306055,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 2.49460392,
@@ -949,7 +1006,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.45171274310130094
+          "attention_score": 0.46307219322153315
         }
       }
     },
@@ -960,7 +1017,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.4776837146714765,
+          "anomaly_score": 0.48116966627445545,
           "window_end": "2015-10-07 20:03:42.171264",
           "data_quality": {
             "score": 1.0,
@@ -970,11 +1027,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 1.192250860234642,
-            "hurst_exponent_sma": 0.9678627977614648,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8178781588668543,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31787815886685433,
             "kolmogorov_proxy_7d": 0.15789473684210525,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 7.295157836084472e-15,
+            "adf_pvalue": 7.295157855382614e-15,
             "delta_sma_7d_km": -0.003317404934023216,
             "maneuver_count_30d": 2.0,
             "tle_age_hours": 3.93828576,
@@ -998,7 +1058,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.49622767160216447
+          "attention_score": 0.49779634982350496
         }
       }
     },
@@ -1009,7 +1069,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.35286820021123044,
+          "anomaly_score": 0.3726590550330026,
           "window_end": "2015-10-21 21:55:09.332544",
           "data_quality": {
             "score": 1.0,
@@ -1019,11 +1079,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.9258530145612833,
-            "hurst_exponent_sma": 0.9366332656063374,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8284322802675262,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32843228026752624,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.4922450836015573,
+            "adf_pvalue": 0.4922450841932611,
             "delta_sma_7d_km": -0.003275260435657401,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 2.08074096,
@@ -1047,7 +1110,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.4822456900950537
+          "attention_score": 0.49115157476485116
         }
       }
     },
@@ -1058,7 +1121,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3906079890804406,
+          "anomaly_score": 0.3921956031662961,
           "window_end": "2015-11-04 22:07:37.750944",
           "data_quality": {
             "score": 1.0,
@@ -1068,11 +1131,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.3920788329783202,
-            "hurst_exponent_sma": 0.8796626144253286,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8578851461017469,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35788514610174693,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.9105539264894078,
+            "adf_pvalue": 0.9105539267003636,
             "delta_sma_7d_km": -0.0019308061555420863,
             "maneuver_count_30d": 2.0,
             "tle_age_hours": 1.87284696,
@@ -1096,7 +1162,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.7257735950861983
+          "attention_score": 0.7264880214248333
         }
       }
     },
@@ -1107,7 +1173,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3646455204030073,
+          "anomaly_score": 0.37557476891061325,
           "window_end": "2015-11-18 20:41:07.077408",
           "data_quality": {
             "score": 1.0,
@@ -1117,7 +1183,10 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.8603207778330453,
-            "hurst_exponent_sma": 0.9352035709212245,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8108751802988368,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31087518029883676,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
@@ -1145,7 +1214,7 @@
             "asset_norad": 25544,
             "asset_name": "ISS (ZARYA)"
           },
-          "attention_score": 0.45212548418135334
+          "attention_score": 0.457043646009776
         }
       }
     },
@@ -1156,7 +1225,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.36996810553350973,
+          "anomaly_score": 0.37217802539902595,
           "window_end": "2015-12-02 19:14:28.417920",
           "data_quality": {
             "score": 1.0,
@@ -1166,11 +1235,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.050301855434982,
-            "hurst_exponent_sma": 0.8738823305096809,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8649851264381001,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3649851264381001,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 1.8314664860191898e-14,
+            "adf_pvalue": 1.8314578780590976e-14,
             "delta_sma_7d_km": -0.004042943233798724,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 4.7587728,
@@ -1194,7 +1266,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.4471506474900794
+          "attention_score": 0.4481451114295617
         }
       }
     },
@@ -1205,7 +1277,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.356705774156359,
+          "anomaly_score": 0.3629731482429757,
           "window_end": "2015-12-16 21:05:29.391360",
           "data_quality": {
             "score": 1.0,
@@ -1215,11 +1287,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.9450386975402454,
-            "hurst_exponent_sma": 0.8559107379352242,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.7901940896500247,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.2901940896500247,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.9957931195337639,
+            "adf_pvalue": 0.9957931195580869,
             "delta_sma_7d_km": -0.005672381324075104,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 2.9085024,
@@ -1243,7 +1318,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.4382675983703616
+          "attention_score": 0.4410879167093391
         }
       }
     },
@@ -1254,7 +1329,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.4425570279254546,
+          "anomaly_score": 0.43096760691735786,
           "window_end": "2015-12-30 21:18:00.320544",
           "data_quality": {
             "score": 1.0,
@@ -1264,11 +1339,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.010570934268484,
-            "hurst_exponent_sma": 0.8996450464793497,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8315747036052126,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3315747036052126,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.005342026001078594,
+            "adf_pvalue": 0.00534202551540684,
             "delta_sma_7d_km": 0.0007807484344084514,
             "maneuver_count_30d": 3.0,
             "tle_age_hours": 2.69991096,
@@ -1292,7 +1370,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.5782106625664547
+          "attention_score": 0.5729954231128112
         }
       }
     },
@@ -1303,7 +1381,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3480069854318763,
+          "anomaly_score": 0.3767797460370619,
           "window_end": "2016-01-13 19:51:34.059456",
           "data_quality": {
             "score": 1.0,
@@ -1313,11 +1391,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.7550576199383077,
-            "hurst_exponent_sma": 0.8772389204751645,
+            "shannon_entropy_sma_short": 2.0588138903312014,
+            "hurst_exponent_sma": 0.7371793447596189,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.23717934475961888,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.9754809570127566,
+            "adf_pvalue": 0.9754809569067893,
             "delta_sma_7d_km": -0.003531160433340119,
             "maneuver_count_30d": 0.0,
             "tle_age_hours": 4.14053904,
@@ -1335,13 +1416,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 80.003,
-            "cointegration_pvalue": 0.187903,
+            "cointegration_pvalue": 0.187902,
             "pair_risk": 0.7845,
             "risk_level": "ELEVATED",
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.5880781434443443
+          "attention_score": 0.6010258857166778
         }
       }
     },
@@ -1352,7 +1433,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.35379300664257934,
+          "anomaly_score": 0.368848501519601,
           "window_end": "2016-01-27 20:03:55.485504",
           "data_quality": {
             "score": 1.0,
@@ -1362,11 +1443,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.9655839357277816,
-            "hurst_exponent_sma": 0.8753796859326449,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8220855861644802,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32208558616448024,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.009283056584313594,
+            "adf_pvalue": 0.00928305659031349,
             "delta_sma_7d_km": -0.0030516770975737018,
             "maneuver_count_30d": 2.0,
             "tle_age_hours": 3.93458736,
@@ -1384,13 +1468,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 80.004,
-            "cointegration_pvalue": 0.883986,
+            "cointegration_pvalue": 0.883985,
             "pair_risk": 0.5409,
             "risk_level": "WATCH",
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.4567018529891608
+          "attention_score": 0.46347682568382054
         }
       }
     },
@@ -1401,7 +1485,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3383976979229506,
+          "anomaly_score": 0.3508374237878344,
           "window_end": "2016-02-10 21:55:05.006496",
           "data_quality": {
             "score": 1.0,
@@ -1411,11 +1495,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 3.010570934268484,
-            "hurst_exponent_sma": 0.8444909228745147,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8258498722692322,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32584987226923223,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.2455452382486334,
+            "adf_pvalue": 0.245545237689474,
             "delta_sma_7d_km": -0.0020506332775767078,
             "maneuver_count_30d": 1.0,
             "tle_age_hours": 2.08194264,
@@ -1439,7 +1526,7 @@
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.4339339640653278
+          "attention_score": 0.43953184070452556
         }
       }
     },
@@ -1450,7 +1537,7 @@
       "targets": {
         "25994": {
           "ok": true,
-          "anomaly_score": 0.3736029123972304,
+          "anomaly_score": 0.3738225486947514,
           "window_end": "2016-02-24 22:07:12.657792",
           "data_quality": {
             "score": 1.0,
@@ -1460,11 +1547,14 @@
           },
           "features": {
             "shannon_entropy_sma_30d": 2.786115012874252,
-            "hurst_exponent_sma": 0.9084102488190562,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.81676398236648,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31676398236647996,
             "kolmogorov_proxy_7d": 0.05263157894736842,
             "l1_cusum_sma": 0.0,
             "mandelbrot_tail_score": 0.0,
-            "adf_pvalue": 0.18472335977905496,
+            "adf_pvalue": 0.1847233604583151,
             "delta_sma_7d_km": -0.0008163532138496521,
             "maneuver_count_30d": 3.0,
             "tle_age_hours": 1.87981728,
@@ -1482,13 +1572,13 @@
           "pair": {
             "ok": true,
             "min_distance_km": 79.938,
-            "cointegration_pvalue": 0.890088,
+            "cointegration_pvalue": 0.890085,
             "pair_risk": 0.5388,
             "risk_level": "WATCH",
             "asset_norad": 31598,
             "asset_name": "COSMO-SKYMED 1"
           },
-          "attention_score": 0.4644613105787537
+          "attention_score": 0.46456014691263814
         }
       }
     }
@@ -1498,28 +1588,45 @@
       "norad_id": 25994,
       "object_name": "TERRA",
       "n_folds_scored": 30,
-      "anomaly_score_mean": 0.3760816315148626,
-      "anomaly_score_max": 0.4776837146714765,
-      "anomaly_score_at_nearest_peak": 0.39373144288974093,
+      "anomaly_score_mean": 0.3916595377963645,
+      "anomaly_score_max": 0.48116966627445545,
+      "anomaly_score_at_nearest_peak": 0.39859103524314904,
       "hit_at_event": false,
       "soft_hit_at_event": true,
       "n_hits_in_window": 0,
+      "first_fold_hit": false,
+      "first_hit_asof": null,
+      "first_scorable_asof": "2015-01-15",
+      "n_folds_above_thr_pre_peak": 0,
       "lead_time_days": null,
+      "lead_time_note": null,
       "feature_early_vs_late": {
         "shannon_entropy_sma_30d": {
           "early_mean": 2.690934426393508,
           "late_mean": 2.842856763402135
         },
+        "shannon_entropy_sma_short": {
+          "early_mean": 2.4333613438345836,
+          "late_mean": 2.725480556997868
+        },
         "hurst_exponent_sma": {
-          "early_mean": 0.9011126567917537,
-          "late_mean": 0.8899883042658953
+          "early_mean": 0.8297656176928797,
+          "late_mean": 0.8381024474238838
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.3297656176928796,
+          "late_mean": 0.3381024474238838
         },
         "l1_cusum_sma": {
           "early_mean": 0.0,
           "late_mean": 0.0
         },
         "kolmogorov_proxy_7d": {
-          "early_mean": 0.12280701754385963,
+          "early_mean": 0.09649122807017545,
           "late_mean": 0.05263157894736842
         }
       },
@@ -1527,11 +1634,11 @@
       "pre_peak_noise": {
         "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
         "n_pre_peak_folds": 18,
-        "pre_peak_anomaly_mean": 0.3750750199851967,
-        "pre_peak_anomaly_max": 0.45012628105339825,
-        "early_pre_peak_mean": 0.36353257548333534,
-        "late_pre_peak_mean": 0.3863596857038198,
-        "noise_ramp": 0.022827110220484448,
+        "pre_peak_anomaly_mean": 0.3946819536712406,
+        "pre_peak_anomaly_max": 0.45944376748282434,
+        "early_pre_peak_mean": 0.39044567911525235,
+        "late_pre_peak_mean": 0.40251058455193306,
+        "noise_ramp": 0.012064905436680706,
         "pre_peak_pair_risk_max": 1.0,
         "elevated_noise_before_peak": false
       },

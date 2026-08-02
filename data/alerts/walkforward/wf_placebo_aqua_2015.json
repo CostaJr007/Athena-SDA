@@ -1,0 +1,1708 @@
+{
+  "event_id": "placebo_aqua_2015",
+  "type": "placebo_baseline",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past-only). Target is scored at asof. Public report anchors (t_peak) mark evaluation windows for quant noise features (Hurst, Shannon, CUSUM, IF score). Metrics include hard hit, pre-peak mean, noise_ramp, and first_fold_hit for regime-level analysis.",
+  "t_start": "2015-01-15",
+  "t_peak": "2015-09-15",
+  "t_end": "2016-03-01",
+  "norad_ids": [
+    27424
+  ],
+  "pair_with": [],
+  "sources": [
+    "A-Train scientific control same calendar as Luch 2015"
+  ],
+  "notes": "Placebo LEO scientific — AQUA.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 30,
+  "folds": [
+    {
+      "asof": "2015-01-15",
+      "cutoff": "2015-01-12",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.4541677419436417,
+          "window_end": "2015-01-14 18:19:29.939808",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 5.67501672
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8762676434876117,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37626764348761166,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.04729329249039438,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 5.67501672,
+            "f10_7": 131.4,
+            "ap_index": 5.0,
+            "kp_mean": 1.124875,
+            "f10_7_delta_7d": -25.799999999999983,
+            "ap_delta_7d": -2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.114,
+            "cointegration_pvalue": 0.05384,
+            "pair_risk": 0.9813,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7440904838746388
+        }
+      }
+    },
+    {
+      "asof": "2015-01-29",
+      "cutoff": "2015-01-26",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.44194502844538697,
+          "window_end": "2015-01-28 00:41:21.183360",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 23.3107824
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8827464916715021,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3827464916715021,
+            "kolmogorov_proxy_7d": 0.10526315789473684,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.20180407121663085,
+            "delta_sma_7d_km": -0.03504957174118317,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 23.3107824,
+            "f10_7": 171.8,
+            "ap_index": 8.0,
+            "kp_mean": 1.8752499999999999,
+            "f10_7_delta_7d": 51.500000000000014,
+            "ap_delta_7d": -1.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.019,
+            "cointegration_pvalue": 0.155549,
+            "pair_risk": 0.7958,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6365652628004241
+        }
+      }
+    },
+    {
+      "asof": "2015-02-12",
+      "cutoff": "2015-02-09",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.44741776304627434,
+          "window_end": "2015-02-11 17:15:07.185888",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 6.74800392
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.1050139971135324,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8822908023964785,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3822908023964785,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.22523585725278394,
+            "delta_sma_7d_km": -0.060677839936033706,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 6.74800392,
+            "f10_7": 127.6,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": -14.300000000000011,
+            "ap_delta_7d": -3.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.995,
+            "cointegration_pvalue": 0.177058,
+            "pair_risk": 0.7883,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6349029933708235
+        }
+      }
+    },
+    {
+      "asof": "2015-02-26",
+      "cutoff": "2015-02-23",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.47406315843471664,
+          "window_end": "2015-02-25 06:13:15.652416",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 17.77898544
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.29499507471547,
+            "shannon_entropy_sma_short": 2.058813890331201,
+            "hurst_exponent_sma": 0.8846556123376355,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.38465561233763546,
+            "kolmogorov_proxy_7d": 0.3684210526315789,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0,
+            "delta_sma_7d_km": -0.03613338351351558,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 17.77898544,
+            "f10_7": 111.3,
+            "ap_index": 4.0,
+            "kp_mean": 0.8748750000000001,
+            "f10_7_delta_7d": -7.400000000000006,
+            "ap_delta_7d": -5.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.897,
+            "cointegration_pvalue": 0.062096,
+            "pair_risk": 0.9787,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7516134212956225
+        }
+      }
+    },
+    {
+      "asof": "2015-03-12",
+      "cutoff": "2015-03-09",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.4344326404474961,
+          "window_end": "2015-03-11 19:32:01.464576",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.46625984
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.5907239186406503,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8685135752236847,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.36851357522368466,
+            "kolmogorov_proxy_7d": 0.2631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6337521479738879,
+            "delta_sma_7d_km": -0.050965512357834086,
+            "maneuver_count_30d": 4.0,
+            "tle_age_hours": 4.46625984,
+            "f10_7": 126.7,
+            "ap_index": 8.0,
+            "kp_mean": 1.83325,
+            "f10_7_delta_7d": -13.499999999999986,
+            "ap_delta_7d": -1.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.975,
+            "cointegration_pvalue": 0.057855,
+            "pair_risk": 0.9801,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7345496882013733
+        }
+      }
+    },
+    {
+      "asof": "2015-03-26",
+      "cutoff": "2015-03-23",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.415959239808076,
+          "window_end": "2015-03-25 05:05:23.832096",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 18.91004664
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.0214554656116668,
+            "shannon_entropy_sma_short": 0.9864267287308426,
+            "hurst_exponent_sma": 0.8292892859938481,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3292892859938481,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.03067561371582553,
+            "delta_sma_7d_km": 0.02579968827558332,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 18.91004664,
+            "f10_7": 136.1,
+            "ap_index": 8.0,
+            "kp_mean": 1.916625,
+            "f10_7_delta_7d": 26.799999999999997,
+            "ap_delta_7d": -8.75,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.999,
+            "cointegration_pvalue": 0.107197,
+            "pair_risk": 0.8128,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6342216579136342
+        }
+      }
+    },
+    {
+      "asof": "2015-04-09",
+      "cutoff": "2015-04-06",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.4354753650384829,
+          "window_end": "2015-04-08 03:36:12.786336",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 20.396448239999998
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.6107845483996803,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8461050958246528,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34610509582465276,
+            "kolmogorov_proxy_7d": 0.47368421052631576,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 9.145050030863395e-15,
+            "delta_sma_7d_km": 0.052180831155055785,
+            "maneuver_count_30d": 5.0,
+            "tle_age_hours": 20.396448239999998,
+            "f10_7": 111.3,
+            "ap_index": 11.0,
+            "kp_mean": 2.54175,
+            "f10_7_delta_7d": -10.0,
+            "ap_delta_7d": 3.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.098,
+            "cointegration_pvalue": 0.077334,
+            "pair_risk": 0.9731,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7311689142673173
+        }
+      }
+    },
+    {
+      "asof": "2015-04-23",
+      "cutoff": "2015-04-20",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.46371046297909235,
+          "window_end": "2015-04-22 23:12:36.423936",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 0.78988224
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.7742433029172697,
+            "shannon_entropy_sma_short": 1.4355205042826666,
+            "hurst_exponent_sma": 0.8028428618834403,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.30284286188344034,
+            "kolmogorov_proxy_7d": 0.15789473684210525,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.9497306172750501,
+            "delta_sma_7d_km": -0.030002227412296634,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 0.78988224,
+            "f10_7": 140.5,
+            "ap_index": 6.0,
+            "kp_mean": 1.25,
+            "f10_7_delta_7d": -9.699999999999989,
+            "ap_delta_7d": -10.25,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.052,
+            "cointegration_pvalue": 0.056995,
+            "pair_risk": 0.9803,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7478347083405916
+        }
+      }
+    },
+    {
+      "asof": "2015-05-07",
+      "cutoff": "2015-05-04",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.40979869705892075,
+          "window_end": "2015-05-06 20:21:16.425792",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.64543728
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.8990227511756546,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.841588996245099,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.341588996245099,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.03135234358160233,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.64543728,
+            "f10_7": 146.6,
+            "ap_index": 6.0,
+            "kp_mean": 1.5418749999999999,
+            "f10_7_delta_7d": 44.8,
+            "ap_delta_7d": -2.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.935,
+            "cointegration_pvalue": 0.191088,
+            "pair_risk": 0.7835,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6153344136765143
+        }
+      }
+    },
+    {
+      "asof": "2015-05-21",
+      "cutoff": "2015-05-18",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.39728203818582536,
+          "window_end": "2015-05-20 20:24:22.563360",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.5937324
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.689525383210069,
+            "shannon_entropy_sma_short": 2.2810361125534238,
+            "hurst_exponent_sma": 0.8555285476215946,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3555285476215946,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.3554386294232978,
+            "delta_sma_7d_km": -0.047995642816204054,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.5937324,
+            "f10_7": 101.8,
+            "ap_index": 2.0,
+            "kp_mean": 0.45825,
+            "f10_7_delta_7d": -43.3,
+            "ap_delta_7d": -5.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.877,
+            "cointegration_pvalue": 0.988981,
+            "pair_risk": 0.5043,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.4561419171836214
+        }
+      }
+    },
+    {
+      "asof": "2015-06-04",
+      "cutoff": "2015-06-01",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.42576342026429037,
+          "window_end": "2015-06-03 20:37:40.439712",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.37210008
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8329087351084397,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.33290873510843966,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5979467258144207,
+            "delta_sma_7d_km": -0.018932411340756516,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 3.37210008,
+            "f10_7": 118.0,
+            "ap_index": 2.0,
+            "kp_mean": 0.333125,
+            "f10_7_delta_7d": 25.0,
+            "ap_delta_7d": -2.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.007,
+            "cointegration_pvalue": 0.259103,
+            "pair_risk": 0.7596,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6093735391189308
+        }
+      }
+    },
+    {
+      "asof": "2015-06-18",
+      "cutoff": "2015-06-15",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3792444498300556,
+          "window_end": "2015-06-17 20:50:30.831360",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 3.1581023999999998
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.010570934268484,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8750794619925438,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37507946199254383,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7400730357705563,
+            "delta_sma_7d_km": -0.02110249916859175,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 3.1581023999999998,
+            "f10_7": 150.8,
+            "ap_index": 6.0,
+            "kp_mean": 1.5,
+            "f10_7_delta_7d": 10.900000000000006,
+            "ap_delta_7d": -4.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.967,
+            "cointegration_pvalue": 0.446695,
+            "pair_risk": 0.694,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.552360002423525
+        }
+      }
+    },
+    {
+      "asof": "2015-07-02",
+      "cutoff": "2015-06-29",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3853186812954469,
+          "window_end": "2015-07-01 19:13:36.829344",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.773102959999999
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.755057619938308,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.8485173200122283,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.34851732001222835,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.10203426621795353,
+            "delta_sma_7d_km": -0.014658780957688577,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.773102959999999,
+            "f10_7": 113.8,
+            "ap_index": 2.0,
+            "kp_mean": 0.37475,
+            "f10_7_delta_7d": 12.0,
+            "ap_delta_7d": -7.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.914,
+            "cointegration_pvalue": 0.347055,
+            "pair_risk": 0.7289,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5742884065829511
+        }
+      }
+    },
+    {
+      "asof": "2015-07-16",
+      "cutoff": "2015-07-13",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.4300062373332312,
+          "window_end": "2015-07-14 20:17:00.510720",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 27.7165248
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.210810026106033,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8778147583402846,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37781475834028455,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7133673310817145,
+            "delta_sma_7d_km": -0.031977502842892136,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 27.7165248,
+            "f10_7": 99.6,
+            "ap_index": 7.0,
+            "kp_mean": 1.7085,
+            "f10_7_delta_7d": -22.30000000000001,
+            "ap_delta_7d": -5.375,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.931,
+            "cointegration_pvalue": 0.228114,
+            "pair_risk": 0.7705,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.617277806799954
+        }
+      }
+    },
+    {
+      "asof": "2015-07-30",
+      "cutoff": "2015-07-27",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.4648604938111869,
+          "window_end": "2015-07-29 19:52:05.733696",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.13174064
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8298925510162833,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.32989255101628334,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.8380525806546835,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.09184135443683772,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 4.13174064,
+            "f10_7": 102.0,
+            "ap_index": 12.0,
+            "kp_mean": 2.25,
+            "f10_7_delta_7d": 12.599999999999994,
+            "ap_delta_7d": 3.125,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.029,
+            "cointegration_pvalue": 0.226485,
+            "pair_risk": 0.771,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6332372222150342
+        }
+      }
+    },
+    {
+      "asof": "2015-08-13",
+      "cutoff": "2015-08-10",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.4012207109604319,
+          "window_end": "2015-08-12 19:47:29.942304",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 4.20834936
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.725480556997868,
+            "hurst_exponent_sma": 0.8877872154496834,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3877872154496834,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8990739462025963,
+            "delta_sma_7d_km": -0.018591947936329234,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 4.20834936,
+            "f10_7": 94.8,
+            "ap_index": 10.0,
+            "kp_mean": 2.08325,
+            "f10_7_delta_7d": -26.799999999999997,
+            "ap_delta_7d": -0.375,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.968,
+            "cointegration_pvalue": 0.006169,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7305493199321944
+        }
+      }
+    },
+    {
+      "asof": "2015-08-27",
+      "cutoff": "2015-08-24",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.44191820651981556,
+          "window_end": "2015-08-26 12:10:55.846848",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 11.81782032
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.2995301445670657,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8117384534777994,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3117384534777994,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7981183759669497,
+            "delta_sma_7d_km": -0.014947258592655999,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 11.81782032,
+            "f10_7": 110.2,
+            "ap_index": 52.0,
+            "kp_mean": 4.958375,
+            "f10_7_delta_7d": 7.400000000000006,
+            "ap_delta_7d": 34.125,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.949,
+            "cointegration_pvalue": 0.223335,
+            "pair_risk": 0.7722,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.623573192933917
+        }
+      }
+    },
+    {
+      "asof": "2015-09-10",
+      "cutoff": "2015-09-07",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.4270974561410932,
+          "window_end": "2015-09-09 22:10:31.381248",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.82461632
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.872222424190352,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.372222424190352,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0,
+            "delta_sma_7d_km": -0.007956434801599244,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 1.82461632,
+            "f10_7": 83.5,
+            "ap_index": 12.0,
+            "kp_mean": 2.375,
+            "f10_7_delta_7d": -3.0,
+            "ap_delta_7d": -12.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.979,
+            "cointegration_pvalue": 0.160338,
+            "pair_risk": 0.7942,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.629003855263492
+        }
+      }
+    },
+    {
+      "asof": "2015-09-24",
+      "cutoff": "2015-09-21",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.37419194187586824,
+          "window_end": "2015-09-23 22:22:32.314944",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.62435696
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.780858935500048,
+            "shannon_entropy_sma_short": 1.6577427265048887,
+            "hurst_exponent_sma": 0.8134032719695586,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.31340327196955864,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.8113357746418469,
+            "delta_sma_7d_km": -0.0065633362319204025,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.62435696,
+            "f10_7": 106.8,
+            "ap_index": 7.0,
+            "kp_mean": 1.708375,
+            "f10_7_delta_7d": 0.0,
+            "ap_delta_7d": -7.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.961,
+            "cointegration_pvalue": 0.044107,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7183863738441407
+        }
+      }
+    },
+    {
+      "asof": "2015-10-08",
+      "cutoff": "2015-10-05",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.4428772244431359,
+          "window_end": "2015-10-07 22:35:24.442368",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.40987712
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.755057619938308,
+            "shannon_entropy_sma_short": 2.5032583347756456,
+            "hurst_exponent_sma": 0.8900116021051133,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3900116021051133,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0766587680097268,
+            "delta_sma_7d_km": -0.00997788252789178,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.40987712,
+            "f10_7": 79.7,
+            "ap_index": 45.0,
+            "kp_mean": 4.875125000000001,
+            "f10_7_delta_7d": -40.0,
+            "ap_delta_7d": 19.5,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.952,
+            "cointegration_pvalue": 0.017922,
+            "pair_risk": 1.0,
+            "risk_level": "CRITICAL",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.7492947509994112
+        }
+      }
+    },
+    {
+      "asof": "2015-10-22",
+      "cutoff": "2015-10-19",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3892568173407191,
+          "window_end": "2015-10-21 21:02:09.681216",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.96397744
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.1971597234241496,
+            "hurst_exponent_sma": 0.87124444201522,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37124444201522,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.0,
+            "delta_sma_7d_km": -0.014788954060350079,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 2.96397744,
+            "f10_7": 120.5,
+            "ap_index": 4.0,
+            "kp_mean": 1.16675,
+            "f10_7_delta_7d": 13.700000000000003,
+            "ap_delta_7d": -4.625,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.04,
+            "cointegration_pvalue": 0.507564,
+            "pair_risk": 0.6726,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5450955678033236
+        }
+      }
+    },
+    {
+      "asof": "2015-11-05",
+      "cutoff": "2015-11-02",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3786661823719078,
+          "window_end": "2015-11-04 21:21:28.320768",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.64213312
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.5423289894137597,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.832508778559234,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.332508778559234,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.462665942300048,
+            "delta_sma_7d_km": -0.01194431302792509,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.64213312,
+            "f10_7": 109.9,
+            "ap_index": 16.0,
+            "kp_mean": 2.958375,
+            "f10_7_delta_7d": -3.0,
+            "ap_delta_7d": 2.75,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.929,
+            "cointegration_pvalue": 0.127566,
+            "pair_risk": 0.8057,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6135347820673585
+        }
+      }
+    },
+    {
+      "asof": "2015-11-19",
+      "cutoff": "2015-11-16",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.38090192281879376,
+          "window_end": "2015-11-18 23:08:06.233856",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 0.8649350400000001
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.181366328891459,
+            "shannon_entropy_sma_short": 2.9477027792200907,
+            "hurst_exponent_sma": 0.8356201027187081,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3356201027187081,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.375176417087957,
+            "delta_sma_7d_km": -0.019709191139554605,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 0.8649350400000001,
+            "f10_7": 108.1,
+            "ap_index": 8.0,
+            "kp_mean": 1.708375,
+            "f10_7_delta_7d": 4.599999999999994,
+            "ap_delta_7d": -1.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.931,
+            "cointegration_pvalue": 0.87219,
+            "pair_risk": 0.5451,
+            "risk_level": "WATCH",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.47121086526845724
+        }
+      }
+    },
+    {
+      "asof": "2015-12-03",
+      "cutoff": "2015-11-30",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.376429931693932,
+          "window_end": "2015-12-02 21:46:04.327392",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.23213128
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.839775539645508,
+            "shannon_entropy_sma_short": 1.8910611120726528,
+            "hurst_exponent_sma": 0.8081874413801521,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3081874413801521,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 7.104500927357109e-06,
+            "delta_sma_7d_km": -0.009135684841567127,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.23213128,
+            "f10_7": 94.5,
+            "ap_index": 4.0,
+            "kp_mean": 0.8331250000000001,
+            "f10_7_delta_7d": -9.400000000000006,
+            "ap_delta_7d": -3.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.024,
+            "cointegration_pvalue": 0.273226,
+            "pair_risk": 0.7546,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5844234692622695
+        }
+      }
+    },
+    {
+      "asof": "2015-12-17",
+      "cutoff": "2015-12-14",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.4401930579034237,
+          "window_end": "2015-12-16 21:46:24.390336",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.2265582399999997
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 0.5032583347756457,
+            "hurst_exponent_sma": 0.8724524452712417,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37245244527124166,
+            "kolmogorov_proxy_7d": 0.10526315789473684,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.6327312278551966,
+            "adf_pvalue": 0.10852288877900151,
+            "delta_sma_7d_km": 0.06370664775749901,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.2265582399999997,
+            "f10_7": 117.8,
+            "ap_index": 6.0,
+            "kp_mean": 1.374875,
+            "f10_7_delta_7d": 9.299999999999997,
+            "ap_delta_7d": -7.5,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.037,
+            "cointegration_pvalue": 0.248589,
+            "pair_risk": 0.7633,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6179018760565407
+        }
+      }
+    },
+    {
+      "asof": "2015-12-31",
+      "cutoff": "2015-12-28",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.42652374665001713,
+          "window_end": "2015-12-30 22:10:38.961984",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.8225105600000002
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.181366328891459,
+            "shannon_entropy_sma_short": 2.7254805569978684,
+            "hurst_exponent_sma": 0.8475815190858811,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3475815190858811,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.5489365593374153,
+            "delta_sma_7d_km": -0.009488730783232313,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.8225105600000002,
+            "f10_7": 96.2,
+            "ap_index": 35.0,
+            "kp_mean": 4.25,
+            "f10_7_delta_7d": -36.499999999999986,
+            "ap_delta_7d": 24.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.964,
+            "cointegration_pvalue": 0.154818,
+            "pair_risk": 0.7962,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6298456859925077
+        }
+      }
+    },
+    {
+      "asof": "2016-01-14",
+      "cutoff": "2016-01-11",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.4044874909193847,
+          "window_end": "2016-01-13 22:11:24.622656",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.80982704
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 0.2974722489192897,
+            "shannon_entropy_sma_short": 2.197159723424149,
+            "hurst_exponent_sma": 0.8779464069082255,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.37794640690822545,
+            "kolmogorov_proxy_7d": 0.21052631578947367,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.7909405729788701,
+            "delta_sma_7d_km": -0.008996439682960045,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 1.80982704,
+            "f10_7": 103.2,
+            "ap_index": 7.0,
+            "kp_mean": 1.91675,
+            "f10_7_delta_7d": -0.20000000000000284,
+            "ap_delta_7d": -2.875,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.025,
+            "cointegration_pvalue": 0.188457,
+            "pair_risk": 0.7843,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6133843709137232
+        }
+      }
+    },
+    {
+      "asof": "2016-01-28",
+      "cutoff": "2016-01-25",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.3707716658995193,
+          "window_end": "2016-01-27 22:23:38.706432",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 1.60591488
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 3.0761031709967224,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8502473808768621,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.35024738087686214,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": -0.007003982385867857,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 1.60591488,
+            "f10_7": 109.9,
+            "ap_index": 4.0,
+            "kp_mean": 1.041625,
+            "f10_7_delta_7d": 5.900000000000006,
+            "ap_delta_7d": -6.0,
+            "geomagnetic_storm": 1.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.013,
+            "cointegration_pvalue": 0.112638,
+            "pair_risk": 0.8109,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.6128422496547837
+        }
+      }
+    },
+    {
+      "asof": "2016-02-11",
+      "cutoff": "2016-02-08",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.35761124872478006,
+          "window_end": "2016-02-10 21:02:11.131008",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.96357472
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6550505394177746,
+            "shannon_entropy_sma_short": 2.4193819456463714,
+            "hurst_exponent_sma": 0.8420718687875913,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3420718687875913,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.3576973323280007,
+            "delta_sma_7d_km": -0.01074232313385437,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.96357472,
+            "f10_7": 112.8,
+            "ap_index": 8.0,
+            "kp_mean": 2.041625,
+            "f10_7_delta_7d": -10.5,
+            "ap_delta_7d": -0.25,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 79.954,
+            "cointegration_pvalue": 0.391388,
+            "pair_risk": 0.7134,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5532950619261511
+        }
+      }
+    },
+    {
+      "asof": "2016-02-25",
+      "cutoff": "2016-02-22",
+      "n_train_ok": true,
+      "targets": {
+        "27424": {
+          "ok": true,
+          "anomaly_score": 0.37869104639677836,
+          "window_end": "2016-02-24 21:21:41.120928",
+          "data_quality": {
+            "score": 0.7,
+            "issues": [
+              "gap_190h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 2.63857752
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.710070621397606,
+            "shannon_entropy_sma_short": 2.2810361125534233,
+            "hurst_exponent_sma": 0.8140306547886754,
+            "hurst_exponent_sma_short": 0.5,
+            "persistence_hurst_gap": 0.3140306547886754,
+            "kolmogorov_proxy_7d": 0.05263157894736842,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.010654844168026593,
+            "delta_sma_7d_km": -0.006346461866087338,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 2.63857752,
+            "f10_7": 91.7,
+            "ap_index": 5.0,
+            "kp_mean": 1.2918749999999999,
+            "f10_7_delta_7d": -3.200000000000003,
+            "ap_delta_7d": -4.0,
+            "geomagnetic_storm": 0.0,
+            "space_weather_available": 1.0
+          },
+          "norad_id": 27424,
+          "object_name": "AQUA",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 80.064,
+            "cointegration_pvalue": 0.244504,
+            "pair_risk": 0.7647,
+            "risk_level": "ELEVATED",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.5909959708785503
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "27424": {
+      "norad_id": 27424,
+      "object_name": "AQUA",
+      "n_folds_scored": 30,
+      "anomaly_score_mean": 0.4150094689527241,
+      "anomaly_score_max": 0.47406315843471664,
+      "anomaly_score_at_nearest_peak": 0.4270974561410932,
+      "hit_at_event": false,
+      "soft_hit_at_event": false,
+      "n_hits_in_window": 0,
+      "first_fold_hit": false,
+      "first_hit_asof": null,
+      "first_scorable_asof": "2015-01-15",
+      "n_folds_above_thr_pre_peak": 0,
+      "lead_time_days": null,
+      "lead_time_note": null,
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 0.7678554923199831,
+          "late_mean": 1.192969089561546
+        },
+        "shannon_entropy_sma_short": {
+          "early_mean": 1.4957329281725587,
+          "late_mean": 2.1049291680288507
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.8706272351851267,
+          "late_mean": 0.8546621204144386
+        },
+        "hurst_exponent_sma_short": {
+          "early_mean": 0.5,
+          "late_mean": 0.5
+        },
+        "persistence_hurst_gap": {
+          "early_mean": 0.37062723518512675,
+          "late_mean": 0.3546621204144385
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.20175438596491227,
+          "late_mean": 0.13157894736842105
+        }
+      },
+      "pair_risk_max": 1.0,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 18,
+        "pre_peak_anomaly_mean": 0.42942676619685916,
+        "pre_peak_anomaly_max": 0.47406315843471664,
+        "early_pre_peak_mean": 0.44466426202093196,
+        "late_pre_peak_mean": 0.4250702976768676,
+        "noise_ramp": -0.019593964344064352,
+        "pre_peak_pair_risk_max": 1.0,
+        "elevated_noise_before_peak": true
+      },
+      "is_placebo": true
+    }
+  }
+}
