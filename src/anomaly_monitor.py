@@ -847,7 +847,10 @@ def score_latest(
                 for k in (
                     "delta_sma_7d_km",
                     "shannon_entropy_sma_30d",
+                    "shannon_entropy_sma_short",
                     "hurst_exponent_sma",
+                    "hurst_exponent_sma_short",
+                    "persistence_hurst_gap",
                     "kolmogorov_proxy_7d",
                     "l1_cusum_sma",
                     "tle_age_hours",

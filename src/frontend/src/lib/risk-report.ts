@@ -10,6 +10,9 @@ export type BoardStatus =
   | 'ANOMALY'
   | 'PAIR_ELEVATED'
   | 'UNRELIABLE_DATA'
+  | 'CALIBRATION_BASELINE'
+  | 'ASSET_REGIME_NOISE'
+  | 'CHANGE_RELEVANT'
   | string
 
 export interface DataQuality {
@@ -31,7 +34,10 @@ export interface PairInfo {
 export interface FeaturesSnapshot {
   delta_sma_7d_km?: number
   shannon_entropy_sma_30d?: number
+  shannon_entropy_sma_short?: number
   hurst_exponent_sma?: number
+  hurst_exponent_sma_short?: number
+  persistence_hurst_gap?: number
   kolmogorov_proxy_7d?: number
   l1_cusum_sma?: number
   tle_age_hours?: number
@@ -67,6 +73,11 @@ export interface BoardEntry {
   anomaly_score: number
   attention_score: number
   is_anomaly: boolean
+  /** Military-first doctrine: suspect noise and/or elevated pair */
+  is_military_detection?: boolean
+  is_platform_health_flag?: boolean
+  is_calibration_object?: boolean
+  military_alert_eligible?: boolean
   status: BoardStatus
   xgb_class: string | null
   data_quality: DataQuality
@@ -76,6 +87,7 @@ export interface BoardEntry {
   anomaly_onset?: AnomalyOnset | null
   window_end?: string | null
   score_delta_1d?: number | null
+  anomaly_threshold_used?: number | null
 }
 
 export interface TopPair {
@@ -96,20 +108,26 @@ export interface TopPair {
 export interface RiskSummary {
   n_scored: number
   n_anomalies: number
+  n_military_detections?: number
+  n_platform_health_flags?: number
   n_pairs: number
   n_pair_elevated: number
   threshold: number
+  focus?: string
 }
 
 export interface RiskReport {
   schema: string
   generated_at: string
   day: string
+  doctrine?: string
+  protocol?: string
   summary: RiskSummary
   board: BoardEntry[]
   top_pairs: TopPair[]
   model?: string
   train_meta?: Record<string, unknown>
+  doctrine_summary?: Record<string, unknown>
 }
 
 export const THREAT_HEX: Record<Threat, string> = {
@@ -134,14 +152,31 @@ export function boardThreat(b: BoardEntry): Threat {
   const pairLevel = (b.pair?.risk_level ?? '').toUpperCase()
   const pairRisk = b.pair?.pair_risk ?? 0
 
+  if (b.status === 'CALIBRATION_BASELINE' || b.is_calibration_object) {
+    return 'NOMINAL'
+  }
   if (
     b.status === 'PAIR_ELEVATED' &&
     (pairLevel === 'CRITICAL' || b.attention_score >= 0.65 || pairRisk >= 0.9)
   ) {
     return 'HOSTILE'
   }
-  if (b.status === 'PAIR_ELEVATED' || pairRisk >= 0.55) return 'SUSPECT'
-  if (b.is_anomaly || b.status === 'ANOMALY') return 'ANOMALY'
+  if (
+    b.status === 'PAIR_ELEVATED' ||
+    pairRisk >= 0.55 ||
+    b.is_military_detection
+  ) {
+    return 'SUSPECT'
+  }
+  if (
+    b.is_anomaly ||
+    b.status === 'ANOMALY' ||
+    b.status === 'ASSET_REGIME_NOISE' ||
+    b.status === 'CHANGE_RELEVANT' ||
+    b.is_platform_health_flag
+  ) {
+    return 'ANOMALY'
+  }
   if (b.status === 'UNRELIABLE_DATA') return 'ANOMALY'
   return 'NOMINAL'
 }
@@ -167,6 +202,8 @@ export function threatRank(t: Threat): number {
 export function sortedBoard(report: RiskReport | null): BoardEntry[] {
   if (!report) return []
   return [...report.board].sort((a, b) => {
+    const mil = Number(!!b.is_military_detection) - Number(!!a.is_military_detection)
+    if (mil !== 0) return mil
     const tr = threatRank(boardThreat(a)) - threatRank(boardThreat(b))
     if (tr !== 0) return tr
     return b.attention_score - a.attention_score
@@ -188,10 +225,15 @@ export function formatOnsetDate(raw?: string | null): string | null {
 /** Local stub briefing — explains scores already computed (no invented threat). */
 export function bobBrief(b: BoardEntry): string {
   const threat = boardThreat(b)
+  const flags: string[] = []
+  if (b.is_military_detection) flags.push('military detection')
+  if (b.is_platform_health_flag) flags.push('platform health')
+  if (b.is_calibration_object) flags.push('calibration baseline')
   const parts: string[] = [
     `${b.object_name} (NORAD ${b.norad_id}) · role ${b.role} · ${threat}.`,
     `attention=${b.attention_score.toFixed(3)} · anomaly=${b.anomaly_score.toFixed(3)} · status=${b.status}.`,
   ]
+  if (flags.length) parts.push(`Flags: ${flags.join(', ')}.`)
   const onset = b.anomaly_onset
   const since = formatOnsetDate(onset?.first_elevated_at)
   if (since) {
@@ -203,8 +245,14 @@ export function bobBrief(b: BoardEntry): string {
   if (fs.hurst_exponent_sma != null) {
     parts.push(`Hurst=${fs.hurst_exponent_sma.toFixed(2)} (series persistence).`)
   }
+  if (fs.persistence_hurst_gap != null) {
+    parts.push(`Hurst gap (full−short)=${fs.persistence_hurst_gap.toFixed(2)}.`)
+  }
   if (fs.shannon_entropy_sma_30d != null) {
     parts.push(`Shannon H(Δa)=${fs.shannon_entropy_sma_30d.toFixed(2)}.`)
+  }
+  if (fs.geomagnetic_storm != null && fs.geomagnetic_storm >= 0.5) {
+    parts.push('Geomagnetic storm context active (space weather).')
   }
   if (b.pair) {
     parts.push(
@@ -216,7 +264,7 @@ export function bobBrief(b: BoardEntry): string {
   } else if (b.data_quality?.issues?.length) {
     parts.push(`DQ issues: ${b.data_quality.issues.join(', ')}.`)
   }
-  parts.push('Scores precomputed by the monitor (IF + pairs); Bob does not invent threats.')
+  parts.push('Scores from Athena monitor (IF + pairs + quant features).')
   return parts.join(' ')
 }
 

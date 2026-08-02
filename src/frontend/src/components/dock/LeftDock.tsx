@@ -100,8 +100,8 @@ export default function LeftDock({
             ML proof of concept
           </div>
           <p className="mt-1.5 text-[13px] leading-relaxed text-zinc-400">
-            Walk-forward: noise detected months before open-source reports (5/5 interest,
-            0/3 placebos). Opens as a tab on this console.
+            Walk-forward validation: GEO interest 5/5 hard hits vs civil EO placebos 0/7
+            (Claims A+B). Opens as a panel on this console.
           </p>
           <button
             type="button"
@@ -123,10 +123,20 @@ export default function LeftDock({
             </div>
             <div className="mt-1.5 grid grid-cols-2 gap-1.5 text-[14px]">
               <Meta k="Anomalies" v={String(report.summary.n_anomalies)} />
+              <Meta
+                k="Mil detect"
+                v={String(report.summary.n_military_detections ?? '—')}
+              />
               <Meta k="Pairs" v={String(report.summary.n_pairs)} />
               <Meta k="Elevated" v={String(report.summary.n_pair_elevated)} />
               <Meta k="Thr" v={report.summary.threshold.toFixed(2)} />
+              <Meta k="Scored" v={String(report.summary.n_scored)} />
             </div>
+            {report.doctrine && (
+              <p className="mt-1.5 text-[11px] uppercase tracking-wider text-zinc-500">
+                {report.doctrine.replace(/_/g, ' ')}
+              </p>
+            )}
             {report.top_pairs?.[0] && (
               <p className="mt-2 text-[13px] leading-relaxed text-zinc-400">
                 Top pair:{' '}
@@ -237,6 +247,27 @@ export default function LeftDock({
                       {t.role} · {countryLabel(t.country)}
                     </span>
                   </div>
+                  {(t.is_military_detection ||
+                    t.is_platform_health_flag ||
+                    t.is_calibration_object) && (
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {t.is_military_detection && (
+                        <span className="border border-amber-400/40 bg-amber-400/10 px-1 py-0.5 text-[10px] uppercase tracking-wider text-amber-200">
+                          mil detect
+                        </span>
+                      )}
+                      {t.is_platform_health_flag && (
+                        <span className="border border-sky-400/40 bg-sky-400/10 px-1 py-0.5 text-[10px] uppercase tracking-wider text-sky-200">
+                          asset health
+                        </span>
+                      )}
+                      {t.is_calibration_object && (
+                        <span className="border border-zinc-500/40 bg-zinc-500/10 px-1 py-0.5 text-[10px] uppercase tracking-wider text-zinc-400">
+                          calibration
+                        </span>
+                      )}
+                    </div>
+                  )}
                   {t.pair && (
                     <div className="mt-1 truncate text-[13px] text-zinc-400">
                       → {t.pair.asset_name} · {t.pair.min_distance_km.toFixed(0)} km ·{' '}

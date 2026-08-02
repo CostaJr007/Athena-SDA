@@ -293,6 +293,10 @@ export default function RightDock({
                     <Metric k="Anomaly" v={boardEntry.anomaly_score.toFixed(3)} />
                     <Metric k="Status" v={boardEntry.status} />
                     <Metric
+                      k="Mil detect"
+                      v={boardEntry.is_military_detection ? 'YES' : 'no'}
+                    />
+                    <Metric
                       k="DQ"
                       v={
                         boardEntry.data_quality.reliable
