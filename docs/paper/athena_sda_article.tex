@@ -144,56 +144,153 @@ Eventos em \texttt{data/catalog/events\_walkforward.json} com $(t_{\mathrm{start
 \section{Fundamentação matemática do vetor de ruído}
 \label{sec:math}
 
-Seja $a(t)$ a série de semi-eixo maior (km) na janela de $n\ge 20$ épocas. O motor \texttt{src/engine.py} produz escalares $x\in\mathbb{R}^{d}$ que descrevem \textbf{estrutura de ruído}, não intenção.
+Seja $a(t)$ a série de semi-eixo maior (km) na janela de $n\ge 20$ épocas. O motor \texttt{src/engine.py} produz escalares $x\in\mathbb{R}^{d}$ que descrevem \textbf{estrutura de ruído de voo}, não intenção política.
 
-\subsection{Entropia de Shannon (desordem dos passos)}
-Com diferenças $\Delta a_i = a_{i+1}-a_i$, histograma normalizado $p_k$:
+\paragraph{Ideia geral.}
+Cada teoria abaixo responde a uma pergunta simples sobre a órbita. Juntas formam um ``exame de sinais vitais'' do satélite. O Isolation Forest depois pergunta: \emph{este conjunto de sinais é raro face ao que aprendemos como normal?}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{3.1cm}p{5.4cm}p{5.2cm}@{}}
+\toprule
+\textbf{Teoria / ferramenta} & \textbf{O que faz (em uma frase)} & \textbf{Para que serve no SDA} \\
+\midrule
+Shannon & Mede se os passos de altitude são ``bagunçados'' ou previsíveis & Controlo irregular / station-keeping nervoso \\
+Kolmogorov (proxy) & Mede se a sequência sobe/desce é difícil de comprimir (= complexa) & Padrão de manobras sofisticado vs ruído simples \\
+Hurst (R/S) & Mede se a série ``insiste'' numa direção (persistência) & Low-thrust / drift controlado / microtrajetória \\
+Hurst multi-escala & Compara persistência da janela toda vs ponta recente & Separar memória longa de ruído recente \\
+CUSUM-$L_1$ & Detecta se o nível da série \emph{quebrou} relativamente ao recente & Início de manobra / mudança de regime \\
+Mandelbrot / cauda & Detecta saltos raros e extremos & Impulsos / $\Delta V$ grosseiros \\
+ADF & Testa se a série é ``estacionária'' ou anda à deriva & Regime não mean-reverting (propulsão contínua) \\
+Homologia H0/H1 & Resume forma/conectividade da nuvem de posições (proxy) & Órbita ``fechada'' vs estrutura atípica \\
+Chern--Simons (proxy) & Vê se o momento angular específico deixa de se conservar & Força não Kepleriana / propulsão aparente \\
+Ricci (proxy) & Vê distorção local da vizinhança na trajetória & Convergência / distorção geométrica \\
+Clima espacial & Diz se o Sol/magnetosfera estão ``tempestuosos'' & Não confundir arrasto LEO com manobra \\
+$\Delta$SMA / manobras & Quanto e quão vezes a altitude mudou & Relocação de slot / ops GEO ativas \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.6em}
+
+\subsection{Entropia de Shannon --- desordem dos passos de altitude}
+
+\paragraph{O que a teoria faz.}
+A teoria da informação de Shannon quantifica \textbf{incerteza / surpresa} de uma distribuição. Aqui aplicamos aos \emph{passos} de altitude: se o satélite sobe e desce de formas muito variadas, a distribuição dos $\Delta a$ é ``espalhada'' e a entropia sobe; se quase sempre faz o mesmo tipo de passo (ou quase zero), a entropia é baixa.
+
+\paragraph{Porquê interessa.}
+Órbitas quietas e station-keeping rotineiro tendem a padrões mais repetitivos. Controlo irregular, várias manobras ou ``nervosismo'' operacional aumentam a bagunça dos passos --- sinal de \textbf{ruído dinâmico}.
+
+\paragraph{Fórmula (referência).}
+Com $\Delta a_i = a_{i+1}-a_i$ e histograma $p_k$:
 \begin{equation}
   H = -\sum_{k:\,p_k>0} p_k \log_2 p_k .
 \end{equation}
-$H$ alto $\Rightarrow$ distribuição de manobras/passos menos concentrada (controlo irregular).
+$H$ alto $\Rightarrow$ passos menos previsíveis.
 
-\subsection{Proxy de complexidade de Kolmogorov}
-Discretização $\Delta a$ em tokens $\{U,D,S\}$ e razão de compressão zlib:
+\subsection{Proxy de complexidade de Kolmogorov --- ``quão elaborada é a sequência?''}
+
+\paragraph{O que a teoria faz.}
+A complexidade de Kolmogorov pergunta, em essência: \emph{qual o menor programa que reproduz esta sequência?} Sequências aleatórias ou muito elaboradas não comprimem bem; sequências simples comprimem. Não calculamos o $K$ exato (incomputável); usamos um \textbf{proxy} prático: codificar subidas/descidas/estável e medir compressão zlib.
+
+\paragraph{Porquê interessa.}
+Uma série de manobras ativas e pouco monótonas parece um ``código'' difícil de comprimir. Uma órbita passiva ou com padrão trivial parece simples. Serve como sensor de \textbf{sofisticação do padrão de controlo}, complementar à entropia.
+
+\paragraph{Fórmula (referência).}
+Tokens $\{U,D,S\}$ e
 \begin{equation}
   K_{\mathrm{proxy}} = \mathrm{clip}\!\left(\frac{\ell_{\mathrm{comp}}}{\ell_{\mathrm{raw}}},\,0,\,1\right).
 \end{equation}
 Séries curtas ($n<10$) $\mapsto 0$ (evita falso ``complexo'').
 
-\subsection{Expoente de Hurst (R/S) e multi-escala}
-Análise $R/S$ clássica em vários lags. $H>0{,}5$: persistência (tendência de controlo); $H<0{,}5$: anti-persistência / mean-reversion.
-Definimos ainda escala curta (últimas $\sim$12 amostras) e
+\subsection{Expoente de Hurst --- persistência (microtrajetória / low-thrust)}
+
+\paragraph{O que a teoria faz.}
+O expoente de Hurst, via análise $R/S$, mede se flutuações \textbf{persistem}: se um desvio para cima tende a ser seguido por mais desvio na mesma direção (memória longa), ou se a série ``volta atrás'' (mean-reversion). $H\approx 0{,}5$ parece ruído sem memória; $H>0{,}5$ persistência; $H<0{,}5$ anti-persistência.
+
+\paragraph{Porquê interessa.}
+Micro-manobras contínuas, low-thrust e controlo que mantém uma tendência de altitude deixam \textbf{assinatura de persistência}. É central para a tese de \textbf{microanomalias de trajetória} (não um único impulso isolado).
+
+\paragraph{Multi-escala.}
+Calculamos $H$ na janela completa e num trecho curto recente, e
 \begin{equation}
-  \Delta H = H_{\mathrm{full}} - H_{\mathrm{short}},
+  \Delta H = H_{\mathrm{full}} - H_{\mathrm{short}}.
 \end{equation}
-para capturar \textbf{memória de persistência} vs ponta recente (\textit{microtrajetória}).
+Isto distingue ``a série inteira carrega memória de controlo'' de ``só a ponta recente balançou''.
 
-\subsection{CUSUM-$L_1$ kernelizado}
-Proxy de quebra estrutural: desvios acumulados face a mediana local, normalizados por MAD, mapeados em $[0,1]$.
+\subsection{CUSUM-$L_1$ kernelizado --- ``quando o regime quebrou?''}
 
-\subsection{Cauda de Mandelbrot / Hill}
-Para extremos de $a(t)$ acima de quantil, estimador de cauda pesada (com guards de divisão por zero).
+\paragraph{O que a teoria faz.}
+CUSUM (Cumulative Sum) é uma família clássica de deteção de mudança: acumula desvios face a um nível de referência até cruzar um limiar. Nossa versão usa mediana local e MAD (robusta a outliers) e um peso tipo kernel, devolvendo um score em $[0,1]$.
 
-\subsection{ADF (estacionariedade)}
-$p$-valor do teste Dickey--Fuller aumentado; $p$ alto sugere não-estacionariedade (regime não mean-reverting).
+\paragraph{Porquê interessa.}
+Responde: \emph{houve uma quebra estrutural recente na altitude?} Útil para início de manobra, mudança de slot ou transição de regime --- o ``alarme de mudança'', não só o nível médio de bagunça.
 
-\subsection{Topologia e geometria proxy}
-\begin{itemize}
-  \item Homologia persistente H0/H1: modo \textbf{proxy} canónico (pairwise distances normalizadas); \texttt{ripser} opcional.
-  \item Chern--Simons proxy: variação de momento angular específico $h=r\times v$ na reconstrução.
-  \item Ricci--Ollivier proxy: curvatura local por distância de Wasserstein entre vizinhanças.
-\end{itemize}
-Estes termos são \textbf{proxies} sobre geometria reconstruída a partir de elementos orbitais --- não ephemerides SGP4 completas.
+\subsection{Cauda de Mandelbrot / estimador de Hill --- saltos raros}
 
-\subsection{Clima espacial no vetor}
-As features GFZ entram no Isolation Forest como contexto: o mesmo $\Delta a$ sob tempestade geomagnética não deve ser interpretado igual a manobra em LEO calmo.
+\paragraph{O que a teoria faz.}
+Mandelbrot popularizou a ideia de que muitos processos reais têm \textbf{caudas pesadas}: eventos extremos são mais frequentes do que o modelo Gaussiano sugere. O estimador de Hill resume a cauda dos valores extremos da série.
 
-\subsection{O que o IF \emph{não} usa}
-Distância a assets e cointegração \textbf{não} entram no IF (evitam confundir ``estranheza da série'' com ``está perto de um militar''). Esses sinais alimentam a \textbf{camada de prioridade}.
+\paragraph{Porquê interessa.}
+Captura \textbf{impulsos} ou saltos raros de SMA (manobra grosseira, artefacto forte, evento pontual), complementando Hurst/CUSUM que olham mais para persistência e mudança de nível.
+
+\subsection{ADF (Augmented Dickey--Fuller) --- a série ``anda à deriva''?}
+
+\paragraph{O que a teoria faz.}
+O teste ADF pergunta se uma série temporal é \textbf{estacionária} (flutua em torno de um nível) ou tem raiz unitária / tendência estocástica (anda sem voltar). Reportamos o $p$-valor: $p$ alto favorece a hipótese de não-estacionariedade.
+
+\paragraph{Porquê interessa.}
+Propulsão contínua ou regimes que não regressam a um SMA estável deixam a série ``andar''. É um teste estatístico clássico de econometria/séries temporais reutilizado para \textbf{regime orbital não quieto}.
+
+\subsection{Homologia persistente (H0/H1) --- forma da nuvem de posições (proxy)}
+
+\paragraph{O que a teoria faz.}
+A topologia de dados (TDA) estuda \textbf{forma}: componentes ligadas (H0) e ``buracos''/ciclos (H1) à medida que se varia uma escala. No Athena usamos um \textbf{proxy} estável (estatísticas de distâncias entre pontos 3D reconstruídos), para não depender de \texttt{ripser} em todas as máquinas.
+
+\paragraph{Porquê interessa.}
+Resume se a reconstrução da trajetória parece um anel orbital coerente ou uma nuvem com estrutura atípica. É apoio geométrico global; \textbf{não} substitui propagação SGP4 de precisão.
+
+\subsection{Chern--Simons proxy --- conservação de momento angular}
+
+\paragraph{O que a teoria faz.}
+Em mecânica orbital ideal, o momento angular específico $h = r \times v$ é conservado sob força central. O proxy mede o quanto $h$ \textbf{varia} ao longo da reconstrução posição--velocidade.
+
+\paragraph{Porquê interessa.}
+Variação forte sugere \textbf{força não Kepleriana aparente} (propulsão, modelo incompleto, ou ruído de reconstrução). Interpretação cautelosa: é um indicador de ``quebra de conservação'', não prova de propulsão real.
+
+\subsection{Ricci--Ollivier proxy --- curvatura local da vizinhança}
+
+\paragraph{O que a teoria faz.}
+A curvatura de Ollivier--Ricci compara distâncias entre ``bolas'' de vizinhança (via Wasserstein). Em grafos/nuvens de pontos, mede se a geometria local se concentra ou se distorce.
+
+\paragraph{Porquê interessa.}
+Serve como sensor geométrico auxiliar de \textbf{distorção local} ao longo da trajetória amostrada (ex.: convergência aparente entre trechos). Também é proxy, não geodésica real em torno da Terra.
+
+\subsection{Deltas de SMA e contagem de manobras --- magnitude e frequência}
+
+\paragraph{O que fazem.}
+$\Delta$SMA em 7 e 30 dias mede \textbf{quanto} a órbita mudou de tamanho; um contador via picos de CUSUM estima \textbf{quantas} quebras ativas aparecem na janela.
+
+\paragraph{Porquê interessam.}
+São as features mais ``operacionais'': relocação GEO, mudança de altitude LEO, ops intensas. Sozinhas não bastam (podem ser drag), mas com clima espacial e Hurst/CUSUM formam o núcleo interpretável do ruído.
+
+\subsection{Clima espacial (F10.7, Ap, Kp, tempestade)}
+
+\paragraph{O que faz.}
+Não é teoria de manobra: é \textbf{contexto físico do ambiente}. F10.7 indica atividade solar; Ap/Kp medem agitação geomagnética; a flag de tempestade marca períodos de alta Ap.
+
+\paragraph{Porquê interessa.}
+Em LEO, tempestade $\Rightarrow$ atmosfera incha $\Rightarrow$ arrasto $\Rightarrow$ $\Delta a$ natural. Sem estas features, o modelo pode confundir \textbf{física solar} com \textbf{manobra estranha}. No IF, o clima entra no perfil de ``normalidade contextual''.
+
+\subsection{O que o Isolation Forest \emph{não} usa (e porquê)}
+Distância a assets e cointegração \textbf{não} entram no IF: medem \textbf{relação com outro objeto}, não a estranheza da série isolada. Ficam na camada de prioridade (``este suspect ruidoso está perto de um asset?'').
 
 %------------------------------------------------------------------------------
 \section{Modelo de detecção: Isolation Forest past-only}
 \label{sec:if}
+
+\subsection{O que o Isolation Forest faz (em palavras)}
+O Isolation Forest \textbf{não} classifica ``amigo/inimigo''. Ele aprende, no espaço de features, quais combinações de sinais são \textbf{comuns} nas âncoras de normalidade e quais são \textbf{fáceis de isolar} (raras). Um ponto fácil de isolar recebe score de anomalia alto: ``este perfil de ruído não se parece com o normal que vimos no passado''.
 
 \subsection{Score unificado}
 Dado o vetor $x$ da janela corrente e o modelo IF treinado:
@@ -242,12 +339,16 @@ Parâmetros e endpoints fixados em \texttt{docs/paper/PROTOCOL\_PREREGISTRATION.
 \section{Camada de prioridade (fora de Claims A+B)}
 \label{sec:priority}
 
-\begin{itemize}
-  \item \textbf{XGBoost}: classes 0--3 com \textit{weak labels} heurísticos; split temporal com purga; accuracy mede concordância com a heurística, \textbf{não} verdade de campo.
-  \item \textbf{Pair risk}: distância aproximada + cointegração Engle--Granger de SMA alinhadas (suspect$\times$asset).
-  \item \textbf{Fuzzy Mamdani} + \textbf{Kelly}: calibração linguística e orçamento de atenção.
-  \item \textbf{Bob}: LLM/template que explica scores e pode citar cases open-source; \textbf{nunca} altera $s(x)$.
-\end{itemize}
+Estas ferramentas \textbf{não} definem o hard hit da prova A+B; ajudam o operador a \textbf{ordenar atenção}.
+
+\begin{description}
+  \item[XGBoost.] Aprendizagem supervisionada em \textit{weak labels} (regras heurísticas sobre distância, Hurst, $\Delta$SMA, etc.). \textbf{O que faz:} traduz o perfil de features + score IF num nível de prioridade (NORMAL$\ldots$HOSTILE). \textbf{Não faz:} provar espionagem; a accuracy só diz se o modelo copiou bem a heurística.
+  \item[Cointegração (Engle--Granger).] \textbf{O que faz:} testa se duas séries de altitude ``andam juntas'' a longo prazo (partilham tendência comum). \textbf{Para SDA:} padrão compatível com \textit{shadowing}/escolta --- complementar ao score de ruído individual.
+  \item[Distância suspect$\times$asset.] \textbf{O que faz:} estima proximidade orbital aproximada. \textbf{Para SDA:} prioriza se o objeto ruidoso está perto de algo a proteger.
+  \item[Fuzzy Mamdani.] \textbf{O que faz:} regras linguísticas (``se anomalia alta e TLE fresco e perto\ldots'') com incerteza suave. \textbf{Para SDA:} calibra confiança quando dados são velhos ou ambíguos.
+  \item[Kelly (half-Kelly).] \textbf{O que faz:} formula de dimensionamento de ``aposta'' adaptada a orçamento de atenção/sensor. \textbf{Para SDA:} quanto esforço gastar no alerta, não se o alerta é verdadeiro.
+  \item[Bob (LLM).] \textbf{O que faz:} explica em linguagem natural os números já calculados e pode citar cases open-source. \textbf{Nunca} altera $s(x)$.
+\end{description}
 
 %------------------------------------------------------------------------------
 \section{Desenho experimental}
