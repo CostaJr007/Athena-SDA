@@ -1,294 +1,203 @@
 # Athena-SDA
 
-**Space Domain Awareness (SDA) Copilot** — prioritize attention on orbital objects using **real public data**, a **quantitative noise framework**, **machine learning**, and an **AI analyst** that explains scores.
+**Military-first Space Domain Awareness (SDA) copilot** — track **orbital micro-anomalies** (persistent / strange motion regimes) on **suspect** platforms, protect high-value **assets**, and explain scores with quant math + ML + AI.
 
 | | |
 |--|--|
 | **Challenge** | IBM SkillsBuild AI Builders — *Advance Space Exploration with AI* |
-| **Focus** | **Military-first SDA**: protect **assets** · detect noise on **suspects** · **baseline** = normality for IF only |
+| **Intent** | **Not** predicting the future or “news dates”. **Yes** continuous tracking of micro-anomalies that resemble **strange / inspection-like / shadowing-like** regimes discussed in open sources |
+| **Focus** | Protect **assets** · monitor **suspects** · **baseline** = normality for Isolation Forest only |
 | **Repo** | [github.com/CostaJr007/Athena-SDA](https://github.com/CostaJr007/Athena-SDA) |
-| **Watchlist** | 24 NORADs (7 **asset** · 11 **suspect** · 6 **baseline**) |
-| **History** | **~12.5 years** of TLEs (2014-01-01 → 2026-07-27) · ~250k epochs |
-| **ML doctrine** | IF trains on **baseline+asset**; scores **suspects** for persistent micro-trajectory noise; XGB/pairs = **priority**, not proof |
-| **Validation** | **Claims A+B** (paper): military GEO cases **5/5** hard hits vs civil EO **0/7**; Mann–Whitney p≈0.001; reports = anchors not forecast |
-| **Paper pack** | [`docs/paper/METHODS_AND_CLAIMS.md`](docs/paper/METHODS_AND_CLAIMS.md) · [`RESULTS_TABLES.md`](docs/paper/RESULTS_TABLES.md) · `python scripts/run_paper_validation.py` |
-
-### For judges — open these first
-
-| Resource | What you get in 2 minutes |
-|----------|---------------------------|
-| **[Walk-forward PoC HTML](src/frontend/public/reports/walkforward_poc.html)** | Story: noise **before** public reports (Luch, Shiyan) + placebos + math in plain language |
-| **This README** | Methodology: what noise is, how each model fits, what we claim / do not claim |
-| **Mission board UI** | `cd src/frontend && npm run dev` → link **Open PoC for judges** |
-| Deeper docs | [FULL_ML_REPORT](docs/FULL_ML_REPORT_ATHENA_SDA.md) · [WALKFORWARD_PRE_REPORT](docs/WALKFORWARD_PRE_REPORT_ML.md) · [CASE REPORT](docs/WALKFORWARD_DETECTION_CASE_REPORT.md) |
+| **Watchlist** | 24 NORADs (7 asset · 11 suspect · 6 baseline) |
+| **History** | ~12.5 years TLEs (2014-01-01 → 2026-07-27) · ~250k epochs |
+| **Space weather** | **GFZ real** F10.7 / Ap / Kp + storm flag (drag vs maneuver context) |
+| **Proof (Claims A+B)** | GEO military cases **5/5** hard hits vs civil EO **0/7** · gap ~0.19 · Mann–Whitney p≈0.001 |
 
 ---
 
-## 1. The problem in one minute
+### Open these first (judges / paper)
 
-There are tens of thousands of objects in Earth orbit. Human operators cannot watch all of them equally.
+| Resource | What you get |
+|----------|----------------|
+| **[Paper pack](docs/paper/METHODS_AND_CLAIMS.md)** | Formal claims, methods, preregistered protocol |
+| **[RESULTS_TABLES.md](docs/paper/RESULTS_TABLES.md)** | Headline numbers + per-event table |
+| **[Figures](docs/paper/figures/)** | Pre-peak IF score curves per event (Luch, SY-12, placebos…) |
+| **[LIMITATIONS.md](docs/paper/LIMITATIONS.md)** | Honest limits (small N, level vs ramp, TLE noise) |
+| **[FOUNDATION_QUANT_VALIDATION.md](docs/FOUNDATION_QUANT_VALIDATION.md)** | Doctrine + what is proven |
+| **[Walk-forward PoC HTML](src/frontend/public/reports/walkforward_poc.html)** | Interactive story for demo |
+| **Mission board UI** | `cd src/frontend && npm run dev` → Open PoC for judges |
 
-Some satellites change how they fly — relocating in GEO, irregular station-keeping, persistent micro-maneuvers, or “following” another object. Public catalogs (TLE) exist, but raw tables are not **attention intelligence**.
-
-**Athena-SDA** turns public orbits + public space weather into:
-
-1. A **noise / normality score** (“has this object left its statistical baseline?”) — continuous monitor  
-2. A **priority tier** (XGBoost weak labels + fuzzy + proximity — **operational ranking**, not scientific proof)  
-3. An **explanation** for the operator (Bob copilot + quant HTML reports)  
-4. **Case studies** on open-source report windows: how Hurst / Shannon / CUSUM / IF scores behave on known atypical regimes (walk-forward, past-only) vs placebos  
-
-The 3D globe is the **demo** (extra tracks may decorate the scene). The **models and proof** target the **military watchlist**: quant noise + Isolation Forest + multi-year TLE + military case studies vs civil EO baselines. See [`docs/FOUNDATION_QUANT_VALIDATION.md`](docs/FOUNDATION_QUANT_VALIDATION.md).
-
----
-
-## 2. What we mean by “noise” and “anomaly” (plain language)
-
-### Everyday analogy
-
-Think of each satellite as a patient with a **vital-signs chart** (altitude / orbital size over time).
-
-| Medical idea | Athena idea |
-|--------------|-------------|
-| Blood pressure series | Semi-major axis (SMA) / orbital elements over weeks |
-| “Is today’s chart weird **for this patient**?” | Isolation Forest vs **that object’s past** |
-| “Triage color: green / yellow / red” | NORMAL → ANOMALOUS → SUSPECT → HOSTILE (XGBoost + fuzzy) |
-| “Is the patient near a critical ward?” | Distance + cointegration vs protected **assets** |
-| “Did labs go bad **before** the hospital wrote the report?” | Walk-forward vs open-source report anchors |
-
-### Precise definitions (still readable)
-
-| Term | Meaning in Athena |
-|------|-------------------|
-| **Noise** | Structure in the orbital time series that is **not** quiet Keplerian coasting: irregular Δaltitude, persistent drift, complex control patterns, rare jumps, non-stationarity. We measure it with several **math features** (below), not with one magic number. |
-| **Anomaly score** | A number in **[0, 1]** from Isolation Forest: how **isolated / rare** the current feature vector is compared with the object’s **past** windows (plus space-weather context). Higher = more anomalous **regime**. |
-| **Regime change** | The joint profile of features no longer looks like “normal life” for that object (maneuvers, inspection-like control, busy GEO station-keeping). |
-| **Pair / shadowing risk** | Separate channel: geometry (distance) + **cointegration** of two altitude series (do they “move together”?). Used for **priority**, not as the walk-forward hit criterion. |
-| **Hard hit (validation)** | In walk-forward: `anomaly_score ≥ 0.50` near a **public report date**. |
-
-**We do not claim** that “anomaly = proven hostile intent.”  
-**We claim** that the series left its statistical baseline — often **before** open reporting.
-
----
-
-## 3. Methodology at a glance (for any reader)
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  A. DATA                                                        │
-│     Public TLE history + daily CelesTrak + GFZ F10.7/Ap/Kp      │
-└────────────────────────────┬────────────────────────────────────┘
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  B. WINDOW                                                      │
-│     Last ~20 epochs for one NORAD → time series of SMA, etc.    │
-└────────────────────────────┬────────────────────────────────────┘
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  C. QUANT NOISE VECTOR (features)                               │
-│     Kepler + math toolkit + space weather + (optional) pairs    │
-│     “Describe the noise” — no learning yet                      │
-└────────────────────────────┬────────────────────────────────────┘
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  D. LEARNED MODELS                                              │
-│     Isolation Forest → anomaly_score  (rarity vs past)          │
-│     XGBoost → class + probabilities (operational tier)        │
-└────────────────────────────┬────────────────────────────────────┘
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  E. DECISION LAYERS (not heavy ML training)                     │
-│     Fuzzy rules · pair_risk · Kelly attention · data quality    │
-└────────────────────────────┬────────────────────────────────────┘
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│  F. OUTPUT                                                      │
-│     Risk board JSON · quant HTML · globe · Bob briefing         │
-│     Walk-forward: prove noise rose before public report anchors │
-└─────────────────────────────────────────────────────────────────┘
+```bash
+# Regenerate proof tables + figures
+python scripts/run_paper_validation.py --threshold 0.50
+python scripts/plot_prepeak_curves.py
 ```
 
-**Daily rule (no cheating):** the baseline for “normal” is trained on the series **up to yesterday** (or `asof − holdout` in walk-forward). **Today’s** window is only **compared**, never mixed into that day’s training labels as future knowledge.
+---
+
+## 1. What the project does (intent)
+
+There are tens of thousands of objects in orbit. Operators cannot watch all equally.
+
+**Athena-SDA** focuses a **military-first watchlist** and turns public TLE + space weather into:
+
+1. **Noise / anomaly score** — is this object’s recent series statistically rare vs **normality anchors** (baseline + asset)?  
+2. **Priority** — XGBoost weak labels + fuzzy + **suspect×asset** pair risk (attention, not scientific proof)  
+3. **Explanation** — Bob (LLM or local) + quant HTML; **never rewrites** quant scores  
+4. **Validation** — walk-forward past-only on open-source **report anchors** (Gunter, CSIS, SWF…) vs **civil EO placebos**
+
+The 3D globe may show decorative tracks. **Models and proof** target the military watchlist and quant pipeline.
+
+### Intent (one line)
+
+> Continuous tracking of **micro-anomalies** and strange motion regimes on **military-interest** satellites — co-occurring with periods discussed in open reports — **not** future prediction or classified intent proof.
 
 ---
 
-## 4. Quantitative noise framework (mathematical toolbox)
+## 2. Noise and anomaly (definitions)
 
-Almost every tool in `src/engine.py` becomes a **number in the feature vector**.  
-Those numbers are the **language** the ML models speak.
+| Term | Meaning |
+|------|---------|
+| **Noise** | Structure in the orbital time series that is not quiet Keplerian coasting: irregular Δaltitude, **persistent** drift, complex control, jumps, non-stationarity |
+| **Anomaly score** | \([0,1]\) from Isolation Forest: how rare the current feature vector is vs trained normality (+ space weather) |
+| **Micro-trajectory / persistence** | Multi-scale Hurst & Shannon (full vs short window), CUSUM, ΔSMA, maneuver proxies |
+| **Pair risk** | Distance + cointegration suspect→asset — **priority** channel, not IF hit criterion |
+| **Hard hit (validation)** | `anomaly_score ≥ 0.50` near public \(t_{\text{peak}}\) under past-only walk-forward |
 
-### 4.1 How to read this table
+**We do not claim** anomaly = proven espionage.  
+**We claim** elevated **quant noise regimes** on interest cases relative to quiet controls, under a locked past-only protocol.
 
-- **Plain meaning** — for non-specialists  
-- **What it catches in orbit** — SDA intuition  
-- **Goes into ML?** — Isolation Forest / XGBoost
+---
 
-| Tool | Plain meaning | Orbital intuition | IF | XGB |
-|------|---------------|-------------------|----|-----|
-| **Shannon entropy** | How *messy* are altitude steps? | Irregular burns / chaotic SK spread the histogram | ✓ | ✓ |
-| **Kolmogorov proxy** | Is the up/down pattern hard to compress? | Active control → complex string of moves | ✓ | ✓ |
-| **Hurst (R/S)** | Does the series keep drifting one way? | H ≫ 0.5 → persistent low-thrust / controlled drift | ✓ | ✓ |
-| **L1-CUSUM** | Did the series *break* recently? | Structural change / maneuver onset | ✓ | ✓ |
-| **Mandelbrot tail** | Are there rare extreme jumps? | Impulsive ΔV-like spikes | ✓ | ✓ |
-| **ADF test** | Is the series non-stationary? | Ongoing maneuver / non-mean-reverting regime | ✓ | ✓ |
-| **ΔSMA / maneuver count** | How far / how often did altitude move? | Slot relocation, busy GEO ops | ✓ | ✓ |
-| **RKHS spectral anomaly** | Is this feature mix typical vs a normal reference cloud? | Multivariate “weirdness” support | ✓ | ✓ |
-| **Ricci (Ollivier proxy)** | Local geometric “curvature” along the track | Convergence / neighborhood distortion | ✓ | ✓ |
-| **Persistent homology H0/H1** | Topology of the position cloud | Closed orbit vs escape-like shape (proxy) | ✓ | ✓ |
-| **Chern–Simons proxy** | Break of angular-momentum conservation signature | Non-Keplerian / propulsion-like force | ✓ | ✓ |
-| **Williams score** | Static context (country / purpose / orbit class) | Prior interest, not dynamics | ✓ | ✓ |
-| **Space weather** (F10.7, Ap, Kp…) | Is the Sun “stormy”? | Separate **drag** (esp. LEO) from intentional change | ✓ | ✓ |
-| **Distance to asset** | How close to a protected satellite? | RPO / conjunction priority | — | ✓ |
-| **Cointegration** | Do two altitude series move together? | Shadowing / escort pattern | — | ✓ |
-| **Łukasiewicz implication** | Soft logical consistency (fuzzy implication) | Rule-like support signal | — | ✓ |
-| **anomaly_score** (from IF) | How rare is the full profile? | Main **noise** output | — | ✓ (input) |
+## 3. Pipeline (data → quant → detection → priority → explain)
 
-**Isolation Forest** deliberately **excludes** distance / cointegration / Łukasiewicz so it measures **“this object’s own series noise”**, not “who it is next to.”  
-**XGBoost** **includes** geometry + cointegration + the IF score for **operational triage**.
+```
+Public TLE (history + daily) + GFZ space weather (F10.7 / Ap / Kp / storm)
+        ↓
+Sliding window (~20+ epochs) → quantitative noise features (engine.py)
+        ↓
+Isolation Forest (train: baseline+asset only, past-only) → anomaly_score
+        ↓
+Priority: XGB (weak labels) + fuzzy + pair_risk + Kelly + data quality
+        ↓
+Board JSON + quant HTML + Bob briefing (scores immutable)
+        ↓
+Walk-forward / paper validation vs open-source anchors + placebos
+```
 
-Deeper math write-up: [`docs/references/mathematical_foundation.md`](docs/references/mathematical_foundation.md).
+**Daily rule:** IF normality is trained on windows ending **before** cutoff (e.g. yesterday). Today is **scored only**.
 
-### 4.2 One formula judges can remember
+| Role | Doctrine |
+|------|----------|
+| **baseline** | Civil EO/meteo — **IF normality train**; calibration only on board |
+| **asset** | Protect — IF train anchor + platform health / pair target |
+| **suspect** | Military interest — **primary detection** of micro-anomaly noise |
+
+---
+
+## 4. Quantitative toolbox + space weather
+
+Features live in `src/engine.py` / `src/models.py` / `src/space_weather.py`.
+
+| Block | Examples | Role |
+|-------|----------|------|
+| Keplerian | SMA, ecc, inc, RAAN, \(n\) | Geometry |
+| Deltas / activity | ΔSMA 7d/30d, maneuver count | Relocation / burns |
+| **Persistence (multi-scale)** | Hurst full/short, `persistence_hurst_gap`, Shannon full/short | Micro-trajectory / sustained control |
+| Complexity / breaks | Kolmogorov proxy, L1-CUSUM, ADF, Mandelbrot | Pattern + structural change |
+| Topology proxies | Chern–Simons, Ricci, H0/H1 (proxy mode) | Structural (approximate) |
+| **Space weather (GFZ)** | F10.7, Ap, Kp, 7d deltas, **geomagnetic_storm** | Separate **solar drag** from intentional change |
+| Pairs (not in IF) | min distance, cointegration | Shadowing / RPO **priority** |
+
+**IF** excludes distance/coint so it measures **series strangeness**.  
+**XGB / pairs** add geometry for **operator priority**.
 
 \[
 \text{anomaly\_score} = \mathrm{clip}\bigl(0.5 - \mathrm{IF.decision\_function}(x),\, 0,\, 1\bigr)
 \]
 
-- \(x\) = feature vector of the current window  
-- IF is fit only on **past** windows of that object (and related history under the daily protocol)  
-- Higher score ⇒ current \(x\) is more **isolated** (anomalous) in feature space  
-
-Walk-forward **hard hit**: \(\text{anomaly\_score} \ge 0.50\) near a public report date \(t_{\text{peak}}\).
+Calibrated ops thr: \(\max(0.50,\ p_{95}\) of normality-anchor scores). Paper primary table uses **thr = 0.50**.
 
 ---
 
-## 5. How each model / layer fits (architecture for judges)
+## 5. Models and layers
 
-Nothing is random decoration. Each block has a **job**.
+| Layer | Job |
+|-------|-----|
+| Feature engine | Deterministic math → noise vector |
+| **Isolation Forest** (monitor) | Normality = baseline+asset; score all; alert doctrine on **suspects** |
+| Isolation Forest (pipeline) | Separate joblib for priority stack |
+| XGBoost | Weak-label priority tiers (not detection proof) |
+| Fuzzy / Kelly / DQ | Calibration, attention budget, reliability |
+| Pair score | Suspect×asset relationship risk |
+| Bob | Explains scores; may cite open-source cases; **never** changes numbers |
+| Registry | `models/registry.json` — versioned micro-models |
 
-| Layer | Type | Job | Answers the question… |
-|-------|------|-----|------------------------|
-| **Feature engine** (`engine.py`) | Formulas (not “trained”) | Turn a TLE window into a **noise profile** | “What kind of weird is this?” |
-| **Isolation Forest** | Unsupervised ML | Learn “normal” joint patterns in the **past**; score rarity | “Is this rare **for this object**?” |
-| **XGBoost** | Supervised ML | Map profile + geometry → 4 tiers with probabilities | “What **priority class** under our doctrine?” |
-| **Labels for XGB** | Heuristic rules | Weak labels (proximity + Hurst + coint + ΔSMA…) | Training targets — **not** classified ground truth |
-| **Fuzzy Mamdani** | Rule system | Soft calibration under TLE age / distance uncertainty | “How confident is the linguistic threat?” |
-| **Pair score** | Geometry + cointegration | `pair_risk` for suspect↔asset | “Is there a **relationship** to a protected asset?” |
-| **Attention fusion** | Weighted blend | ≈ `0.45·anomaly + 0.55·pair_risk` | “What should the operator look at first?” |
-| **Kelly** | Allocation formula | Sensor / analyst **attention budget** | “How much attention to spend?” |
-| **Data quality** | Checks | Stale TLE, gaps, absurd jumps → `UNRELIABLE_DATA` | “Is the alert even trustworthy?” |
-| **Bob (Granite / local)** | LLM or template | Explains **precomputed** scores in natural language | “Tell me **why** in operator language” |
-| **Walk-forward** | Validation protocol | Replay history past-only vs open reports + placebos | “Did noise rise **before** public stories?” |
-
-### XGBoost classes (operational tiers)
-
-| Class | Intuition (doctrine, not court evidence) |
-|-------|------------------------------------------|
-| **NORMAL** | Profile consistent with quiet ops / benign context |
-| **ANOMALOUS** | Series noise / break without strong hostile geometry |
-| **SUSPECT** | Elevated dynamics and/or mid-range approach / pursuit cues |
-| **HOSTILE** | Strong geometry (very close) **and** active dynamics / shadowing cues |
-
-**Important for judges:** XGBoost **accuracy ~95%** on the test set means “agrees with our heuristic labels,” **not** “95% proof of real-world espionage.”  
-The **scientific validation story** for pre-report detection is the **Isolation Forest walk-forward**, not XGB accuracy.
+**XGBoost accuracy** = agreement with heuristic labels only — **not** proof of real-world hostility.
 
 ---
 
-## 6. End-to-end quant pipeline (daily ops)
+## 6. Proof documentation (what exists)
 
-```
-1. Ingest     TLE history store + today’s CelesTrak + GFZ weather
-2. Quality    TLE age, gaps, SMA jumps → reliability flag
-3. Features   extract_satellite_features() → full noise vector
-4. Pairs      distance + cointegration for suspect×asset
-5. IF         past-only baseline → anomaly_score
-6. XGB        class + proba (uses anomaly + geometry + math + weather)
-7. Fuzzy      linguistic calibration
-8. Fuse       final tier + threat level for UI
-9. Attention  0.45·anom + 0.55·pair  (+ Kelly)
-10. Publish   risk_report JSON · quant HTML · optional Bob
-```
+| Doc | Content |
+|-----|---------|
+| [`docs/paper/PROTOCOL_PREREGISTRATION.md`](docs/paper/PROTOCOL_PREREGISTRATION.md) | Locked analysis plan (endpoints, thr, inclusions) |
+| [`docs/paper/METHODS_AND_CLAIMS.md`](docs/paper/METHODS_AND_CLAIMS.md) | Methods + formal Claims **A** and **B** |
+| [`docs/paper/RESULTS_TABLES.md`](docs/paper/RESULTS_TABLES.md) | Results tables after last validation run |
+| [`docs/paper/figures/`](docs/paper/figures/) | **Score curves vs asof** with \(t_{\text{peak}}\) line (report anchors) |
+| [`docs/paper/LIMITATIONS.md`](docs/paper/LIMITATIONS.md) | Manuscript-ready limitations |
+| [`data/alerts/paper_validation_latest.json`](data/alerts/paper_validation_latest.json) | Machine-readable Claims A+B package |
+| [`docs/FOUNDATION_QUANT_VALIDATION.md`](docs/FOUNDATION_QUANT_VALIDATION.md) | Doctrine + military training rules |
+| [`docs/WALKFORWARD_DETECTION_CASE_REPORT.md`](docs/WALKFORWARD_DETECTION_CASE_REPORT.md) | Case-by-case narrative (Luch, SY-12…) |
+| [`docs/FULL_ML_REPORT_ATHENA_SDA.md`](docs/FULL_ML_REPORT_ATHENA_SDA.md) | Long ML report |
 
-Code map:
+### Claims A + B (headline)
 
-| Concern | Path |
-|---------|------|
-| Math features | `src/engine.py` |
-| Feature extract + IF/XGB train/predict | `src/models.py` |
-| Daily monitor | `src/anomaly_monitor.py` · `scripts/run_anomaly_monitor.py` |
-| Pairs | `src/pair_score.py` |
-| Walk-forward | `src/walkforward.py` · `scripts/run_walkforward.py` |
-| Quant HTML | `src/quant_report.py` |
-| Board schema | `docs/SCHEMA_RISK_REPORT.md` |
-| Frontend | `src/frontend/` |
+| Claim | Meaning | Latest headline result |
+|-------|---------|------------------------|
+| **A** | Interest (open-source GEO anchors): elevated past-only IF scores / hard hits | **5/5** hard · mean max **~0.65** |
+| **B** | Civil EO placebos: lower scores / near-zero hard hits | **0/7** hard · mean max **~0.46** · p95 **~0.50** |
+| Separation | Interest > placebo | Gap **~0.19** · Mann–Whitney **p≈0.001** |
+
+**Open-source reports / “news”:** used as **\(t_{\text{peak}}\) anchors** (Gunter, CSIS, SWF, press…).  
+Conclusion: quant noise is **elevated in those case windows** relative to placebos — **co-occurrence** with documented atypical regimes — **not** “we predicted the article.”
+
+Expanded unique-NORAD panel (LEO/MEO) is reported honestly: harder hits concentrated on **GEO Luch/SY-12 class** + some cases (e.g. Tianhe assembly); not every LEO recon hard-hits.
 
 ---
 
-## 7. Walk-forward validation (proof of concept)
+## 7. Walk-forward protocol (no cheating)
 
-**What we claim:** continuous **normality → deviation → alert** using quant features + Isolation Forest.  
-**What open-source reports are:** *case-study anchors* to show how Hurst / Shannon / CUSUM / IF scores look on known atypical regimes (GEO relocation, RPO-like activity) — **not** labels the model is trained to “predict”.
-
-**Protocol**
-
-1. Pick an open-source episode (e.g. Olymp-K near Intelsat — Gunter / CSIS).  
-2. For each date `asof` on a 14-day grid, train IF **only** on windows ending before `asof − 3 days` (past-only).  
-3. Score the window at `asof`.  
-4. Compare **interest** vs **placebo** distributions (mean max score, pre-peak mean, `noise_ramp`, `first_fold_hit`).  
-5. Hard hit ≥ 0.50 near `t_peak` is a **secondary** flag; if `first_fold_hit` and `noise_ramp ≈ 0`, the honest reading is **persistent elevated regime**, not “ramp discovered just before the news”.
-
-**Results (expanded panel v3, thr=0.50, past-only IF)**
-
-| Group | N | Hard hit | Mean max | Note |
-|-------|---|----------|----------|------|
-| **GEO interest** (Luch×3 + SY-12 + Luch-2) | 5 | **5/5** | **~0.60** | persistent elevated regime |
-| **Civil EO placebos** (TERRA, AQUA, Landsat, NOAA…) | 7 | **0/7** | **~0.46** | quiet controls |
-| Full interest (incl. SY-7, Yaogan-29) | 7 | 5/7 | ~0.56 | LEO recon not always hard-hit |
-| Full placebos (incl. Starlink, GPS) | 9 | 2/9 | ~0.48 | constellation/GNSS can look “noisy” |
-
-**Honest takeaway:** separation is strong for **GEO Luch/SY-12 vs civil EO**. Active constellation / GNSS placebos can hard-hit (station-keeping) — report them, don’t hide them. `noise_ramp` mean ≈ 0 ⇒ **level**, not ramp forecast.
-
-**Metrics in JSON** (`data/alerts/walkforward/`): `noise_ramp`, `first_fold_hit`, `p95_max_anomaly_placebo`, `subgroup_geo_interest_vs_civil_eo_placebo`, unique NORAD counts.
-
-**Architecture (Palantir-inspired, not a patent claim)**
-
-- Micro-models versioned in `models/registry.json` (monitor IF ≠ pipeline IF — hot-swap pattern).  
-- DAG: Data → Features (math quant) → IF score → priority head (XGB weak labels) → LLM explains (Bob does not rewrite scores).  
-- XGBoost accuracy is **weak-label agreement only** — scientific validation is IF + walk-forward + placebos.
-
-Interactive write-up: [`src/frontend/public/reports/walkforward_poc.html`](src/frontend/public/reports/walkforward_poc.html)  
-Case-by-case markdown: [`docs/WALKFORWARD_DETECTION_CASE_REPORT.md`](docs/WALKFORWARD_DETECTION_CASE_REPORT.md)
+1. Event from `data/catalog/events_walkforward.json` (interest + placebos).  
+2. For each `asof` (step 14 d): fit IF only on windows ending before `asof − 3 d` (normality anchors).  
+3. Score target at `asof`.  
+4. Metrics: hard hit, pre-peak mean/max, `noise_ramp`, `first_fold_hit`, unique NORADs.  
+5. If `first_fold_hit` and `noise_ramp ≈ 0` → **persistent elevated regime**, not ramp-to-news.
 
 ```bash
 python scripts/smoke_test.py
 python scripts/run_anomaly_monitor.py train-baseline
-python -c "from src.models import train_and_save_models; train_and_save_models()"
-python scripts/run_walkforward.py run
-python scripts/run_walkforward.py summary
+python scripts/run_paper_validation.py --run-wf --threshold 0.50
+python scripts/plot_prepeak_curves.py
 ```
 
 ---
 
-## 8. Data — what is real, what is in Git
+## 8. Data
 
-| Resource | Approx size | On GitHub? | Role |
-|----------|-------------|------------|------|
-| HF cache `space-track-tle-history` | ~15 GB | No | Raw multi-year download |
-| Filtered TLE parquet (watchlist) | ~13 MB | Yes | Training / scoring base |
-| Space weather daily | ~0.1 MB | Yes | F10.7, Ap, Kp |
-| ML models (IF, XGB, RKHS) | ~5 MB | Yes | Inference |
-| Alerts + walk-forward + quant HTML | ~1–2 MB | Yes | Demo outputs |
-
-| Layer | Source |
-|-------|--------|
-| Historical TLE | Hugging Face `juliensimon/space-track-tle-history` (filtered) |
-| Daily TLE | CelesTrak GP by `CATNR` |
-| Space weather | GFZ Potsdam |
-| Validation anchors | Open reports (Gunter, CSIS, AMOS/SWF, press) |
+| Resource | On GitHub? | Role |
+|----------|------------|------|
+| Filtered TLE parquet (watchlist) | Yes | Train / score |
+| GFZ space weather daily | Yes | F10.7, Ap, Kp, storm |
+| Models (IF monitor/pipeline, XGB, registry) | Yes | Inference |
+| Alerts + walk-forward + paper JSON + figures | Yes | Demo / proof |
+| Full HF TLE cache | No (~15 GB) | Optional re-seed |
 
 ```bash
 python scripts/run_anomaly_monitor.py seed-history --hf --start-year 2014
 python scripts/run_anomaly_monitor.py seed-space-weather --force --start-year 2014
-python scripts/run_anomaly_monitor.py status
+python scripts/run_anomaly_monitor.py run-daily
+powershell -File scripts/sync_frontend_data.ps1   # or bash scripts/sync_frontend_data.sh
 ```
 
 ---
@@ -299,29 +208,15 @@ python scripts/run_anomaly_monitor.py status
 cd Athena-SDA
 python -m venv .venv
 # Windows: .venv\Scripts\activate
-# Linux/macOS: source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env   # optional: WATSONX_*, SPACETRACK_*
+# optional .env: WATSONX_* for Bob live
 ```
 
-**Never** commit `.env` or API tokens.
-
-### Daily scoring
+**UI (only frontend):**
 
 ```bash
-python scripts/run_anomaly_monitor.py run-daily
-PYTHONPATH=. python scripts/run_quant_report.py --all
-bash scripts/sync_frontend_data.sh   # Windows: powershell scripts/sync_frontend_data.ps1
-python scripts/run_anomaly_monitor.py status
-```
-
-### UI
-
-```bash
-# Tactical globe + mission board (the only UI)
 cd src/frontend && npm install && npm run dev
 # http://127.0.0.1:3000
-# Mission board → “Open PoC for judges” → walkforward_poc.html
 ```
 
 ---
@@ -330,53 +225,54 @@ cd src/frontend && npm install && npm run dev
 
 ```
 Athena-SDA/
-├── README.md                 ← you are here (methodology for judges)
+├── README.md
 ├── requirements.txt
-├── scripts/                  ← monitor, walkforward, quant, data sync, ingest
+├── scripts/                 # monitor, walkforward, paper validation, figures, sync
 ├── src/
-│   ├── engine.py             ← mathematical noise toolbox
-│   ├── models.py             ← features + IF + XGB
-│   ├── anomaly_monitor.py    ← daily past-only scoring
-│   ├── walkforward.py        ← pre-report validation
-│   ├── pair_score.py         ← distance + cointegration
-│   ├── quant_report.py       ← per-object HTML
-│   ├── bob.py                ← copilot explanations
-│   └── frontend/             ← React globe + mission board (the UI)
-│       └── public/reports/   ← quant_*.html + walkforward_poc.html
-├── models/                   ← isolation_forest*.joblib, xgboost_model.joblib
-├── data/                     ← history, weather, catalog, alerts
-└── docs/                     ← deep reports, schema, case studies
+│   ├── engine.py            # quant math
+│   ├── space_weather.py     # GFZ F10.7 / Ap / Kp
+│   ├── models.py            # features + IF/XGB
+│   ├── doctrine.py          # military roles
+│   ├── calibration.py       # thr from normality p95
+│   ├── anomaly_monitor.py   # daily score
+│   ├── walkforward.py       # past-only validation
+│   ├── pair_score.py
+│   ├── bob.py
+│   ├── model_registry.py
+│   └── frontend/            # React mission board + globe
+├── models/                  # joblibs + registry.json
+├── data/                    # history, weather, catalog, alerts
+└── docs/
+    ├── paper/               # proof pack (methods, results, figures, limitations)
+    ├── FOUNDATION_QUANT_VALIDATION.md
+    └── FULL_ML_REPORT_ATHENA_SDA.md
 ```
 
 ---
 
-## 11. What we claim vs what we do not claim
+## 11. Claim vs do-not-claim
 
 | We claim | We do **not** claim |
 |----------|---------------------|
-| TLE and GFZ weather are **real public** data | Classified ground-truth of hostile intent |
-| Math features describe **orbital noise / regime** | That any single theory “proves espionage” |
-| IF detects **deviation from that object’s past** | That XGB accuracy ~95% = real-world hostility detection |
-| Walk-forward: noise often **before** open reports (5/5 vs 0/3 placebos) | An intention oracle or future TCA predictor |
-| Multi-object features support **priority** (RPO / shadowing) | Full SGP4 conjunction replacement |
+| Real public TLE + GFZ weather | Classified hostile intent |
+| Quant features describe **orbital noise / micro-anomaly regimes** | That any score alone “proves espionage” |
+| IF detects deviation vs **military normality doctrine** | Prediction of future maneuvers or news dates |
+| Claims A+B: GEO interest vs civil EO separation under past-only protocol | XGB accuracy = real-world hostility rate |
+| Open reports as **anchors** for co-occurrence reading | Full SGP4 TCA replacement |
 
-**Recommended jury sentence**
+**Jury / paper sentence**
 
-> “We filter multi-year public TLEs for 24 objects, build a quantitative noise vector (information theory, persistence, change detection, geometry, space weather), train Isolation Forest only on the past, and show that documented GEO inspection cases were statistically loud months before open-source reports — while civil placebos on the same calendars were not. XGBoost and fuzzy layers turn that noise plus proximity into an operator priority board; Bob explains the scores.”
+> We build a quantitative orbital noise vector (persistence, complexity, change detection, geometry, **space weather**) from multi-year public TLEs on a military-first watchlist. Isolation Forest is trained only on baseline/asset normality and scored past-only. Documented GEO inspection/shadowing cases show elevated anomaly scores versus civil EO placebos under the same protocol (Claims A+B). Priority layers and Bob turn scores into operator attention — without rewriting the quant detection.
 
 ---
 
 ## 12. Security and citation
 
-- Secrets only in `.env` / environment variables  
-- `.gitignore` blocks `.env`, `node_modules`, large caches, local backups  
-
-**Cite appropriately**
-
-- **GFZ** Kp/Ap/F10.7 — Matzka et al. / GFZ terms (CC BY 4.0 for published indices)  
-- **TLE** — CelesTrak / Space-Track (or mirrors) per provider terms  
-- **Open reports** — Gunter, CSIS, AMOS/SWF, Breaking Defense, etc., as narrative anchors only  
+- Secrets only in `.env` (never commit tokens)  
+- **GFZ** Kp/Ap/F10.7 — Matzka et al. / GFZ (CC BY 4.0 where applicable)  
+- **TLE** — CelesTrak / Space-Track / HF mirrors per terms  
+- **Open reports** — Gunter, CSIS, AMOS/SWF, press: narrative anchors only  
 
 ---
 
-*Athena-SDA — quantitative orbital noise + ML + real data for Space Domain Awareness.*
+*Athena-SDA — military-first quant noise tracking for SDA attention · public data · past-only validation.*
