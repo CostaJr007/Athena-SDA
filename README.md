@@ -1,57 +1,59 @@
 # Athena-SDA
 
-**Military-first Space Domain Awareness (SDA) copilot** — track **orbital micro-anomalies** (persistent / strange motion regimes) on **suspect** platforms, protect high-value **assets**, and explain scores with quant math + ML + AI.
+**Military-first Space Domain Awareness (SDA) copilot** — quantitative **orbital noise analysis**, **micro-anomaly detection**, and **operational alerts** on a curated watchlist of high-value assets and military-interest platforms.
 
 | | |
 |--|--|
 | **Challenge** | IBM SkillsBuild AI Builders — *Advance Space Exploration with AI* |
-| **Intent** | **Not** predicting the future or “news dates”. **Yes** continuous tracking of micro-anomalies that resemble **strange / inspection-like / shadowing-like** regimes discussed in open sources |
-| **Focus** | Protect **assets** · monitor **suspects** · **baseline** = normality for Isolation Forest only |
+| **Mission** | Analyze TLE time series + space weather; detect elevated noise / micro-trajectory regimes; prioritize attention on **suspects** vs protected **assets** |
 | **Repo** | [github.com/CostaJr007/Athena-SDA](https://github.com/CostaJr007/Athena-SDA) |
-| **Watchlist** | 24 NORADs (7 asset · 11 suspect · 6 baseline) |
-| **History** | ~12.5 years TLEs (2014-01-01 → 2026-07-27) · ~250k epochs |
-| **Space weather** | **GFZ real** F10.7 / Ap / Kp + storm flag (drag vs maneuver context) |
-| **Proof (Claims A+B)** | GEO military cases **5/5** hard hits vs civil EO **0/7** · gap ~0.19 · Mann–Whitney p≈0.001 |
+| **Watchlist** | 24 NORADs (7 **asset** · 11 **suspect** · 6 **baseline**) |
+| **History** | ~12.5 years of TLEs (2014-01-01 → 2026-07-27) · ~250k epochs |
+| **Space weather** | GFZ F10.7 / Ap / Kp + geomagnetic storm flag |
+| **Validation** | Claims **A+B**: GEO interest **5/5** hard hits vs civil EO **0/7** · gap ~0.19 · Mann–Whitney *p*≈0.001 |
 
 ---
 
-### Open these first (judges / paper)
+### Start here
 
-| Resource | What you get |
-|----------|----------------|
-| **[Artigo LaTeX (prova completa)](docs/paper/athena_sda_article.tex)** | Artigo: matemática, dados, treino, Claims A+B, figuras |
-| **[Paper pack](docs/paper/METHODS_AND_CLAIMS.md)** | Formal claims, methods, preregistered protocol |
-| **[RESULTS_TABLES.md](docs/paper/RESULTS_TABLES.md)** | Headline numbers + per-event table |
-| **[Figures](docs/paper/figures/)** | Pre-peak IF score curves per event (Luch, SY-12, placebos…) |
-| **[LIMITATIONS.md](docs/paper/LIMITATIONS.md)** | Honest limits (small N, level vs ramp, TLE noise) |
-| **[FOUNDATION_QUANT_VALIDATION.md](docs/FOUNDATION_QUANT_VALIDATION.md)** | Doctrine + what is proven |
-| **[Walk-forward PoC HTML](src/frontend/public/reports/walkforward_poc.html)** | Interactive story for demo |
-| **Mission board UI** | `cd src/frontend && npm run dev` → Open PoC for judges |
+| Resource | Content |
+|----------|---------|
+| **[LaTeX paper](docs/paper/athena_sda_article.tex)** | Full methods, math, Claims A+B, figures, glossary |
+| **[Methods & claims](docs/paper/METHODS_AND_CLAIMS.md)** | Formal validation design |
+| **[Results tables](docs/paper/RESULTS_TABLES.md)** | Headline metrics + per-event table |
+| **[Figures](docs/paper/figures/)** | Pre-peak IF score curves (asof vs \(t_{\mathrm{peak}}\)) |
+| **[Limitations](docs/paper/LIMITATIONS.md)** | Sample size, TLE noise, orbit-class scope |
+| **[Foundation](docs/FOUNDATION_QUANT_VALIDATION.md)** | Doctrine + what is validated |
+| **[Walk-forward PoC HTML](src/frontend/public/reports/walkforward_poc.html)** | Demo narrative for judges |
+| **Mission board UI** | `cd src/frontend && npm run dev` |
 
 ```bash
-# Regenerate proof tables + figures
 python scripts/run_paper_validation.py --threshold 0.50
 python scripts/plot_prepeak_curves.py
 ```
 
 ---
 
-## 1. What the project does (intent)
+## 1. What Athena-SDA does
 
-There are tens of thousands of objects in orbit. Operators cannot watch all equally.
+Operators cannot watch the entire catalog equally. Athena-SDA focuses a **military-first watchlist** and turns **public TLE history** + **GFZ space weather** into:
 
-**Athena-SDA** focuses a **military-first watchlist** and turns public TLE + space weather into:
+1. **Quantitative noise features** — Shannon, multi-scale Hurst, CUSUM, Kolmogorov proxy, ADF, ΔSMA, topology proxies, solar/geomagnetic context  
+2. **Anomaly score** — Isolation Forest past-only, trained on **baseline + asset** normality  
+3. **Alerts** — elevated score and/or day-over-day shift on **suspects** (and platform-health flags on assets)  
+4. **Priority** — XGBoost weak labels, fuzzy calibration, suspect×asset pair risk, Kelly attention  
+5. **Explanation** — quant HTML reports + Bob copilot (reads scores; does not recompute them)  
+6. **Validation** — walk-forward against open-source report windows and civil EO placebos  
 
-1. **Noise / anomaly score** — is this object’s recent series statistically rare vs **normality anchors** (baseline + asset)?  
-2. **Priority** — XGBoost weak labels + fuzzy + **suspect×asset** pair risk (attention, not scientific proof)  
-3. **Explanation** — Bob (LLM or local) + quant HTML; **never rewrites** quant scores  
-4. **Validation** — walk-forward past-only on open-source **report anchors** (Gunter, CSIS, SWF…) vs **civil EO placebos**
+### Watchlist doctrine
 
-The 3D globe may show decorative tracks. **Models and proof** target the military watchlist and quant pipeline.
+| Role | Examples | ML role |
+|------|----------|---------|
+| **asset** | ISS, GPS, DMSP, allied SAR | IF normality anchor; protect / pair target |
+| **suspect** | Luch/Olymp-K, Yaogan, Shiyan, CSS | Primary **noise / micro-anomaly** detection |
+| **baseline** | TERRA, AQUA, Landsat, NOAA | IF train only (quiet EO reference) |
 
-### Intent (one line)
-
-> Continuous tracking of **micro-anomalies** and strange motion regimes on **military-interest** satellites — co-occurring with periods discussed in open reports — **not** future prediction or classified intent proof.
+Suspects are **not** used to define IF normality. Commercial mega-constellations (e.g. Starlink) are excluded from IF training.
 
 ---
 
@@ -59,146 +61,125 @@ The 3D globe may show decorative tracks. **Models and proof** target the militar
 
 | Term | Meaning |
 |------|---------|
-| **Noise** | Structure in the orbital time series that is not quiet Keplerian coasting: irregular Δaltitude, **persistent** drift, complex control, jumps, non-stationarity |
-| **Anomaly score** | \([0,1]\) from Isolation Forest: how rare the current feature vector is vs trained normality (+ space weather) |
-| **Micro-trajectory / persistence** | Multi-scale Hurst & Shannon (full vs short window), CUSUM, ΔSMA, maneuver proxies |
-| **Pair risk** | Distance + cointegration suspect→asset — **priority** channel, not IF hit criterion |
-| **Hard hit (validation)** | `anomaly_score ≥ 0.50` near public \(t_{\text{peak}}\) under past-only walk-forward |
-
-**We do not claim** anomaly = proven espionage.  
-**We claim** elevated **quant noise regimes** on interest cases relative to quiet controls, under a locked past-only protocol.
+| **Noise** | Structure in the orbital series beyond quiet Keplerian coasting: irregular Δaltitude, persistent drift, complex control, jumps, non-stationarity |
+| **Anomaly score** \(s\in[0,1]\) | How isolated the current feature vector is vs trained normality (Isolation Forest) |
+| **Micro-trajectory / persistence** | Multi-scale Hurst & Shannon, CUSUM, ΔSMA, maneuver proxies |
+| **Pair risk** | Distance + cointegration suspect→asset — **priority** channel |
+| **Hard hit** | \(s \ge 0.50\) near public \(t_{\mathrm{peak}}\) in past-only walk-forward |
 
 ---
 
-## 3. Pipeline (data → quant → detection → priority → explain)
+## 3. Pipeline
 
 ```
-Public TLE (history + daily) + GFZ space weather (F10.7 / Ap / Kp / storm)
+Public TLE (history + daily) + GFZ F10.7/Ap/Kp
         ↓
-Sliding window (~20+ epochs) → quantitative noise features (engine.py)
+Sliding window → quantitative noise feature vector
         ↓
-Isolation Forest (train: baseline+asset only, past-only) → anomaly_score
+Isolation Forest (train: baseline+asset, past-only) → anomaly_score
         ↓
-Priority: XGB (weak labels) + fuzzy + pair_risk + Kelly + data quality
+Priority: XGB + fuzzy + pair_risk + Kelly + data quality
         ↓
-Board JSON + quant HTML + Bob briefing (scores immutable)
+Risk board JSON · quant HTML · Bob briefing
         ↓
-Walk-forward / paper validation vs open-source anchors + placebos
+Walk-forward / paper validation (open-source anchors + placebos)
 ```
 
-**Daily rule:** IF normality is trained on windows ending **before** cutoff (e.g. yesterday). Today is **scored only**.
-
-| Role | Doctrine |
-|------|----------|
-| **baseline** | Civil EO/meteo — **IF normality train**; calibration only on board |
-| **asset** | Protect — IF train anchor + platform health / pair target |
-| **suspect** | Military interest — **primary detection** of micro-anomaly noise |
-
----
-
-## 4. Quantitative toolbox + space weather
-
-Features live in `src/engine.py` / `src/models.py` / `src/space_weather.py`.
-
-| Block | Examples | Role |
-|-------|----------|------|
-| Keplerian | SMA, ecc, inc, RAAN, \(n\) | Geometry |
-| Deltas / activity | ΔSMA 7d/30d, maneuver count | Relocation / burns |
-| **Persistence (multi-scale)** | Hurst full/short, `persistence_hurst_gap`, Shannon full/short | Micro-trajectory / sustained control |
-| Complexity / breaks | Kolmogorov proxy, L1-CUSUM, ADF, Mandelbrot | Pattern + structural change |
-| Topology proxies | Chern–Simons, Ricci, H0/H1 (proxy mode) | Structural (approximate) |
-| **Space weather (GFZ)** | F10.7, Ap, Kp, 7d deltas, **geomagnetic_storm** | Separate **solar drag** from intentional change |
-| Pairs (not in IF) | min distance, cointegration | Shadowing / RPO **priority** |
-
-**IF** excludes distance/coint so it measures **series strangeness**.  
-**XGB / pairs** add geometry for **operator priority**.
+**Past-only rule:** IF is trained only on windows ending before the cutoff (e.g. yesterday). The current window is **scored**, not mixed into that baseline.
 
 \[
-\text{anomaly\_score} = \mathrm{clip}\bigl(0.5 - \mathrm{IF.decision\_function}(x),\, 0,\, 1\bigr)
+s(x)=\mathrm{clip}\bigl(0.5-\mathrm{IF.decision\_function}(x),\,0,\,1\bigr)
 \]
 
-Calibrated ops thr: \(\max(0.50,\ p_{95}\) of normality-anchor scores). Paper primary table uses **thr = 0.50**.
+---
+
+## 4. Quantitative features and space weather
+
+| Block | Examples | Role in analysis |
+|-------|----------|------------------|
+| Keplerian | SMA, ecc, inc, RAAN, \(n\) | Geometry |
+| Deltas / activity | ΔSMA 7d/30d, maneuver count | Relocation / active ops |
+| Persistence | Hurst full/short, \(\Delta H\), Shannon full/short | Micro-trajectory / sustained control |
+| Complexity / breaks | Kolmogorov proxy, L1-CUSUM, ADF, Mandelbrot tail | Pattern complexity, regime change |
+| Topology proxies | Chern–Simons, Ricci, H0/H1 (proxy mode) | Structural support features |
+| **Space weather (GFZ)** | F10.7, Ap, Kp, 7d deltas, geomagnetic_storm | Solar/geomagnetic context for LEO drag vs maneuver |
+| Pairs (not in IF) | min distance, cointegration | Shadowing / proximity priority |
+
+**IF** measures series noise. **Pairs / XGB** rank operational attention.
 
 ---
 
-## 5. Models and layers
+## 5. Models
 
-| Layer | Job |
-|-------|-----|
-| Feature engine | Deterministic math → noise vector |
-| **Isolation Forest** (monitor) | Normality = baseline+asset; score all; alert doctrine on **suspects** |
-| Isolation Forest (pipeline) | Separate joblib for priority stack |
-| XGBoost | Weak-label priority tiers (not detection proof) |
-| Fuzzy / Kelly / DQ | Calibration, attention budget, reliability |
+| Layer | Function |
+|-------|----------|
+| Feature engine (`engine.py`) | Deterministic math → noise vector |
+| Monitor Isolation Forest | Normality = baseline+asset; daily anomaly scores |
+| Pipeline Isolation Forest | Separate artifact for priority stack |
+| XGBoost | Weak-label priority tiers (operational) |
+| Fuzzy / Kelly / DQ | Soft calibration, attention budget, reliability |
 | Pair score | Suspect×asset relationship risk |
-| Bob | Explains scores; may cite open-source cases; **never** changes numbers |
+| Bob | Natural-language briefing from computed scores |
 | Registry | `models/registry.json` — versioned micro-models |
 
-**XGBoost accuracy** = agreement with heuristic labels only — **not** proof of real-world hostility.
-
 ---
 
-## 6. Proof documentation (what exists)
+## 6. Validation (Claims A + B)
 
-| Doc | Content |
-|-----|---------|
-| [`docs/paper/PROTOCOL_PREREGISTRATION.md`](docs/paper/PROTOCOL_PREREGISTRATION.md) | Locked analysis plan (endpoints, thr, inclusions) |
-| [`docs/paper/METHODS_AND_CLAIMS.md`](docs/paper/METHODS_AND_CLAIMS.md) | Methods + formal Claims **A** and **B** |
-| [`docs/paper/RESULTS_TABLES.md`](docs/paper/RESULTS_TABLES.md) | Results tables after last validation run |
-| [`docs/paper/figures/`](docs/paper/figures/) | **Score curves vs asof** with \(t_{\text{peak}}\) line (report anchors) |
-| [`docs/paper/LIMITATIONS.md`](docs/paper/LIMITATIONS.md) | Manuscript-ready limitations |
-| [`data/alerts/paper_validation_latest.json`](data/alerts/paper_validation_latest.json) | Machine-readable Claims A+B package |
-| [`docs/FOUNDATION_QUANT_VALIDATION.md`](docs/FOUNDATION_QUANT_VALIDATION.md) | Doctrine + military training rules |
-| [`docs/WALKFORWARD_DETECTION_CASE_REPORT.md`](docs/WALKFORWARD_DETECTION_CASE_REPORT.md) | Case-by-case narrative (Luch, SY-12…) |
-| [`docs/FULL_ML_REPORT_ATHENA_SDA.md`](docs/FULL_ML_REPORT_ATHENA_SDA.md) | Long ML report |
+| Claim | Statement | GEO headline result |
+|-------|-----------|---------------------|
+| **A** | Interest cases at open-source anchors show elevated past-only IF scores / hard hits | **5/5** hard · mean max **~0.65** |
+| **B** | Civil EO placebos under the same protocol stay lower | **0/7** hard · mean max **~0.46** · p95 **~0.50** |
+| Separation | Interest scores stochastically higher | Gap **~0.19** · Mann–Whitney **p≈0.001** |
 
-### Claims A + B (headline)
+Open-source reports (Gunter, CSIS, SWF, press) supply **event windows** \(t_{\mathrm{peak}}\) for evaluation. Expanded LEO/MEO interest panels are reported separately (hard-hit rate lower; GEO remains the headline panel).
 
-| Claim | Meaning | Latest headline result |
-|-------|---------|------------------------|
-| **A** | Interest (open-source GEO anchors): elevated past-only IF scores / hard hits | **5/5** hard · mean max **~0.65** |
-| **B** | Civil EO placebos: lower scores / near-zero hard hits | **0/7** hard · mean max **~0.46** · p95 **~0.50** |
-| Separation | Interest > placebo | Gap **~0.19** · Mann–Whitney **p≈0.001** |
+### Paper pack
 
-**Open-source reports / “news”:** used as **\(t_{\text{peak}}\) anchors** (Gunter, CSIS, SWF, press…).  
-Conclusion: quant noise is **elevated in those case windows** relative to placebos — **co-occurrence** with documented atypical regimes — **not** “we predicted the article.”
-
-Expanded unique-NORAD panel (LEO/MEO) is reported honestly: harder hits concentrated on **GEO Luch/SY-12 class** + some cases (e.g. Tianhe assembly); not every LEO recon hard-hits.
-
----
-
-## 7. Walk-forward protocol (no cheating)
-
-1. Event from `data/catalog/events_walkforward.json` (interest + placebos).  
-2. For each `asof` (step 14 d): fit IF only on windows ending before `asof − 3 d` (normality anchors).  
-3. Score target at `asof`.  
-4. Metrics: hard hit, pre-peak mean/max, `noise_ramp`, `first_fold_hit`, unique NORADs.  
-5. If `first_fold_hit` and `noise_ramp ≈ 0` → **persistent elevated regime**, not ramp-to-news.
+| Path | Content |
+|------|---------|
+| [`docs/paper/athena_sda_article.tex`](docs/paper/athena_sda_article.tex) | Full English paper (math, results, **glossary**) |
+| [`docs/paper/PROTOCOL_PREREGISTRATION.md`](docs/paper/PROTOCOL_PREREGISTRATION.md) | Locked analysis plan |
+| [`docs/paper/METHODS_AND_CLAIMS.md`](docs/paper/METHODS_AND_CLAIMS.md) | Methods text |
+| [`docs/paper/RESULTS_TABLES.md`](docs/paper/RESULTS_TABLES.md) | Result tables |
+| [`docs/paper/figures/`](docs/paper/figures/) | Pre-peak curves |
+| [`docs/paper/LIMITATIONS.md`](docs/paper/LIMITATIONS.md) | Limitations |
+| [`data/alerts/paper_validation_latest.json`](data/alerts/paper_validation_latest.json) | Machine-readable A+B package |
 
 ```bash
 python scripts/smoke_test.py
 python scripts/run_anomaly_monitor.py train-baseline
 python scripts/run_paper_validation.py --run-wf --threshold 0.50
 python scripts/plot_prepeak_curves.py
+cd docs/paper && pdflatex athena_sda_article.tex
 ```
 
 ---
 
-## 8. Data
+## 7. Walk-forward protocol
 
-| Resource | On GitHub? | Role |
-|----------|------------|------|
-| Filtered TLE parquet (watchlist) | Yes | Train / score |
-| GFZ space weather daily | Yes | F10.7, Ap, Kp, storm |
-| Models (IF monitor/pipeline, XGB, registry) | Yes | Inference |
-| Alerts + walk-forward + paper JSON + figures | Yes | Demo / proof |
-| Full HF TLE cache | No (~15 GB) | Optional re-seed |
+1. Load events from `data/catalog/events_walkforward.json`.  
+2. For each `asof` (14-day step): fit IF on normality windows with end before `asof − 3` days.  
+3. Score the target NORAD at `asof`.  
+4. Metrics: hard hit, max score, pre-peak mean, `noise_ramp`, `first_fold_hit`, unique NORAD counts.
+
+---
+
+## 8. Data sources
+
+| Resource | In git? | Role |
+|----------|---------|------|
+| Filtered TLE parquet | Yes | Train / score |
+| GFZ space weather daily | Yes | F10.7, Ap, Kp |
+| Models + registry | Yes | Inference |
+| Alerts, walk-forward, paper JSON, figures | Yes | Demo / proof |
+| Full HF TLE cache | No | Optional re-seed |
 
 ```bash
 python scripts/run_anomaly_monitor.py seed-history --hf --start-year 2014
 python scripts/run_anomaly_monitor.py seed-space-weather --force --start-year 2014
 python scripts/run_anomaly_monitor.py run-daily
-powershell -File scripts/sync_frontend_data.ps1   # or bash scripts/sync_frontend_data.sh
+powershell -File scripts/sync_frontend_data.ps1
 ```
 
 ---
@@ -210,10 +191,7 @@ cd Athena-SDA
 python -m venv .venv
 # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-# optional .env: WATSONX_* for Bob live
 ```
-
-**UI (only frontend):**
 
 ```bash
 cd src/frontend && npm install && npm run dev
@@ -228,52 +206,32 @@ cd src/frontend && npm install && npm run dev
 Athena-SDA/
 ├── README.md
 ├── requirements.txt
-├── scripts/                 # monitor, walkforward, paper validation, figures, sync
+├── scripts/                 # monitor, walkforward, paper validation, plots, sync
 ├── src/
-│   ├── engine.py            # quant math
-│   ├── space_weather.py     # GFZ F10.7 / Ap / Kp
+│   ├── engine.py            # quantitative math
+│   ├── space_weather.py     # GFZ indices
 │   ├── models.py            # features + IF/XGB
 │   ├── doctrine.py          # military roles
-│   ├── calibration.py       # thr from normality p95
-│   ├── anomaly_monitor.py   # daily score
-│   ├── walkforward.py       # past-only validation
+│   ├── calibration.py       # threshold from normality quantiles
+│   ├── anomaly_monitor.py   # daily scoring
+│   ├── walkforward.py
 │   ├── pair_score.py
 │   ├── bob.py
-│   ├── model_registry.py
 │   └── frontend/            # React mission board + globe
-├── models/                  # joblibs + registry.json
-├── data/                    # history, weather, catalog, alerts
-└── docs/
-    ├── paper/               # proof pack (methods, results, figures, limitations)
-    ├── FOUNDATION_QUANT_VALIDATION.md
-    └── FULL_ML_REPORT_ATHENA_SDA.md
+├── models/
+├── data/
+└── docs/paper/              # article, figures, claims, limitations
 ```
 
 ---
 
-## 11. Claim vs do-not-claim
+## 11. Security and citation
 
-| We claim | We do **not** claim |
-|----------|---------------------|
-| Real public TLE + GFZ weather | Classified hostile intent |
-| Quant features describe **orbital noise / micro-anomaly regimes** | That any score alone “proves espionage” |
-| IF detects deviation vs **military normality doctrine** | Prediction of future maneuvers or news dates |
-| Claims A+B: GEO interest vs civil EO separation under past-only protocol | XGB accuracy = real-world hostility rate |
-| Open reports as **anchors** for co-occurrence reading | Full SGP4 TCA replacement |
-
-**Jury / paper sentence**
-
-> We build a quantitative orbital noise vector (persistence, complexity, change detection, geometry, **space weather**) from multi-year public TLEs on a military-first watchlist. Isolation Forest is trained only on baseline/asset normality and scored past-only. Documented GEO inspection/shadowing cases show elevated anomaly scores versus civil EO placebos under the same protocol (Claims A+B). Priority layers and Bob turn scores into operator attention — without rewriting the quant detection.
+- Secrets only in `.env`  
+- **GFZ** Kp/Ap/F10.7 — Matzka et al. / GFZ terms  
+- **TLE** — CelesTrak / Space-Track / HF mirrors per provider terms  
+- **Open reports** — Gunter, CSIS, AMOS/SWF, press as evaluation anchors  
 
 ---
 
-## 12. Security and citation
-
-- Secrets only in `.env` (never commit tokens)  
-- **GFZ** Kp/Ap/F10.7 — Matzka et al. / GFZ (CC BY 4.0 where applicable)  
-- **TLE** — CelesTrak / Space-Track / HF mirrors per terms  
-- **Open reports** — Gunter, CSIS, AMOS/SWF, press: narrative anchors only  
-
----
-
-*Athena-SDA — military-first quant noise tracking for SDA attention · public data · past-only validation.*
+*Athena-SDA — quantitative orbital noise analysis and micro-anomaly alerts for military-first SDA.*

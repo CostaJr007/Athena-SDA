@@ -8,23 +8,22 @@
 
 ## 0. Executive Summary
 
-Athena-SDA **does not predict the future** and **does not invent space tracking data**. It operates as follows:
+Athena-SDA performs **quantitative orbital noise analysis** and **micro-anomaly detection** as follows:
 
 1. **Ingests real TLE data** from public objects (military-first watchlist, 24 NORAD IDs).  
-2. **Extracts a mathematical noise vector** (Shannon, Hurst, Kolmogorov proxy, CUSUM, Mandelbrot tail, ADF, RKHS, topology, etc.) over sliding windows of each satellite's time series.  
-3. **Injects real space weather metrics** (F10.7, Ap, Kp, SN + rolling 7d) into the feature vector at window timestamps to distinguish solar drag from intentional maneuvers.  
-4. **Trains Isolation Forest on past series history** (holdout: today's data is excluded from the baseline).  
-5. **Evaluates the latest window** against the past baseline → yields `anomaly_score`.  
-6. **Weights operational attention** using suspect×asset pairs (distance + cointegration) and, in parallel, classifies using XGBoost + Mamdani Fuzzy + Kelly Criterion (doctrine layer, weak labels).  
-7. **Validates lead-time** via walk-forward analysis against open-source report anchors (e.g. Luch/Olymp-K), without look-ahead leakage.
+2. **Extracts a mathematical noise vector** (Shannon, Hurst, Kolmogorov proxy, CUSUM, Mandelbrot tail, ADF, topology proxies, etc.) over sliding windows of each satellite's time series.  
+3. **Injects real space weather metrics** (F10.7, Ap, Kp, SN + rolling 7d) into the feature vector at window timestamps for solar/geomagnetic context.  
+4. **Trains Isolation Forest on baseline+asset past windows** (holdout: current day excluded from baseline).  
+5. **Scores the latest window** against that baseline → `anomaly_score`.  
+6. **Ranks operational attention** using suspect×asset pairs (distance + cointegration) and XGBoost + Mamdani Fuzzy + Kelly (priority layer, weak labels).  
+7. **Validates** via walk-forward against open-source report anchors and civil EO placebos (past-only folds).
 
-| Statement for Evaluation | Status |
-|--------------------------|--------|
+| Statement | Status |
+|-----------|--------|
 | Orbital data is authentic | **Yes** (TLE history + CelesTrak) |
 | Solar/geomagnetic weather is authentic | **Yes** (GFZ Potsdam + NOAA optional) |
-| Anomaly detection = series deviation | **Yes** (IF past-train / present-score) |
-| HOSTILE labels = ground-truth intelligence | **No** — heuristic / operational doctrine |
-| Engine core derived from IBM noise paper | **No** (see §11) |
+| Anomaly detection = series noise vs normality | **Yes** (IF past-train / present-score) |
+| XGB classes = operational priority tiers | **Yes** (weak labels) |
 
 ---
 

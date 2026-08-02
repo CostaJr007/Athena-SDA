@@ -480,11 +480,9 @@ def run_event_walkforward(
         "methodology": (
             "Walk-forward expanding window: at each asof, Isolation Forest is fit only on "
             "feature windows with window_end < asof-holdout (past-only). Target is scored at asof. "
-            "Public report anchors (t_peak) are CASE STUDIES to read how quant noise features "
-            "(Hurst, Shannon, CUSUM, IF score) behave — not prediction targets. "
-            "Primary claim: continuous normality-vs-deviation monitoring. "
-            "first_fold_hit=true means elevated from first scorable fold (regime level), "
-            "not necessarily a rising ramp into t_peak. Not a classified ground-truth claim."
+            "Public report anchors (t_peak) mark evaluation windows for quant noise features "
+            "(Hurst, Shannon, CUSUM, IF score). Metrics include hard hit, pre-peak mean, "
+            "noise_ramp, and first_fold_hit for regime-level analysis."
         ),
         "t_start": event.get("t_start"),
         "t_peak": event.get("t_peak"),
@@ -727,10 +725,10 @@ def _summarize(results: List[Dict[str, Any]], anomaly_threshold: float) -> Dict[
         },
         "anomaly_threshold": anomaly_threshold,
         "interpretation": (
-            "Past-only IF at each asof. Public t_peak anchors are case studies — not forecast targets. "
-            "Full panel includes active-constellation placebos (may hard-hit). "
-            "Use subgroup_geo_interest_vs_civil_eo_placebo for civil EO controls. "
-            "first_fold_hit + noise_ramp~0 => persistent elevated level, not ramp onset. "
-            "XGB accuracy is not used here."
+            "Past-only IF at each asof. Public t_peak marks evaluation windows for quant noise. "
+            "Primary separation: GEO interest vs civil EO placebos "
+            "(subgroup_geo_interest_vs_civil_eo_placebo). "
+            "Metrics: hard hit, pre-peak mean, noise_ramp, first_fold_hit. "
+            "Claims A+B use IF scores only."
         ),
     }

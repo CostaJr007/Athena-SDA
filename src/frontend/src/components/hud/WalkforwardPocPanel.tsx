@@ -191,13 +191,12 @@ export default function WalkforwardPocPanel({
             ML proof of concept · walk-forward
           </div>
           <h2 className="mt-0.5 text-[15px] font-semibold leading-snug text-zinc-50 md:text-[16px]">
-            Noise detected before public reports
+            Quantitative noise detection · walk-forward validation
           </h2>
           <p className="mt-1 text-[12px] leading-relaxed text-zinc-400 md:text-[13px]">
             Isolation Forest past-only · thr 0.50 ·{' '}
-            <span className="text-emerald-300">5/5 interest</span> ·{' '}
-            <span className="text-zinc-300">GEO 5/5 vs civil EO 0/7</span> ·
-            persistent regime (honest panel)
+            <span className="text-emerald-300">GEO interest 5/5</span> ·{' '}
+            <span className="text-zinc-300">civil EO placebos 0/7</span>
           </p>
         </div>
         <div className="flex shrink-0 flex-col gap-1.5 sm:flex-row">
@@ -263,48 +262,37 @@ function OverviewTab() {
   return (
     <div className="space-y-3">
       <p className="text-zinc-200">
-        Athena turns public TLE + space weather into a <strong className="text-zinc-50">noise profile</strong>.
-        Isolation Forest asks: is this object rare compared with <em>its own past</em>?
-        Walk-forward replays history <strong className="text-zinc-50">without future data</strong> and
-        checks whether that score rose before open-source report dates.
+        Athena turns public TLE + space weather into a{' '}
+        <strong className="text-zinc-50">quantitative noise profile</strong>. Isolation Forest
+        scores how rare the current window is versus normality anchors (baseline + asset).
+        Walk-forward evaluates scores on open-source report windows and civil EO placebos under a
+        past-only protocol.
       </p>
 
       <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-        <Stat k="Interest hits" v="5/5" ok />
-        <Stat k="Placebo hits" v="0/3" />
-        <Stat k="Noise ramp" v="~0 (level)" ok />
-        <Stat k="Mean max score" v="0.603" />
+        <Stat k="GEO interest" v="5/5 hard" ok />
+        <Stat k="Civil EO" v="0/7 hard" ok />
+        <Stat k="Mean max GEO" v="0.65" ok />
+        <Stat k="Mean max EO" v="0.46" />
       </div>
 
-      <div className="grid gap-2 md:grid-cols-2">
-        <div className="border border-emerald-400/35 bg-[#0c1814] p-2.5">
-          <div className="text-[11px] uppercase tracking-[0.14em] text-emerald-300/90">
-            We claim
-          </div>
-          <ul className="mt-1.5 list-disc space-y-1 pl-4 text-[12px] text-zinc-200 md:text-[13px]">
-            <li>Real public TLE + GFZ weather</li>
-            <li>Past-only training at each test date</li>
-            <li>Hard anomaly before report anchors on 5/5 cases</li>
-            <li>Civil placebos on same calendars did not hard-hit</li>
-          </ul>
+      <div className="border border-emerald-400/35 bg-[#0c1814] p-2.5">
+        <div className="text-[11px] uppercase tracking-[0.14em] text-emerald-300/90">
+          What Athena does
         </div>
-        <div className="border border-white/15 bg-[#0c0e12] p-2.5">
-          <div className="text-[11px] uppercase tracking-[0.14em] text-zinc-500">
-            We do not claim
-          </div>
-          <ul className="mt-1.5 list-disc space-y-1 pl-4 text-[12px] text-zinc-300 md:text-[13px]">
-            <li>Classified ground-truth of hostile intent</li>
-            <li>XGB accuracy = espionage detection</li>
-            <li>Lead-time = single discrete burn prediction</li>
-            <li>Secret TCA times (anchors are open publications)</li>
-          </ul>
-        </div>
+        <ul className="mt-1.5 list-disc space-y-1 pl-4 text-[12px] text-zinc-200 md:text-[13px]">
+          <li>Ingest public multi-year TLE + GFZ F10.7/Ap/Kp</li>
+          <li>Build quant noise features (Hurst, Shannon, CUSUM, …)</li>
+          <li>Train IF on baseline+asset; score suspects for micro-anomalies</li>
+          <li>Validate GEO interest vs civil EO placebos (Claims A+B)</li>
+          <li>Priority layer (pairs, XGB) ranks operator attention</li>
+        </ul>
       </div>
 
       <p className="border border-sky-400/30 bg-[#0a1218] p-2.5 text-[12px] text-zinc-200 md:text-[13px]">
-        <strong className="text-sky-200">Jury one-liner:</strong> multi-year public orbits →
-        quantitative noise vector → Isolation Forest on the past only → Luch/Shiyan
-        statistically loud months before Gunter/CSIS/Breaking Defense — TERRA/NOAA placebos not.
+        <strong className="text-sky-200">Summary:</strong> multi-year public orbits → quantitative
+        noise vector → past-only Isolation Forest → elevated scores on Luch/Shiyan-class windows
+        relative to TERRA/AQUA/NOAA placebos under the same protocol.
       </p>
     </div>
   )

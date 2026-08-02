@@ -7,16 +7,16 @@
 
 ---
 
-## 1. What This Test Proves (and What it Does Not Prove)
+## 1. What this test measures
 
-| Claims | Does Not Claim |
-|--------|----------------|
-| For **public report anchors**, vector noise (IF score) was **elevated prior to / during the report window** for target suspects | That the model had classified intelligence on espionage intent |
-| Scientific placebos (TERRA, NOAA-20) **did not** produce a hard hit (score ≥ 0.50 within window) | That XGB accuracy equals ground-truth HOSTILE intent |
-| Each fold is trained **strictly without future data** relative to `asof` | That lead-time of 180+ days implies a single maneuver (it reflects sustained anomalous GEO regime) |
+| Result | Description |
+|--------|-------------|
+| Interest cases | For **public report anchors**, IF noise scores were **elevated** in the evaluation window for target suspects |
+| Civil EO placebos | TERRA / AQUA / Landsat / NOAA-class controls under the same protocol |
+| Protocol | Each fold trains **only on past data** relative to `asof` (past-only Isolation Forest) |
 
-**Key Takeaway for Evaluators:**  
-> We did not predict the future. We demonstrated that, using **past data only** at each evaluation date, the time series of Luch/Shiyan was **statistically anomalous** months before open-source report publication — whereas civil control satellites in the same timeframe were not.
+**Key takeaway:**  
+> Using past data only at each evaluation date, Luch/Shiyan-class series show elevated quant noise scores on open-source report windows, with clear separation from civil EO placebos under Claims A+B (see `docs/paper/`).
 
 ---
 

@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Script de setup automatizado para Fedora Linux
-# Projeto Athena-SDA
+# Automated setup script for Fedora Linux
+# Athena-SDA project
 
 echo "=========================================================="
-echo "      Configurando Ambiente do Projeto Athena-SDA         "
+echo "      Configuring Athena-SDA project environment          "
 echo "=========================================================="
 
 # 1. Update and install system dependencies
@@ -13,26 +13,24 @@ sudo dnf update -y
 sudo dnf groupinstall "Development Tools" -y
 sudo dnf install python3-devel python3-pip python3-virtualenv python3-tkinter -y
 
-# 2. Criar ambiente virtual Python
-echo "-> 2. Criando ambiente virtual Python (.venv)..."
+# 2. Create Python virtual environment
+echo "-> 2. Creating Python virtual environment (.venv)..."
 if [ ! -d ".venv" ]; then
     python3 -m venv .venv
-    echo "Ambiente virtual criado."
+    echo "Virtual environment created."
 else
     echo "Virtual environment (.venv) already exists."
 fi
 
 # 3. Activate and install Python dependencies
-echo "-> 3. Ativando o ambiente virtual e instalando bibliotecas de ML..."
+echo "-> 3. Activating venv and installing ML libraries..."
 source .venv/bin/activate
 
 pip install --upgrade pip setuptools wheel
-
-# Install scientific, ML, TDA, visualization, and AI libraries
-pip install numpy pandas scipy pandas-ta numba scikit-learn xgboost scikit-fuzzy ripser persim ibm-watsonx-ai
+pip install -r requirements.txt
 
 echo "=========================================================="
 echo "    Setup complete!                                      "
-echo "    Para ativar o ambiente virtual na pasta do projeto, rode: "
+echo "    Activate the environment with:                       "
 echo "    source .venv/bin/activate                             "
 echo "=========================================================="

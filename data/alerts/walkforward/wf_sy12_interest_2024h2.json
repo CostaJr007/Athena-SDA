@@ -13,7 +13,7 @@
     "AMOS / open SSA: SY-12 GEO proximity literature",
     "SWF Chinese RPO fact sheet (SY-12 family)"
   ],
-  "notes": "Shiyan-12 01 — plataforma experimental; âncora de interesse 2024H2 (sem ground-truth HOSTIL).",
+  "notes": "Shiyan-12 01 — experimental platform; 2024H2 interest anchor.",
   "params": {
     "step_days": 14,
     "holdout_days": 3,

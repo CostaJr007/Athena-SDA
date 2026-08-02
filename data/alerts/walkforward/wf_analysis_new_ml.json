@@ -1123,7 +1123,7 @@
     "sources": [
       "Control EO scientific same calendar as Luch Intelsat 2015"
     ],
-    "notes": "Placebo: não deve mostrar rampa de anomalia como Luch no mesmo período.",
+    "notes": "Placebo control on the same calendar as the Luch window.",
     "norad": 25994,
     "name": "TERRA",
     "placebo": true,

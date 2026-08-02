@@ -1,11 +1,11 @@
 {
   "version": 1,
   "updated": "2026-07-25",
-  "description": "Watchlist militar-first Athena-SDA. Roles: asset (proteger), suspect (caçar/monitorar), baseline (âncora de normalidade p/ Isolation Forest). NORADs validados via CelesTrak GP (2026-07-25).",
+  "description": "Military-first Athena-SDA watchlist. Roles: asset (protect), suspect (monitor), baseline (normality anchor for Isolation Forest). NORADs validated via CelesTrak GP (2026-07-25).",
   "doctrine": {
-    "assets": "Plataformas de alto valor a proteger — proximidade/Kelly elevam severidade quando suspeitos se aproximam.",
-    "suspects": "Plataformas de interesse (recon/SIGINT/experimental/PNT dual-use). Treino e score de comportamento + pares vs assets.",
-    "baseline": "Civis estáveis (EO/meteo/constelação). Ancoram o IF: 'órbita normal' sem narrativa de ameaça."
+    "assets": "High-value platforms to protect — proximity/Kelly raise severity when suspects approach.",
+    "suspects": "Platforms of interest (recon/SIGINT/experimental/PNT dual-use). Behavior scoring + pairs vs assets.",
+    "baseline": "Stable civil EO/meteo/constellation anchors for IF: normal orbit without threat narrative."
   },
   "objects": [
     {
@@ -15,7 +15,7 @@
       "country": "INTL",
       "purpose": "crewed_station",
       "orbit_class": "LEO",
-      "notes": "Plataforma tripulada de alto valor; referência de manobra/station-keeping."
+      "notes": "Crewed high-value platform; maneuver/station-keeping reference."
     },
     {
       "norad_id": 39166,
@@ -24,7 +24,7 @@
       "country": "US",
       "purpose": "navigation",
       "orbit_class": "MEO",
-      "notes": "GPS — PNT crítico; ameaça a GNSS é prioridade SDA."
+      "notes": "GPS — critical PNT; GNSS threat is an SDA priority."
     },
     {
       "norad_id": 28874,
@@ -33,7 +33,7 @@
       "country": "US",
       "purpose": "navigation",
       "orbit_class": "MEO",
-      "notes": "Segundo âncora GPS na watchlist."
+      "notes": "Second GPS anchor on the watchlist."
     },
     {
       "norad_id": 28054,
@@ -42,7 +42,7 @@
       "country": "US",
       "purpose": "military",
       "orbit_class": "LEO",
-      "notes": "Meteorologia militar US (DMSP)."
+      "notes": "US military meteorology (DMSP)."
     },
     {
       "norad_id": 35951,
@@ -51,7 +51,7 @@
       "country": "US",
       "purpose": "military",
       "orbit_class": "LEO",
-      "notes": "DMSP F18 — asset meteo militar."
+      "notes": "DMSP F18 — military meteo asset."
     },
     {
       "norad_id": 31598,
@@ -60,7 +60,7 @@
       "country": "IT",
       "purpose": "reconnaissance",
       "orbit_class": "LEO",
-      "notes": "SAR aliado (Itália); dual-use EO de alto valor."
+      "notes": "Allied SAR (Italy); high-value dual-use EO."
     },
     {
       "norad_id": 31698,
@@ -69,7 +69,7 @@
       "country": "DE",
       "purpose": "reconnaissance",
       "orbit_class": "LEO",
-      "notes": "SAR aliado (Alemanha)."
+      "notes": "Allied SAR (Germany)."
     },
     {
       "norad_id": 41038,
@@ -78,7 +78,7 @@
       "country": "CN",
       "purpose": "reconnaissance",
       "orbit_class": "LEO",
-      "notes": "Reconhecimento chinês (série Yaogan) — candidato a manobra/RPO."
+      "notes": "Chinese recon (Yaogan series) — maneuver/RPO candidate."
     },
     {
       "norad_id": 32289,
@@ -87,7 +87,7 @@
       "country": "CN",
       "purpose": "reconnaissance",
       "orbit_class": "LEO",
-      "notes": "Yaogan-3 — recon CN histórico ainda em catálogo."
+      "notes": "Yaogan-3 — historical CN recon still in catalog."
     },
     {
       "norad_id": 39150,
@@ -96,7 +96,7 @@
       "country": "CN",
       "purpose": "earth obs",
       "orbit_class": "LEO",
-      "notes": "EO chinês de alta resolução (Gaofen)."
+      "notes": "Chinese high-resolution EO (Gaofen)."
     },
     {
       "norad_id": 41727,
@@ -105,7 +105,7 @@
       "country": "CN",
       "purpose": "reconnaissance",
       "orbit_class": "LEO",
-      "notes": "Gaofen-3 SAR — capacidade dual-use."
+      "notes": "Gaofen-3 SAR — dual-use capability."
     },
     {
       "norad_id": 39208,
@@ -114,7 +114,7 @@
       "country": "CN",
       "purpose": "military",
       "orbit_class": "LEO",
-      "notes": "Experimental chinês (Shiyan) — histórico de manobras/RPO em open source."
+      "notes": "Chinese experimental (Shiyan) — open-source maneuver/RPO history."
     },
     {
       "norad_id": 50321,
@@ -123,7 +123,7 @@
       "country": "CN",
       "purpose": "military",
       "orbit_class": "LEO",
-      "notes": "Shiyan-12 — plataforma experimental recente."
+      "notes": "Shiyan-12 — recent experimental platform."
     },
     {
       "norad_id": 40258,
@@ -132,7 +132,7 @@
       "country": "RU",
       "purpose": "sigint",
       "orbit_class": "GEO",
-      "notes": "Olymp-K / Luch — satélite russo de retransmissão/SIGINT frequentemente citado em shadowing GEO."
+      "notes": "Olymp-K / Luch — Russian relay/SIGINT often cited for GEO shadowing."
     },
     {
       "norad_id": 55841,
@@ -141,7 +141,7 @@
       "country": "RU",
       "purpose": "sigint",
       "orbit_class": "GEO",
-      "notes": "Segundo Olymp-K — par ideal p/ narrativa de perseguição em GEO."
+      "notes": "Second Olymp-K — GEO pursuit narrative pair."
     },
     {
       "norad_id": 48865,
@@ -150,7 +150,7 @@
       "country": "RU",
       "purpose": "military",
       "orbit_class": "LEO",
-      "notes": "Cosmos militar russo recente (catálogo público visual)."
+      "notes": "Recent Russian military Cosmos (public visual catalog)."
     },
     {
       "norad_id": 43603,
@@ -159,7 +159,7 @@
       "country": "CN",
       "purpose": "navigation",
       "orbit_class": "MEO",
-      "notes": "Beidou PNT dual-use — contraste com GPS assets."
+      "notes": "BeiDou PNT dual-use — contrast with GPS assets."
     },
     {
       "norad_id": 48274,
@@ -168,7 +168,7 @@
       "country": "CN",
       "purpose": "crewed_station",
       "orbit_class": "LEO",
-      "notes": "Estação espacial chinesa — alto valor adversário / manobras de docking."
+      "notes": "Chinese space station — high-value platform / docking maneuvers."
     },
     {
       "norad_id": 25994,
@@ -177,7 +177,7 @@
       "country": "US",
       "purpose": "scientific",
       "orbit_class": "LEO",
-      "notes": "EO científico estável — âncora IF."
+      "notes": "Stable scientific EO — IF anchor."
     },
     {
       "norad_id": 27424,
@@ -186,7 +186,7 @@
       "country": "US",
       "purpose": "scientific",
       "orbit_class": "LEO",
-      "notes": "A-Train científico — baseline passivo."
+      "notes": "A-Train scientific — passive baseline."
     },
     {
       "norad_id": 43013,
@@ -195,7 +195,7 @@
       "country": "US",
       "purpose": "earth obs",
       "orbit_class": "LEO",
-      "notes": "Meteo polar civil — baixa manobra relativa."
+      "notes": "Civil polar meteo — relatively low maneuver rate."
     },
     {
       "norad_id": 39084,
@@ -204,7 +204,7 @@
       "country": "US",
       "purpose": "earth obs",
       "orbit_class": "LEO",
-      "notes": "EO civil clássico."
+      "notes": "Classic civil EO."
     },
     {
       "norad_id": 28654,
@@ -213,7 +213,7 @@
       "country": "US",
       "purpose": "earth obs",
       "orbit_class": "LEO",
-      "notes": "NOAA legado — série estável."
+      "notes": "Legacy NOAA — stable series."
     },
     {
       "norad_id": 44714,
@@ -222,7 +222,7 @@
       "country": "US",
       "purpose": "commercial",
       "orbit_class": "LEO",
-      "notes": "Constelação comercial; station-keeping típico (não hostil)."
+      "notes": "Commercial constellation; typical station-keeping."
     }
   ]
 }

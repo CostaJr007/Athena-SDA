@@ -1,41 +1,42 @@
-# Compilar o artigo LaTeX (Athena-SDA)
+# Compile the Athena-SDA LaTeX article
 
-## Ficheiro
+## Files
 
-- `docs/paper/athena_sda_article.tex` — artigo completo (PT)
-- Figuras em `docs/paper/figures/`
+- `docs/paper/athena_sda_article.tex` — full paper (English)
+- Figures in `docs/paper/figures/`
 
-## Compilar (local)
+## Build
 
 ```bash
 cd docs/paper
 pdflatex athena_sda_article.tex
 pdflatex athena_sda_article.tex
-# PDF: athena_sda_article.pdf
+# Output: athena_sda_article.pdf
 ```
 
-Requisitos: TeX Live / MiKTeX com `babel-brazil`, `graphicx`, `hyperref`, etc.
+Requires TeX Live / MiKTeX with standard packages (`graphicx`, `hyperref`, `babel`, etc.).
 
-## Regenerar números e figuras antes do PDF final
+## Refresh numbers and figures before final PDF
 
 ```bash
-# na raiz do repo
+# repo root
 python scripts/run_paper_validation.py --threshold 0.50
 python scripts/plot_prepeak_curves.py
 ```
 
-## Conteúdo do artigo
+## Paper structure
 
-1. Introdução e claims A+B  
-2. Doutrina militar-first  
-3. Dados (TLE + GFZ)  
-4. Matemática das features  
+1. Introduction and Claims A+B  
+2. Military-first doctrine  
+3. Data (TLE + GFZ)  
+4. Quantitative feature math  
 5. Isolation Forest past-only  
 6. Walk-forward  
-7. Prioridade (fora de A+B)  
-8. Resultados + figuras pre-peak  
-9. Discussão, limitações, reprodutibilidade  
+7. Priority layer  
+8. Results + figures  
+9. Discussion, limitations, reproducibility  
+10. **Appendix: Glossary** (what each tool does)
 
-## GitHub
+## Git
 
-Após gerar o PDF localmente, podes versionar só o `.tex` (recomendado) ou também o `.pdf` se o repositório aceitar binários.
+Prefer committing `.tex` (and figures already in git). Commit PDF only if your workflow requires it.

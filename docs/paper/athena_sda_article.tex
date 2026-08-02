@@ -1,15 +1,15 @@
 %==============================================================================
-% Athena-SDA — Artigo de fundamentação e prova experimental
-% Compilar a partir de docs/paper/:
+% Athena-SDA — Mathematical foundation and experimental validation
+% Compile from docs/paper/:
 %   pdflatex athena_sda_article.tex
 %   pdflatex athena_sda_article.tex
-% Figuras: figures/prepeak_*.png
+% Figures: figures/prepeak_*.png
 %==============================================================================
 \documentclass[11pt,a4paper]{article}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[brazil]{babel}
+\usepackage[english]{babel}
 \usepackage{lmodern}
 \usepackage{geometry}
 \geometry{margin=2.2cm}
@@ -18,7 +18,6 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{xcolor}
-\usepackage{setspace}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{float}
@@ -33,30 +32,30 @@
   urlcolor=blue!60!black
 }
 
-\title{\textbf{Athena-SDA:} detecção quantitativa de ruído orbital\\
-e microanomalias em satélites de interesse militar\\
-com Isolation Forest past-only e validação walk-forward\\
-frente a âncoras open-source}
+\title{\textbf{Athena-SDA:} quantitative orbital noise detection\\
+and micro-anomaly analysis for military-interest satellites\\
+using past-only Isolation Forest and walk-forward validation\\
+against open-source report anchors}
 
 \author{
-  Projeto Athena-SDA\\
+  Athena-SDA Project\\
   \texttt{https://github.com/CostaJr007/Athena-SDA}\\
   \small IBM SkillsBuild AI Builders --- \textit{Advance Space Exploration with AI}\\
-  \small Fundamentação matemática e prova experimental (Claims~A+B)
+  \small Mathematical foundation and experimental validation (Claims~A+B)
 }
 
-\date{Agosto 2026}
+\date{August 2026}
 
 \begin{document}
 \maketitle
 \begin{abstract}
 \noindent
-Apresentamos o \textbf{Athena-SDA}, um sistema de \textit{Space Domain Awareness} (SDA) com foco militar-first para \textbf{análise e detecção de ruído orbital} e \textbf{microanomalias de trajetória} em plataformas de interesse (\textit{suspects}), gerando \textbf{alertas operacionais} a partir de TLEs públicos e clima espacial GFZ.
-Construímos um vetor de \textbf{features quantitativas} (entropia de Shannon, expoente de Hurst multi-escala, CUSUM, proxy de Kolmogorov, testes de estacionariedade, clima espacial F10.7/Ap/Kp, entre outras) e treinamos um \textbf{Isolation Forest} em âncoras de normalidade (\textit{baseline} civil e \textit{assets} protegidos), com protocolo \textbf{past-only}.
-Validamos por \textbf{walk-forward} em janelas alinhadas a \textbf{reports open-source} e controlos \textbf{placebo} EO civis.
-No painel GEO (Luch/Olymp-K, Shiyan-12, Luch-2): \textbf{5/5} hard hits com limiar $0{,}50$ e média do máximo de score $\approx 0{,}65$, versus \textbf{0/7} hard hits e média $\approx 0{,}46$ nos placebos EO (gap $\approx 0{,}19$; Mann--Whitney unilateral $p\approx 0{,}001$).
-Uma camada de prioridade (XGBoost, pares suspect$\times$asset, fuzzy) e o copiloto Bob explicam e ordenam atenção sem alterar o score quant.
-Definições resumidas de cada ferramenta matemática estão no \textbf{Glossário} (Apêndice~\ref{app:gloss}).
+We present \textbf{Athena-SDA}, a military-first Space Domain Awareness (SDA) system for \textbf{quantitative orbital noise analysis}, \textbf{micro-anomaly detection}, and \textbf{operational alerts} on platforms of interest (\textit{suspects}), using public TLEs and GFZ space weather.
+We build a \textbf{quantitative feature vector} (Shannon entropy, multi-scale Hurst exponent, CUSUM, Kolmogorov proxy, stationarity tests, F10.7/Ap/Kp space weather, among others) and train an \textbf{Isolation Forest} on normality anchors (civil \textit{baseline} and protected \textit{assets}) under a \textbf{past-only} protocol.
+We validate with \textbf{walk-forward} windows aligned to \textbf{open-source reports} and civil EO \textbf{placebo} controls.
+On the GEO panel (Luch/Olymp-K, Shiyan-12, Luch-2): \textbf{5/5} hard hits at threshold $0.50$ with mean max score $\approx 0.65$, versus \textbf{0/7} hard hits and mean $\approx 0.46$ for civil EO placebos (gap $\approx 0.19$; one-sided Mann--Whitney $p\approx 0.001$).
+A priority layer (XGBoost weak labels, suspect$\times$asset pairs, fuzzy rules) and the Bob copilot explain and rank attention without changing the quantitative score.
+Short definitions of each mathematical tool are collected in the \textbf{Glossary} (Appendix~\ref{app:gloss}).
 \end{abstract}
 
 \tableofcontents
@@ -64,240 +63,228 @@ Definições resumidas de cada ferramenta matemática estão no \textbf{Glossár
 \hrule
 \vspace{1em}
 
-%------------------------------------------------------------------------------
-\section{Introdução}
+\section{Introduction}
 \label{sec:intro}
 
-Operadores de SDA não conseguem monitorar igualmente dezenas de milhares de objetos em órbita.
-O Athena-SDA concentra-se em \textbf{análise quantitativa de séries orbitais} e em \textbf{deteção de ruído / microanomalias} em objetos de interesse militar, com geração de \textbf{alertas} e priorização de atenção face a plataformas a proteger.
+SDA operators cannot monitor the full catalog with equal attention.
+Athena-SDA focuses on \textbf{quantitative analysis of orbital time series} and \textbf{detection of noise / micro-anomalies} on military-interest objects, producing \textbf{alerts} and attention priority relative to platforms to protect.
 
-O sistema combina:
+The system combines:
 \begin{enumerate}[leftmargin=*]
-  \item dados públicos (TLE multi-anuais + clima espacial);
-  \item um framework matemático de ruído (Sec.~\ref{sec:math});
-  \item Isolation Forest past-only sob doutrina militar-first (Sec.~\ref{sec:if});
-  \item validação walk-forward face a âncoras de reports e placebos (Sec.~\ref{sec:wf}--\ref{sec:results});
-  \item camadas de prioridade e explicação (Sec.~\ref{sec:priority}).
+  \item public data (multi-year TLEs + space weather);
+  \item a deterministic quantitative noise framework (Sec.~\ref{sec:math});
+  \item past-only Isolation Forest under military-first doctrine (Sec.~\ref{sec:if});
+  \item walk-forward validation against report anchors and placebos (Sec.~\ref{sec:wf}--\ref{sec:results});
+  \item priority and explanation layers (Sec.~\ref{sec:priority}).
 \end{enumerate}
 
-\paragraph{Pergunta de investigação.}
-Um pipeline quant + Isolation Forest past-only, treinado em normalidade \textit{baseline}+\textit{asset}, separa estatisticamente janelas de interesse militar alinhadas a reports open-source de controlos EO civis no mesmo protocolo?
+\paragraph{Research question.}
+Does a quant + past-only Isolation Forest pipeline, trained on \textit{baseline}+\textit{asset} normality, separate military-interest windows aligned with open-source reports from civil EO controls under the same protocol?
 
-\paragraph{Claims formais.}
+\paragraph{Formal claims.}
 \begin{description}[style=nextline,leftmargin=12pt]
-  \item[Claim A.] Cases de interesse (âncoras open-source) apresentam scores anómalos elevados e/ou hard hits perto de $t_{\mathrm{peak}}$.
-  \item[Claim B.] Placebos EO civis, no mesmo protocolo, apresentam scores mais baixos e hard-hit rate próximo de zero em $\mathrm{thr}=0{,}50$.
+  \item[Claim A.] Interest cases (open-source anchors) show elevated anomaly scores and/or hard hits near \(t_{\mathrm{peak}}\).
+  \item[Claim B.] Civil EO placebos under the same protocol show lower scores and near-zero hard-hit rate at \(\mathrm{thr}=0.50\).
 \end{description}
 
-%------------------------------------------------------------------------------
-\section{Enquadramento e doutrina militar-first}
+\section{Military-first doctrine}
 \label{sec:doctrine}
-
-A watchlist Athena define três papéis operacionais:
 
 \begin{center}
 \begin{tabular}{@{}llp{7.2cm}@{}}
 \toprule
-\textbf{Papel} & \textbf{Exemplos} & \textbf{Uso no ML} \\
+\textbf{Role} & \textbf{Examples} & \textbf{ML use} \\
 \midrule
-\textit{asset} & ISS, GPS, DMSP, SAR aliado & Âncora de normalidade no IF; prioridade de proteção \\
-\textit{suspect} & Luch/Olymp-K, Yaogan, Shiyan, CSS & Deteção primária de microanomalia / ruído \\
-\textit{baseline} & TERRA, AQUA, Landsat, NOAA & Treino do IF (referência de órbita estável) \\
+\textit{asset} & ISS, GPS, DMSP, allied SAR & IF normality anchor; protect / pair target \\
+\textit{suspect} & Luch/Olymp-K, Yaogan, Shiyan, CSS & Primary micro-anomaly / noise detection \\
+\textit{baseline} & TERRA, AQUA, Landsat, NOAA & IF training (stable orbit reference) \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\textit{Suspects} não entram no treino de normalidade do Isolation Forest.
-Constelações comerciais (ex.\ Starlink) são excluídas desse treino para não definir o padrão de normalidade militar.
-O produto de análise é a watchlist e o pipeline quant; a UI 3D é de demonstração.
+Suspects are excluded from IF normality training.
+Commercial mega-constellations (e.g.\ Starlink) are excluded from that training set.
+Analysis targets the military watchlist and quant pipeline; the 3D UI is for demonstration.
 
-%------------------------------------------------------------------------------
-\section{Dados}
+\section{Data}
 \label{sec:data}
 
-\subsection{Séries orbitais (TLE)}
+\subsection{Orbital series (TLE)}
 \begin{itemize}[leftmargin=*]
-  \item Histórico filtrado para 24 NORADs ($\sim$2014-01-01 a 2026-07-27), $\sim$\textbf{249\,580} épocas.
-  \item Origem: espelho público de história TLE + ingestão diária CelesTrak GP.
-  \item Elementos: semi-eixo maior (SMA), excentricidade, inclinação, RAAN, movimento médio, \textit{timestamps}.
+  \item Filtered history for 24 NORADs ($\sim$2014-01-01 to 2026-07-27), $\sim$\textbf{249{,}580} epochs.
+  \item Sources: public TLE history mirror + daily CelesTrak GP ingest.
+  \item Elements: semi-major axis (SMA), eccentricity, inclination, RAAN, mean motion, timestamps.
 \end{itemize}
 
-\subsection{Clima espacial}
-Fonte \textbf{GFZ Potsdam} (Kp, ap/Ap, F10.7 observado/ajustado, manchas):
+\subsection{Space weather}
+\textbf{GFZ Potsdam} (Kp, ap/Ap, observed/adjusted F10.7, sunspots):
 \begin{itemize}[leftmargin=*]
-  \item $F_{10.7}$, $F_{10.7}^{\mathrm{adj}}$, $\mathrm{Ap}$, $\overline{K_p}$, número de manchas;
-  \item médias e deltas em 7 dias;
-  \item \texttt{geomagnetic\_storm}$=1$ se $\mathrm{Ap}_{\max,7\mathrm{d}}\ge 30$.
+  \item \(F_{10.7}\), \(F_{10.7}^{\mathrm{adj}}\), \(\mathrm{Ap}\), \(\overline{K_p}\), sunspot number;
+  \item 7-day means and deltas;
+  \item \texttt{geomagnetic\_storm}$=1$ if \(\mathrm{Ap}_{\max,7\mathrm{d}}\ge 30\).
 \end{itemize}
-O clima espacial entra no vetor de features para contextualizar arrasto atmosférico (especialmente LEO) face a mudanças de SMA.
+Space weather contextualizes atmospheric drag (especially LEO) relative to SMA changes.
 
-\subsection{Âncoras open-source}
-Eventos em \texttt{events\_walkforward.json} com $(t_{\mathrm{start}}, t_{\mathrm{peak}}, t_{\mathrm{end}})$ e fontes públicas (Gunter, CSIS, SWF, imprensa, catálogo dual-use). Exemplos: Luch/Olymp-K e Intelsat/Athena-Fidus; Shiyan-12; Luch-2; CSS Tianhe; placebos TERRA, AQUA, Landsat, NOAA.
+\subsection{Open-source anchors}
+Events in \texttt{events\_walkforward.json} with \((t_{\mathrm{start}}, t_{\mathrm{peak}}, t_{\mathrm{end}})\) and public sources (Gunter, CSIS, SWF, press, dual-use catalog notes). Examples: Luch/Olymp-K near Intelsat/Athena-Fidus; Shiyan-12; Luch-2; CSS Tianhe; placebos TERRA, AQUA, Landsat, NOAA.
 
-%------------------------------------------------------------------------------
-\section{Vetor de ruído quantitativo}
+\section{Quantitative noise vector}
 \label{sec:math}
 
-Seja $a(t)$ a série de semi-eixo maior (km) na janela de $n\ge 20$ épocas.
-O motor \texttt{src/engine.py} produz o vetor $x\in\mathbb{R}^{d}$ usado pelo Isolation Forest.
-(Explicação resumida de cada ferramenta: Apêndice~\ref{app:gloss}.)
+Let \(a(t)\) be the SMA series (km) on a window of \(n\ge 20\) epochs.
+\texttt{src/engine.py} produces \(x\in\mathbb{R}^{d}\) for the Isolation Forest.
+(See Appendix~\ref{app:gloss} for short tool definitions.)
 
-\subsection{Entropia de Shannon}
-Diferenças $\Delta a_i = a_{i+1}-a_i$, histograma $p_k$:
+\subsection{Shannon entropy}
+Differences \(\Delta a_i = a_{i+1}-a_i\), histogram \(p_k\):
 \begin{equation}
   H = -\sum_{k:\,p_k>0} p_k \log_2 p_k .
 \end{equation}
 
-\subsection{Proxy de complexidade de Kolmogorov}
-Tokens $\{U,D,S\}$ sobre $\Delta a$ e compressão zlib:
+\subsection{Kolmogorov complexity proxy}
+Tokens \(\{U,D,S\}\) on \(\Delta a\) and zlib compression:
 \begin{equation}
   K_{\mathrm{proxy}} = \mathrm{clip}\!\left(\frac{\ell_{\mathrm{comp}}}{\ell_{\mathrm{raw}}},\,0,\,1\right).
 \end{equation}
 
-\subsection{Expoente de Hurst (R/S) multi-escala}
-$H$ na janela completa e no trecho curto recente; gap
+\subsection{Multi-scale Hurst (R/S)}
+\(H\) on the full window and a short recent tip; gap
 \begin{equation}
   \Delta H = H_{\mathrm{full}} - H_{\mathrm{short}}.
 \end{equation}
 
-\subsection{CUSUM-$L_1$ kernelizado}
-Desvios acumulados face a mediana local / MAD, mapeados em $[0,1]$.
+\subsection{Kernel \(L_1\)-CUSUM}
+Accumulated deviations from local median / MAD, mapped to \([0,1]\).
 
-\subsection{Cauda de Mandelbrot / Hill}
-Score de extremos da série acima de quantil (cauda pesada).
+\subsection{Mandelbrot / Hill tail}
+Extreme-value score above a high quantile of the series.
 
 \subsection{ADF}
-$p$-valor do teste Dickey--Fuller aumentado sobre $a(t)$.
+Augmented Dickey--Fuller \(p\)-value on \(a(t)\).
 
-\subsection{Deltas e manobras}
-$\Delta$SMA 7d/30d e contagem de picos tipo manobra via CUSUM.
+\subsection{Deltas and maneuvers}
+\(\Delta\)SMA over 7d/30d and CUSUM-peak maneuver counts.
 
-\subsection{Topologia e geometria (proxies)}
-Homologia H0/H1 (modo proxy por distâncias normalizadas), Chern--Simons proxy sobre $h=r\times v$, Ricci--Ollivier proxy por Wasserstein local.
-Reconstrução a partir de elementos orbitais (não SGP4 completo).
+\subsection{Topology and geometry (proxies)}
+H0/H1 (proxy pairwise-distance mode), Chern--Simons proxy on \(h=r\times v\), Ollivier--Ricci proxy via local Wasserstein.
+Reconstructed from orbital elements (not full SGP4 ephemerides).
 
-\subsection{Clima espacial}
-$F_{10.7}$, Ap, Kp e derivados de 7 dias no mesmo vetor $x$.
+\subsection{Space weather}
+\(F_{10.7}\), Ap, Kp and 7-day derivatives in the same vector \(x\).
 
-\subsection{Fora do IF}
-Distância a assets e cointegração entram na camada de prioridade, não no Isolation Forest de ruído da série.
+\subsection{Excluded from IF}
+Distance to assets and cointegration feed the priority layer only.
 
-%------------------------------------------------------------------------------
-\section{Isolation Forest past-only}
+\section{Past-only Isolation Forest}
 \label{sec:if}
 
-Score unificado:
 \begin{equation}
-  s(x) = \mathrm{clip}\bigl(0{,}5 - \mathrm{decision\_function}(x),\, 0,\, 1\bigr).
+  s(x) = \mathrm{clip}\bigl(0.5 - \mathrm{decision\_function}(x),\, 0,\, 1\bigr).
 \end{equation}
 
-\paragraph{Treino.}
-Janelas com $\mathrm{window\_end}<\mathrm{cutoff}$; NORADs \textbf{baseline + asset}; contamination $\sim 0{,}06$--$0{,}08$; \texttt{random\_state=42}; modelos monitor e pipeline separados (\texttt{registry.json}).
+\paragraph{Training.}
+Windows with \(\mathrm{window\_end}<\mathrm{cutoff}\); NORADs \textbf{baseline + asset}; contamination \(\sim 0.06\)--\(0.08\); \texttt{random\_state=42}; separate monitor and pipeline artifacts (\texttt{registry.json}).
 
-\paragraph{Limiar.}
+\paragraph{Threshold.}
 \begin{equation}
-  thr = \max\bigl(0{,}50,\, p_{95}(s_{\mathrm{normality}})\bigr).
+  thr = \max\bigl(0.50,\, p_{95}(s_{\mathrm{normality}})\bigr).
 \end{equation}
-Tabelas principais: $\mathrm{thr}=0{,}50$.
+Primary tables use \(\mathrm{thr}=0.50\).
 
 \paragraph{Hard hit.}
-Fold com $s\ge 0{,}50$ em $[t_{\mathrm{peak}}\pm 45\,\mathrm{d}]$.
+Any fold with \(s\ge 0.50\) inside \([t_{\mathrm{peak}}\pm 45\,\mathrm{d}]\).
 
-%------------------------------------------------------------------------------
-\section{Protocolo walk-forward}
+\section{Walk-forward protocol}
 \label{sec:wf}
 
-Para cada evento $(t_{\mathrm{start}}, t_{\mathrm{peak}}, t_{\mathrm{end}})$:
+For each event \((t_{\mathrm{start}}, t_{\mathrm{peak}}, t_{\mathrm{end}})\):
 \begin{enumerate}[leftmargin=*]
-  \item Grelha \texttt{asof} com passo 14 dias.
-  \item Em cada \texttt{asof}: IF treinado só com janelas de normalidade terminando antes de \texttt{asof}$-3$ dias.
-  \item Score do NORAD alvo na janela corrente.
-  \item Métricas: hard hit, $\max s$, média pre-peak, \texttt{noise\_ramp}, \texttt{first\_fold\_hit}.
+  \item \texttt{asof} grid with 14-day step.
+  \item At each \texttt{asof}: fit IF only on normality windows ending before \texttt{asof}$-3$ days.
+  \item Score the target NORAD on the current window.
+  \item Metrics: hard hit, \(\max s\), pre-peak mean, \texttt{noise\_ramp}, \texttt{first\_fold\_hit}.
 \end{enumerate}
-Protocolo fixado em \texttt{PROTOCOL\_PREREGISTRATION.md}.
+Locked plan: \texttt{PROTOCOL\_PREREGISTRATION.md}.
 
-%------------------------------------------------------------------------------
-\section{Camada de prioridade}
+\section{Priority layer}
 \label{sec:priority}
 
-Complementa a detecção de ruído para ordenar atenção do operador:
+Complements noise detection for operator attention ranking:
 \begin{itemize}[leftmargin=*]
-  \item XGBoost com weak labels (níveis operacionais);
-  \item distância e cointegração suspect$\times$asset (\texttt{pair\_risk});
-  \item fuzzy Mamdani e critério de Kelly (atenção);
-  \item Bob: texto explicativo a partir dos scores já calculados.
+  \item XGBoost with weak labels (operational tiers);
+  \item suspect$\times$asset distance and cointegration (\texttt{pair\_risk});
+  \item Mamdani fuzzy rules and Kelly-style attention sizing;
+  \item Bob: natural-language briefing from computed scores.
 \end{itemize}
-Claims A+B usam apenas o score IF do walk-forward.
+Claims A+B use only the walk-forward IF score.
 
-%------------------------------------------------------------------------------
-\section{Desenho experimental}
+\section{Experimental design}
 \label{sec:design}
 
-\paragraph{Painel GEO (principal).}
-Interest: 5 eventos (Luch-1 $\times$3, SY-12, Luch-2), 3 NORADs únicos.
-Placebos EO: 7 janelas (TERRA, AQUA, Landsat, NOAA), 5 NORADs únicos.
+\paragraph{GEO panel (primary).}
+Interest: 5 events (Luch-1 $\times$3, SY-12, Luch-2), 3 unique NORADs.
+Civil EO placebos: 7 windows (TERRA, AQUA, Landsat, NOAA), 5 unique NORADs.
 
-\paragraph{Painel expandido.}
-Até 9 NORADs únicos de interesse (LEO/MEO incluídos); reportado em separado.
+\paragraph{Expanded panel.}
+Up to 9 unique interest NORADs (LEO/MEO included); reported separately.
 
-\paragraph{Separação.}
-Mann--Whitney $U$ unilateral (interest $>$ placebo), com ênfase em médias e gap.
+\paragraph{Separation test.}
+One-sided Mann--Whitney \(U\) (interest $>$ placebo), emphasizing means and gap.
 
-%------------------------------------------------------------------------------
-\section{Resultados}
+\section{Results}
 \label{sec:results}
 
-\subsection{Claims A+B --- painel GEO}
+\subsection{Claims A+B --- GEO panel}
 \begin{table}[H]
 \centering
-\caption{Resultados principais (thr$=0{,}50$, past-only). Fonte: \texttt{paper\_validation\_latest.json}.}
+\caption{Primary results (thr$=0.50$, past-only). Source: \texttt{paper\_validation\_latest.json}.}
 \label{tab:geo}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
-Grupo & $n$ eventos & Hard hit & Média $\max s$ & Média pre-peak \\
+Group & $n$ events & Hard hit & Mean $\max s$ & Mean pre-peak \\
 \midrule
-Interest GEO & 5 & \textbf{5/5 (100\%)} & \textbf{0{,}651} & \textbf{0{,}567} \\
-Placebo EO civil & 7 & \textbf{0/7 (0\%)} & 0{,}462 & 0{,}385 \\
+GEO interest & 5 & \textbf{5/5 (100\%)} & \textbf{0.651} & \textbf{0.567} \\
+Civil EO placebo & 7 & \textbf{0/7 (0\%)} & 0.462 & 0.385 \\
 \midrule
-Gap (interest $-$ placebo) & & & \textbf{0{,}189} & --- \\
-Mann--Whitney (max) & & & $p\approx 0{,}0013$ & --- \\
+Gap (interest $-$ placebo) & & & \textbf{0.189} & --- \\
+Mann--Whitney (max) & & & $p\approx 0.0013$ & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-O pipeline quant+IF separa regimes de ruído elevados nos cases GEO de interesse face aos placebos EO (\textbf{Claims A e B suportados} neste painel).
+The quant+IF pipeline separates elevated noise regimes on GEO interest cases from civil EO placebos (\textbf{Claims A and B supported} on this panel).
 
-\subsection{Amostra por evento}
+\subsection{Per-event sample}
 \begin{table}[H]
 \centering
-\caption{Scores por evento (amostra).}
+\caption{Per-event scores (sample).}
 \label{tab:events}
 \scriptsize
 \begin{tabular}{@{}llccc@{}}
 \toprule
-Evento & NORAD & Hard & $\max s$ & Pre-peak mean \\
+Event & NORAD & Hard & $\max s$ & Pre-peak mean \\
 \midrule
-luch1\_intelsat\_2015 & 40258 & sim & 0{,}628 & 0{,}570 \\
-luch1\_intelsat\_mid2015 & 40258 & sim & 0{,}675 & 0{,}589 \\
-luch1\_athena\_fidus\_2018 & 40258 & sim & 0{,}672 & 0{,}560 \\
-sy12\_geo\_rpo\_2021\_22 & 50321 & sim & 0{,}623 & 0{,}529 \\
-luch2\_trailing\_2023 & 55841 & sim & 0{,}658 & 0{,}586 \\
-tianhe\_css\_assembly\_2021 & 48274 & sim & 0{,}644 & 0{,}556 \\
-placebo\_terra\_2015 & 25994 & não & 0{,}481 & 0{,}395 \\
-placebo\_aqua\_2015 & 27424 & não & 0{,}474 & 0{,}429 \\
-placebo\_landsat8\_2018 & 39084 & não & 0{,}460 & 0{,}367 \\
-placebo\_noaa20\_2023 & 43013 & não & 0{,}464 & 0{,}391 \\
+luch1\_intelsat\_2015 & 40258 & yes & 0.628 & 0.570 \\
+luch1\_intelsat\_mid2015 & 40258 & yes & 0.675 & 0.589 \\
+luch1\_athena\_fidus\_2018 & 40258 & yes & 0.672 & 0.560 \\
+sy12\_geo\_rpo\_2021\_22 & 50321 & yes & 0.623 & 0.529 \\
+luch2\_trailing\_2023 & 55841 & yes & 0.658 & 0.586 \\
+tianhe\_css\_assembly\_2021 & 48274 & yes & 0.644 & 0.556 \\
+placebo\_terra\_2015 & 25994 & no & 0.481 & 0.395 \\
+placebo\_aqua\_2015 & 27424 & no & 0.474 & 0.429 \\
+placebo\_landsat8\_2018 & 39084 & no & 0.460 & 0.367 \\
+placebo\_noaa20\_2023 & 43013 & no & 0.464 & 0.391 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Curvas de score}
-As Figuras~\ref{fig:luch}--\ref{fig:grids} mostram $s(\mathrm{asof})$, limiar $0{,}50$ e $t_{\mathrm{peak}}$.
+\subsection{Score curves}
+Figures~\ref{fig:luch}--\ref{fig:grids} show \(s(\mathrm{asof})\), threshold \(0.50\), and \(t_{\mathrm{peak}}\).
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.92\textwidth]{figures/prepeak_luch1_intelsat_2015.png}
-  \caption{Luch-1 / Olymp-K (40258), episódio Intelsat 2015.}
+  \caption{Luch-1 / Olymp-K (40258), Intelsat 2015 episode.}
   \label{fig:luch}
 \end{figure}
 
@@ -311,7 +298,7 @@ As Figuras~\ref{fig:luch}--\ref{fig:grids} mostram $s(\mathrm{asof})$, limiar $0
     \includegraphics[width=\textwidth]{figures/prepeak_luch2_trailing_2023.png}
     \caption{Luch-2 (55841).}
   \end{subfigure}
-  \caption{Cases de interesse com NORADs distintos.}
+  \caption{Interest cases on distinct NORADs.}
   \label{fig:sy12luch2}
 \end{figure}
 
@@ -325,41 +312,38 @@ As Figuras~\ref{fig:luch}--\ref{fig:grids} mostram $s(\mathrm{asof})$, limiar $0
     \includegraphics[width=\textwidth]{figures/prepeak_placebo_aqua_2015.png}
     \caption{Placebo AQUA 2015.}
   \end{subfigure}
-  \caption{Controlos EO civis.}
+  \caption{Civil EO controls.}
   \label{fig:placebo}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.95\textwidth]{figures/prepeak_grid_interest.png}
-  \caption{Grelha de curvas de interesse.}
+  \caption{Interest curve grid.}
   \label{fig:grids}
 \end{figure}
 
-\subsection{Painel expandido}
-Com 11 eventos / 9 NORADs únicos de interesse, hard-hit rate $\approx 55\%$ (LEO nem sempre $\ge 0{,}50$), com gap de médias ainda positivo face aos placebos (MW $p\approx 0{,}01$). O resultado principal do artigo é o painel GEO.
+\subsection{Expanded panel}
+With 11 events / 9 unique interest NORADs, hard-hit rate \(\approx 55\%\) (LEO not always \(\ge 0.50\)), with a positive mean gap vs placebos (MW \(p\approx 0.01\)). The primary result of this paper is the GEO panel.
 
-%------------------------------------------------------------------------------
-\section{Discussão}
+\section{Discussion}
 \label{sec:discussion}
 
-Os resultados mostram que o score $s(x)$ responde a regimes de ruído elevados nos cases GEO de interesse alinhados a âncoras open-source, com separação clara face a EO civil.
-Muitos cases apresentam nível pre-peak alto e \texttt{noise\_ramp} próximo de zero, coerente com \textbf{regime elevado persistente} na janela de análise.
-O clima espacial contextualiza arrasto; a prioridade (pares, XGB) ordena atenção quando há proximidade a assets.
+Score \(s(x)\) responds to elevated noise regimes on GEO interest cases aligned with open-source anchors, with clear separation from civil EO controls.
+Many cases show high pre-peak level and near-zero \texttt{noise\_ramp}, consistent with a \textbf{persistently elevated regime} in the analysis window.
+Space weather contextualizes drag; pair risk and XGB rank attention when proximity to assets is present.
 
-%------------------------------------------------------------------------------
-\section{Limitações}
+\section{Limitations}
 \label{sec:limits}
 
 \begin{itemize}[leftmargin=*]
-  \item $N$ pequeno de NORADs únicos; Luch-1 multi-evento é dependente.
-  \item TLE esparso e ruidoso; proxies topológicos sobre reconstrução.
-  \item LEO recon/dual-use com hard-hit menos frequente no thr $0{,}50$.
-  \item Accuracy XGB mede weak labels, não a prova A+B.
+  \item Small unique interest NORAD count; multi-event Luch-1 is dependent.
+  \item Sparse, noisy TLEs; topology proxies on reconstructed geometry.
+  \item LEO recon/dual-use hard hits less frequent at thr \(0.50\).
+  \item XGB accuracy measures weak-label agreement, not Claims A+B.
 \end{itemize}
 
-%------------------------------------------------------------------------------
-\section{Reprodutibilidade}
+\section{Reproducibility}
 \label{sec:repro}
 
 \begin{verbatim}
@@ -369,81 +353,80 @@ python scripts/plot_prepeak_curves.py
 cd docs/paper && pdflatex athena_sda_article.tex
 \end{verbatim}
 
-%------------------------------------------------------------------------------
-\section{Conclusão}
+\section{Conclusion}
 \label{sec:concl}
 
-O Athena-SDA implementa análise e detecção quantitativa de ruído orbital e microanomalias em watchlist militar-first, com Isolation Forest past-only e validação walk-forward.
-No painel GEO, Claims A e B são suportados (5/5 vs 0/7 hard hits; gap $\approx 0{,}19$).
-O glossário no apêndice resume o papel de cada ferramenta matemática usada no vetor de features.
+Athena-SDA implements quantitative orbital noise analysis and micro-anomaly detection on a military-first watchlist, with past-only Isolation Forest and walk-forward validation.
+On the GEO panel, Claims A and B are supported (5/5 vs 0/7 hard hits; gap \(\approx 0.19\)).
+The appendix glossary summarizes each mathematical tool used in the feature vector.
 
 %==============================================================================
 \appendix
-\section{Glossário das ferramentas matemáticas e de modelo}
+\section{Glossary of mathematical and model tools}
 \label{app:gloss}
 
-Cada entrada resume \textbf{o que a ferramenta faz} no Athena-SDA (sem reabrir o corpo do artigo).
+Short definitions of \textbf{what each tool does} in Athena-SDA.
 
 \begin{description}[style=nextline,leftmargin=8pt,font=\normalfont\bfseries]
-  \item[Entropia de Shannon]
-  Mede o quão ``espalhada'' ou irregular é a distribuição dos passos de altitude ($\Delta$SMA). Valores altos: sequência de mudanças menos previsível (controlo irregular / ops ativas).
+  \item[Shannon entropy]
+  Measures how irregular or spread out altitude steps (\(\Delta\)SMA) are. High values: less predictable step patterns (irregular control / active ops).
 
-  \item[Proxy de Kolmogorov]
-  Estima se o padrão sobe/desce/estável da série é difícil de comprimir. Valores altos: padrão de manobra mais elaborado ou irregular face a um padrão simples.
+  \item[Kolmogorov proxy]
+  Estimates whether the up/down/stable sequence is hard to compress. High values: more elaborate or irregular maneuver patterns.
 
-  \item[Expoente de Hurst (R/S)]
-  Mede persistência temporal: se desvios tendem a continuar na mesma direção. $H>0{,}5$: tendência/controlo persistente (útil para microtrajetória / low-thrust aparente).
+  \item[Hurst exponent (R/S)]
+  Measures temporal persistence: whether deviations tend to continue in the same direction. \(H>0.5\): persistent control / micro-trajectory signature.
 
-  \item[Hurst multi-escala / $\Delta H$]
-  Compara persistência da janela completa com a ponta recente. Destaca memória longa versus flutuação só no trecho final.
+  \item[Multi-scale Hurst / \(\Delta H\)]
+  Compares full-window persistence with the recent tip. Separates long memory from short-tip fluctuation.
 
-  \item[CUSUM-$L_1$]
-  Detecta quebra de regime: acumula desvios face ao nível recente (mediana/MAD). Elevado quando a série ``muda de patamar''.
+  \item[\(L_1\)-CUSUM]
+  Detects regime breaks by accumulating deviations from a recent robust level (median/MAD). High when the series changes baseline.
 
-  \item[Mandelbrot / Hill (cauda)]
-  Realça saltos raros e extremos na série de altitude (impulsos ou eventos pontuais fortes).
+  \item[Mandelbrot / Hill tail]
+  Highlights rare extreme jumps in the altitude series (impulsive events).
 
   \item[ADF (Dickey--Fuller)]
-  Testa se a série é estacionária ou anda à deriva. $p$ alto favorece regime não mean-reverting.
+  Tests whether the series is stationary or drifts. High \(p\) favors non-mean-reverting regimes.
 
-  \item[$\Delta$SMA e contagem de manobras]
-  Quantificam magnitude e frequência de mudanças de semi-eixo (relocação, ops intensas).
+  \item[\(\Delta\)SMA and maneuver count]
+  Quantify magnitude and frequency of semi-major-axis changes (relocation, intense ops).
 
-  \item[Homologia H0/H1 (proxy)]
-  Resume estrutura da nuvem de posições reconstruídas (conectividade / ciclos em escala). Apoio geométrico global.
+  \item[Homology H0/H1 (proxy)]
+  Summarizes structure of the reconstructed position cloud (connectivity / cycles across scale).
 
   \item[Chern--Simons (proxy)]
-  Mede variação do momento angular específico na reconstrução $r,v$ --- indício de desvio de dinâmica Kepleriana ideal.
+  Measures variation of specific angular momentum in reconstructed \(r,v\) --- non-Keplerian deviation indicator.
 
-  \item[Ricci--Ollivier (proxy)]
-  Mede distorção local entre vizinhanças na nuvem de pontos (curvatura discreta).
+  \item[Ollivier--Ricci (proxy)]
+  Measures local neighborhood distortion in the point cloud (discrete curvature).
 
-  \item[Clima espacial (F10.7, Ap, Kp, storm)]
-  Contextualiza atividade solar e geomagnética. Ajuda a interpretar $\Delta$SMA em LEO sob arrasto elevado.
+  \item[Space weather (F10.7, Ap, Kp, storm)]
+  Solar and geomagnetic context. Supports interpretation of LEO \(\Delta\)SMA under elevated drag.
 
   \item[Isolation Forest]
-  Modelo não supervisionado que isola perfis raros no espaço de features. Score alto = combinação de sinais pouco típica face às âncoras de normalidade.
+  Unsupervised model that isolates rare feature profiles. High score = atypical combination relative to normality anchors.
 
-  \item[Walk-forward past-only]
-  Em cada data histórica, o IF só vê o passado. Avalia se o score sobe em janelas de eventos reais e placebos.
+  \item[Past-only walk-forward]
+  At each historical date the IF sees only the past. Scores interest and placebo event windows under that constraint.
 
-  \item[Cointegração]
-  Testa se duas séries de altitude partilham tendência comum (padrão de movimento conjunto / escolta).
+  \item[Cointegration]
+  Tests whether two altitude series share a common long-run trend (joint motion / escort pattern).
 
-  \item[Distância suspect$\times$asset]
-  Proximidade orbital aproximada para priorizar atenção a assets protegidos.
+  \item[Suspect\(\times\)asset distance]
+  Approximate orbital proximity for attention ranking near protected platforms.
 
   \item[XGBoost (weak labels)]
-  Classificador de prioridade operacional a partir de regras heurísticas de treino. Não define o hard hit da prova A+B.
+  Operational priority classifier from heuristic training targets. Does not define Claims A+B hard hits.
 
-  \item[Fuzzy Mamdani]
-  Regras linguísticas com graus de pertinência para calibrar saída sob incerteza (ex.\ TLE antigo).
+  \item[Mamdani fuzzy]
+  Linguistic rules with soft membership for calibration under uncertainty (e.g.\ stale TLE).
 
   \item[Kelly]
-  Heurística de dimensionamento de atenção/recurso a partir de score e severidade.
+  Attention/resource sizing heuristic from score and severity.
 
   \item[Bob]
-  Camada de texto que descreve scores e contexto; não recalcula o IF.
+  Text layer that describes computed scores and context; does not recompute the IF.
 \end{description}
 
 \begin{thebibliography}{99}
