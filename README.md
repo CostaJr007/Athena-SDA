@@ -19,6 +19,7 @@
 
 | Resource | What you get |
 |----------|----------------|
+| **[Artigo LaTeX (prova completa)](docs/paper/athena_sda_article.tex)** | Artigo: matemática, dados, treino, Claims A+B, figuras |
 | **[Paper pack](docs/paper/METHODS_AND_CLAIMS.md)** | Formal claims, methods, preregistered protocol |
 | **[RESULTS_TABLES.md](docs/paper/RESULTS_TABLES.md)** | Headline numbers + per-event table |
 | **[Figures](docs/paper/figures/)** | Pre-peak IF score curves per event (Luch, SY-12, placebos…) |
