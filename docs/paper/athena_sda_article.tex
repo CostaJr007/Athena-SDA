@@ -24,6 +24,7 @@
 \usepackage{float}
 \usepackage{url}
 \usepackage{microtype}
+\usepackage{enumitem}
 
 \hypersetup{
   colorlinks=true,
@@ -41,21 +42,21 @@ frente a âncoras open-source}
   Projeto Athena-SDA\\
   \texttt{https://github.com/CostaJr007/Athena-SDA}\\
   \small IBM SkillsBuild AI Builders --- \textit{Advance Space Exploration with AI}\\
-  \small Documento de fundamentação matemática e prova experimental (Claims~A+B)
+  \small Fundamentação matemática e prova experimental (Claims~A+B)
 }
 
-\date{Agosto 2026 \\ \small Protocolo pré-registado: \texttt{PROTOCOL\_PREREGISTRATION.md}}
+\date{Agosto 2026}
 
 \begin{document}
 \maketitle
 \begin{abstract}
 \noindent
-Apresentamos o \textbf{Athena-SDA}, um sistema de \textit{Space Domain Awareness} (SDA) \textbf{militar-first} que rastreia \textbf{microanomalias} e regimes de ruído orbital em plataformas de interesse (\textit{suspects}), a partir de TLEs públicos e clima espacial GFZ, sem pretender prever o futuro nem provar intenção classificada.
-Construímos um vetor de \textbf{features quantitativas} (entropia de Shannon, expoente de Hurst multi-escala, CUSUM, proxy de Kolmogorov, testes de estacionariedade, clima espacial F10.7/Ap/Kp, entre outras) e treinamos um \textbf{Isolation Forest} apenas em âncoras de normalidade (\textit{baseline} civil e \textit{assets} protegidos), com protocolo \textbf{past-only}.
-Validamos por \textbf{walk-forward} em janelas alinhadas a \textbf{reports open-source} (Gunter, CSIS, SWF, imprensa) e controlos \textbf{placebo} EO civis.
+Apresentamos o \textbf{Athena-SDA}, um sistema de \textit{Space Domain Awareness} (SDA) com foco militar-first para \textbf{análise e detecção de ruído orbital} e \textbf{microanomalias de trajetória} em plataformas de interesse (\textit{suspects}), gerando \textbf{alertas operacionais} a partir de TLEs públicos e clima espacial GFZ.
+Construímos um vetor de \textbf{features quantitativas} (entropia de Shannon, expoente de Hurst multi-escala, CUSUM, proxy de Kolmogorov, testes de estacionariedade, clima espacial F10.7/Ap/Kp, entre outras) e treinamos um \textbf{Isolation Forest} em âncoras de normalidade (\textit{baseline} civil e \textit{assets} protegidos), com protocolo \textbf{past-only}.
+Validamos por \textbf{walk-forward} em janelas alinhadas a \textbf{reports open-source} e controlos \textbf{placebo} EO civis.
 No painel GEO (Luch/Olymp-K, Shiyan-12, Luch-2): \textbf{5/5} hard hits com limiar $0{,}50$ e média do máximo de score $\approx 0{,}65$, versus \textbf{0/7} hard hits e média $\approx 0{,}46$ nos placebos EO (gap $\approx 0{,}19$; Mann--Whitney unilateral $p\approx 0{,}001$).
-Interpretamos o sinal como \textbf{regime elevado persistente} de ruído (não como previsão da data da notícia).
-Uma camada de prioridade (XGBoost com weak labels, pares suspect$\times$asset, fuzzy) e o copiloto Bob \textbf{não} reescrevem o score quant.
+Uma camada de prioridade (XGBoost, pares suspect$\times$asset, fuzzy) e o copiloto Bob explicam e ordenam atenção sem alterar o score quant.
+Definições resumidas de cada ferramenta matemática estão no \textbf{Glossário} (Apêndice~\ref{app:gloss}).
 \end{abstract}
 
 \tableofcontents
@@ -68,22 +69,22 @@ Uma camada de prioridade (XGBoost com weak labels, pares suspect$\times$asset, f
 \label{sec:intro}
 
 Operadores de SDA não conseguem monitorar igualmente dezenas de milhares de objetos em órbita.
-O problema prático não é ``prever a notícia'', e sim \textbf{rastrear microanomalias de trajetória} --- manobras finas, persistência de controlo, relocações e padrões compatíveis com regimes de inspeção/\textit{shadowing} discutidos em fontes abertas --- e \textbf{priorizar atenção} sobre objetos de interesse militar face a plataformas a proteger.
+O Athena-SDA concentra-se em \textbf{análise quantitativa de séries orbitais} e em \textbf{deteção de ruído / microanomalias} em objetos de interesse militar, com geração de \textbf{alertas} e priorização de atenção face a plataformas a proteger.
 
-O \textbf{Athena-SDA} responde a esse requisito com:
-\begin{enumerate}
+O sistema combina:
+\begin{enumerate}[leftmargin=*]
   \item dados públicos (TLE multi-anuais + clima espacial);
-  \item um \textbf{framework matemático de ruído} determinístico;
-  \item um detetor não supervisionado (\textbf{Isolation Forest}) treinado sob doutrina militar-first;
-  \item validação \textbf{walk-forward past-only} contra âncoras de reports e placebos;
-  \item camadas de prioridade e explicação (sem alterar o score de detecção).
+  \item um framework matemático de ruído (Sec.~\ref{sec:math});
+  \item Isolation Forest past-only sob doutrina militar-first (Sec.~\ref{sec:if});
+  \item validação walk-forward face a âncoras de reports e placebos (Sec.~\ref{sec:wf}--\ref{sec:results});
+  \item camadas de prioridade e explicação (Sec.~\ref{sec:priority}).
 \end{enumerate}
 
 \paragraph{Pergunta de investigação.}
 Um pipeline quant + Isolation Forest past-only, treinado em normalidade \textit{baseline}+\textit{asset}, separa estatisticamente janelas de interesse militar alinhadas a reports open-source de controlos EO civis no mesmo protocolo?
 
-\paragraph{Claims formais (pré-registados).}
-\begin{description}
+\paragraph{Claims formais.}
+\begin{description}[style=nextline,leftmargin=12pt]
   \item[Claim A.] Cases de interesse (âncoras open-source) apresentam scores anómalos elevados e/ou hard hits perto de $t_{\mathrm{peak}}$.
   \item[Claim B.] Placebos EO civis, no mesmo protocolo, apresentam scores mais baixos e hard-hit rate próximo de zero em $\mathrm{thr}=0{,}50$.
 \end{description}
@@ -92,7 +93,7 @@ Um pipeline quant + Isolation Forest past-only, treinado em normalidade \textit{
 \section{Enquadramento e doutrina militar-first}
 \label{sec:doctrine}
 
-A watchlist Athena define três papéis (ontologia operacional):
+A watchlist Athena define três papéis operacionais:
 
 \begin{center}
 \begin{tabular}{@{}llp{7.2cm}@{}}
@@ -100,298 +101,176 @@ A watchlist Athena define três papéis (ontologia operacional):
 \textbf{Papel} & \textbf{Exemplos} & \textbf{Uso no ML} \\
 \midrule
 \textit{asset} & ISS, GPS, DMSP, SAR aliado & Âncora de normalidade no IF; prioridade de proteção \\
-\textit{suspect} & Luch/Olymp-K, Yaogan, Shiyan, CSS & \textbf{Deteção primária} de microanomalia \\
-\textit{baseline} & TERRA, AQUA, Landsat, NOAA & \textbf{Treino} do IF (``órbita quieta''); sem narrativa de ameaça \\
+\textit{suspect} & Luch/Olymp-K, Yaogan, Shiyan, CSS & Deteção primária de microanomalia / ruído \\
+\textit{baseline} & TERRA, AQUA, Landsat, NOAA & Treino do IF (referência de órbita estável) \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\textbf{Regra crítica:} \textit{suspects} \textbf{não} entram no treino de normalidade do Isolation Forest (evitar absorver o ruído de Luch como ``normal''). Constelações comerciais tipo Starlink são excluídas do treino IF (station-keeping confunde a normalidade militar).
-
-O globo 3D pode exibir trilhas decorativas; o \textbf{produto e a prova} são a watchlist militar e o pipeline quant.
+\textit{Suspects} não entram no treino de normalidade do Isolation Forest.
+Constelações comerciais (ex.\ Starlink) são excluídas desse treino para não definir o padrão de normalidade militar.
+O produto de análise é a watchlist e o pipeline quant; a UI 3D é de demonstração.
 
 %------------------------------------------------------------------------------
 \section{Dados}
 \label{sec:data}
 
 \subsection{Séries orbitais (TLE)}
-\begin{itemize}
+\begin{itemize}[leftmargin=*]
   \item Histórico filtrado para 24 NORADs ($\sim$2014-01-01 a 2026-07-27), $\sim$\textbf{249\,580} épocas.
-  \item Origem: espelho público de história TLE (Hugging Face / Space-Track mirror) + ingestão diária CelesTrak GP.
-  \item Elementos usados: semi-eixo maior (SMA), excentricidade, inclinação, RAAN, movimento médio, \textit{timestamps}.
+  \item Origem: espelho público de história TLE + ingestão diária CelesTrak GP.
+  \item Elementos: semi-eixo maior (SMA), excentricidade, inclinação, RAAN, movimento médio, \textit{timestamps}.
 \end{itemize}
 
 \subsection{Clima espacial}
 Fonte \textbf{GFZ Potsdam} (Kp, ap/Ap, F10.7 observado/ajustado, manchas):
-\begin{itemize}
+\begin{itemize}[leftmargin=*]
   \item $F_{10.7}$, $F_{10.7}^{\mathrm{adj}}$, $\mathrm{Ap}$, $\overline{K_p}$, número de manchas;
   \item médias e deltas em 7 dias;
-  \item \texttt{geomagnetic\_storm}$=1$ se $\mathrm{Ap}_{\max,7\mathrm{d}}\ge 30$ (contexto de tempestade).
+  \item \texttt{geomagnetic\_storm}$=1$ se $\mathrm{Ap}_{\max,7\mathrm{d}}\ge 30$.
 \end{itemize}
-Objetivo: reduzir confusão entre \textbf{arrasto natural} (LEO em tempestade) e \textbf{manobra intencional}.
+O clima espacial entra no vetor de features para contextualizar arrasto atmosférico (especialmente LEO) face a mudanças de SMA.
 
-\subsection{Âncoras open-source (não são labels de treino do IF)}
-Eventos em \texttt{data/catalog/events\_walkforward.json} com $(t_{\mathrm{start}}, t_{\mathrm{peak}}, t_{\mathrm{end}})$ e fontes (Gunter, CSIS, SWF, imprensa, catálogo dual-use). Exemplos:
-\begin{itemize}
-  \item Luch/Olymp-K 1 (40258): colocações Intelsat; Athena-Fidus (2015, 2018);
-  \item Shiyan-12 (50321): RPO GEO 2021--22;
-  \item Luch-2 (55841): trailing GEO 2023;
-  \item CSS Tianhe (48274): sequência de montagem/docagens 2021;
-  \item Placebos: TERRA, AQUA, Landsat-8, NOAA-18/20 (EO civil).
-\end{itemize}
+\subsection{Âncoras open-source}
+Eventos em \texttt{events\_walkforward.json} com $(t_{\mathrm{start}}, t_{\mathrm{peak}}, t_{\mathrm{end}})$ e fontes públicas (Gunter, CSIS, SWF, imprensa, catálogo dual-use). Exemplos: Luch/Olymp-K e Intelsat/Athena-Fidus; Shiyan-12; Luch-2; CSS Tianhe; placebos TERRA, AQUA, Landsat, NOAA.
 
 %------------------------------------------------------------------------------
-\section{Fundamentação matemática do vetor de ruído}
+\section{Vetor de ruído quantitativo}
 \label{sec:math}
 
-Seja $a(t)$ a série de semi-eixo maior (km) na janela de $n\ge 20$ épocas. O motor \texttt{src/engine.py} produz escalares $x\in\mathbb{R}^{d}$ que descrevem \textbf{estrutura de ruído de voo}, não intenção política.
+Seja $a(t)$ a série de semi-eixo maior (km) na janela de $n\ge 20$ épocas.
+O motor \texttt{src/engine.py} produz o vetor $x\in\mathbb{R}^{d}$ usado pelo Isolation Forest.
+(Explicação resumida de cada ferramenta: Apêndice~\ref{app:gloss}.)
 
-\paragraph{Ideia geral.}
-Cada teoria abaixo responde a uma pergunta simples sobre a órbita. Juntas formam um ``exame de sinais vitais'' do satélite. O Isolation Forest depois pergunta: \emph{este conjunto de sinais é raro face ao que aprendemos como normal?}
-
-\begin{center}
-\small
-\begin{tabular}{@{}p{3.1cm}p{5.4cm}p{5.2cm}@{}}
-\toprule
-\textbf{Teoria / ferramenta} & \textbf{O que faz (em uma frase)} & \textbf{Para que serve no SDA} \\
-\midrule
-Shannon & Mede se os passos de altitude são ``bagunçados'' ou previsíveis & Controlo irregular / station-keeping nervoso \\
-Kolmogorov (proxy) & Mede se a sequência sobe/desce é difícil de comprimir (= complexa) & Padrão de manobras sofisticado vs ruído simples \\
-Hurst (R/S) & Mede se a série ``insiste'' numa direção (persistência) & Low-thrust / drift controlado / microtrajetória \\
-Hurst multi-escala & Compara persistência da janela toda vs ponta recente & Separar memória longa de ruído recente \\
-CUSUM-$L_1$ & Detecta se o nível da série \emph{quebrou} relativamente ao recente & Início de manobra / mudança de regime \\
-Mandelbrot / cauda & Detecta saltos raros e extremos & Impulsos / $\Delta V$ grosseiros \\
-ADF & Testa se a série é ``estacionária'' ou anda à deriva & Regime não mean-reverting (propulsão contínua) \\
-Homologia H0/H1 & Resume forma/conectividade da nuvem de posições (proxy) & Órbita ``fechada'' vs estrutura atípica \\
-Chern--Simons (proxy) & Vê se o momento angular específico deixa de se conservar & Força não Kepleriana / propulsão aparente \\
-Ricci (proxy) & Vê distorção local da vizinhança na trajetória & Convergência / distorção geométrica \\
-Clima espacial & Diz se o Sol/magnetosfera estão ``tempestuosos'' & Não confundir arrasto LEO com manobra \\
-$\Delta$SMA / manobras & Quanto e quão vezes a altitude mudou & Relocação de slot / ops GEO ativas \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\vspace{0.6em}
-
-\subsection{Entropia de Shannon --- desordem dos passos de altitude}
-
-\paragraph{O que a teoria faz.}
-A teoria da informação de Shannon quantifica \textbf{incerteza / surpresa} de uma distribuição. Aqui aplicamos aos \emph{passos} de altitude: se o satélite sobe e desce de formas muito variadas, a distribuição dos $\Delta a$ é ``espalhada'' e a entropia sobe; se quase sempre faz o mesmo tipo de passo (ou quase zero), a entropia é baixa.
-
-\paragraph{Porquê interessa.}
-Órbitas quietas e station-keeping rotineiro tendem a padrões mais repetitivos. Controlo irregular, várias manobras ou ``nervosismo'' operacional aumentam a bagunça dos passos --- sinal de \textbf{ruído dinâmico}.
-
-\paragraph{Fórmula (referência).}
-Com $\Delta a_i = a_{i+1}-a_i$ e histograma $p_k$:
+\subsection{Entropia de Shannon}
+Diferenças $\Delta a_i = a_{i+1}-a_i$, histograma $p_k$:
 \begin{equation}
   H = -\sum_{k:\,p_k>0} p_k \log_2 p_k .
 \end{equation}
-$H$ alto $\Rightarrow$ passos menos previsíveis.
 
-\subsection{Proxy de complexidade de Kolmogorov --- ``quão elaborada é a sequência?''}
-
-\paragraph{O que a teoria faz.}
-A complexidade de Kolmogorov pergunta, em essência: \emph{qual o menor programa que reproduz esta sequência?} Sequências aleatórias ou muito elaboradas não comprimem bem; sequências simples comprimem. Não calculamos o $K$ exato (incomputável); usamos um \textbf{proxy} prático: codificar subidas/descidas/estável e medir compressão zlib.
-
-\paragraph{Porquê interessa.}
-Uma série de manobras ativas e pouco monótonas parece um ``código'' difícil de comprimir. Uma órbita passiva ou com padrão trivial parece simples. Serve como sensor de \textbf{sofisticação do padrão de controlo}, complementar à entropia.
-
-\paragraph{Fórmula (referência).}
-Tokens $\{U,D,S\}$ e
+\subsection{Proxy de complexidade de Kolmogorov}
+Tokens $\{U,D,S\}$ sobre $\Delta a$ e compressão zlib:
 \begin{equation}
   K_{\mathrm{proxy}} = \mathrm{clip}\!\left(\frac{\ell_{\mathrm{comp}}}{\ell_{\mathrm{raw}}},\,0,\,1\right).
 \end{equation}
-Séries curtas ($n<10$) $\mapsto 0$ (evita falso ``complexo'').
 
-\subsection{Expoente de Hurst --- persistência (microtrajetória / low-thrust)}
-
-\paragraph{O que a teoria faz.}
-O expoente de Hurst, via análise $R/S$, mede se flutuações \textbf{persistem}: se um desvio para cima tende a ser seguido por mais desvio na mesma direção (memória longa), ou se a série ``volta atrás'' (mean-reversion). $H\approx 0{,}5$ parece ruído sem memória; $H>0{,}5$ persistência; $H<0{,}5$ anti-persistência.
-
-\paragraph{Porquê interessa.}
-Micro-manobras contínuas, low-thrust e controlo que mantém uma tendência de altitude deixam \textbf{assinatura de persistência}. É central para a tese de \textbf{microanomalias de trajetória} (não um único impulso isolado).
-
-\paragraph{Multi-escala.}
-Calculamos $H$ na janela completa e num trecho curto recente, e
+\subsection{Expoente de Hurst (R/S) multi-escala}
+$H$ na janela completa e no trecho curto recente; gap
 \begin{equation}
   \Delta H = H_{\mathrm{full}} - H_{\mathrm{short}}.
 \end{equation}
-Isto distingue ``a série inteira carrega memória de controlo'' de ``só a ponta recente balançou''.
 
-\subsection{CUSUM-$L_1$ kernelizado --- ``quando o regime quebrou?''}
+\subsection{CUSUM-$L_1$ kernelizado}
+Desvios acumulados face a mediana local / MAD, mapeados em $[0,1]$.
 
-\paragraph{O que a teoria faz.}
-CUSUM (Cumulative Sum) é uma família clássica de deteção de mudança: acumula desvios face a um nível de referência até cruzar um limiar. Nossa versão usa mediana local e MAD (robusta a outliers) e um peso tipo kernel, devolvendo um score em $[0,1]$.
+\subsection{Cauda de Mandelbrot / Hill}
+Score de extremos da série acima de quantil (cauda pesada).
 
-\paragraph{Porquê interessa.}
-Responde: \emph{houve uma quebra estrutural recente na altitude?} Útil para início de manobra, mudança de slot ou transição de regime --- o ``alarme de mudança'', não só o nível médio de bagunça.
+\subsection{ADF}
+$p$-valor do teste Dickey--Fuller aumentado sobre $a(t)$.
 
-\subsection{Cauda de Mandelbrot / estimador de Hill --- saltos raros}
+\subsection{Deltas e manobras}
+$\Delta$SMA 7d/30d e contagem de picos tipo manobra via CUSUM.
 
-\paragraph{O que a teoria faz.}
-Mandelbrot popularizou a ideia de que muitos processos reais têm \textbf{caudas pesadas}: eventos extremos são mais frequentes do que o modelo Gaussiano sugere. O estimador de Hill resume a cauda dos valores extremos da série.
+\subsection{Topologia e geometria (proxies)}
+Homologia H0/H1 (modo proxy por distâncias normalizadas), Chern--Simons proxy sobre $h=r\times v$, Ricci--Ollivier proxy por Wasserstein local.
+Reconstrução a partir de elementos orbitais (não SGP4 completo).
 
-\paragraph{Porquê interessa.}
-Captura \textbf{impulsos} ou saltos raros de SMA (manobra grosseira, artefacto forte, evento pontual), complementando Hurst/CUSUM que olham mais para persistência e mudança de nível.
+\subsection{Clima espacial}
+$F_{10.7}$, Ap, Kp e derivados de 7 dias no mesmo vetor $x$.
 
-\subsection{ADF (Augmented Dickey--Fuller) --- a série ``anda à deriva''?}
-
-\paragraph{O que a teoria faz.}
-O teste ADF pergunta se uma série temporal é \textbf{estacionária} (flutua em torno de um nível) ou tem raiz unitária / tendência estocástica (anda sem voltar). Reportamos o $p$-valor: $p$ alto favorece a hipótese de não-estacionariedade.
-
-\paragraph{Porquê interessa.}
-Propulsão contínua ou regimes que não regressam a um SMA estável deixam a série ``andar''. É um teste estatístico clássico de econometria/séries temporais reutilizado para \textbf{regime orbital não quieto}.
-
-\subsection{Homologia persistente (H0/H1) --- forma da nuvem de posições (proxy)}
-
-\paragraph{O que a teoria faz.}
-A topologia de dados (TDA) estuda \textbf{forma}: componentes ligadas (H0) e ``buracos''/ciclos (H1) à medida que se varia uma escala. No Athena usamos um \textbf{proxy} estável (estatísticas de distâncias entre pontos 3D reconstruídos), para não depender de \texttt{ripser} em todas as máquinas.
-
-\paragraph{Porquê interessa.}
-Resume se a reconstrução da trajetória parece um anel orbital coerente ou uma nuvem com estrutura atípica. É apoio geométrico global; \textbf{não} substitui propagação SGP4 de precisão.
-
-\subsection{Chern--Simons proxy --- conservação de momento angular}
-
-\paragraph{O que a teoria faz.}
-Em mecânica orbital ideal, o momento angular específico $h = r \times v$ é conservado sob força central. O proxy mede o quanto $h$ \textbf{varia} ao longo da reconstrução posição--velocidade.
-
-\paragraph{Porquê interessa.}
-Variação forte sugere \textbf{força não Kepleriana aparente} (propulsão, modelo incompleto, ou ruído de reconstrução). Interpretação cautelosa: é um indicador de ``quebra de conservação'', não prova de propulsão real.
-
-\subsection{Ricci--Ollivier proxy --- curvatura local da vizinhança}
-
-\paragraph{O que a teoria faz.}
-A curvatura de Ollivier--Ricci compara distâncias entre ``bolas'' de vizinhança (via Wasserstein). Em grafos/nuvens de pontos, mede se a geometria local se concentra ou se distorce.
-
-\paragraph{Porquê interessa.}
-Serve como sensor geométrico auxiliar de \textbf{distorção local} ao longo da trajetória amostrada (ex.: convergência aparente entre trechos). Também é proxy, não geodésica real em torno da Terra.
-
-\subsection{Deltas de SMA e contagem de manobras --- magnitude e frequência}
-
-\paragraph{O que fazem.}
-$\Delta$SMA em 7 e 30 dias mede \textbf{quanto} a órbita mudou de tamanho; um contador via picos de CUSUM estima \textbf{quantas} quebras ativas aparecem na janela.
-
-\paragraph{Porquê interessam.}
-São as features mais ``operacionais'': relocação GEO, mudança de altitude LEO, ops intensas. Sozinhas não bastam (podem ser drag), mas com clima espacial e Hurst/CUSUM formam o núcleo interpretável do ruído.
-
-\subsection{Clima espacial (F10.7, Ap, Kp, tempestade)}
-
-\paragraph{O que faz.}
-Não é teoria de manobra: é \textbf{contexto físico do ambiente}. F10.7 indica atividade solar; Ap/Kp medem agitação geomagnética; a flag de tempestade marca períodos de alta Ap.
-
-\paragraph{Porquê interessa.}
-Em LEO, tempestade $\Rightarrow$ atmosfera incha $\Rightarrow$ arrasto $\Rightarrow$ $\Delta a$ natural. Sem estas features, o modelo pode confundir \textbf{física solar} com \textbf{manobra estranha}. No IF, o clima entra no perfil de ``normalidade contextual''.
-
-\subsection{O que o Isolation Forest \emph{não} usa (e porquê)}
-Distância a assets e cointegração \textbf{não} entram no IF: medem \textbf{relação com outro objeto}, não a estranheza da série isolada. Ficam na camada de prioridade (``este suspect ruidoso está perto de um asset?'').
+\subsection{Fora do IF}
+Distância a assets e cointegração entram na camada de prioridade, não no Isolation Forest de ruído da série.
 
 %------------------------------------------------------------------------------
-\section{Modelo de detecção: Isolation Forest past-only}
+\section{Isolation Forest past-only}
 \label{sec:if}
 
-\subsection{O que o Isolation Forest faz (em palavras)}
-O Isolation Forest \textbf{não} classifica ``amigo/inimigo''. Ele aprende, no espaço de features, quais combinações de sinais são \textbf{comuns} nas âncoras de normalidade e quais são \textbf{fáceis de isolar} (raras). Um ponto fácil de isolar recebe score de anomalia alto: ``este perfil de ruído não se parece com o normal que vimos no passado''.
-
-\subsection{Score unificado}
-Dado o vetor $x$ da janela corrente e o modelo IF treinado:
+Score unificado:
 \begin{equation}
   s(x) = \mathrm{clip}\bigl(0{,}5 - \mathrm{decision\_function}(x),\, 0,\, 1\bigr).
 \end{equation}
-$s$ próximo de 1: perfil isolado (anómalo) no espaço de features.
 
-\subsection{Treino (doutrina)}
-\begin{itemize}
-  \item Janelas com $\mathrm{window\_end} < \mathrm{cutoff}$ (ex.: cutoff = agora $-$ holdout 1 dia).
-  \item NORADs de treino: \textbf{baseline + asset} apenas.
-  \item Contamination típica $\sim 0{,}06$--$0{,}08$, \texttt{random\_state=42}.
-  \item Monitor IF e pipeline IF são \textbf{artefactos separados} (\texttt{registry.json}).
-\end{itemize}
+\paragraph{Treino.}
+Janelas com $\mathrm{window\_end}<\mathrm{cutoff}$; NORADs \textbf{baseline + asset}; contamination $\sim 0{,}06$--$0{,}08$; \texttt{random\_state=42}; modelos monitor e pipeline separados (\texttt{registry.json}).
 
-\subsection{Calibração de limiar}
-Sobre scores das âncoras de normalidade no treino:
+\paragraph{Limiar.}
 \begin{equation}
   thr = \max\bigl(0{,}50,\, p_{95}(s_{\mathrm{normality}})\bigr).
 \end{equation}
-Tabelas primárias do artigo usam $\mathrm{thr}=0{,}50$ por comparabilidade; thr calibrado reporta-se em sensibilidade.
+Tabelas principais: $\mathrm{thr}=0{,}50$.
 
-\subsection{Hard hit (validação)}
-Em walk-forward, \textbf{hard hit} se existe fold com $s\ge 0{,}50$ em $[t_{\mathrm{peak}}\pm 45\,\mathrm{d}]$.
+\paragraph{Hard hit.}
+Fold com $s\ge 0{,}50$ em $[t_{\mathrm{peak}}\pm 45\,\mathrm{d}]$.
 
 %------------------------------------------------------------------------------
-\section{Protocolo walk-forward (sem look-ahead)}
+\section{Protocolo walk-forward}
 \label{sec:wf}
 
-Para cada evento $e$ com calendário $(t_{\mathrm{start}}, t_{\mathrm{peak}}, t_{\mathrm{end}})$:
-\begin{enumerate}
-  \item Grelha \texttt{asof} de $t_{\mathrm{start}}$ a $t_{\mathrm{end}}$ com passo 14 dias.
-  \item Em cada \texttt{asof}: treinar IF só com janelas de normalidade com fim $<$ \texttt{asof}$-3$ dias.
-  \item Pontuar o NORAD alvo na janela corrente.
-  \item Agregar: hard hit, $\max s$, média pre-peak, \texttt{noise\_ramp}, \texttt{first\_fold\_hit}.
+Para cada evento $(t_{\mathrm{start}}, t_{\mathrm{peak}}, t_{\mathrm{end}})$:
+\begin{enumerate}[leftmargin=*]
+  \item Grelha \texttt{asof} com passo 14 dias.
+  \item Em cada \texttt{asof}: IF treinado só com janelas de normalidade terminando antes de \texttt{asof}$-3$ dias.
+  \item Score do NORAD alvo na janela corrente.
+  \item Métricas: hard hit, $\max s$, média pre-peak, \texttt{noise\_ramp}, \texttt{first\_fold\_hit}.
 \end{enumerate}
-
-\paragraph{Interpretação honesta.}
-Se \texttt{first\_fold\_hit}=1 e \texttt{noise\_ramp}$\approx 0$: o objeto já opera em \textbf{nível anómalo persistente} na janela --- não se reivindica ``descoberta de rampa que antevê a notícia''.
-
-\paragraph{Pré-registo.}
-Parâmetros e endpoints fixados em \texttt{docs/paper/PROTOCOL\_PREREGISTRATION.md} (2026-08-01).
+Protocolo fixado em \texttt{PROTOCOL\_PREREGISTRATION.md}.
 
 %------------------------------------------------------------------------------
-\section{Camada de prioridade (fora de Claims A+B)}
+\section{Camada de prioridade}
 \label{sec:priority}
 
-Estas ferramentas \textbf{não} definem o hard hit da prova A+B; ajudam o operador a \textbf{ordenar atenção}.
-
-\begin{description}
-  \item[XGBoost.] Aprendizagem supervisionada em \textit{weak labels} (regras heurísticas sobre distância, Hurst, $\Delta$SMA, etc.). \textbf{O que faz:} traduz o perfil de features + score IF num nível de prioridade (NORMAL$\ldots$HOSTILE). \textbf{Não faz:} provar espionagem; a accuracy só diz se o modelo copiou bem a heurística.
-  \item[Cointegração (Engle--Granger).] \textbf{O que faz:} testa se duas séries de altitude ``andam juntas'' a longo prazo (partilham tendência comum). \textbf{Para SDA:} padrão compatível com \textit{shadowing}/escolta --- complementar ao score de ruído individual.
-  \item[Distância suspect$\times$asset.] \textbf{O que faz:} estima proximidade orbital aproximada. \textbf{Para SDA:} prioriza se o objeto ruidoso está perto de algo a proteger.
-  \item[Fuzzy Mamdani.] \textbf{O que faz:} regras linguísticas (``se anomalia alta e TLE fresco e perto\ldots'') com incerteza suave. \textbf{Para SDA:} calibra confiança quando dados são velhos ou ambíguos.
-  \item[Kelly (half-Kelly).] \textbf{O que faz:} formula de dimensionamento de ``aposta'' adaptada a orçamento de atenção/sensor. \textbf{Para SDA:} quanto esforço gastar no alerta, não se o alerta é verdadeiro.
-  \item[Bob (LLM).] \textbf{O que faz:} explica em linguagem natural os números já calculados e pode citar cases open-source. \textbf{Nunca} altera $s(x)$.
-\end{description}
+Complementa a detecção de ruído para ordenar atenção do operador:
+\begin{itemize}[leftmargin=*]
+  \item XGBoost com weak labels (níveis operacionais);
+  \item distância e cointegração suspect$\times$asset (\texttt{pair\_risk});
+  \item fuzzy Mamdani e critério de Kelly (atenção);
+  \item Bob: texto explicativo a partir dos scores já calculados.
+\end{itemize}
+Claims A+B usam apenas o score IF do walk-forward.
 
 %------------------------------------------------------------------------------
 \section{Desenho experimental}
 \label{sec:design}
 
-\subsection{Painel GEO (headline / abstract)}
-Interest: cinco eventos (Luch-1 $\times$3 calendários, SY-12, Luch-2) --- \textbf{3 NORADs únicos}.\\
-Placebos EO civis: sete janelas (TERRA, AQUA, Landsat, NOAA) --- \textbf{5 NORADs únicos}.
+\paragraph{Painel GEO (principal).}
+Interest: 5 eventos (Luch-1 $\times$3, SY-12, Luch-2), 3 NORADs únicos.
+Placebos EO: 7 janelas (TERRA, AQUA, Landsat, NOAA), 5 NORADs únicos.
 
-\subsection{Painel expandido (diversidade de órbita)}
-Até 9 NORADs únicos de interesse (incl. SY-7, Yaogan, Tianhe, Cosmos 2550, BeiDou). LEO recon nem sempre hard-hit; reportamos honestamente (Claim~A expandido parcial; GEO headline permanece o resultado principal).
+\paragraph{Painel expandido.}
+Até 9 NORADs únicos de interesse (LEO/MEO incluídos); reportado em separado.
 
-\subsection{Teste de separação}
-Mann--Whitney $U$ unilateral (H$_1$: scores de interest $>$ placebo), com ênfase no \textbf{efeito} (médias, gap) dado $N$ pequeno.
+\paragraph{Separação.}
+Mann--Whitney $U$ unilateral (interest $>$ placebo), com ênfase em médias e gap.
 
 %------------------------------------------------------------------------------
 \section{Resultados}
 \label{sec:results}
 
-\subsection{Claims A+B --- painel GEO (principal)}
+\subsection{Claims A+B --- painel GEO}
 \begin{table}[H]
 \centering
-\caption{Resultados headline (thr$=0{,}50$, past-only). Fonte: \texttt{paper\_validation\_latest.json}.}
+\caption{Resultados principais (thr$=0{,}50$, past-only). Fonte: \texttt{paper\_validation\_latest.json}.}
 \label{tab:geo}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
 Grupo & $n$ eventos & Hard hit & Média $\max s$ & Média pre-peak \\
 \midrule
-Interest GEO (Luch/SY-12/Luch-2) & 5 & \textbf{5/5 (100\%)} & \textbf{0{,}651} & \textbf{0{,}567} \\
+Interest GEO & 5 & \textbf{5/5 (100\%)} & \textbf{0{,}651} & \textbf{0{,}567} \\
 Placebo EO civil & 7 & \textbf{0/7 (0\%)} & 0{,}462 & 0{,}385 \\
 \midrule
 Gap (interest $-$ placebo) & & & \textbf{0{,}189} & --- \\
-Mann--Whitney (max, unilateral) & & & $p\approx 0{,}0013$ & --- \\
+Mann--Whitney (max) & & & $p\approx 0{,}0013$ & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\noindent\textbf{Conclusão experimental principal:} o algoritmo quant+IF \textbf{identifica regimes de ruído elevados} nos cases militares GEO alinhados a reports, face a controlos EO --- \textbf{Claim A e B suportados} no painel GEO.
+O pipeline quant+IF separa regimes de ruído elevados nos cases GEO de interesse face aos placebos EO (\textbf{Claims A e B suportados} neste painel).
 
-\subsection{Por evento (interesse GEO e placebos civis selecionados)}
+\subsection{Amostra por evento}
 \begin{table}[H]
 \centering
-\caption{Scores por evento (amostra). Hard hit em thr$=0{,}50$.}
+\caption{Scores por evento (amostra).}
 \label{tab:events}
 \scriptsize
 \begin{tabular}{@{}llccc@{}}
@@ -412,13 +291,13 @@ placebo\_noaa20\_2023 & 43013 & não & 0{,}464 & 0{,}391 \\
 \end{tabular}
 \end{table}
 
-\subsection{Curvas pre-peak (figuras)}
-As Figuras~\ref{fig:luch}--\ref{fig:grids} mostram $s(\mathrm{asof})$ com limiar $0{,}50$ e linha vertical em $t_{\mathrm{peak}}$ (âncora open-source).
+\subsection{Curvas de score}
+As Figuras~\ref{fig:luch}--\ref{fig:grids} mostram $s(\mathrm{asof})$, limiar $0{,}50$ e $t_{\mathrm{peak}}$.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.92\textwidth]{figures/prepeak_luch1_intelsat_2015.png}
-  \caption{Luch-1 / Olymp-K (40258), episódio Intelsat 2015. Score past-only elevado ao longo da janela; $t_{\mathrm{peak}}$ = âncora de report público.}
+  \caption{Luch-1 / Olymp-K (40258), episódio Intelsat 2015.}
   \label{fig:luch}
 \end{figure}
 
@@ -432,7 +311,7 @@ As Figuras~\ref{fig:luch}--\ref{fig:grids} mostram $s(\mathrm{asof})$ com limiar
     \includegraphics[width=\textwidth]{figures/prepeak_luch2_trailing_2023.png}
     \caption{Luch-2 (55841).}
   \end{subfigure}
-  \caption{Cases de interesse com NORADs distintos de Luch-1.}
+  \caption{Cases de interesse com NORADs distintos.}
   \label{fig:sy12luch2}
 \end{figure}
 
@@ -446,77 +325,126 @@ As Figuras~\ref{fig:luch}--\ref{fig:grids} mostram $s(\mathrm{asof})$ com limiar
     \includegraphics[width=\textwidth]{figures/prepeak_placebo_aqua_2015.png}
     \caption{Placebo AQUA 2015.}
   \end{subfigure}
-  \caption{Controlos EO civis: scores tipicamente abaixo do limiar duro.}
+  \caption{Controlos EO civis.}
   \label{fig:placebo}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.95\textwidth]{figures/prepeak_grid_interest.png}
-  \caption{Grelha de curvas de interesse (visão de conjunto).}
+  \caption{Grelha de curvas de interesse.}
   \label{fig:grids}
 \end{figure}
 
-\subsection{Painel expandido (N único maior)}
-Com 11 eventos / 9 NORADs únicos de interesse, hard-hit rate $\approx 55\%$ (LEO recon nem sempre $\ge 0{,}50$), mas média de $\max s$ ainda superior aos placebos (gap $\approx 0{,}11$; MW $p\approx 0{,}01$). O abstract deve privilegiar o \textbf{painel GEO}; o expandido discute generalização e limites.
+\subsection{Painel expandido}
+Com 11 eventos / 9 NORADs únicos de interesse, hard-hit rate $\approx 55\%$ (LEO nem sempre $\ge 0{,}50$), com gap de médias ainda positivo face aos placebos (MW $p\approx 0{,}01$). O resultado principal do artigo é o painel GEO.
 
 %------------------------------------------------------------------------------
-\section{Discussão: o que os modelos medem de facto}
+\section{Discussão}
 \label{sec:discussion}
 
-\begin{enumerate}
-  \item \textbf{Identificação de anomalia / ruído de regime:} sim --- $s(x)$ quantifica isolamento no espaço de features face a normalidade militar-first.
-  \item \textbf{Microtrajetória / controlo persistente:} parcialmente --- Hurst multi-escala, Shannon, CUSUM e $\Delta$SMA codificam esse tipo de estrutura.
-  \item \textbf{Coocorrência com reports de ``movimentos estranhos'':} sim no GEO documentado (Claims A+B).
-  \item \textbf{Previsão do futuro / data da notícia:} não --- protocolo past-only; \texttt{noise\_ramp}$\approx 0$ em muitos cases reforça leitura de \textbf{nível persistente}.
-  \item \textbf{Prova de intenção espionagem classificada:} não --- âncoras open-source são labels fracos externos.
-\end{enumerate}
-
-O clima espacial (tempestade solar/geomagnética) entra como covariável: o sistema tenta não tratar arrasto de tempestade como manobra hostil por omissão.
+Os resultados mostram que o score $s(x)$ responde a regimes de ruído elevados nos cases GEO de interesse alinhados a âncoras open-source, com separação clara face a EO civil.
+Muitos cases apresentam nível pre-peak alto e \texttt{noise\_ramp} próximo de zero, coerente com \textbf{regime elevado persistente} na janela de análise.
+O clima espacial contextualiza arrasto; a prioridade (pares, XGB) ordena atenção quando há proximidade a assets.
 
 %------------------------------------------------------------------------------
 \section{Limitações}
 \label{sec:limits}
 
-\begin{itemize}
-  \item $N$ pequeno de NORADs de interesse únicos; Luch-1 multi-evento é dependente.
-  \item TLEs ruidosos e esparsos; proxies topológicos sobre reconstrução.
-  \item LEO recon/dual-use nem sempre hard-hit no thr $0{,}50$.
-  \item Station-keeping de constelações pode parecer anómalo se usado como placebo primário (excluído do Claim~B).
-  \item Accuracy XGB não deve ser citada como prova de detecção.
+\begin{itemize}[leftmargin=*]
+  \item $N$ pequeno de NORADs únicos; Luch-1 multi-evento é dependente.
+  \item TLE esparso e ruidoso; proxies topológicos sobre reconstrução.
+  \item LEO recon/dual-use com hard-hit menos frequente no thr $0{,}50$.
+  \item Accuracy XGB mede weak labels, não a prova A+B.
 \end{itemize}
-Detalhe manuscrito: \texttt{docs/paper/LIMITATIONS.md}.
 
 %------------------------------------------------------------------------------
 \section{Reprodutibilidade}
 \label{sec:repro}
 
 \begin{verbatim}
-python scripts/run_anomaly_monitor.py seed-space-weather --start-year 2014
 python scripts/run_anomaly_monitor.py train-baseline --holdout-days 1
 python scripts/run_paper_validation.py --run-wf --threshold 0.50
 python scripts/plot_prepeak_curves.py
-pdflatex docs/paper/athena_sda_article.tex
+cd docs/paper && pdflatex athena_sda_article.tex
 \end{verbatim}
-
-Artefactos: \texttt{data/alerts/paper\_validation\_latest.json}, \texttt{docs/paper/figures/}, \texttt{models/registry.json}.
 
 %------------------------------------------------------------------------------
 \section{Conclusão}
 \label{sec:concl}
 
-O Athena-SDA demonstra um pipeline \textbf{embasado} de:
-\begin{enumerate}
-  \item features matemáticas de ruído orbital + clima espacial;
-  \item Isolation Forest treinado em normalidade \textit{baseline}+\textit{asset};
-  \item validação past-only face a âncoras open-source e placebos.
-\end{enumerate}
-Os resultados GEO (5/5 vs 0/7, gap $\approx 0{,}19$) sustentam que o algoritmo \textbf{identifica regimes de microanomalia / ruído} compatíveis com períodos de movimentação atípica reportada publicamente --- o intuito operacional de \textbf{rastrear}, não de prever o futuro.
-O pack de paper e este artigo LaTeX documentam a fundamentação, o treino, os dados e as figuras para demonstração científica e de hackathon.
+O Athena-SDA implementa análise e detecção quantitativa de ruído orbital e microanomalias em watchlist militar-first, com Isolation Forest past-only e validação walk-forward.
+No painel GEO, Claims A e B são suportados (5/5 vs 0/7 hard hits; gap $\approx 0{,}19$).
+O glossário no apêndice resume o papel de cada ferramenta matemática usada no vetor de features.
 
-%------------------------------------------------------------------------------
-\section*{Agradecimentos e dados}
-Dados públicos: CelesTrak / espelhos TLE; GFZ Potsdam (índices Kp/Ap/F10.7). Reports citados apenas como âncoras narrativas. Repositório: \url{https://github.com/CostaJr007/Athena-SDA}.
+%==============================================================================
+\appendix
+\section{Glossário das ferramentas matemáticas e de modelo}
+\label{app:gloss}
+
+Cada entrada resume \textbf{o que a ferramenta faz} no Athena-SDA (sem reabrir o corpo do artigo).
+
+\begin{description}[style=nextline,leftmargin=8pt,font=\normalfont\bfseries]
+  \item[Entropia de Shannon]
+  Mede o quão ``espalhada'' ou irregular é a distribuição dos passos de altitude ($\Delta$SMA). Valores altos: sequência de mudanças menos previsível (controlo irregular / ops ativas).
+
+  \item[Proxy de Kolmogorov]
+  Estima se o padrão sobe/desce/estável da série é difícil de comprimir. Valores altos: padrão de manobra mais elaborado ou irregular face a um padrão simples.
+
+  \item[Expoente de Hurst (R/S)]
+  Mede persistência temporal: se desvios tendem a continuar na mesma direção. $H>0{,}5$: tendência/controlo persistente (útil para microtrajetória / low-thrust aparente).
+
+  \item[Hurst multi-escala / $\Delta H$]
+  Compara persistência da janela completa com a ponta recente. Destaca memória longa versus flutuação só no trecho final.
+
+  \item[CUSUM-$L_1$]
+  Detecta quebra de regime: acumula desvios face ao nível recente (mediana/MAD). Elevado quando a série ``muda de patamar''.
+
+  \item[Mandelbrot / Hill (cauda)]
+  Realça saltos raros e extremos na série de altitude (impulsos ou eventos pontuais fortes).
+
+  \item[ADF (Dickey--Fuller)]
+  Testa se a série é estacionária ou anda à deriva. $p$ alto favorece regime não mean-reverting.
+
+  \item[$\Delta$SMA e contagem de manobras]
+  Quantificam magnitude e frequência de mudanças de semi-eixo (relocação, ops intensas).
+
+  \item[Homologia H0/H1 (proxy)]
+  Resume estrutura da nuvem de posições reconstruídas (conectividade / ciclos em escala). Apoio geométrico global.
+
+  \item[Chern--Simons (proxy)]
+  Mede variação do momento angular específico na reconstrução $r,v$ --- indício de desvio de dinâmica Kepleriana ideal.
+
+  \item[Ricci--Ollivier (proxy)]
+  Mede distorção local entre vizinhanças na nuvem de pontos (curvatura discreta).
+
+  \item[Clima espacial (F10.7, Ap, Kp, storm)]
+  Contextualiza atividade solar e geomagnética. Ajuda a interpretar $\Delta$SMA em LEO sob arrasto elevado.
+
+  \item[Isolation Forest]
+  Modelo não supervisionado que isola perfis raros no espaço de features. Score alto = combinação de sinais pouco típica face às âncoras de normalidade.
+
+  \item[Walk-forward past-only]
+  Em cada data histórica, o IF só vê o passado. Avalia se o score sobe em janelas de eventos reais e placebos.
+
+  \item[Cointegração]
+  Testa se duas séries de altitude partilham tendência comum (padrão de movimento conjunto / escolta).
+
+  \item[Distância suspect$\times$asset]
+  Proximidade orbital aproximada para priorizar atenção a assets protegidos.
+
+  \item[XGBoost (weak labels)]
+  Classificador de prioridade operacional a partir de regras heurísticas de treino. Não define o hard hit da prova A+B.
+
+  \item[Fuzzy Mamdani]
+  Regras linguísticas com graus de pertinência para calibrar saída sob incerteza (ex.\ TLE antigo).
+
+  \item[Kelly]
+  Heurística de dimensionamento de atenção/recurso a partir de score e severidade.
+
+  \item[Bob]
+  Camada de texto que descreve scores e contexto; não recalcula o IF.
+\end{description}
 
 \begin{thebibliography}{99}
 \bibitem{shannon1948}
@@ -538,13 +466,10 @@ R.~F. Engle and C.~W.~J. Granger, ``Co-integration and error correction,'' \text
 B.~Mandelbrot, ``The variation of certain speculative prices,'' \textit{J. Business}, 1963.
 
 \bibitem{gfz}
-J.~Matzka et al., Geomagnetic Kp index, GFZ Potsdam (CC BY 4.0).
-
-\bibitem{csis}
-CSIS, \textit{Unusual Behavior in GEO} / open SSA literature on Olymp-K / Luch.
+J.~Matzka et al., Geomagnetic Kp index, GFZ Potsdam.
 
 \bibitem{athena}
-Athena-SDA project documentation: \texttt{docs/paper/*}, \texttt{docs/FOUNDATION\_QUANT\_VALIDATION.md}.
+Athena-SDA: \url{https://github.com/CostaJr007/Athena-SDA}, \texttt{docs/paper/*}.
 \end{thebibliography}
 
 \end{document}
