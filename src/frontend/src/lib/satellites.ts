@@ -128,13 +128,16 @@ function parse3le(text: string): RawSat[] {
   return out
 }
 
-/** Texts of the five feeds; supplementals may be null if unavailable. */
+/** Texts of the feeds; supplementals may be null if unavailable. */
 export interface FeedTexts {
   active: string
   visual: string | null
   cosmos2251: string | null
   iridium33: string | null
   fengyun1c: string | null
+  /** Bundled watchlist TLEs (24 military-interest NORADs) — guarantees the
+   *  mission-board objects are always present and selectable on the globe. */
+  watchlist: string | null
 }
 
 /**
@@ -148,6 +151,12 @@ export function mergeFeeds(feeds: FeedTexts): SatInfo[] {
   const add = (r: RawSat, group: number, override: boolean) => {
     if (!override && byNorad.has(r.norad)) return
     byNorad.set(r.norad, { ...r, group })
+  }
+
+  // Watchlist first with override: the 24 mission-board NORADs are always
+  // present (fresh bundled TLEs) regardless of main-catalog coverage.
+  if (feeds.watchlist) {
+    for (const r of parse3le(feeds.watchlist)) add(r, classifyActive(r.name), true)
   }
 
   for (const [text, group] of [

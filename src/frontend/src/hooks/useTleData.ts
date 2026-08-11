@@ -49,6 +49,12 @@ const FEEDS: FeedDef[] = [
     snapUrl: `${SNAP}/tle-fengyun-1c-debris.txt`,
     required: false,
   },
+  {
+    key: 'watchlist',
+    liveUrl: `${SNAP}/tle-watchlist.txt`,
+    snapUrl: `${SNAP}/tle-watchlist.txt`,
+    required: true,
+  },
 ]
 
 export const TLE_TTL_MS = 2 * 3600 * 1000

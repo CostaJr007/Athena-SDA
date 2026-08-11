@@ -55,8 +55,8 @@ const CASES: {
     firstHit: '2014-10-15',
     peak: '2015-04-15',
     lead: 182,
-    score: 0.646,
-    why: 'ΔSMA ≈ −72 km (GEO slot move) + Hurst 0.80. Quiet weather (Ap=9).',
+    score: 0.724,
+    why: 'ΔSMA ≈ −72 km (GEO slot move) + DFA α 0.72. Quiet weather (Ap=9).',
     report:
       'Open catalog history: Olymp-K moved ~Apr 2015 between Intelsat 7 and 901 (~18.1°W).',
     refs: [
@@ -81,8 +81,8 @@ const CASES: {
     firstHit: '2015-01-15',
     peak: '2015-09-15',
     lead: 243,
-    score: 0.537,
-    why: 'Hurst 0.94 + 6 maneuvers/30d + Shannon elevated. Later ΔSMA +62 km fold.',
+    score: 0.699,
+    why: 'DFA α 0.94 + Page CUSUM elevated + Shannon high. Later ΔSMA +62 km fold.',
     report:
       'Open sources: late Sep 2015 move to ~24.4°W next to Intelsat 905 at 24.5°W; Intelsat criticism of non-normal behavior.',
     refs: [
@@ -104,11 +104,11 @@ const CASES: {
     id: 'luch-fidus',
     title: 'Luch-1 · Athena-Fidus 2018',
     norad: 40258,
-    firstHit: '2018-01-15',
+    firstHit: '2018-01-01',
     peak: '2018-09-01',
-    lead: 229,
-    score: 0.524,
-    why: 'Hurst 0.96 + Kolmogorov 0.58 under quiet Sun (F10.7≈70). Later ΔSMA −110 km.',
+    lead: 243,
+    score: 0.724,
+    why: 'DFA α 0.96 + LZ76 0.58 under quiet Sun (F10.7≈70). Later ΔSMA −110 km.',
     report:
       'French MoD (Florence Parly, Sep 2018) publicly described Luch-Olymp proximity to Athena-Fidus as espionage-like; also noted on Gunter.',
     refs: [
@@ -133,8 +133,8 @@ const CASES: {
     firstHit: '2022-01-12',
     peak: '2022-06-15',
     lead: 154,
-    score: 0.534,
-    why: 'Kolmogorov 0.63 + 6 maneuvers/30d + Hurst 0.89 — inspection-like control.',
+    score: 0.712,
+    why: 'LZ76 0.63 + Page CUSUM elevated + DFA α 0.89 — inspection-like control.',
     report:
       'Secure World Foundation tracks SY-12 among Chinese military/intelligence GEO RPO missions; open SSA literature discusses SY-12 proximity ops.',
     refs: [
@@ -155,8 +155,8 @@ const CASES: {
     firstHit: '2023-04-01',
     peak: '2023-10-15',
     lead: 197,
-    score: 0.551,
-    why: 'Shannon 2.12 + Hurst 0.91 weeks after launch. Max 0.569 on 2023-09-02.',
+    score: 0.722,
+    why: 'Shannon 2.12 + DFA α 0.91 weeks after launch. Max 0.722 near Sep 2023.',
     report:
       'Breaking Defense (17 Oct 2023): second Russian Luch/Olymp reported trailing Western systems in GEO.',
     refs: [
