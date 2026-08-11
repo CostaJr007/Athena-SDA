@@ -26,13 +26,14 @@ export interface EngineCallbacks {
   onContextRestored: () => void
   /** reported ~once per second */
   onFps?: (fps: number) => void
-  /** Fill `past` (t-P/2..t) and `future` (t..t+P/2) with unit ECI points. */
+  /** Fill `past` (t-P/2..t) and `future` (t..t+P/2) with unit ECI points.
+   *  Returns the number of points actually written per buffer (RDP decimation). */
   orbitProvider: (
     index: number,
     simMs: number,
     past: Float32Array,
     future: Float32Array,
-  ) => void
+  ) => number
   footprintProvider: (
     index: number,
     simMs: number,
@@ -1296,14 +1297,15 @@ export class GlobeEngine {
       ) {
         const pa = this.pastGeo.getAttribute('position') as THREE.BufferAttribute
         const fu = this.futureGeo.getAttribute('position') as THREE.BufferAttribute
-        this.cb.orbitProvider(
+        const used = this.cb.orbitProvider(
           this.selected,
           simMs,
           pa.array as Float32Array,
           fu.array as Float32Array,
         )
-        this.pastGeo.setDrawRange(0, ORBIT_SIDE)
-        this.futureGeo.setDrawRange(0, ORBIT_SIDE)
+        const draw = used ?? ORBIT_SIDE
+        this.pastGeo.setDrawRange(0, draw)
+        this.futureGeo.setDrawRange(0, draw)
         pa.needsUpdate = true
         fu.needsUpdate = true
         this.lastOrbitReal = nowReal

@@ -68,7 +68,7 @@ def _watchlist_meta(norad_id: int) -> dict:
 FEATURES_DIR = DATA_DIR / "features"
 IFOREST_MONITOR_PATH = MODELS_DIR / "isolation_forest_monitor.joblib"
 MONITOR_META_PATH = MODELS_DIR / "anomaly_monitor_meta.json"
-WINDOW = 20  # epochs required by extract_satellite_features
+WINDOW = 20  # epochs required by extract_satellite_features (config.MIN_WINDOW)
 RKHS_REF_PATH = MODELS_DIR / "rkhs_reference.joblib"
 
 
@@ -227,7 +227,6 @@ def build_feature_windows(
     names = names or {}
     rows: List[Dict[str, float]] = []
     meta: List[Dict[str, Any]] = []
-    rkhs_ref = _load_rkhs_reference()
 
     for sid, hist in sat_histories.items():
         h = hist.sort_values("timestamp").reset_index(drop=True)
@@ -263,7 +262,10 @@ def build_feature_windows(
                     ),
                     min_distance_to_military_km=500.0,
                     reference_time=win_end if pd.notnull(win_end) else None,
-                    reference_matrix=rkhs_ref,
+                    # MMD typicality is EXCLUDED from IFOREST_COLUMNS; computing it
+                    # here (300 permutations per window) wastes the whole training
+                    # run. score_latest computes MMD once per satellite per day.
+                    reference_matrix=None,
                 )
             except Exception:
                 continue
@@ -375,6 +377,19 @@ def train_baseline_from_history(
     iforest.fit(X)
 
     joblib.dump(iforest, IFOREST_MONITOR_PATH)
+
+    # Hot-swap versioning (patent US 2023/0050870 A1 — micro-model swap per
+    # fold): keep a dated snapshot so any report can reference exactly which
+    # baseline produced the scores (DMP re-fit -> AIP score, walk-forward
+    # analogy applied to daily operations).
+    try:
+        cutoff_ts = meta_out.get("cutoff_utc") or datetime.now(timezone.utc).isoformat()
+        v_stamp = re.sub(r"[^0-9]", "", str(cutoff_ts))[:8] or datetime.now(timezone.utc).strftime("%Y%m%d")
+        versioned = MODELS_DIR / f"isolation_forest_monitor_{v_stamp}.joblib"
+        joblib.dump(iforest, versioned)
+        meta_out["versioned_model"] = str(versioned.name)
+    except Exception as exc:
+        print(f"Warning: versioned model snapshot failed: {exc}")
 
     raw = iforest.decision_function(X)
     scores = np.clip(0.5 - raw, 0.0, 1.0)
@@ -720,6 +735,7 @@ def score_latest(
         mon_meta.get("recommended_anomaly_threshold")
         or (calibration.get("global") or {}).get("recommended_thr")
         or anomaly_threshold
+        or 0.50
     )
     thr_elevated = float(
         (calibration.get("global") or {}).get("p90")
@@ -797,6 +813,31 @@ def score_latest(
         anomaly_score = float(np.clip(0.5 - raw, 0.0, 1.0))
         feats["anomaly_score"] = anomaly_score
 
+        # Evidential fusion (Dempster-Shafer — src/evidence.py): fuse weak
+        # anomaly detectors with explicit ignorance driven by TLE age. Conflict
+        # K is itself a signal (disagreeing detectors = odd state). Replaces
+        # the decorative Łukasiewicz implication and hand-coded rule combos.
+        ds_belief = ds_plaus = ds_conflict = 0.0
+        try:
+            from src.evidence import fuse_evidence
+
+            _ds = fuse_evidence(
+                [
+                    anomaly_score,
+                    float(feats.get("page_cusum_sma", 0.0)),
+                    float(feats.get("ewma_sma", 0.0)),
+                    float(feats.get("bocpd_change_prob_3d", 0.0)),
+                    float(np.clip(feats.get("ssa_residual_last", 0.0) / 4.0, 0.0, 1.0)),
+                    float(feats.get("mmd_typicality", 0.5)),
+                ],
+                tle_age_hours=float(feats.get("tle_age_hours", 12.0)),
+            )
+            ds_belief = float(_ds["belief_anomalous"])
+            ds_plaus = float(_ds["plausibility_anomalous"])
+            ds_conflict = float(_ds["conflict_K"])
+        except Exception:
+            pass
+
         # Per-orbit calibrated hard threshold (paper A+B)
         thr_use = threshold_for_orbit(calibration, str(orbit_guess), default=thr_global)
 
@@ -839,6 +880,11 @@ def score_latest(
             "military_alert_eligible": bool(mil.get("military_alert_eligible")),
             "status": mil.get("status") or "NOMINAL",
             "data_quality": dq,
+            "evidence": {
+                "belief_anomalous": ds_belief,
+                "plausibility_anomalous": ds_plaus,
+                "conflict_K": ds_conflict,
+            },
             "min_distance_to_asset_km": float(min_dist) if asset_hists else None,
             "closest_asset_norad": int(closest_asset) if closest_asset is not None else None,
             "cointegration_pvalue": float(coint_p) if asset_hists else None,
@@ -848,11 +894,15 @@ def score_latest(
                     "delta_sma_7d_km",
                     "shannon_entropy_sma_30d",
                     "shannon_entropy_sma_short",
-                    "hurst_exponent_sma",
-                    "hurst_exponent_sma_short",
-                    "persistence_hurst_gap",
-                    "kolmogorov_proxy_7d",
-                    "l1_cusum_sma",
+                    "dfa_hurst_sma",
+                    "dfa_hurst_sma_short",
+                    "persistence_dfa_gap",
+                    "lz76_complexity",
+                    "permutation_entropy",
+                    "page_cusum_sma",
+                    "ewma_sma",
+                    "bocpd_change_prob_3d",
+                    "ssa_residual_last",
                     "tle_age_hours",
                     "f10_7",
                     "f10_7_adj",

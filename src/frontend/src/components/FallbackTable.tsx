@@ -60,7 +60,7 @@ export default function FallbackTable({ dataset }: { dataset: Dataset | null }) 
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-10 text-slate-200">
-      <h1 className="font-mono text-xl font-semibold tracking-[0.34em]"><span className="logo-o">O</span>RBIT VEIL</h1>
+      <h1 className="font-mono text-xl font-semibold tracking-[0.34em]"><span className="logo-o">A</span>THENA-SDA</h1>
       <p className="mt-1 text-xs text-slate-400">
         Real-time orbital satellite visualization · CelesTrak TLE × SGP4 propagation
       </p>

@@ -1,0 +1,86 @@
+{
+  "ontology": "athena.sda.v1",
+  "description": "Typed object model for Athena-SDA (Palantir Ontology-inspired; see docs/references/palantir_patents.md — US 12,374,011 B2 Interactive data object map). dataset->object type, row->object, column->property, join->link type.",
+  "objectTypes": {
+    "Satellite": {
+      "apiName": "Satellite",
+      "primaryKey": "noradId",
+      "properties": {
+        "noradId": { "dataType": "integer", "required": true },
+        "name": { "dataType": "string" },
+        "owner": { "dataType": "string" },
+        "country": { "dataType": "string" },
+        "role": { "dataType": "string", "enum": ["asset", "suspect", "baseline", "unknown"] },
+        "purpose": { "dataType": "string" },
+        "orbitClass": { "dataType": "string", "enum": ["LEO", "MEO", "GEO", "HEO"] },
+        "status": {
+          "dataType": "string",
+          "enum": ["NOMINAL", "ANOMALY", "PAIR_ELEVATED", "CHANGE_RELEVANT", "ASSET_REGIME_NOISE", "CALIBRATION_BASELINE", "UNRELIABLE_DATA"]
+        },
+        "anomalyScore": { "dataType": "double" },
+        "attentionScore": { "dataType": "double" }
+      },
+      "links": {
+        "threatens": { "target": "Satellite", "multiplicity": "MANY", "description": "suspect -> protected asset pair (shadowing / RPO proxy)" },
+        "calibrationAnchor": { "target": "Satellite", "multiplicity": "MANY", "description": "baseline normality anchor" }
+      }
+    },
+    "Alert": {
+      "apiName": "Alert",
+      "primaryKey": "alertId",
+      "properties": {
+        "alertId": { "dataType": "string", "required": true },
+        "severity": { "dataType": "string", "enum": ["LOW", "WATCH", "ELEVATED", "CRITICAL"] },
+        "status": { "dataType": "string", "enum": ["OPEN", "ACKNOWLEDGED", "RESOLVED", "SUPPRESSED"] },
+        "eventType": { "dataType": "string", "enum": ["SHADOWING", "RPO", "PROXIMITY", "MANEUVER", "PLATFORM_HEALTH", "CALIBRATION"] },
+        "anomalyScore": { "dataType": "double" },
+        "attentionScore": { "dataType": "double" },
+        "raisedAt": { "dataType": "datetime" }
+      },
+      "links": {
+        "target": { "target": "Satellite", "multiplicity": "ONE" },
+        "source": { "target": "Satellite", "multiplicity": "ONE" }
+      }
+    },
+    "Sensor": {
+      "apiName": "Sensor",
+      "primaryKey": "sensorId",
+      "properties": {
+        "sensorId": { "dataType": "string", "required": true },
+        "network": { "dataType": "string" },
+        "taskable": { "dataType": "boolean" },
+        "taskingCost": { "dataType": "double" },
+        "taskingState": { "dataType": "string", "enum": ["IDLE", "TASKED", "BUSY"] }
+      }
+    },
+    "TaskingOrder": {
+      "apiName": "TaskingOrder",
+      "primaryKey": "orderId",
+      "properties": {
+        "orderId": { "dataType": "string", "required": true },
+        "windowStart": { "dataType": "datetime" },
+        "windowEnd": { "dataType": "datetime" },
+        "state": { "dataType": "string", "enum": ["DRAFT", "VALIDATED", "APPROVED", "EXECUTING", "COMPLETED", "REJECTED"] },
+        "kellyAllocation": { "dataType": "double" }
+      },
+      "links": {
+        "target": { "target": "Satellite", "multiplicity": "ONE" },
+        "sensor": { "target": "Sensor", "multiplicity": "ONE" }
+      }
+    }
+  },
+  "actionTypes": {
+    "TaskSatellite": {
+      "apiName": "TaskSatellite",
+      "parameters": {
+        "targetNorad": { "dataType": "integer" },
+        "sensorId": { "dataType": "string" },
+        "windowStart": { "dataType": "datetime" },
+        "windowEnd": { "dataType": "datetime" }
+      },
+      "operations": [{ "type": "createObject", "objectTypeApiName": "TaskingOrder" }],
+      "validateOnly": true,
+      "description": "Create a sensor tasking order for a satellite (validated, not executed — operator approval required)."
+    }
+  }
+}

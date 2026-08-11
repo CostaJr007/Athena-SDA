@@ -53,3 +53,7 @@ data/space_weather/Kp_ap_Ap_SN_F107_since_1932.txt
 
 # Agent session dumps
 docs/references/sessions/
+
+# SPLID benchmark dataset (4.5 GB download; partial copy — never commit)
+data/splid/
+

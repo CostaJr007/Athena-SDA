@@ -1,24 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import SidePanel from './SidePanel'
 import type { SatInfo } from '@/lib/satellites'
 import { UI_GROUPS, formatUtc } from '@/lib/satellites'
-import type { Telemetry } from '@/components/hud/DetailPanel'
+import type { Telemetry } from '@/lib/satellites'
 import {
   bobBrief,
   boardThreat,
   formatOnsetDate,
+  THREAT_STYLE,
   type BoardEntry,
-  type Threat,
 } from '@/lib/risk-report'
 import { countryLabel } from '@/lib/country-flag'
 import CountryFlag from '@/components/hud/CountryFlag'
-
-const THREAT_COLOR: Record<Threat, string> = {
-  HOSTILE: 'text-rose-300 border-rose-400/40 bg-rose-500/10',
-  SUSPECT: 'text-amber-300 border-amber-400/40 bg-amber-500/10',
-  ANOMALY: 'text-orange-300 border-orange-400/40 bg-orange-500/10',
-  NOMINAL: 'text-emerald-300 border-emerald-400/40 bg-emerald-500/10',
-}
 
 interface RightDockProps {
   sat: SatInfo | null
@@ -60,23 +53,30 @@ export default function RightDock({
       text: 'Cmdr. Bob online. Select a watchlist track for a quant briefing (scores only — no invented threat).',
     },
   ])
+  const [tasking, setTasking] = useState<'IDLE' | 'DRAFT' | 'VALIDATED' | 'APPROVED'>('IDLE')
 
   const group = sat ? UI_GROUPS[sat.group] : null
   const threat = boardEntry ? boardThreat(boardEntry) : null
 
+  const lastBriefedRef = useRef<number | null>(null)
   useEffect(() => {
     if (!boardEntry) return
-    setChatLog((prev) => {
-      const last = prev[prev.length - 1]
-      const brief = bobBrief(boardEntry)
-      if (last?.role === 'bob' && last.text === brief) return prev
-      const next: { role: 'op' | 'bob'; text: string }[] = [
-        ...prev,
-        { role: 'bob', text: brief },
-      ]
-      return next.slice(-12)
-    })
-  }, [boardEntry?.norad_id]) // eslint-disable-line react-hooks/exhaustive-deps
+    const norad = boardEntry.norad_id
+    if (lastBriefedRef.current === norad) return
+    lastBriefedRef.current = norad
+    const brief = bobBrief(boardEntry)
+    // Defer the append so the setState is not synchronous inside the effect
+    // (react-hooks/set-state-in-effect rule).
+    const id = window.setTimeout(() => {
+      setChatLog((prev) => {
+        if (prev[prev.length - 1]?.role === 'bob' && prev[prev.length - 1].text === brief) {
+          return prev
+        }
+        return [...prev, { role: 'bob' as const, text: brief }].slice(-12)
+      })
+    }, 0)
+    return () => clearTimeout(id)
+  }, [boardEntry])
 
   const sendChat = (e: React.FormEvent) => {
     e.preventDefault()
@@ -177,7 +177,7 @@ export default function RightDock({
                 </div>
                 {threat && (
                   <span
-                    className={`shrink-0 border px-1.5 py-0.5 text-[12px] tracking-wider ${THREAT_COLOR[threat]}`}
+                    className={`shrink-0 border px-1.5 py-0.5 text-[12px] tracking-wider ${THREAT_STYLE[threat].border} ${THREAT_STYLE[threat].color} ${THREAT_STYLE[threat].bg}`}
                   >
                     {threat}
                   </span>
@@ -305,10 +305,18 @@ export default function RightDock({
                       }
                     />
                     <Metric
-                      k="Hurst"
+                      k="Kelly"
                       v={
-                        boardEntry.features_snapshot.hurst_exponent_sma != null
-                          ? boardEntry.features_snapshot.hurst_exponent_sma.toFixed(3)
+                        boardEntry.kelly_allocation != null
+                          ? `${(boardEntry.kelly_allocation * 100).toFixed(1)}%`
+                          : '—'
+                      }
+                    />
+                    <Metric
+                      k="DFA α"
+                      v={
+                        boardEntry.features_snapshot.dfa_hurst_sma != null
+                          ? boardEntry.features_snapshot.dfa_hurst_sma.toFixed(3)
                           : '—'
                       }
                     />
@@ -347,6 +355,83 @@ export default function RightDock({
                       </div>
                     </div>
                   )}
+
+                  {boardEntry.evidence && (
+                    <div className="mt-2 border border-violet-400/25 bg-violet-500/10 px-2.5 py-2">
+                      <div className="text-[12px] uppercase tracking-wider text-violet-200/80">
+                        Evidential fusion · Dempster-Shafer
+                      </div>
+                      <div className="mt-1.5 space-y-1">
+                        <EvidenceBar
+                          label="Belief"
+                          pct={boardEntry.evidence.belief_anomalous}
+                          hex="#a78bfa"
+                        />
+                        <EvidenceBar
+                          label="Plausibility"
+                          pct={boardEntry.evidence.plausibility_anomalous}
+                          hex="#c4b5fd"
+                        />
+                      </div>
+                      <div className="mt-1 text-[12px] text-zinc-400">
+                        Conflict K ={' '}
+                        <span className="tabular-nums text-zinc-300">
+                          {boardEntry.evidence.conflict_K?.toFixed(3) ?? '—'}
+                        </span>{' '}
+                        (disagreeing detectors = odd state)
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="mt-2 border border-white/10 bg-black/40 px-2.5 py-2">
+                    <div className="flex items-center justify-between">
+                      <div className="text-[12px] uppercase tracking-wider text-zinc-400">
+                        Sensor tasking
+                      </div>
+                      <span
+                        className={`border px-1.5 py-0.5 text-[10px] tracking-wider ${
+                          tasking === 'APPROVED'
+                            ? 'border-emerald-400/50 text-emerald-200'
+                            : tasking === 'VALIDATED'
+                              ? 'border-sky-400/50 text-sky-200'
+                              : tasking === 'DRAFT'
+                                ? 'border-amber-400/50 text-amber-200'
+                                : 'border-white/15 text-zinc-500'
+                        }`}
+                      >
+                        {tasking}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setTasking((s) =>
+                          s === 'IDLE'
+                            ? 'DRAFT'
+                            : s === 'DRAFT'
+                              ? 'VALIDATED'
+                              : s === 'VALIDATED'
+                                ? 'APPROVED'
+                                : 'IDLE',
+                        )
+                      }
+                      className="mt-1.5 w-full border border-emerald-400/35 bg-black/50 px-2 py-1.5 text-[12px] font-medium uppercase tracking-[0.12em] text-emerald-300 transition-colors hover:border-emerald-300/70 hover:text-emerald-100"
+                      title="TaskSatellite action — $validateOnly, no execution without approval"
+                    >
+                      {tasking === 'IDLE'
+                        ? 'Task sensor (validate)'
+                        : tasking === 'DRAFT'
+                          ? 'Validate order'
+                          : tasking === 'VALIDATED'
+                            ? 'Approve execution'
+                            : 'Reset'}
+                    </button>
+                    <p className="mt-1 text-[11px] leading-relaxed text-zinc-500">
+                      Action <span className="text-zinc-400">TaskSatellite</span> —
+                      validate-only semantics (ontology action type); never
+                      executes without operator approval.
+                    </p>
+                  </div>
                 </div>
               )}
 
@@ -413,6 +498,21 @@ function Metric({ k, v }: { k: string; v: string }) {
     <div className="border border-white/10 bg-black/50 px-2 py-1.5">
       <div className="text-[12px] uppercase tracking-wider text-zinc-400">{k}</div>
       <div className="mt-0.5 truncate text-zinc-100">{v}</div>
+    </div>
+  )
+}
+
+function EvidenceBar({ label, pct, hex }: { label: string; pct?: number; hex: string }) {
+  const p = pct == null ? 0 : Math.max(0, Math.min(1, pct))
+  return (
+    <div className="flex items-center gap-2 text-[12px] text-zinc-400">
+      <span className="w-20 shrink-0 uppercase tracking-wider">{label}</span>
+      <div className="h-1.5 flex-1 overflow-hidden bg-black/70">
+        <div className="h-full" style={{ width: `${p * 100}%`, background: hex }} />
+      </div>
+      <span className="w-12 shrink-0 text-right tabular-nums text-zinc-300">
+        {p.toFixed(2)}
+      </span>
     </div>
   )
 }

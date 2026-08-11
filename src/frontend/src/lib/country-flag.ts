@@ -72,6 +72,3 @@ export function countryFlagEmoji(code?: string | null): string {
   }
   return '🏳️'
 }
-
-/** @deprecated use CountryFlag component or countryFlagEmoji — kept for HMR/stale imports */
-export const countryFlag = countryFlagEmoji

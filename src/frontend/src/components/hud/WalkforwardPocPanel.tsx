@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import EventReplayPanel from '@/components/hud/EventReplayPanel'
 
-type PocTab = 'overview' | 'method' | 'math' | 'cases' | 'placebos'
+type PocTab = 'overview' | 'method' | 'math' | 'cases' | 'placebos' | 'replay'
 
 interface WalkforwardPocPanelProps {
   open: boolean
@@ -12,7 +13,25 @@ const TABS: { id: PocTab; label: string }[] = [
   { id: 'method', label: 'Method' },
   { id: 'math', label: 'Math' },
   { id: 'cases', label: 'Cases' },
+  { id: 'replay', label: 'Replay' },
   { id: 'placebos', label: 'Placebos' },
+]
+
+/** Walk-forward event ids matching data/alerts/walkforward/wf_<id>.json */
+const REPLAY_EVENTS: { id: string; label: string }[] = [
+  { id: 'luch1_intelsat_2015', label: 'Luch-1 · Intelsat (2015)' },
+  { id: 'luch1_intelsat_mid2015', label: 'Luch-1 · Intelsat mid-2015' },
+  { id: 'luch1_athena_fidus_2018', label: 'Luch-1 · Athena-Fidus (2018)' },
+  { id: 'luch2_geo_ops_2024', label: 'Luch-2 · GEO ops (2024)' },
+  { id: 'luch2_trailing_2023', label: 'Luch-2 · trailing (2023)' },
+  { id: 'sy12_geo_rpo_2021_22', label: 'SY-12 · GEO RPO (2021-22)' },
+  { id: 'shiyan7_experimental_2015', label: 'Shiyan-7 · experimental (2015)' },
+  { id: 'yaogan29_recon_2020', label: 'Yaogan-29 · recon (2020)' },
+  { id: 'yaogan29_sso_2025q1', label: 'Yaogan-29 · SSO (2025 Q1)' },
+  { id: 'yaogan3_recon_2016', label: 'Yaogan-3 · recon (2016)' },
+  { id: 'tianhe_css_assembly_2021', label: 'Tianhe · CSS assembly (2021)' },
+  { id: 'cosmos2550_military_leo_2022', label: 'Cosmos-2550 · mil LEO (2022)' },
+  { id: 'beidou3_m11_meo_2019', label: 'Beidou-3 M11 · MEO (2019)' },
 ]
 
 type RefLink = { label: string; url: string }
@@ -36,8 +55,8 @@ const CASES: {
     firstHit: '2014-10-15',
     peak: '2015-04-15',
     lead: 182,
-    score: 0.646,
-    why: 'ΔSMA ≈ −72 km (GEO slot move) + Hurst 0.80. Quiet weather (Ap=9).',
+    score: 0.724,
+    why: 'ΔSMA ≈ −72 km (GEO slot move) + DFA α 0.72. Quiet weather (Ap=9).',
     report:
       'Open catalog history: Olymp-K moved ~Apr 2015 between Intelsat 7 and 901 (~18.1°W).',
     refs: [
@@ -62,8 +81,8 @@ const CASES: {
     firstHit: '2015-01-15',
     peak: '2015-09-15',
     lead: 243,
-    score: 0.537,
-    why: 'Hurst 0.94 + 6 maneuvers/30d + Shannon elevated. Later ΔSMA +62 km fold.',
+    score: 0.699,
+    why: 'DFA α 0.94 + Page CUSUM elevated + Shannon high. Later ΔSMA +62 km fold.',
     report:
       'Open sources: late Sep 2015 move to ~24.4°W next to Intelsat 905 at 24.5°W; Intelsat criticism of non-normal behavior.',
     refs: [
@@ -85,11 +104,11 @@ const CASES: {
     id: 'luch-fidus',
     title: 'Luch-1 · Athena-Fidus 2018',
     norad: 40258,
-    firstHit: '2018-01-15',
+    firstHit: '2018-01-01',
     peak: '2018-09-01',
-    lead: 229,
-    score: 0.524,
-    why: 'Hurst 0.96 + Kolmogorov 0.58 under quiet Sun (F10.7≈70). Later ΔSMA −110 km.',
+    lead: 243,
+    score: 0.724,
+    why: 'DFA α 0.96 + LZ76 0.58 under quiet Sun (F10.7≈70). Later ΔSMA −110 km.',
     report:
       'French MoD (Florence Parly, Sep 2018) publicly described Luch-Olymp proximity to Athena-Fidus as espionage-like; also noted on Gunter.',
     refs: [
@@ -114,8 +133,8 @@ const CASES: {
     firstHit: '2022-01-12',
     peak: '2022-06-15',
     lead: 154,
-    score: 0.534,
-    why: 'Kolmogorov 0.63 + 6 maneuvers/30d + Hurst 0.89 — inspection-like control.',
+    score: 0.712,
+    why: 'LZ76 0.63 + Page CUSUM elevated + DFA α 0.89 — inspection-like control.',
     report:
       'Secure World Foundation tracks SY-12 among Chinese military/intelligence GEO RPO missions; open SSA literature discusses SY-12 proximity ops.',
     refs: [
@@ -136,8 +155,8 @@ const CASES: {
     firstHit: '2023-04-01',
     peak: '2023-10-15',
     lead: 197,
-    score: 0.551,
-    why: 'Shannon 2.12 + Hurst 0.91 weeks after launch. Max 0.569 on 2023-09-02.',
+    score: 0.722,
+    why: 'Shannon 2.12 + DFA α 0.91 weeks after launch. Max 0.722 near Sep 2023.',
     report:
       'Breaking Defense (17 Oct 2023): second Russian Luch/Olymp reported trailing Western systems in GEO.',
     refs: [
@@ -246,6 +265,7 @@ export default function WalkforwardPocPanel({
         {tab === 'method' && <MethodTab />}
         {tab === 'math' && <MathTab />}
         {tab === 'cases' && <CasesTab />}
+        {tab === 'replay' && <ReplayTab />}
         {tab === 'placebos' && <PlacebosTab />}
       </div>
 
@@ -512,6 +532,36 @@ function Stat({
       >
         {v}
       </div>
+    </div>
+  )
+}
+
+function ReplayTab() {
+  const [eventId, setEventId] = useState<string>(REPLAY_EVENTS[0]?.id ?? '')
+  return (
+    <div className="space-y-2">
+      <p className="text-[12px] text-zinc-400">
+        Scruba a curva de anomaly_score(t) do walk-forward (patente Palantir
+        12,450,265 — tile temporal). A linha tracejada vermelha é o âncora
+        público <span className="font-mono text-rose-300">t_peak</span>; a
+        amarela é o threshold 0.50.
+      </p>
+      <div className="flex flex-wrap items-center gap-1.5">
+        <span className="text-[11px] uppercase tracking-wider text-zinc-500">Event</span>
+        <select
+          value={eventId}
+          onChange={(e) => setEventId(e.target.value)}
+          className="athena-input min-w-0 flex-1 px-2 py-1 text-[13px]"
+          aria-label="walk-forward event"
+        >
+          {REPLAY_EVENTS.map((e) => (
+            <option key={e.id} value={e.id}>
+              {e.label}
+            </option>
+          ))}
+        </select>
+      </div>
+      {eventId && <EventReplayPanel eventId={eventId} threshold={0.5} />}
     </div>
   )
 }

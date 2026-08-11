@@ -1,49 +1,20 @@
 import type { ReactNode } from 'react'
 import SidePanel from './SidePanel'
 import {
+  boardHistogram,
   boardThreat,
+  EMPTY_FILTERS,
+  filtersActive,
+  matchesFilters,
   sortedBoard,
   THREAT_HEX,
+  THREAT_STYLE,
   ROLE_HEX,
+  type BoardFilters,
   type RiskReport,
-  type Threat,
 } from '@/lib/risk-report'
 import { countryLabel } from '@/lib/country-flag'
 import CountryFlag from '@/components/hud/CountryFlag'
-
-const THREAT_STYLE: Record<
-  Threat,
-  { label: string; color: string; bg: string; border: string; bar: string }
-> = {
-  HOSTILE: {
-    label: 'HOSTILE',
-    color: 'text-rose-300',
-    bg: 'bg-rose-500/10',
-    border: 'border-rose-400/35',
-    bar: 'bg-rose-400/90',
-  },
-  SUSPECT: {
-    label: 'SUSPECT',
-    color: 'text-amber-300',
-    bg: 'bg-amber-500/10',
-    border: 'border-amber-400/35',
-    bar: 'bg-amber-400/90',
-  },
-  ANOMALY: {
-    label: 'ANOMALY',
-    color: 'text-orange-300',
-    bg: 'bg-orange-500/10',
-    border: 'border-orange-400/35',
-    bar: 'bg-orange-400/90',
-  },
-  NOMINAL: {
-    label: 'NOMINAL',
-    color: 'text-emerald-300',
-    bg: 'bg-emerald-500/10',
-    border: 'border-emerald-400/35',
-    bar: 'bg-emerald-400/80',
-  },
-}
 
 interface LeftDockProps {
   selectedNorad: number | null
@@ -55,6 +26,9 @@ interface LeftDockProps {
   /** Open in-app walk-forward PoC panel (globe HUD tab) */
   onOpenPoc?: () => void
   pocOpen?: boolean
+  /** Ontology cross-filters (role × country × orbit) driving board + globe */
+  filters?: BoardFilters
+  onFiltersChange?: (f: BoardFilters) => void
 }
 
 export default function LeftDock({
@@ -66,13 +40,26 @@ export default function LeftDock({
   extra,
   onOpenPoc,
   pocOpen = false,
+  filters = EMPTY_FILTERS,
+  onFiltersChange,
 }: LeftDockProps) {
-  const board = sortedBoard(report)
-  const threats = board.map(boardThreat)
+  const boardAll = sortedBoard(report)
+  const active = filtersActive(filters)
+  const board = active ? boardAll.filter((b) => matchesFilters(b, filters)) : boardAll
+  const threats = boardAll.map(boardThreat)
   const hostiles = threats.filter((t) => t === 'HOSTILE').length
   const suspects = threats.filter((t) => t === 'SUSPECT').length
   const anomalies = threats.filter((t) => t === 'ANOMALY').length
   const elevated = report?.summary.n_pair_elevated ?? 0
+
+  const toggle = (dim: 'roles' | 'countries' | 'orbits', value: string) => {
+    if (!onFiltersChange) return
+    const cur = filters[dim]
+    const next = cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value]
+    onFiltersChange({ ...filters, [dim]: next })
+  }
+
+  const clearFilters = () => onFiltersChange?.(EMPTY_FILTERS)
 
   return (
     <SidePanel
@@ -170,9 +157,53 @@ export default function LeftDock({
           </section>
         )}
 
+        <section className="border border-white/10 bg-black/50 px-2.5 py-2">
+          <div className="flex items-center justify-between">
+            <div className="text-[13px] uppercase tracking-[0.2em] text-zinc-400">
+              Cross-filters
+            </div>
+            {active && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="border border-white/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-zinc-300 hover:border-emerald-400/50 hover:text-emerald-200"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+          <p className="mt-1 text-[11px] uppercase tracking-wider text-zinc-500">
+            role · country · orbit (histogram drill-down)
+          </p>
+          <FilterHistogram
+            label="Role"
+            values={boardHistogram(boardAll, (b) => b.role)}
+            selected={filters.roles}
+            onToggle={(v) => toggle('roles', v)}
+            hex={(v) => ROLE_HEX[v] ?? '#a1a1aa'}
+          />
+          <FilterHistogram
+            label="Country"
+            values={boardHistogram(boardAll, (b) => b.country)}
+            selected={filters.countries}
+            onToggle={(v) => toggle('countries', v)}
+          />
+          <FilterHistogram
+            label="Orbit"
+            values={boardHistogram(boardAll, (b) => b.orbit_class)}
+            selected={filters.orbits}
+            onToggle={(v) => toggle('orbits', v)}
+          />
+          {active && (
+            <p className="mt-1.5 text-[12px] text-emerald-300/90">
+              {board.length} of {boardAll.length} objects shown
+            </p>
+          )}
+        </section>
+
         <section>
           <div className="mb-2 text-[13px] uppercase tracking-[0.2em] text-zinc-400">
-            Priority tracks
+            Priority tracks{active ? ` · ${board.length}` : ''}
           </div>
 
           {reportStatus === 'loading' && (
@@ -312,6 +343,51 @@ function Meta({ k, v }: { k: string; v: string }) {
     <div className="border border-white/10 bg-black/40 px-2 py-1">
       <div className="text-[12px] uppercase tracking-wider text-zinc-400">{k}</div>
       <div className="tabular-nums text-zinc-100">{v}</div>
+    </div>
+  )
+}
+
+interface FilterHistogramProps {
+  label: string
+  values: Array<{ value: string; count: number }>
+  selected: string[]
+  onToggle: (value: string) => void
+  hex?: (value: string) => string
+}
+
+/** One histogram row (Palantir 011 drill-down): click a bar to toggle a filter. */
+function FilterHistogram({ label, values, selected, onToggle, hex }: FilterHistogramProps) {
+  const max = Math.max(1, ...values.map((v) => v.count))
+  if (values.length === 0) return null
+  return (
+    <div className="mt-2">
+      <div className="text-[11px] uppercase tracking-wider text-zinc-500">{label}</div>
+      <div className="mt-1 flex flex-wrap gap-1">
+        {values.map(({ value, count }) => {
+          const on = selected.includes(value)
+          const color = hex ? hex(value) : undefined
+          return (
+            <button
+              key={value}
+              type="button"
+              onClick={() => onToggle(value)}
+              title={`${label}: ${value} (${count})`}
+              className={`group relative flex h-6 min-w-[26px] items-center justify-center border px-1 text-[11px] tabular-nums transition-colors ${
+                on
+                  ? 'border-emerald-300/70 bg-emerald-400/20 text-emerald-100'
+                  : 'border-white/12 text-zinc-400 hover:border-white/30 hover:text-zinc-200'
+              }`}
+            >
+              <span
+                className="absolute inset-x-0 bottom-0 opacity-25"
+                style={{ background: color ?? 'currentColor', height: `${Math.round((count / max) * 100)}%` }}
+              />
+              <span className="relative">{value}</span>
+              <span className="relative ml-0.5 text-[9px] opacity-70">{count}</span>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

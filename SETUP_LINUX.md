@@ -1,117 +1,95 @@
 # Linux Setup & Installation Guide (Fedora)
 
-This document provides step-by-step instructions for configuring the development environment, installing Machine Learning tools, and running **Athena-SDA** on Linux systems.
+Step-by-step for configuring the environment and running **Athena-SDA** on Linux.
+
+> Honest note: TLE/space-weather seeding needs network access to CelesTrak /
+> GFZ / HuggingFace. If you just want the UI + current artifacts, skip seeding —
+> `data/history/epochs.parquet` is already committed.
 
 ---
 
-## 1. System Package Installation (dnf)
-
-Execute the following commands to install build tools, Python development headers, and system dependencies:
+## 1. System packages (dnf)
 
 ```bash
-# Update package repositories
 sudo dnf update -y
-
-# Install build essentials (gcc, g++, make)
 sudo dnf groupinstall "Development Tools" -y
-
-# Install Python development packages and tkinter
-sudo dnf install python3-devel python3-pip python3-tkinter python3-virtualenv -y
+sudo dnf install python3-devel python3-pip python3-virtualenv -y
 ```
 
-### Optional: GPU Acceleration
-* **NVIDIA GPU:** Install CUDA drivers from the official NVIDIA RPM repository.
-* **AMD GPU:** Install native ROCm HIP support:
-  ```bash
-  sudo dnf install rocm-hip rocm-opencl -y
-  ```
+Optional GPU acceleration: CUDA (NVIDIA) or ROCm (AMD) — not required; the ML
+models are small and run fine on CPU.
 
 ---
 
-## 2. Python Virtual Environment Setup
-
-Navigate to your project folder and initialize the environment:
+## 2. Python virtual environment
 
 ```bash
-cd Athena-SDA/
-
-# Create Python virtual environment
+cd Athena-SDA
 python3 -m venv .venv
-
-# Activate virtual environment
 source .venv/bin/activate
-
-# Upgrade pip and build tools
 pip install --upgrade pip setuptools wheel
-```
-
----
-
-## 3. Installing Dependencies
-
-With the virtual environment active (`(.venv)`), install the required dependencies:
-
-```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-## 4. Operational Ingest & Verification
+## 3. Verify the quant core (fast gate)
 
 ```bash
-# Ingest TLE history and space weather data
+python scripts/smoke_test.py
+# → SMOKE OK
+```
+
+---
+
+## 4. Seed data (one-time; needs network)
+
+```bash
 python scripts/run_anomaly_monitor.py seed-history --hf --start-year 2014
 python scripts/run_anomaly_monitor.py seed-space-weather --force --start-year 2014
-
-# Verify system status
 python scripts/run_anomaly_monitor.py status
 ```
 
-# 1. Scientific base and data processing
-pip install numpy pandas scipy pandas-ta jinja2
+---
 
-# 2. JIT compilation (speeds up Hurst and entropy)
-pip install numba
+## 5. Train + score the daily pipeline
 
-# 3. Machine learning and fuzzy intelligence
-pip install scikit-learn xgboost scikit-fuzzy
+```bash
+# Monitor Isolation Forest (past-only baseline; hot-swap snapshot saved)
+python scripts/run_anomaly_monitor.py train-baseline
 
-# 4. Topological data analysis (TDA — persistent homology)
-pip install ripser persim
+# Priority pipeline (IF + XGBoost + MMD reference)
+python -c "from src.models import train_and_save_models; train_and_save_models()"
 
-# 5. IBM watsonx / Granite LLM integration
-pip install ibm-watsonx-ai
+# Score today's watchlist + suspect×asset pairs → risk_report_latest.json
+python scripts/run_anomaly_monitor.py score
+python scripts/run_anomaly_monitor.py score-pairs
+
+# Ship the latest artifacts to the UI
+bash scripts/sync_frontend_data.sh
 ```
 
 ---
 
-## 4. Next session roadmap
+## 6. Walk-forward validation (Claims A+B)
 
-When you open a new Linux session, the AI agent can guide you through these coding steps:
-
-```
-STEP 1: Create the local code folder `athena/`
-ETAPA 2: Codificar o extrator de features (`athena/engine.py`)
-         - Shannon Entropy
-         - Kolmogorov Proxy (zlib compression)
-         - Hurst Exponent (R/S)
-STEP 3: Create test TLE generator and ingest (`athena/utils.py`)
-STEP 4: Create the ML pipeline (`athena/models.py`)
-         - Isolation Forest para anomalias
-         - XGBoost for classification (🟢🟡🟠🔴)
-STEP 5: Create the uncertainty logic engine (`athena/fuzzy.py`)
-ETAPA 6: Ligar o copiloto inteligente Bob (`athena/bob.py`)
-ETAPA 7: Montar o mission board React 3D (`src/frontend`)
+```bash
+python scripts/run_paper_validation.py --run-wf --threshold 0.50
 ```
 
 ---
 
-## 5. How to run the UI for testing
-After creating the code files, you can test the application by running:
+## 7. Mission board UI
+
 ```bash
 cd src/frontend
 npm install
 npm run dev
+# http://127.0.0.1:3000
 ```
-This will open the browser on the **Athena-SDA** mission board at http://127.0.0.1:3000.
+
+Build for static hosting:
+
+```bash
+npm run build   # dist/
+```

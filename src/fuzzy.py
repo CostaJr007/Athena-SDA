@@ -2,6 +2,12 @@ import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
+# NOTE: legacy Mamdani layer (method: Mamdani & Assilian 1975). The active
+# pipeline fuses weak evidence with Dempster-Shafer (src/evidence.py);
+# this module is kept as a documented alternative / reference implementation.
+# Rule inputs now read the corrected feature names (lz76_complexity,
+# dfa_hurst_sma).
+
 def setup_fuzzy_system():
     """
     Configure linguistic variables, membership functions, and fuzzy rule base
@@ -94,8 +100,8 @@ def fuzzy_inference_threat(features, min_dist_mil):
     sim.input['entropy'] = float(np.clip(features.get('shannon_entropy_sma_30d', 0.0), 0.0, 3.0))
     sim.input['tle_age'] = float(np.clip(features.get('tle_age_hours', 12.0), 0.0, 168.0))
     sim.input['dist_military'] = float(np.clip(float(min_dist_mil), 0.0, 500.0))
-    sim.input['kolmogorov'] = float(np.clip(features.get('kolmogorov_proxy_7d', 0.0), 0.0, 1.0))
-    sim.input['hurst'] = float(np.clip(features.get('hurst_exponent_sma', 0.5), 0.0, 1.0))
+    sim.input['kolmogorov'] = float(np.clip(features.get('lz76_complexity', 0.0), 0.0, 1.0))
+    sim.input['hurst'] = float(np.clip(features.get('dfa_hurst_sma', 0.5), 0.0, 1.0))
 
     try:
         # Compute fuzzy inference

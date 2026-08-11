@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "athena.risk_report.v1",
+  "title": "Athena-SDA risk report v1 (Open API contract)",
+  "description": "Formal contract for the daily risk report consumed by the mission board and Bob. Mirrors Palantir US 12,657,514 B2 Data/Inference/Open API separation: this is the Open API downstream format; Data API = tle_store; Inference API = model registry.",
+  "type": "object",
+  "required": ["schema", "generated_at", "day", "doctrine", "summary", "board"],
+  "properties": {
+    "schema": { "const": "athena.risk_report.v1" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "day": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "doctrine": { "type": "string" },
+    "protocol": { "type": ["string", "null"] },
+    "summary": {
+      "type": "object",
+      "required": ["n_scored", "n_anomalies", "n_military_detections", "threshold"],
+      "properties": {
+        "n_scored": { "type": ["integer", "null"] },
+        "n_anomalies": { "type": ["integer", "null"] },
+        "n_military_detections": { "type": ["integer", "null"] },
+        "n_platform_health_flags": { "type": ["integer", "null"] },
+        "n_pairs": { "type": ["integer", "null"] },
+        "n_pair_elevated": { "type": ["integer", "null"] },
+        "threshold": { "type": ["number", "null"] },
+        "focus": { "type": "string" },
+        "kelly_attention_budget": { "type": ["number", "null"] }
+      }
+    },
+    "board": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["norad_id", "anomaly_score", "attention_score"],
+        "properties": {
+          "norad_id": { "type": ["integer", "null"] },
+          "object_name": { "type": ["string", "null"] },
+          "role": { "type": ["string", "null"], "enum": ["asset", "suspect", "baseline", "unknown", null] },
+          "country": { "type": ["string", "null"] },
+          "purpose": { "type": ["string", "null"] },
+          "orbit_class": { "type": ["string", "null"] },
+          "anomaly_score": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+          "attention_score": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+          "kelly_allocation": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+          "is_anomaly": { "type": ["boolean", "null"] },
+          "is_military_detection": { "type": ["boolean", "null"] },
+          "is_platform_health_flag": { "type": ["boolean", "null"] },
+          "is_calibration_object": { "type": ["boolean", "null"] },
+          "status": { "type": ["string", "null"] },
+          "xgb_class": { "type": ["string", "null"] },
+          "data_quality": {
+            "type": ["object", "null"],
+            "properties": {
+              "reliable": { "type": ["boolean", "null"] },
+              "score": { "type": ["number", "null"] },
+              "tle_age_hours": { "type": ["number", "null"] },
+              "reasons": { "type": ["array", "null"], "items": { "type": "string" } }
+            }
+          },
+          "evidence": {
+            "type": ["object", "null"],
+            "properties": {
+              "belief_anomalous": { "type": ["number", "null"] },
+              "plausibility_anomalous": { "type": ["number", "null"] },
+              "conflict_K": { "type": ["number", "null"] }
+            }
+          },
+          "features_snapshot": { "type": ["object", "null"] },
+          "pair": { "type": ["object", "null"] },
+          "anomaly_onset": { "type": ["object", "null"] },
+          "window_end": { "type": ["string", "null"] },
+          "score_delta_1d": { "type": ["number", "null"] }
+        }
+      }
+    },
+    "top_pairs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "suspect_norad": { "type": ["integer", "null"] },
+          "suspect_name": { "type": ["string", "null"] },
+          "asset_norad": { "type": ["integer", "null"] },
+          "asset_name": { "type": ["string", "null"] },
+          "min_distance_km": { "type": ["number", "null"] },
+          "cointegration_pvalue": { "type": ["number", "null"] },
+          "pair_risk": { "type": ["number", "null"] },
+          "risk_level": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "model": { "type": ["object", "string", "null"] },
+    "train_meta": { "type": ["object", "null"] },
+    "doctrine_summary": { "type": ["object", "null"] }
+  }
+}

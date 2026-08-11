@@ -1,0 +1,1744 @@
+[
+  {
+    "event_id": "luch1_intelsat_2015",
+    "type": "shadowing_geo_espionage",
+    "t_start": "2015-01-15",
+    "t_peak": "2015-09-15",
+    "t_end": "2016-03-01",
+    "sources": [
+      "Gunter: Olymp-K moved ~Apr 2015 between Intelsat 7/901 at 18.1W",
+      "Gunter/open press: ~Sep 2015 near Intelsat 905 at 24.4–24.5W",
+      "CSIS Unusual Behavior in GEO: Olymp-K / Luch"
+    ],
+    "notes": "Pico ~set/2015 (Intelsat 905). t_start cedo para medir rampa de ruído ANTES do report de colocação.",
+    "norad": 40258,
+    "name": "LUCH (OLYMP-K 1)",
+    "placebo": false,
+    "hit": true,
+    "soft": true,
+    "lead_days": 243.0,
+    "max_anom": 0.5993969560570622,
+    "max_asof": "2015-12-31",
+    "n_folds": 30,
+    "first_hit": {
+      "asof": "2015-01-15",
+      "score": 0.5374875060537689,
+      "shannon_entropy_sma_30d": 1.3605273114437084,
+      "hurst_exponent_sma": 0.9414925495302248,
+      "kolmogorov_proxy_7d": 0.47368421052631576,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": 0.5371019448139123,
+      "maneuver_count_30d": 6.0,
+      "f10_7": 131.4,
+      "ap_index": 5.0,
+      "geomagnetic_storm": 0.0
+    },
+    "first_elev_045": {
+      "asof": "2015-01-15",
+      "score": 0.5374875060537689,
+      "shannon_entropy_sma_30d": 1.3605273114437084,
+      "hurst_exponent_sma": 0.9414925495302248,
+      "kolmogorov_proxy_7d": 0.47368421052631576,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": 0.5371019448139123,
+      "maneuver_count_30d": 6.0,
+      "f10_7": 131.4,
+      "ap_index": 5.0,
+      "geomagnetic_storm": 0.0
+    },
+    "pre_peak_noise": {
+      "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+      "n_pre_peak_folds": 18,
+      "pre_peak_anomaly_mean": 0.5221484799710123,
+      "pre_peak_anomaly_max": 0.5777044305900535,
+      "early_pre_peak_mean": 0.5198997305982184,
+      "late_pre_peak_mean": 0.5216349626196647,
+      "noise_ramp": 0.0017352320214463202,
+      "pre_peak_pair_risk_max": 0.4037,
+      "elevated_noise_before_peak": true
+    },
+    "feat_early_vs_late": {
+      "shannon_entropy_sma_30d": {
+        "early": 1.9374199307787852,
+        "late": 2.0314591550639824,
+        "delta": 0.09403922428519729
+      },
+      "hurst_exponent_sma": {
+        "early": 0.9000648306901743,
+        "late": 0.7644851642877769,
+        "delta": -0.13557966640239738
+      },
+      "kolmogorov_proxy_7d": {
+        "early": 0.5175438596491228,
+        "late": 0.5701754385964912,
+        "delta": 0.052631578947368474
+      },
+      "l1_cusum_sma": {
+        "early": 0.0,
+        "late": 0.0,
+        "delta": 0.0
+      },
+      "mandelbrot_tail_score": {
+        "early": 0.16216914688682027,
+        "late": 0.006860616371946497,
+        "delta": -0.15530853051487378
+      },
+      "delta_sma_7d_km": {
+        "early": 10.815685688474332,
+        "late": -0.0596172858143594,
+        "delta": -10.875302974288692
+      },
+      "maneuver_count_30d": {
+        "early": 2.1666666666666665,
+        "late": 3.6666666666666665,
+        "delta": 1.5
+      },
+      "f10_7": {
+        "early": 134.15,
+        "late": 100.64999999999999,
+        "delta": -33.500000000000014
+      },
+      "ap_index": {
+        "early": 6.166666666666667,
+        "late": 15.833333333333334,
+        "delta": 9.666666666666668
+      },
+      "geomagnetic_storm": {
+        "early": 0.0,
+        "late": 0.6666666666666666,
+        "delta": 0.6666666666666666
+      }
+    },
+    "top_movers": [
+      [
+        "f10_7",
+        -33.500000000000014
+      ],
+      [
+        "delta_sma_7d_km",
+        -10.875302974288692
+      ],
+      [
+        "ap_index",
+        9.666666666666668
+      ],
+      [
+        "maneuver_count_30d",
+        1.5
+      ],
+      [
+        "geomagnetic_storm",
+        0.6666666666666666
+      ],
+      [
+        "mandelbrot_tail_score",
+        -0.15530853051487378
+      ]
+    ],
+    "top_pre_peak_folds": [
+      {
+        "asof": "2015-08-27",
+        "score": 0.5777044305900535,
+        "shannon": 2.839775539645508,
+        "hurst": 0.5904261322009685,
+        "kolmogorov": 0.5263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.5567416105550365,
+        "f10_7": 110.2,
+        "ap": 52.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2015-02-12",
+        "score": 0.5631298156759702,
+        "shannon": 2.0345723658114663,
+        "hurst": 0.9002685390114051,
+        "kolmogorov": 0.5789473684210527,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": 62.220418323944614,
+        "f10_7": 127.6,
+        "ap": 4.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2015-04-23",
+        "score": 0.5606459185381466,
+        "shannon": 1.5055213905049438,
+        "hurst": 0.8658502540764237,
+        "kolmogorov": 0.631578947368421,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -4.426831345146638,
+        "f10_7": 140.5,
+        "ap": 6.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2015-04-09",
+        "score": 0.5451106646902956,
+        "shannon": 2.2920717524577876,
+        "hurst": 0.7857922876178896,
+        "kolmogorov": 0.42105263157894735,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": 13.986222404673754,
+        "f10_7": 111.3,
+        "ap": 11.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2015-07-02",
+        "score": 0.5382260022345833,
+        "shannon": 1.9732285161344476,
+        "hurst": 0.8933854099638902,
+        "kolmogorov": 0.47368421052631576,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": 0.11269470413390081,
+        "f10_7": 113.8,
+        "ap": 2.0,
+        "storm": 1.0
+      }
+    ],
+    "feat_delta_meta": {
+      "shannon_entropy_sma_30d": {
+        "early_mean": 1.9374199307787852,
+        "late_mean": 2.0314591550639824
+      },
+      "hurst_exponent_sma": {
+        "early_mean": 0.9000648306901743,
+        "late_mean": 0.7644851642877771
+      },
+      "l1_cusum_sma": {
+        "early_mean": 0.0,
+        "late_mean": 0.0
+      },
+      "kolmogorov_proxy_7d": {
+        "early_mean": 0.5175438596491229,
+        "late_mean": 0.5701754385964911
+      }
+    }
+  },
+  {
+    "event_id": "luch1_intelsat_mid2015",
+    "type": "shadowing_geo_espionage",
+    "t_start": "2014-10-01",
+    "t_peak": "2015-04-15",
+    "t_end": "2015-08-01",
+    "sources": [
+      "Gunter: first colocation between Intelsat 7 and 901 ~April 2015"
+    ],
+    "notes": "Primeiro episódio Intelsat mid-2015 — validar detecção pré-abril/2015.",
+    "norad": 40258,
+    "name": "LUCH (OLYMP-K 1)",
+    "placebo": false,
+    "hit": true,
+    "soft": true,
+    "lead_days": 182.0,
+    "max_anom": 0.6462851661411383,
+    "max_asof": "2014-10-15",
+    "n_folds": 21,
+    "first_hit": {
+      "asof": "2014-10-15",
+      "score": 0.6462851661411383,
+      "shannon_entropy_sma_30d": 0.2974722489192897,
+      "hurst_exponent_sma": 0.7958237075837495,
+      "kolmogorov_proxy_7d": 0.2631578947368421,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": -72.01435613338981,
+      "maneuver_count_30d": 2.0,
+      "f10_7": 125.8,
+      "ap_index": 9.0,
+      "geomagnetic_storm": 0.0
+    },
+    "first_elev_045": {
+      "asof": "2014-10-15",
+      "score": 0.6462851661411383,
+      "shannon_entropy_sma_30d": 0.2974722489192897,
+      "hurst_exponent_sma": 0.7958237075837495,
+      "kolmogorov_proxy_7d": 0.2631578947368421,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": -72.01435613338981,
+      "maneuver_count_30d": 2.0,
+      "f10_7": 125.8,
+      "ap_index": 9.0,
+      "geomagnetic_storm": 0.0
+    },
+    "pre_peak_noise": {
+      "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+      "n_pre_peak_folds": 13,
+      "pre_peak_anomaly_mean": 0.5547624767592689,
+      "pre_peak_anomaly_max": 0.6462851661411383,
+      "early_pre_peak_mean": 0.5686229108177542,
+      "late_pre_peak_mean": 0.5356146636802995,
+      "noise_ramp": -0.03300824713745465,
+      "pre_peak_pair_risk_max": 0.4037,
+      "elevated_noise_before_peak": true
+    },
+    "feat_early_vs_late": {
+      "shannon_entropy_sma_30d": {
+        "early": 1.509084501909521,
+        "late": 1.7033186805712401,
+        "delta": 0.19423417866171921
+      },
+      "hurst_exponent_sma": {
+        "early": 0.8656753708098239,
+        "late": 0.8512334227783684,
+        "delta": -0.014441948031455487
+      },
+      "kolmogorov_proxy_7d": {
+        "early": 0.39473684210526316,
+        "late": 0.47368421052631576,
+        "delta": 0.0789473684210526
+      },
+      "l1_cusum_sma": {
+        "early": 0.0,
+        "late": 0.0,
+        "delta": 0.0
+      },
+      "mandelbrot_tail_score": {
+        "early": 0.0,
+        "late": 0.26370070165580484,
+        "delta": 0.26370070165580484
+      },
+      "delta_sma_7d_km": {
+        "early": -17.660669160415637,
+        "late": 7.27863041764067,
+        "delta": 24.939299578056307
+      },
+      "maneuver_count_30d": {
+        "early": 1.5,
+        "late": 2.25,
+        "delta": 0.75
+      },
+      "f10_7": {
+        "early": 150.0,
+        "late": 129.45,
+        "delta": -20.55000000000001
+      },
+      "ap_index": {
+        "early": 6.75,
+        "late": 22.75,
+        "delta": 16.0
+      },
+      "geomagnetic_storm": {
+        "early": 0.0,
+        "late": 0.5,
+        "delta": 0.5
+      }
+    },
+    "top_movers": [
+      [
+        "delta_sma_7d_km",
+        24.939299578056307
+      ],
+      [
+        "f10_7",
+        -20.55000000000001
+      ],
+      [
+        "ap_index",
+        16.0
+      ],
+      [
+        "maneuver_count_30d",
+        0.75
+      ],
+      [
+        "geomagnetic_storm",
+        0.5
+      ],
+      [
+        "mandelbrot_tail_score",
+        0.26370070165580484
+      ]
+    ],
+    "top_pre_peak_folds": [
+      {
+        "asof": "2014-10-15",
+        "score": 0.6462851661411383,
+        "shannon": 0.2974722489192897,
+        "hurst": 0.7958237075837495,
+        "kolmogorov": 0.2631578947368421,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -72.01435613338981,
+        "f10_7": 125.8,
+        "ap": 9.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2015-01-07",
+        "score": 0.6311938664081683,
+        "shannon": 1.3372449392958774,
+        "hurst": 0.9275040995927543,
+        "kolmogorov": 0.3684210526315789,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -1.1594439610562404,
+        "f10_7": 147.2,
+        "ap": 31.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2015-03-18",
+        "score": 0.5970494925923787,
+        "shannon": 1.1922508602346424,
+        "hurst": 0.8651568700540516,
+        "kolmogorov": 0.15789473684210525,
+        "cusum": 0.0,
+        "mandelbrot": 0.22036516472867385,
+        "delta_sma": 0.6860200041701319,
+        "f10_7": 114.8,
+        "ap": 47.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2015-04-15",
+        "score": 0.5943679781771795,
+        "shannon": 2.1234786725698864,
+        "hurst": 0.8371942261487645,
+        "kolmogorov": 0.47368421052631576,
+        "cusum": 0.0,
+        "mandelbrot": 0.8344376418945456,
+        "delta_sma": 29.71548582050309,
+        "f10_7": 154.7,
+        "ap": 28.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2014-10-29",
+        "score": 0.5881790912887561,
+        "shannon": 1.3372449392958776,
+        "hurst": 0.8830219941402176,
+        "kolmogorov": 0.3684210526315789,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": 0.4090140998523566,
+        "f10_7": 150.4,
+        "ap": 7.0,
+        "storm": 0.0
+      }
+    ],
+    "feat_delta_meta": {
+      "shannon_entropy_sma_30d": {
+        "early_mean": 1.5090845019095207,
+        "late_mean": 1.7033186805712401
+      },
+      "hurst_exponent_sma": {
+        "early_mean": 0.8656753708098239,
+        "late_mean": 0.8512334227783683
+      },
+      "l1_cusum_sma": {
+        "early_mean": 0.0,
+        "late_mean": 0.0
+      },
+      "kolmogorov_proxy_7d": {
+        "early_mean": 0.39473684210526316,
+        "late_mean": 0.47368421052631576
+      }
+    }
+  },
+  {
+    "event_id": "luch1_athena_fidus_2018",
+    "type": "shadowing_geo_espionage",
+    "t_start": "2018-01-01",
+    "t_peak": "2018-09-01",
+    "t_end": "2019-03-01",
+    "sources": [
+      "Open press / Gunter: 2018 proximity concerns re Athena-Fidus (FR military comms)",
+      "French government space security statements (open reporting)"
+    ],
+    "notes": "Âncora 2018 — manobras GEO Luch próximas a ativo aliado documentadas em open source.",
+    "norad": 40258,
+    "name": "LUCH (OLYMP-K 1)",
+    "placebo": false,
+    "hit": true,
+    "soft": true,
+    "lead_days": 229.0,
+    "max_anom": 0.6272191222154141,
+    "max_asof": "2018-11-05",
+    "n_folds": 31,
+    "first_hit": {
+      "asof": "2018-01-15",
+      "score": 0.5238050885828387,
+      "shannon_entropy_sma_30d": 0.8795064608120067,
+      "hurst_exponent_sma": 0.9561938424437146,
+      "kolmogorov_proxy_7d": 0.5789473684210527,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": -7.650590790937713,
+      "maneuver_count_30d": 1.0,
+      "f10_7": 70.2,
+      "ap_index": 9.0,
+      "geomagnetic_storm": 0.0
+    },
+    "first_elev_045": {
+      "asof": "2018-01-01",
+      "score": 0.48895988898684895,
+      "shannon_entropy_sma_30d": 1.9300801441115993,
+      "hurst_exponent_sma": 0.8699773713428167,
+      "kolmogorov_proxy_7d": 0.3684210526315789,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": -0.46814485404320294,
+      "maneuver_count_30d": 4.0,
+      "f10_7": 69.1,
+      "ap_index": 10.0,
+      "geomagnetic_storm": 0.0
+    },
+    "pre_peak_noise": {
+      "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+      "n_pre_peak_folds": 18,
+      "pre_peak_anomaly_mean": 0.5161256701890627,
+      "pre_peak_anomaly_max": 0.5610095625581129,
+      "early_pre_peak_mean": 0.5085698792825543,
+      "late_pre_peak_mean": 0.5257365307824547,
+      "noise_ramp": 0.017166651499900487,
+      "pre_peak_pair_risk_max": 0.4037,
+      "elevated_noise_before_peak": true
+    },
+    "feat_early_vs_late": {
+      "shannon_entropy_sma_30d": {
+        "early": 1.5193379958069932,
+        "late": 1.8683275713630165,
+        "delta": 0.3489895755560233
+      },
+      "hurst_exponent_sma": {
+        "early": 0.8913095744403218,
+        "late": 0.8251601592365759,
+        "delta": -0.06614941520374584
+      },
+      "kolmogorov_proxy_7d": {
+        "early": 0.4298245614035088,
+        "late": 0.5614035087719298,
+        "delta": 0.13157894736842102
+      },
+      "l1_cusum_sma": {
+        "early": 0.0,
+        "late": 0.0,
+        "delta": 0.0
+      },
+      "mandelbrot_tail_score": {
+        "early": 0.13490754944810926,
+        "late": 0.0,
+        "delta": -0.13490754944810926
+      },
+      "delta_sma_7d_km": {
+        "early": -1.3418218615843216,
+        "late": -8.79592063063319,
+        "delta": -7.454098769048869
+      },
+      "maneuver_count_30d": {
+        "early": 3.1666666666666665,
+        "late": 3.8333333333333335,
+        "delta": 0.666666666666667
+      },
+      "f10_7": {
+        "early": 70.66666666666667,
+        "late": 69.64999999999999,
+        "delta": -1.01666666666668
+      },
+      "ap_index": {
+        "early": 5.5,
+        "late": 9.666666666666666,
+        "delta": 4.166666666666666
+      },
+      "geomagnetic_storm": {
+        "early": 0.0,
+        "late": 0.16666666666666666,
+        "delta": 0.16666666666666666
+      }
+    },
+    "top_movers": [
+      [
+        "delta_sma_7d_km",
+        -7.454098769048869
+      ],
+      [
+        "ap_index",
+        4.166666666666666
+      ],
+      [
+        "f10_7",
+        -1.01666666666668
+      ],
+      [
+        "maneuver_count_30d",
+        0.666666666666667
+      ],
+      [
+        "shannon_entropy_sma_30d",
+        0.3489895755560233
+      ],
+      [
+        "geomagnetic_storm",
+        0.16666666666666666
+      ]
+    ],
+    "top_pre_peak_folds": [
+      {
+        "asof": "2018-08-27",
+        "score": 0.5610095625581129,
+        "shannon": 2.647592147308496,
+        "hurst": 0.8911183750574706,
+        "kolmogorov": 0.5789473684210527,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.3787340877970564,
+        "f10_7": 69.6,
+        "ap": 25.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2018-04-23",
+        "score": 0.5588048520252987,
+        "shannon": 1.0582770432263342,
+        "hurst": 0.8603534451589192,
+        "kolmogorov": 0.6842105263157895,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -110.23510843401164,
+        "f10_7": 73.9,
+        "ap": 6.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2018-06-18",
+        "score": 0.553620853499531,
+        "shannon": 0.7742433029172697,
+        "hurst": 0.8074475850699631,
+        "kolmogorov": 0.5789473684210527,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.459197417490941,
+        "f10_7": 73.7,
+        "ap": 16.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2018-07-02",
+        "score": 0.5504927423681983,
+        "shannon": 0.8795064608120067,
+        "hurst": 0.8897653317674934,
+        "kolmogorov": 0.3684210526315789,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -51.296120012091706,
+        "f10_7": 66.6,
+        "ap": 2.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2018-01-15",
+        "score": 0.5238050885828387,
+        "shannon": 0.8795064608120067,
+        "hurst": 0.9561938424437146,
+        "kolmogorov": 0.5789473684210527,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -7.650590790937713,
+        "f10_7": 70.2,
+        "ap": 9.0,
+        "storm": 0.0
+      }
+    ],
+    "feat_delta_meta": {
+      "shannon_entropy_sma_30d": {
+        "early_mean": 1.5193379958069932,
+        "late_mean": 1.8683275713630163
+      },
+      "hurst_exponent_sma": {
+        "early_mean": 0.8913095744403218,
+        "late_mean": 0.8251601592365762
+      },
+      "l1_cusum_sma": {
+        "early_mean": 0.0,
+        "late_mean": 0.0
+      },
+      "kolmogorov_proxy_7d": {
+        "early_mean": 0.42982456140350883,
+        "late_mean": 0.5614035087719299
+      }
+    }
+  },
+  {
+    "event_id": "sy12_geo_rpo_2021_22",
+    "type": "rpo_inspection",
+    "t_start": "2021-12-01",
+    "t_peak": "2022-06-15",
+    "t_end": "2022-12-01",
+    "sources": [
+      "AMOS papers / open SSA: SY-12 01/02 GEO proximity with US objects",
+      "SWF Chinese Military RPO fact sheet (SY-12)"
+    ],
+    "notes": "Shiyan-12 01 lançado fim/2021; RPO GEO reportado 2021–22.",
+    "norad": 50321,
+    "name": "SHIYAN-12 01 (SY-12 01)",
+    "placebo": false,
+    "hit": true,
+    "soft": true,
+    "lead_days": 154.0,
+    "max_anom": 0.5727234313995673,
+    "max_asof": "2022-08-24",
+    "n_folds": 24,
+    "first_hit": {
+      "asof": "2022-01-12",
+      "score": 0.5337480715085808,
+      "shannon_entropy_sma_30d": 0.7742433029172696,
+      "hurst_exponent_sma": 0.8873595436033498,
+      "kolmogorov_proxy_7d": 0.631578947368421,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": 0.12897858364885906,
+      "maneuver_count_30d": 6.0,
+      "f10_7": 103.2,
+      "ap_index": 3.0,
+      "geomagnetic_storm": 0.0
+    },
+    "first_elev_045": {
+      "asof": "2022-01-12",
+      "score": 0.5337480715085808,
+      "shannon_entropy_sma_30d": 0.7742433029172696,
+      "hurst_exponent_sma": 0.8873595436033498,
+      "kolmogorov_proxy_7d": 0.631578947368421,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": 0.12897858364885906,
+      "maneuver_count_30d": 6.0,
+      "f10_7": 103.2,
+      "ap_index": 3.0,
+      "geomagnetic_storm": 0.0
+    },
+    "pre_peak_noise": {
+      "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+      "n_pre_peak_folds": 11,
+      "pre_peak_anomaly_mean": 0.4852433062897568,
+      "pre_peak_anomaly_max": 0.5337480715085808,
+      "early_pre_peak_mean": 0.49858641762221256,
+      "late_pre_peak_mean": 0.47311545436123126,
+      "noise_ramp": -0.025470963260981305,
+      "pre_peak_pair_risk_max": 0.4037,
+      "elevated_noise_before_peak": true
+    },
+    "feat_early_vs_late": {
+      "shannon_entropy_sma_30d": {
+        "early": 1.513328171876104,
+        "late": 2.7182585214892305,
+        "delta": 1.2049303496131265
+      },
+      "hurst_exponent_sma": {
+        "early": 0.8599802555770403,
+        "late": 0.9197044085900283,
+        "delta": 0.05972415301298806
+      },
+      "kolmogorov_proxy_7d": {
+        "early": 0.35526315789473684,
+        "late": 0.35526315789473684,
+        "delta": 0.0
+      },
+      "l1_cusum_sma": {
+        "early": 0.0,
+        "late": 0.0,
+        "delta": 0.0
+      },
+      "mandelbrot_tail_score": {
+        "early": 0.0,
+        "late": 0.0,
+        "delta": 0.0
+      },
+      "delta_sma_7d_km": {
+        "early": -0.3819887818808638,
+        "late": -0.29046767506588367,
+        "delta": 0.09152110681498016
+      },
+      "maneuver_count_30d": {
+        "early": 2.0,
+        "late": 0.0,
+        "delta": -2.0
+      },
+      "f10_7": {
+        "early": 106.6,
+        "late": 138.55,
+        "delta": 31.950000000000017
+      },
+      "ap_index": {
+        "early": 5.25,
+        "late": 8.25,
+        "delta": 3.0
+      },
+      "geomagnetic_storm": {
+        "early": 0.25,
+        "late": 0.0,
+        "delta": -0.25
+      }
+    },
+    "top_movers": [
+      [
+        "f10_7",
+        31.950000000000017
+      ],
+      [
+        "ap_index",
+        3.0
+      ],
+      [
+        "maneuver_count_30d",
+        -2.0
+      ],
+      [
+        "shannon_entropy_sma_30d",
+        1.2049303496131265
+      ],
+      [
+        "geomagnetic_storm",
+        -0.25
+      ],
+      [
+        "delta_sma_7d_km",
+        0.09152110681498016
+      ]
+    ],
+    "top_pre_peak_folds": [
+      {
+        "asof": "2022-01-12",
+        "score": 0.5337480715085808,
+        "shannon": 0.7742433029172696,
+        "hurst": 0.8873595436033498,
+        "kolmogorov": 0.631578947368421,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": 0.12897858364885906,
+        "f10_7": 103.2,
+        "ap": 3.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2022-04-20",
+        "score": 0.5066106036914623,
+        "shannon": 1.3727069617019707,
+        "hurst": 0.8892918640164356,
+        "kolmogorov": 0.3157894736842105,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.14541113682935247,
+        "f10_7": 165.5,
+        "ap": 8.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2022-03-09",
+        "score": 0.5061538062211267,
+        "shannon": 0.2974722489192897,
+        "hurst": 0.8321993563413271,
+        "kolmogorov": 0.5263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -18.068280025108834,
+        "f10_7": 114.8,
+        "ap": 5.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2022-06-15",
+        "score": 0.5053421659578768,
+        "shannon": 2.9258530145612833,
+        "hurst": 0.9068185493339249,
+        "kolmogorov": 0.2631578947368421,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.2749860565018025,
+        "f10_7": 140.0,
+        "ap": 17.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2022-02-09",
+        "score": 0.4998055309749041,
+        "shannon": 2.7153266987718094,
+        "hurst": 0.9092410847118478,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.014049620818695985,
+        "f10_7": 125.9,
+        "ap": 2.0,
+        "storm": 1.0
+      }
+    ],
+    "feat_delta_meta": {
+      "shannon_entropy_sma_30d": {
+        "early_mean": 1.513328171876104,
+        "late_mean": 2.7182585214892305
+      },
+      "hurst_exponent_sma": {
+        "early_mean": 0.8599802555770403,
+        "late_mean": 0.9197044085900284
+      },
+      "l1_cusum_sma": {
+        "early_mean": 0.0,
+        "late_mean": 0.0
+      },
+      "kolmogorov_proxy_7d": {
+        "early_mean": 0.35526315789473684,
+        "late_mean": 0.35526315789473684
+      }
+    }
+  },
+  {
+    "event_id": "luch2_trailing_2023",
+    "type": "shadowing_geo_espionage",
+    "t_start": "2023-04-01",
+    "t_peak": "2023-10-15",
+    "t_end": "2024-03-01",
+    "sources": [
+      "Launch Luch/Olymp-K 2 ~12 Mar 2023",
+      "Breaking Defense Oct 2023: second Luch trailing Western systems in GEO"
+    ],
+    "notes": "Segundo Luch — ruído pós-lançamento e antes/durante cobertura mid-late 2023.",
+    "norad": 55841,
+    "name": "LUCH-5X (OLYMP-K 2)",
+    "placebo": false,
+    "hit": true,
+    "soft": true,
+    "lead_days": 197.0,
+    "max_anom": 0.5694779410513618,
+    "max_asof": "2023-09-02",
+    "n_folds": 24,
+    "first_hit": {
+      "asof": "2023-04-01",
+      "score": 0.5509611127405984,
+      "shannon_entropy_sma_30d": 2.1148051443393325,
+      "hurst_exponent_sma": 0.9095181212290514,
+      "kolmogorov_proxy_7d": 0.15789473684210525,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": 0.47763245842361357,
+      "maneuver_count_30d": 2.0,
+      "f10_7": 125.3,
+      "ap_index": 14.0,
+      "geomagnetic_storm": 0.0
+    },
+    "first_elev_045": {
+      "asof": "2023-04-01",
+      "score": 0.5509611127405984,
+      "shannon_entropy_sma_30d": 2.1148051443393325,
+      "hurst_exponent_sma": 0.9095181212290514,
+      "kolmogorov_proxy_7d": 0.15789473684210525,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": 0.47763245842361357,
+      "maneuver_count_30d": 2.0,
+      "f10_7": 125.3,
+      "ap_index": 14.0,
+      "geomagnetic_storm": 0.0
+    },
+    "pre_peak_noise": {
+      "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+      "n_pre_peak_folds": 15,
+      "pre_peak_anomaly_mean": 0.5039332009440656,
+      "pre_peak_anomaly_max": 0.5694779410513618,
+      "early_pre_peak_mean": 0.526927413609744,
+      "late_pre_peak_mean": 0.4942147613344935,
+      "noise_ramp": -0.03271265227525055,
+      "pre_peak_pair_risk_max": 0.4037,
+      "elevated_noise_before_peak": true
+    },
+    "feat_early_vs_late": {
+      "shannon_entropy_sma_30d": {
+        "early": 1.8975471750956363,
+        "late": 1.7716286000851809,
+        "delta": -0.12591857501045545
+      },
+      "hurst_exponent_sma": {
+        "early": 0.9025405915212442,
+        "late": 0.8010071952733597,
+        "delta": -0.10153339624788449
+      },
+      "kolmogorov_proxy_7d": {
+        "early": 0.3578947368421052,
+        "late": 0.5684210526315789,
+        "delta": 0.21052631578947373
+      },
+      "l1_cusum_sma": {
+        "early": 0.0,
+        "late": 0.0,
+        "delta": 0.0
+      },
+      "mandelbrot_tail_score": {
+        "early": 0.0,
+        "late": 0.011282434318037904,
+        "delta": 0.011282434318037904
+      },
+      "delta_sma_7d_km": {
+        "early": -0.05230267903825734,
+        "late": -0.7453789890525513,
+        "delta": -0.6930763100142939
+      },
+      "maneuver_count_30d": {
+        "early": 1.6,
+        "late": 1.4,
+        "delta": -0.20000000000000018
+      },
+      "f10_7": {
+        "early": 151.52,
+        "late": 145.9,
+        "delta": -5.6200000000000045
+      },
+      "ap_index": {
+        "early": 11.2,
+        "late": 12.8,
+        "delta": 1.6000000000000014
+      },
+      "geomagnetic_storm": {
+        "early": 0.4,
+        "late": 0.2,
+        "delta": -0.2
+      }
+    },
+    "top_movers": [
+      [
+        "f10_7",
+        -5.6200000000000045
+      ],
+      [
+        "ap_index",
+        1.6000000000000014
+      ],
+      [
+        "delta_sma_7d_km",
+        -0.6930763100142939
+      ],
+      [
+        "kolmogorov_proxy_7d",
+        0.21052631578947373
+      ],
+      [
+        "maneuver_count_30d",
+        -0.20000000000000018
+      ],
+      [
+        "geomagnetic_storm",
+        -0.2
+      ]
+    ],
+    "top_pre_peak_folds": [
+      {
+        "asof": "2023-09-02",
+        "score": 0.5694779410513618,
+        "shannon": 2.2920717524577876,
+        "hurst": 0.6976575679458743,
+        "kolmogorov": 0.5789473684210527,
+        "cusum": 0.0,
+        "mandelbrot": 0.05641217159018952,
+        "delta_sma": 0.875495659893204,
+        "f10_7": 131.2,
+        "ap": 37.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2023-08-05",
+        "score": 0.5552486114340243,
+        "shannon": 1.465255650113225,
+        "hurst": 0.8572114218063416,
+        "kolmogorov": 0.5263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": 1.0672111625317484,
+        "f10_7": 175.8,
+        "ap": 33.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2023-04-01",
+        "score": 0.5509611127405984,
+        "shannon": 2.1148051443393325,
+        "hurst": 0.9095181212290514,
+        "kolmogorov": 0.15789473684210525,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": 0.47763245842361357,
+        "f10_7": 125.3,
+        "ap": 14.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2023-04-29",
+        "score": 0.5345580434778622,
+        "shannon": 1.465255650113225,
+        "hurst": 0.8894051728712654,
+        "kolmogorov": 0.3684210526315789,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": 0.02018380539084319,
+        "f10_7": 155.8,
+        "ap": 20.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2023-04-15",
+        "score": 0.5245172060790221,
+        "shannon": 1.3372449392958774,
+        "hurst": 0.8562431960969856,
+        "kolmogorov": 0.3684210526315789,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.2764071960846195,
+        "f10_7": 175.8,
+        "ap": 7.0,
+        "storm": 0.0
+      }
+    ],
+    "feat_delta_meta": {
+      "shannon_entropy_sma_30d": {
+        "early_mean": 1.8975471750956363,
+        "late_mean": 1.7716286000851809
+      },
+      "hurst_exponent_sma": {
+        "early_mean": 0.9025405915212442,
+        "late_mean": 0.8010071952733597
+      },
+      "l1_cusum_sma": {
+        "early_mean": 0.0,
+        "late_mean": 0.0
+      },
+      "kolmogorov_proxy_7d": {
+        "early_mean": 0.3578947368421052,
+        "late_mean": 0.5684210526315789
+      }
+    }
+  },
+  {
+    "event_id": "placebo_terra_2015",
+    "type": "placebo_baseline",
+    "t_start": "2015-01-15",
+    "t_peak": "2015-09-15",
+    "t_end": "2016-03-01",
+    "sources": [
+      "Control EO scientific same calendar as Luch Intelsat 2015"
+    ],
+    "notes": "Placebo control on the same calendar as the Luch window.",
+    "norad": 25994,
+    "name": "TERRA",
+    "placebo": true,
+    "hit": false,
+    "soft": true,
+    "lead_days": null,
+    "max_anom": 0.4776837146714765,
+    "max_asof": "2015-10-08",
+    "n_folds": 30,
+    "first_hit": null,
+    "first_elev_045": {
+      "asof": "2015-08-27",
+      "score": 0.45012628105339825,
+      "shannon_entropy_sma_30d": 3.0503018554349817,
+      "hurst_exponent_sma": 0.7548646949712129,
+      "kolmogorov_proxy_7d": 0.05263157894736842,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": -0.002860505005628511,
+      "maneuver_count_30d": 2.0,
+      "f10_7": 110.2,
+      "ap_index": 52.0,
+      "geomagnetic_storm": 1.0
+    },
+    "pre_peak_noise": {
+      "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+      "n_pre_peak_folds": 18,
+      "pre_peak_anomaly_mean": 0.3750750199851967,
+      "pre_peak_anomaly_max": 0.45012628105339825,
+      "early_pre_peak_mean": 0.36353257548333534,
+      "late_pre_peak_mean": 0.3863596857038198,
+      "noise_ramp": 0.022827110220484448,
+      "pre_peak_pair_risk_max": 1.0,
+      "elevated_noise_before_peak": false
+    },
+    "feat_early_vs_late": {
+      "shannon_entropy_sma_30d": {
+        "early": 2.690934426393508,
+        "late": 2.842856763402135,
+        "delta": 0.15192233700862712
+      },
+      "hurst_exponent_sma": {
+        "early": 0.9011126567917537,
+        "late": 0.8899883042658953,
+        "delta": -0.011124352525858416
+      },
+      "kolmogorov_proxy_7d": {
+        "early": 0.12280701754385964,
+        "late": 0.05263157894736842,
+        "delta": -0.07017543859649122
+      },
+      "l1_cusum_sma": {
+        "early": 0.0,
+        "late": 0.0,
+        "delta": 0.0
+      },
+      "mandelbrot_tail_score": {
+        "early": 0.0,
+        "late": 0.0,
+        "delta": 0.0
+      },
+      "delta_sma_7d_km": {
+        "early": -0.006527778868530731,
+        "late": -0.0029490968680268756,
+        "delta": 0.0035786820005038558
+      },
+      "maneuver_count_30d": {
+        "early": 0.5,
+        "late": 1.1666666666666667,
+        "delta": 0.6666666666666667
+      },
+      "f10_7": {
+        "early": 134.15,
+        "late": 100.64999999999999,
+        "delta": -33.500000000000014
+      },
+      "ap_index": {
+        "early": 6.166666666666667,
+        "late": 15.833333333333334,
+        "delta": 9.666666666666668
+      },
+      "geomagnetic_storm": {
+        "early": 0.0,
+        "late": 0.6666666666666666,
+        "delta": 0.6666666666666666
+      }
+    },
+    "top_movers": [
+      [
+        "f10_7",
+        -33.500000000000014
+      ],
+      [
+        "ap_index",
+        9.666666666666668
+      ],
+      [
+        "maneuver_count_30d",
+        0.6666666666666667
+      ],
+      [
+        "geomagnetic_storm",
+        0.6666666666666666
+      ],
+      [
+        "shannon_entropy_sma_30d",
+        0.15192233700862712
+      ],
+      [
+        "kolmogorov_proxy_7d",
+        -0.07017543859649122
+      ]
+    ],
+    "top_pre_peak_folds": [
+      {
+        "asof": "2015-08-27",
+        "score": 0.45012628105339825,
+        "shannon": 3.0503018554349817,
+        "hurst": 0.7548646949712129,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.002860505005628511,
+        "f10_7": 110.2,
+        "ap": 52.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2015-06-18",
+        "score": 0.41032012151816694,
+        "shannon": 1.6282202760321465,
+        "hurst": 0.8425057886478652,
+        "kolmogorov": 0.15789473684210525,
+        "cusum": 0.0,
+        "mandelbrot": 0.7781553490269432,
+        "delta_sma": 0.05268602003616252,
+        "f10_7": 150.8,
+        "ap": 6.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2015-09-10",
+        "score": 0.39373144288974093,
+        "shannon": 3.0105709342684834,
+        "hurst": 0.9307652488651679,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.00021380744601628976,
+        "f10_7": 83.5,
+        "ap": 12.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2015-04-23",
+        "score": 0.3837369228716843,
+        "shannon": 2.6550505394177746,
+        "hurst": 0.9201409898005498,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.008983097650343552,
+        "f10_7": 140.5,
+        "ap": 6.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2015-07-02",
+        "score": 0.3832745158737377,
+        "shannon": 2.6550505394177746,
+        "hurst": 0.9336108497272655,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.004023616060294444,
+        "f10_7": 113.8,
+        "ap": 2.0,
+        "storm": 1.0
+      }
+    ],
+    "feat_delta_meta": {
+      "shannon_entropy_sma_30d": {
+        "early_mean": 2.690934426393508,
+        "late_mean": 2.842856763402135
+      },
+      "hurst_exponent_sma": {
+        "early_mean": 0.9011126567917537,
+        "late_mean": 0.8899883042658953
+      },
+      "l1_cusum_sma": {
+        "early_mean": 0.0,
+        "late_mean": 0.0
+      },
+      "kolmogorov_proxy_7d": {
+        "early_mean": 0.12280701754385963,
+        "late_mean": 0.05263157894736842
+      }
+    }
+  },
+  {
+    "event_id": "placebo_terra_2018",
+    "type": "placebo_baseline",
+    "t_start": "2018-01-01",
+    "t_peak": "2018-09-01",
+    "t_end": "2019-03-01",
+    "sources": [
+      "Control same calendar as Athena-Fidus window"
+    ],
+    "notes": "Placebo 2018.",
+    "norad": 25994,
+    "name": "TERRA",
+    "placebo": true,
+    "hit": false,
+    "soft": false,
+    "lead_days": null,
+    "max_anom": 0.48880695405849317,
+    "max_asof": "2018-11-05",
+    "n_folds": 31,
+    "first_hit": null,
+    "first_elev_045": {
+      "asof": "2018-11-05",
+      "score": 0.48880695405849317,
+      "shannon_entropy_sma_30d": 2.6497944620435705,
+      "hurst_exponent_sma": 0.8622072136322446,
+      "kolmogorov_proxy_7d": 0.05263157894736842,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.6809591601775358,
+      "delta_sma_7d_km": 0.001130596822804364,
+      "maneuver_count_30d": 3.0,
+      "f10_7": 68.3,
+      "ap_index": 32.0,
+      "geomagnetic_storm": 1.0
+    },
+    "pre_peak_noise": {
+      "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+      "n_pre_peak_folds": 18,
+      "pre_peak_anomaly_mean": 0.3548794535401615,
+      "pre_peak_anomaly_max": 0.43622635843488317,
+      "early_pre_peak_mean": 0.35578788380578535,
+      "late_pre_peak_mean": 0.36302358708284793,
+      "noise_ramp": 0.007235703277062577,
+      "pre_peak_pair_risk_max": 1.0,
+      "elevated_noise_before_peak": false
+    },
+    "feat_early_vs_late": {
+      "shannon_entropy_sma_30d": {
+        "early": 2.819793688989059,
+        "late": 2.8801256237134236,
+        "delta": 0.06033193472436471
+      },
+      "hurst_exponent_sma": {
+        "early": 0.8361263513486786,
+        "late": 0.8562775138515871,
+        "delta": 0.020151162502908493
+      },
+      "kolmogorov_proxy_7d": {
+        "early": 0.05263157894736842,
+        "late": 0.05263157894736842,
+        "delta": 0.0
+      },
+      "l1_cusum_sma": {
+        "early": 0.0,
+        "late": 0.0,
+        "delta": 0.0
+      },
+      "mandelbrot_tail_score": {
+        "early": 0.23169862317874093,
+        "late": 0.12615410461556395,
+        "delta": -0.10554451856317698
+      },
+      "delta_sma_7d_km": {
+        "early": 0.009939618227690517,
+        "late": 0.0008428215260209981,
+        "delta": -0.009096796701669518
+      },
+      "maneuver_count_30d": {
+        "early": 1.8333333333333333,
+        "late": 3.1666666666666665,
+        "delta": 1.3333333333333333
+      },
+      "f10_7": {
+        "early": 70.66666666666667,
+        "late": 69.64999999999999,
+        "delta": -1.01666666666668
+      },
+      "ap_index": {
+        "early": 5.5,
+        "late": 9.666666666666666,
+        "delta": 4.166666666666666
+      },
+      "geomagnetic_storm": {
+        "early": 0.0,
+        "late": 0.16666666666666666,
+        "delta": 0.16666666666666666
+      }
+    },
+    "top_movers": [
+      [
+        "ap_index",
+        4.166666666666666
+      ],
+      [
+        "maneuver_count_30d",
+        1.3333333333333333
+      ],
+      [
+        "f10_7",
+        -1.01666666666668
+      ],
+      [
+        "geomagnetic_storm",
+        0.16666666666666666
+      ],
+      [
+        "mandelbrot_tail_score",
+        -0.10554451856317698
+      ],
+      [
+        "shannon_entropy_sma_30d",
+        0.06033193472436471
+      ]
+    ],
+    "top_pre_peak_folds": [
+      {
+        "asof": "2018-08-27",
+        "score": 0.43622635843488317,
+        "shannon": 3.0761031709967224,
+        "hurst": 0.9416755025714824,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": 0.00030451949623966357,
+        "f10_7": 69.6,
+        "ap": 25.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2018-02-26",
+        "score": 0.37128600515662125,
+        "shannon": 2.53585777591828,
+        "hurst": 0.917251094025246,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.7117764327890282,
+        "delta_sma": 0.03508489199612086,
+        "f10_7": 69.8,
+        "ap": 6.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2018-01-01",
+        "score": 0.36912067590608605,
+        "shannon": 2.8913781707689887,
+        "hurst": 0.7612128799458632,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.0005474909230542835,
+        "f10_7": 69.1,
+        "ap": 10.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2018-08-13",
+        "score": 0.36756316168525394,
+        "shannon": 2.8258459340407502,
+        "hurst": 0.8063433272457299,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.7569246276933838,
+        "delta_sma": 0.010318025747437787,
+        "f10_7": 67.8,
+        "ap": 4.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2018-01-29",
+        "score": 0.3647674393192032,
+        "shannon": 2.5842622253153325,
+        "hurst": 0.8131561600032512,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.6784153062834174,
+        "delta_sma": 0.024782823094938067,
+        "f10_7": 68.2,
+        "ap": 3.0,
+        "storm": 0.0
+      }
+    ],
+    "feat_delta_meta": {
+      "shannon_entropy_sma_30d": {
+        "early_mean": 2.8197936889890585,
+        "late_mean": 2.8801256237134236
+      },
+      "hurst_exponent_sma": {
+        "early_mean": 0.8361263513486786,
+        "late_mean": 0.8562775138515871
+      },
+      "l1_cusum_sma": {
+        "early_mean": 0.0,
+        "late_mean": 0.0
+      },
+      "kolmogorov_proxy_7d": {
+        "early_mean": 0.05263157894736842,
+        "late_mean": 0.05263157894736842
+      }
+    }
+  },
+  {
+    "event_id": "placebo_noaa20_2023",
+    "type": "placebo_baseline",
+    "t_start": "2023-04-01",
+    "t_peak": "2023-10-15",
+    "t_end": "2024-03-01",
+    "sources": [
+      "Control vs Luch-2 2023 window"
+    ],
+    "notes": "NOAA-20 existe desde 2017; controle 2023.",
+    "norad": 43013,
+    "name": "NOAA 20 (JPSS-1)",
+    "placebo": true,
+    "hit": false,
+    "soft": true,
+    "lead_days": null,
+    "max_anom": 0.46308065833745665,
+    "max_asof": "2023-08-05",
+    "n_folds": 24,
+    "first_hit": null,
+    "first_elev_045": {
+      "asof": "2023-08-05",
+      "score": 0.46308065833745665,
+      "shannon_entropy_sma_30d": 2.9847696187067436,
+      "hurst_exponent_sma": 0.9198626117981188,
+      "kolmogorov_proxy_7d": 0.05263157894736842,
+      "l1_cusum_sma": 0.0,
+      "mandelbrot_tail_score": 0.0,
+      "delta_sma_7d_km": -0.001898257887660293,
+      "maneuver_count_30d": 0.0,
+      "f10_7": 175.8,
+      "ap_index": 33.0,
+      "geomagnetic_storm": 1.0
+    },
+    "pre_peak_noise": {
+      "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+      "n_pre_peak_folds": 15,
+      "pre_peak_anomaly_mean": 0.38433570089445157,
+      "pre_peak_anomaly_max": 0.46308065833745665,
+      "early_pre_peak_mean": 0.38335521271202866,
+      "late_pre_peak_mean": 0.3779564248474836,
+      "noise_ramp": -0.005398787864545063,
+      "pre_peak_pair_risk_max": 1.0,
+      "elevated_noise_before_peak": false
+    },
+    "feat_early_vs_late": {
+      "shannon_entropy_sma_30d": {
+        "early": 2.6049032777647243,
+        "late": 2.790438203918555,
+        "delta": 0.1855349261538306
+      },
+      "hurst_exponent_sma": {
+        "early": 0.9272624007147282,
+        "late": 0.923091959335878,
+        "delta": -0.004170441378850254
+      },
+      "kolmogorov_proxy_7d": {
+        "early": 0.05263157894736842,
+        "late": 0.05263157894736842,
+        "delta": 0.0
+      },
+      "l1_cusum_sma": {
+        "early": 0.0,
+        "late": 0.0,
+        "delta": 0.0
+      },
+      "mandelbrot_tail_score": {
+        "early": 0.0,
+        "late": 0.0,
+        "delta": 0.0
+      },
+      "delta_sma_7d_km": {
+        "early": -0.002375390571069147,
+        "late": -0.0020633458016163786,
+        "delta": 0.00031204476945276846
+      },
+      "maneuver_count_30d": {
+        "early": 0.8,
+        "late": 0.0,
+        "delta": -0.8
+      },
+      "f10_7": {
+        "early": 151.52,
+        "late": 145.9,
+        "delta": -5.6200000000000045
+      },
+      "ap_index": {
+        "early": 11.2,
+        "late": 12.8,
+        "delta": 1.6000000000000014
+      },
+      "geomagnetic_storm": {
+        "early": 0.4,
+        "late": 0.2,
+        "delta": -0.2
+      }
+    },
+    "top_movers": [
+      [
+        "f10_7",
+        -5.6200000000000045
+      ],
+      [
+        "ap_index",
+        1.6000000000000014
+      ],
+      [
+        "maneuver_count_30d",
+        -0.8
+      ],
+      [
+        "geomagnetic_storm",
+        -0.2
+      ],
+      [
+        "shannon_entropy_sma_30d",
+        0.1855349261538306
+      ],
+      [
+        "hurst_exponent_sma",
+        -0.004170441378850254
+      ]
+    ],
+    "top_pre_peak_folds": [
+      {
+        "asof": "2023-08-05",
+        "score": 0.46308065833745665,
+        "shannon": 2.9847696187067436,
+        "hurst": 0.9198626117981188,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.001898257887660293,
+        "f10_7": 175.8,
+        "ap": 33.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2023-09-02",
+        "score": 0.4615964123309352,
+        "shannon": 2.462867147080763,
+        "hurst": 0.9207804537478098,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.002040354494965868,
+        "f10_7": 131.2,
+        "ap": 37.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2023-04-29",
+        "score": 0.4320883079708512,
+        "shannon": 1.78324743853251,
+        "hurst": 0.9366034000763374,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.001932112474605674,
+        "f10_7": 155.8,
+        "ap": 20.0,
+        "storm": 1.0
+      },
+      {
+        "asof": "2023-06-10",
+        "score": 0.42635656810464534,
+        "shannon": 0.2974722489192897,
+        "hurst": 0.9079486527906564,
+        "kolmogorov": 0.21052631578947367,
+        "cusum": 0.0,
+        "mandelbrot": 0.41451573908168604,
+        "delta_sma": 0.0656408643535542,
+        "f10_7": 161.2,
+        "ap": 4.0,
+        "storm": 0.0
+      },
+      {
+        "asof": "2023-05-27",
+        "score": 0.3829263993936719,
+        "shannon": 3.010570934268484,
+        "hurst": 0.9130475824260946,
+        "kolmogorov": 0.05263157894736842,
+        "cusum": 0.0,
+        "mandelbrot": 0.0,
+        "delta_sma": -0.0007613322968609282,
+        "f10_7": 156.9,
+        "ap": 4.0,
+        "storm": 1.0
+      }
+    ],
+    "feat_delta_meta": {
+      "shannon_entropy_sma_30d": {
+        "early_mean": 2.6049032777647243,
+        "late_mean": 2.790438203918555
+      },
+      "hurst_exponent_sma": {
+        "early_mean": 0.9272624007147282,
+        "late_mean": 0.923091959335878
+      },
+      "l1_cusum_sma": {
+        "early_mean": 0.0,
+        "late_mean": 0.0
+      },
+      "kolmogorov_proxy_7d": {
+        "early_mean": 0.05263157894736842,
+        "late_mean": 0.05263157894736842
+      }
+    }
+  }
+]

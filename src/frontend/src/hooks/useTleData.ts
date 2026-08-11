@@ -49,6 +49,12 @@ const FEEDS: FeedDef[] = [
     snapUrl: `${SNAP}/tle-fengyun-1c-debris.txt`,
     required: false,
   },
+  {
+    key: 'watchlist',
+    liveUrl: `${SNAP}/tle-watchlist.txt`,
+    snapUrl: `${SNAP}/tle-watchlist.txt`,
+    required: true,
+  },
 ]
 
 export const TLE_TTL_MS = 2 * 3600 * 1000
@@ -203,10 +209,13 @@ export function useTleData() {
   }, [apply, loadSnapshots, refreshLive])
 
   useEffect(() => {
-    void initialLoad()
+    // initialLoad's setState happens only after awaits; the extra tick makes
+    // the effect body free of synchronous setState (react-hooks/set-state-in-effect).
+    const boot = window.setTimeout(() => void initialLoad(), 0)
     const id = setInterval(() => void refreshLive(), TLE_TTL_MS)
     return () => {
       invalidate() // ignore in-flight responses after unmount
+      clearTimeout(boot)
       clearInterval(id)
     }
   }, [initialLoad, refreshLive, invalidate])

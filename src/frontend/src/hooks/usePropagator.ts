@@ -50,14 +50,21 @@ export function usePropagator(
   const activeT0Ref = useRef<number | null>(null)
   const activeT1Ref = useRef<number | null>(null)
   const playingRef = useRef(clock.playing)
-  playingRef.current = clock.playing
   /** early future frame, not yet activated */
   const pendingRef = useRef<PendingFrame | null>(null)
   const firstFrameRef = useRef(false)
   const deadMarkedRef = useRef(false)
   const initTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const speedRef = useRef(clock.speed)
-  speedRef.current = clock.speed
+
+  // Sync latest clock state into refs via effects (timer callbacks read them;
+  // writing refs during render violates the react-hooks/refs rule).
+  useEffect(() => {
+    playingRef.current = clock.playing
+  }, [clock.playing])
+  useEffect(() => {
+    speedRef.current = clock.speed
+  }, [clock.speed])
 
   /** Interval length in simulated seconds, scaled to |time warp|. */
   const intervalFor = useCallback((absSpeed: number) => {

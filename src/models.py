@@ -22,23 +22,29 @@ from src.config import (
     CLASS_NAMES,
     FEATURE_COLUMNS,
     IFOREST_COLUMNS,
+    MIN_WINDOW,
     MODELS_DIR,
     XGB_COLUMNS,
 )
 from src.engine import (
     calculate_adf_pvalue,
-    calculate_chern_simons_proxy,
-    calculate_hurst_exponent,
-    calculate_kernel_l1_cusum,
-    calculate_kolmogorov_proxy,
+    calculate_bocpd,
+    calculate_dfa_hurst,
+    calculate_ewma,
+    calculate_lz76_complexity,
     calculate_mandelbrot_tail_anomaly,
+    calculate_mmd_typicality,
+    calculate_page_cusum,
+    calculate_permutation_entropy,
     calculate_persistent_homology,
-    calculate_ricci_proxy,
     calculate_shannon_entropy,
-    calculate_spectral_anomaly_rkhs,
-    calculate_williams_threat,
+    calculate_ssa_residual,
+    calculate_static_threat,
+    complexity_entropy_c,
+    count_regime_changes,
     homology_backend,
 )
+from src.innovation import lkf_innovation_score
 from src.orbital import position_series_from_history
 from src.utils import generate_mock_tle_history, generate_shadowing_pair
 
@@ -51,40 +57,6 @@ METRIC_CLASS_NAMES = {
     2: "SUSPECT",
     3: "HOSTILE",
 }
-
-
-
-def _orbital_state_vectors(history_df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray]:
-    """Approximate position/velocity series for Chern-Simons & topology."""
-    sma_series = history_df["semi_major_axis_km"].values.astype(float)
-    last = history_df.iloc[-1]
-    raan = float(last.get("raan_deg", 0.0))
-    inc = float(last["inclination_deg"])
-
-    thetas = np.linspace(0, 2 * np.pi, len(sma_series))
-    x_orb = sma_series * np.cos(thetas)
-    y_orb = sma_series * np.sin(thetas)
-
-    inc_rad = np.radians(inc)
-    raan_rad = np.radians(raan)
-
-    y_rot = y_orb * np.cos(inc_rad)
-    z_rot = y_orb * np.sin(inc_rad)
-    x_final = x_orb * np.cos(raan_rad) - y_rot * np.sin(raan_rad)
-    y_final = x_orb * np.sin(raan_rad) + y_rot * np.cos(raan_rad)
-    z_final = z_rot
-    positions = np.column_stack([x_final, y_final, z_final])
-
-    v_mag = np.sqrt(398600.4418 / np.maximum(sma_series, 1.0))
-    vx_orb = -v_mag * np.sin(thetas)
-    vy_orb = v_mag * np.cos(thetas)
-    vy_rot = vy_orb * np.cos(inc_rad)
-    vz_rot = vy_orb * np.sin(inc_rad)
-    vx_final = vx_orb * np.cos(raan_rad) - vy_rot * np.sin(raan_rad)
-    vy_final = vx_orb * np.sin(raan_rad) + vy_rot * np.cos(raan_rad)
-    vz_final = vz_rot
-    velocities = np.column_stack([vx_final, vy_final, vz_final])
-    return positions, velocities
 
 
 def tle_age_hours_at(
@@ -131,8 +103,6 @@ def extract_satellite_features(
     orbit_class: str = "LEO",
     min_distance_to_military_km: float = 500.0,
     cointegration_pvalue: float = 1.0,
-    lukasiewicz_implication: float = 1.0,
-    neighbor_positions: Optional[List[np.ndarray]] = None,
     reference_time: Optional[pd.Timestamp] = None,
 ) -> Dict[str, float]:
     """
@@ -143,8 +113,8 @@ def extract_satellite_features(
     for historical scoring; omit (None) for live inference (= now UTC).
     """
     history_df = history_df.ffill().bfill()
-    if len(history_df) < 20:
-        raise ValueError("Insufficient history (minimum 20 epochs) for mathematical features.")
+    if len(history_df) < MIN_WINDOW:
+        raise ValueError(f"Insufficient history (minimum {MIN_WINDOW} epochs) for mathematical features.")
 
     last_row = history_df.iloc[-1]
     sma = float(last_row["semi_major_axis_km"])
@@ -190,61 +160,49 @@ def extract_satellite_features(
     delta_sma_30d = float(sma - history_df["semi_major_axis_km"].iloc[0])
     delta_inc_30d = float(inc - history_df["inclination_deg"].iloc[0])
 
-    # Maneuver count via rolling CUSUM spikes
-    maneuvers_count = 0
-    for i in range(10, len(sma_series)):
-        val = calculate_kernel_l1_cusum(sma_series[: i + 1], window=min(10, i))
-        if val > 0.8:
-            maneuvers_count += 1
+    # Distinct maneuver-episode count (two-sided Page CUSUM + refractory window).
+    # Fixes the old loop that counted every threshold crossing (up to 8x per
+    # single maneuver).
+    regime_changes = count_regime_changes(sma_series)
 
     shannon = calculate_shannon_entropy(sma_series)
     # Multi-scale persistence: short window (~recent tip) vs full window
     n_short = min(12, max(8, len(sma_series) // 2))
     sma_short = sma_series[-n_short:]
     shannon_short = calculate_shannon_entropy(sma_short)
-    kolmogorov = calculate_kolmogorov_proxy(sma_series)
-    hurst = calculate_hurst_exponent(sma_series)
-    hurst_short = calculate_hurst_exponent(sma_short)
+    # Corrected framework: LZ76 complexity (not zlib ratio), DFA (not R/S),
+    # permutation entropy + complexity-entropy plane, ARL-calibrated
+    # Page CUSUM + EWMA, SSA residual, BOCPD run-length posterior.
+    lz76 = calculate_lz76_complexity(sma_series)
+    perm_entropy = calculate_permutation_entropy(sma_series)
+    c_js = complexity_entropy_c(sma_series)
+    dfa = calculate_dfa_hurst(sma_series)
+    dfa_short = calculate_dfa_hurst(sma_short)
     # Gap > 0: full window more persistent than recent tip (sustained control memory)
-    persistence_hurst_gap = float(np.clip(hurst - hurst_short, -1.0, 1.0))
+    persistence_dfa_gap = float(np.clip(dfa - dfa_short, -1.0, 1.0))
     mandelbrot = calculate_mandelbrot_tail_anomaly(sma_series)
     adf = calculate_adf_pvalue(sma_series)
-    williams = calculate_williams_threat(country, purpose, orbit_class, inc)
-    l1_cusum = calculate_kernel_l1_cusum(sma_series)
+    static_threat = calculate_static_threat(country, purpose, orbit_class, inc)
+    cusum = calculate_page_cusum(sma_series)
+    ewma = calculate_ewma(sma_series)
+    bocpd_prob, bocpd_ll = calculate_bocpd(sma_series)
+    ssa_resid, ssa_energy = calculate_ssa_residual(sma_series)
+    # Linear Kalman Filter innovation score (Zollo & Weigel 2023 — best
+    # published TLE maneuver method: KF on SMA + normalized innovation eps).
+    innovation_score, innovation_eps = lkf_innovation_score(sma_series)
 
-    positions, velocities = _orbital_state_vectors(history_df)
-    chern_simons = calculate_chern_simons_proxy(positions, velocities)
-
-    # Homology on trajectory cloud
+    # Homology on trajectory cloud (standardized inside the engine)
     pos_cloud = position_series_from_history(history_df, n_samples=min(24, len(history_df)))
     h0_pers, h1_pers = calculate_persistent_homology(pos_cloud)
 
-    # Ricci: compare first/last neighborhood shells along trajectory
-    ricci_mean = 0.0
-    if len(positions) >= 6:
-        mid = len(positions) // 2
-        # local neighbors = adjacent samples
-        n_x = positions[max(0, mid - 3) : mid]
-        n_y = positions[mid + 1 : mid + 4]
-        if len(n_x) and len(n_y):
-            ricci_mean = calculate_ricci_proxy(positions[mid], n_x, positions[min(mid + 2, len(positions) - 1)], n_y)
-        # Boost Ricci signal when an external neighbor (asset) is very close
-        if neighbor_positions:
-            for np_pos in neighbor_positions:
-                if np_pos is None or len(np_pos) == 0:
-                    continue
-                d = float(np.linalg.norm(positions[-1] - np_pos[-1]))
-                if d < 100:
-                    ricci_mean = float(np.clip(ricci_mean + (1.0 - d / 100.0) * 0.5, -1.0, 1.0))
-
-    if reference_matrix is None or len(reference_matrix) == 0:
-        reference_matrix = np.zeros((1, 10))
-
-    features_subset = np.array(
-        [sma, ecc, inc, raan, mean_motion, delta_sma_7d, shannon, kolmogorov, hurst, adf],
+    # MMD typicality vs the normality reference (1 - permutation p-value).
+    # Fixes the old 1 - max RBF similarity, which saturated for normal vectors
+    # and returned 1.0 on the zero-reference fallback (now neutral 0.5).
+    mmd_feature_subset = np.array(
+        [sma, ecc, inc, raan, mean_motion, delta_sma_7d, shannon, lz76, dfa, adf],
         dtype=float,
     )
-    spectral_rkhs = calculate_spectral_anomaly_rkhs(features_subset, reference_matrix)
+    mmd_typicality, mmd_stat = calculate_mmd_typicality(mmd_feature_subset, reference_matrix)
 
     return {
         "semi_major_axis_km": sma,
@@ -255,20 +213,28 @@ def extract_satellite_features(
         "delta_sma_7d_km": delta_sma_7d,
         "delta_sma_30d_km": delta_sma_30d,
         "delta_inc_30d_deg": delta_inc_30d,
-        "maneuver_count_30d": float(maneuvers_count),
+        "regime_changes_30d": float(regime_changes),
         "shannon_entropy_sma_30d": shannon,
         "shannon_entropy_sma_short": float(shannon_short),
-        "kolmogorov_proxy_7d": kolmogorov,
-        "hurst_exponent_sma": hurst,
-        "hurst_exponent_sma_short": float(hurst_short),
-        "persistence_hurst_gap": float(persistence_hurst_gap),
+        "lz76_complexity": lz76,
+        "permutation_entropy": float(perm_entropy),
+        "complexity_entropy_c": float(c_js),
+        "dfa_hurst_sma": dfa,
+        "dfa_hurst_sma_short": float(dfa_short),
+        "persistence_dfa_gap": float(persistence_dfa_gap),
         "mandelbrot_tail_score": mandelbrot,
         "adf_pvalue": adf,
-        "williams_threat": williams,
-        "l1_cusum_sma": l1_cusum,
-        "spectral_anomaly_rkhs": spectral_rkhs,
-        "chern_simons_proxy": chern_simons,
-        "ricci_mean": float(ricci_mean),
+        "static_threat": static_threat,
+        "page_cusum_sma": cusum,
+        "ewma_sma": ewma,
+        "bocpd_change_prob_3d": bocpd_prob,
+        "bocpd_pred_ll": bocpd_ll,
+        "innovation_score": innovation_score,
+        "innovation_max_eps": innovation_eps,
+        "ssa_residual_last": ssa_resid,
+        "ssa_energy_ratio": ssa_energy,
+        "mmd_typicality": mmd_typicality,
+        "mmd_stat": mmd_stat,
         "h0_persistent": float(h0_pers),
         "h1_persistent": float(h1_pers),
         "tle_age_hours": tle_age,
@@ -286,7 +252,7 @@ def extract_satellite_features(
         "space_weather_available": float(sw_feats.get("space_weather_available", 0.0)),
         "min_distance_to_military_km": float(min_distance_to_military_km),
         "cointegration_pvalue": float(cointegration_pvalue),
-        "lukasiewicz_implication": float(lukasiewicz_implication),
+        "dcca_rho": 0.0,
     }
 
 
@@ -301,11 +267,11 @@ def label_features_for_threat(features: Dict[str, float], min_dist_mil: Optional
     """
     dist = features.get("min_distance_to_military_km", min_dist_mil if min_dist_mil is not None else 500.0)
     delta = abs(features.get("delta_sma_7d_km", 0.0))
-    hurst = features.get("hurst_exponent_sma", 0.5)
-    kolmogorov = features.get("kolmogorov_proxy_7d", 0.0)
-    cusum = features.get("l1_cusum_sma", 0.0)
+    dfa = features.get("dfa_hurst_sma", 0.5)
+    lz76 = features.get("lz76_complexity", 0.0)
+    cusum = features.get("page_cusum_sma", 0.0)
     coint = features.get("cointegration_pvalue", 1.0)
-    maneuvers = features.get("maneuver_count_30d", 0)
+    regime_changes = features.get("regime_changes_30d", 0)
     shannon = features.get("shannon_entropy_sma_30d", 0.0)
     anomaly = features.get("anomaly_score", 0.0)
 
@@ -319,37 +285,37 @@ def label_features_for_threat(features: Dict[str, float], min_dist_mil: Optional
     # HOSTILE: critical RPO geometry + active Δ / shadowing
     # Under high drag climate, require stronger Δ or cointegration for HOSTILE
     hostile_delta_thr = 3.0 if high_drag_climate else 2.0
-    if dist < 25.0 and (delta > hostile_delta_thr or hurst > 0.6 or coint < 0.05 or anomaly > 0.55):
+    if dist < 25.0 and (delta > hostile_delta_thr or dfa > 0.6 or coint < 0.05 or anomaly > 0.55):
         if not (high_drag_climate and delta <= 2.5 and coint >= 0.05 and dist >= 15.0):
             return 3
     if delta > (5.0 if high_drag_climate else 4.0) and dist < 80.0:
         return 3
-    if coint < 0.05 and dist < 40.0 and hurst > 0.55:
+    if coint < 0.05 and dist < 40.0 and dfa > 0.55:
         return 3
 
-    # SUSPECT: mid-range approach, multi-maneuver, or cointegrated pursuit
-    if dist < 150.0 and (delta > 1.0 or hurst > 0.7 or coint < 0.08):
+    # SUSPECT: mid-range approach, multi-episode maneuvering, or cointegrated pursuit
+    if dist < 150.0 and (delta > 1.0 or dfa > 0.7 or coint < 0.08):
         return 2
     if delta > (2.5 if high_drag_climate else 2.0) and dist < 200.0:
         return 2
-    if hurst > 0.78 and kolmogorov > 0.6 and dist < 250.0:
+    if dfa > 0.65 and lz76 > 0.9 and dist < 250.0:
         return 2
-    if maneuvers >= 4 and dist < 120.0:
+    if regime_changes >= 2 and dist < 120.0:
         return 2
     if coint < 0.05 and dist < 80.0:
         return 2
-    if hurst > 0.8 and shannon > 1.5 and delta > 1.0:
+    if dfa > 0.7 and shannon > 1.5 and delta > 1.0:
         return 2
 
     # ANOMALOUS: structural break without hostile geometry
     # Mild Δ under storm → more often NORMAL (natural drag), not ANOMALOUS
     if high_drag_climate and delta < 1.2 and dist > 150.0 and cusum < 0.9:
         return 0
-    if cusum > 0.85 and delta > 0.8:
+    if cusum >= 0.7 and delta > 0.8:
         return 1
     if delta > (2.0 if high_drag_climate else 1.5):
         return 1
-    if maneuvers >= 3 and delta > 0.5:
+    if regime_changes >= 2 and delta > 0.5:
         return 1
     if anomaly > 0.55 and dist > 200.0:
         return 1
@@ -413,9 +379,9 @@ def _build_synthetic_training_set() -> Tuple[pd.DataFrame, np.ndarray]:
 
     # Normals (majority class — far from assets)
     for norad_id in range(1000, 1080):
-        df = generate_mock_tle_history(norad_id, num_days=30, anomaly_type=None)
-        for end_idx in range(20, len(df) + 1, 2):
-            sub = df.iloc[end_idx - 20 : end_idx]
+        df = generate_mock_tle_history(norad_id, num_days=60, anomaly_type=None)
+        for end_idx in range(MIN_WINDOW, len(df) + 1, 2):
+            sub = df.iloc[end_idx - MIN_WINDOW : end_idx]
             feats = extract_satellite_features(
                 sub, country="US", purpose="commercial", orbit_class="LEO",
                 min_distance_to_military_km=float(np.random.uniform(200, 500)),
@@ -425,10 +391,10 @@ def _build_synthetic_training_set() -> Tuple[pd.DataFrame, np.ndarray]:
 
     # Impulsive maneuvers (mix of near/far assets)
     for norad_id in range(2000, 2040):
-        df = generate_mock_tle_history(norad_id, num_days=30, anomaly_type="impulsive_maneuver")
+        df = generate_mock_tle_history(norad_id, num_days=60, anomaly_type="impulsive_maneuver")
         dist = float(np.random.choice([12.0, 40.0, 90.0, 300.0]))
-        for end_idx in range(20, len(df) + 1, 2):
-            sub = df.iloc[end_idx - 20 : end_idx]
+        for end_idx in range(MIN_WINDOW, len(df) + 1, 2):
+            sub = df.iloc[end_idx - MIN_WINDOW : end_idx]
             feats = extract_satellite_features(
                 sub, country="RU", purpose="military", orbit_class="LEO",
                 min_distance_to_military_km=dist,
@@ -438,10 +404,10 @@ def _build_synthetic_training_set() -> Tuple[pd.DataFrame, np.ndarray]:
 
     # Low-thrust disguised
     for norad_id in range(3000, 3040):
-        df = generate_mock_tle_history(norad_id, num_days=30, anomaly_type="low_thrust_disguised")
+        df = generate_mock_tle_history(norad_id, num_days=60, anomaly_type="low_thrust_disguised")
         dist = float(np.random.choice([8.0, 25.0, 80.0, 250.0]))
-        for end_idx in range(20, len(df) + 1, 2):
-            sub = df.iloc[end_idx - 20 : end_idx]
+        for end_idx in range(MIN_WINDOW, len(df) + 1, 2):
+            sub = df.iloc[end_idx - MIN_WINDOW : end_idx]
             feats = extract_satellite_features(
                 sub, country="CN", purpose="military", orbit_class="LEO",
                 min_distance_to_military_km=dist,
@@ -452,10 +418,10 @@ def _build_synthetic_training_set() -> Tuple[pd.DataFrame, np.ndarray]:
     # Shadowing pairs (cointegration signal) — minority but critical
     for seed in range(12):
         t_id, s_id = 4000 + seed, 5000 + seed
-        df_t, df_s = generate_shadowing_pair(t_id, s_id, num_days=30)
-        for end_idx in range(20, len(df_s) + 1, 3):
-            sub = df_s.iloc[end_idx - 20 : end_idx]
-            sub_t = df_t.iloc[end_idx - 20 : end_idx]
+        df_t, df_s = generate_shadowing_pair(t_id, s_id, num_days=60)
+        for end_idx in range(MIN_WINDOW, len(df_s) + 1, 3):
+            sub = df_s.iloc[end_idx - MIN_WINDOW : end_idx]
+            sub_t = df_t.iloc[end_idx - MIN_WINDOW : end_idx]
             from src.engine import calculate_cointegration_pvalue
 
             coint = calculate_cointegration_pvalue(
@@ -494,7 +460,7 @@ def _try_load_history_store_training(
     if len(hist_all) < 100:
         return None
 
-    hists = history_as_sat_histories(min_epochs=20)
+    hists = history_as_sat_histories(min_epochs=MIN_WINDOW)
     if len(hists) < 4:
         return None
 
@@ -523,7 +489,7 @@ def _try_load_history_store_training(
         role = str(meta.get("role") or "unknown")
 
         h = hist.sort_values("timestamp").reset_index(drop=True)
-        ends = list(range(20, len(h) + 1, step))[-max_windows_per_sat:]
+        ends = list(range(MIN_WINDOW, len(h) + 1, step))[-max_windows_per_sat:]
         others = {k: v for k, v in asset_h.items() if k != int(sid)}
 
         for e in ends:
@@ -656,7 +622,7 @@ def _try_load_real_training() -> Optional[Tuple[pd.DataFrame, np.ndarray]]:
 
         data_rows, labels = [], []
         for sat_id, group in df_real.groupby(id_col):
-            if len(group) < 25:
+            if len(group) < MIN_WINDOW + 5:
                 continue
             obj_name = str(group["OBJECT_NAME"].iloc[0]) if "OBJECT_NAME" in group.columns else "UNKNOWN"
             c = "US" if any(x in obj_name.upper() for x in ("USA", "STARLINK", "ISS", "NAVSTAR")) else (
@@ -665,8 +631,8 @@ def _try_load_real_training() -> Optional[Tuple[pd.DataFrame, np.ndarray]]:
                 )
             )
             p = "military" if c in ("CN", "RU") or "USA" in obj_name.upper() else "scientific"
-            for end_idx in range(20, min(len(group), 120), 4):
-                sub = group.iloc[end_idx - 20 : end_idx]
+            for end_idx in range(MIN_WINDOW, min(len(group), 140), 4):
+                sub = group.iloc[end_idx - MIN_WINDOW : end_idx]
                 o_class = "LEO" if sub["semi_major_axis_km"].iloc[-1] < 8000 else "MEO"
                 dist = 500.0
                 try:
@@ -694,10 +660,10 @@ def _synth_threat_boost() -> Tuple[pd.DataFrame, np.ndarray]:
     labels: List[int] = []
     # Impulsive near-asset
     for norad_id in range(2000, 2015):
-        df = generate_mock_tle_history(norad_id, num_days=30, anomaly_type="impulsive_maneuver")
+        df = generate_mock_tle_history(norad_id, num_days=60, anomaly_type="impulsive_maneuver")
         dist = float(np.random.choice([8.0, 18.0, 40.0]))
-        for end_idx in range(20, len(df) + 1, 3):
-            sub = df.iloc[end_idx - 20 : end_idx]
+        for end_idx in range(MIN_WINDOW, len(df) + 1, 3):
+            sub = df.iloc[end_idx - MIN_WINDOW : end_idx]
             feats = extract_satellite_features(
                 sub, country="RU", purpose="military", orbit_class="LEO",
                 min_distance_to_military_km=dist,
@@ -706,10 +672,10 @@ def _synth_threat_boost() -> Tuple[pd.DataFrame, np.ndarray]:
             labels.append(label_features_for_threat(feats))
     # Low-thrust near
     for norad_id in range(3000, 3012):
-        df = generate_mock_tle_history(norad_id, num_days=30, anomaly_type="low_thrust_disguised")
+        df = generate_mock_tle_history(norad_id, num_days=60, anomaly_type="low_thrust_disguised")
         dist = float(np.random.choice([12.0, 30.0, 70.0]))
-        for end_idx in range(20, len(df) + 1, 3):
-            sub = df.iloc[end_idx - 20 : end_idx]
+        for end_idx in range(MIN_WINDOW, len(df) + 1, 3):
+            sub = df.iloc[end_idx - MIN_WINDOW : end_idx]
             feats = extract_satellite_features(
                 sub, country="CN", purpose="military", orbit_class="LEO",
                 min_distance_to_military_km=dist,
@@ -719,10 +685,10 @@ def _synth_threat_boost() -> Tuple[pd.DataFrame, np.ndarray]:
     # Shadowing
     for seed in range(8):
         t_id, s_id = 4000 + seed, 5000 + seed
-        df_t, df_s = generate_shadowing_pair(t_id, s_id, num_days=30)
-        for end_idx in range(20, len(df_s) + 1, 4):
-            sub = df_s.iloc[end_idx - 20 : end_idx]
-            sub_t = df_t.iloc[end_idx - 20 : end_idx]
+        df_t, df_s = generate_shadowing_pair(t_id, s_id, num_days=60)
+        for end_idx in range(MIN_WINDOW, len(df_s) + 1, 4):
+            sub = df_s.iloc[end_idx - MIN_WINDOW : end_idx]
+            sub_t = df_t.iloc[end_idx - MIN_WINDOW : end_idx]
             from src.engine import calculate_cointegration_pvalue
 
             coint = calculate_cointegration_pvalue(
@@ -866,6 +832,7 @@ def train_and_save_models(
     report = classification_report(
         y_test,
         pred_test,
+        labels=[0, 1, 2, 3],
         target_names=[METRIC_CLASS_NAMES[i] for i in range(4)],
         output_dict=True,
         zero_division=0,
@@ -917,11 +884,11 @@ def train_and_save_models(
     joblib.dump(iforest, if_path)
     joblib.dump(xgb, xgb_path)
 
-    # RKHS reference: normal subset of core spectral features (diagnostic / optional)
+    # MMD reference: normal subset of core features (diagnostic / optional)
     rkhs_cols = [
         "semi_major_axis_km", "eccentricity", "inclination_deg", "raan_deg",
         "mean_motion_rev_per_day", "delta_sma_7d_km", "shannon_entropy_sma_30d",
-        "kolmogorov_proxy_7d", "hurst_exponent_sma", "adf_pvalue",
+        "lz76_complexity", "dfa_hurst_sma", "adf_pvalue",
     ]
     normal_subset = X_df[y == 0][rkhs_cols].values
     if len(normal_subset) == 0:

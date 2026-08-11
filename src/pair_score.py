@@ -3,8 +3,9 @@ Pair scoring: suspect × protected asset.
 
 Military narrative layer (shadowing / RPO proxy):
   - approximate orbital proximity (geometry)
-  - cointegration of SMA series (temporal coupling)
-  - optional Łukasiewicz coherence (coint → Hurst persistence)
+  - cointegration of aligned SMA series (temporal coupling, Engle-Granger)
+  - DCCA cross-correlation (Podobnik & Stanley 2008) + persistence coherence
+  - evidential-style coherence: cointegrated AND persistent = shadowing-like
 
 Outputs JSON under data/alerts/ for merge into daily risk report.
 """
@@ -20,8 +21,8 @@ import pandas as pd
 
 from src.engine import (
     calculate_cointegration_pvalue,
-    calculate_hurst_exponent,
-    calculate_lukasiewicz_implication,
+    calculate_dcca_rho,
+    calculate_dfa_hurst,
 )
 from src.orbital import min_distance_to_assets, orbit_class_from_sma
 from src.tle_store import ALERTS_DIR, DEFAULT_WATCHLIST, ensure_dirs, history_as_sat_histories
@@ -118,15 +119,18 @@ def score_pair(
 
     sa, aa = _align_series(hist_s, hist_a)
     coint_p = calculate_cointegration_pvalue(sa, aa) if len(sa) >= 20 and len(aa) >= 20 else 1.0
+    # DCCA coupling coefficient on aligned series (Podobnik & Stanley 2008)
+    dcca = calculate_dcca_rho(sa, aa) if len(sa) >= 12 and len(aa) >= 12 else 0.0
 
-    # Hurst on suspect (for Łukasiewicz: IF cointegrated THEN persistent)
+    # Persistence of the suspect (DFA on drag-detrended SMA)
     try:
-        hurst = float(calculate_hurst_exponent(hist_s["semi_major_axis_km"].astype(float).values))
+        dfa = float(calculate_dfa_hurst(hist_s["semi_major_axis_km"].astype(float).values))
     except Exception:
-        hurst = 0.5
+        dfa = 0.5
     p_coint = 1.0 if coint_p < 0.05 else 0.0
-    q_hurst = 1.0 if hurst > 0.65 else 0.0
-    luk = float(calculate_lukasiewicz_implication(p_coint, q_hurst))
+    q_persist = 1.0 if dfa > 0.65 else 0.0
+    # Evidential-style coherence: cointegrated AND persistent = shadowing-like
+    coherence = float(min(p_coint, q_persist))
 
     # Geometric closeness score (0 far → 1 very close)
     # 0 km → 1.0; 500 km → ~0.37; 2000+ → ~0
@@ -136,8 +140,8 @@ def score_pair(
     if coint_p < 0.05:
         coint_score = float(np.clip(coint_score + 0.25, 0.0, 1.0))
 
-    # Combined pair risk (geometry + temporal coupling)
-    pair_risk = float(np.clip(0.55 * prox_score + 0.35 * coint_score + 0.10 * (1.0 - luk * 0.5), 0.0, 1.0))
+    # Combined pair risk (geometry + temporal coupling + DCCA cross-correlation)
+    pair_risk = float(np.clip(0.50 * prox_score + 0.30 * coint_score + 0.10 * max(dcca, 0.0) + 0.10 * coherence, 0.0, 1.0))
     # Boost if both close and cointegrated
     if dist_km < 150 and coint_p < 0.1:
         pair_risk = float(np.clip(pair_risk + 0.15, 0.0, 1.0))
@@ -167,8 +171,9 @@ def score_pair(
         "asset_country": meta_a.get("country", "UNKNOWN"),
         "min_distance_km": round(float(dist_km), 3),
         "cointegration_pvalue": round(float(coint_p), 6),
-        "hurst_suspect": round(float(hurst), 4),
-        "lukasiewicz": round(float(luk), 4),
+        "dfa_suspect": round(float(dfa), 4),
+        "dcca_rho": round(float(dcca), 4),
+        "coherence": round(coherence, 4),
         "proximity_score": round(prox_score, 4),
         "coint_score": round(coint_score, 4),
         "pair_risk": round(pair_risk, 4),
@@ -367,6 +372,9 @@ def build_risk_report(
     pair_report: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Unified contract for UI / Bob (insight-first)."""
+    from src.config import PURPOSE_SEVERITY
+    from src.engine import calculate_kelly_allocation
+
     day = anomaly_report.get("day") or datetime.now(timezone.utc).strftime("%Y-%m-%d")
     pairs = (pair_report or {}).get("pairs") or []
     top_pairs = pairs[:10]
@@ -374,6 +382,12 @@ def build_risk_report(
 
     board = []
     for a in alerts:
+        # Kelly attention budget (patent 070 — Meta-Constellation tasking):
+        # f* = (p*b - q)/b, half-Kelly damped; p = attention probability,
+        # b = purpose severity multiplier (doctrine, config.PURPOSE_SEVERITY).
+        p_kelly = float(a.get("attention_score") or a.get("anomaly_score") or 0.0)
+        b_kelly = float(PURPOSE_SEVERITY.get(str(a.get("purpose") or "unknown").lower(), 25.0))
+        kelly = calculate_kelly_allocation(p_kelly, b_kelly)
         board.append(
             {
                 "norad_id": a.get("norad_id"),
@@ -384,6 +398,7 @@ def build_risk_report(
                 "orbit_class": a.get("orbit_class"),
                 "anomaly_score": a.get("anomaly_score"),
                 "attention_score": a.get("attention_score", a.get("anomaly_score")),
+                "kelly_allocation": kelly,
                 "is_anomaly": a.get("is_anomaly"),
                 "is_military_detection": a.get("is_military_detection"),
                 "is_platform_health_flag": a.get("is_platform_health_flag"),
@@ -391,6 +406,7 @@ def build_risk_report(
                 "status": a.get("status"),
                 "xgb_class": a.get("xgb_class"),
                 "data_quality": a.get("data_quality"),
+                "evidence": a.get("evidence"),
                 "features_snapshot": a.get("features_snapshot"),
                 "pair": a.get("pair"),
                 "anomaly_onset": a.get("anomaly_onset"),
@@ -415,6 +431,9 @@ def build_risk_report(
             "n_pair_elevated": (pair_report or {}).get("n_elevated", 0),
             "threshold": anomaly_report.get("threshold"),
             "focus": "suspect detection + asset protect; baseline = IF normality only",
+            "kelly_attention_budget": round(
+                sum(float(b.get("kelly_allocation") or 0.0) for b in board), 4
+            ),
         },
         "board": board,
         "top_pairs": top_pairs,
