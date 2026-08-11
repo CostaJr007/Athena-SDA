@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as satellite from 'satellite.js'
 import { GlobeEngine } from '@/lib/globe-engine'
-import { UI_GROUPS } from '@/lib/satellites'
+import { rdpIndices } from '@/lib/rdp'
+import { UI_GROUPS, formatUtc } from '@/lib/satellites'
 import type { SatInfo } from '@/lib/satellites'
 import { useSimClock } from '@/hooks/useSimClock'
 import { useTleData } from '@/hooks/useTleData'
@@ -11,12 +12,16 @@ import {
   boardByNorad,
   boardColor,
   boardThreat,
+  EMPTY_FILTERS,
+  filtersActive,
+  matchesFilters,
+  type BoardFilters,
 } from '@/lib/risk-report'
 import IdentityBlock from '@/components/hud/IdentityBlock'
 import ClockCard from '@/components/hud/ClockCard'
 import TimeController from '@/components/hud/TimeController'
 import SearchBox from '@/components/hud/SearchBox'
-import type { Telemetry } from '@/components/hud/DetailPanel'
+import type { Telemetry } from '@/lib/satellites'
 import FallbackTable from '@/components/FallbackTable'
 import LeftDock from '@/components/dock/LeftDock'
 import RightDock from '@/components/dock/RightDock'
@@ -87,6 +92,7 @@ export default function Home() {
   const [rightOpen, setRightOpen] = useState(true)
   const [catalogOpen, setCatalogOpen] = useState(false)
   const [catalogFocus, setCatalogFocus] = useState<CatalogFocus>('all')
+  const [boardFilters, setBoardFilters] = useState<BoardFilters>(EMPTY_FILTERS)
   const [pocOpen, setPocOpen] = useState(false)
 
   // Dual-route compare
@@ -101,16 +107,34 @@ export default function Home() {
   const noradMapRef = useRef(new Map<number, number>())
   const recCache = useRef(new Map<number, satellite.SatRec>())
   const groupVisibleRef = useRef(groupVisible)
-  groupVisibleRef.current = groupVisible
   const selectedNoradRef = useRef<number | null>(null)
-  selectedNoradRef.current = selectedNorad
   const compareOnRef = useRef(compareOn)
-  compareOnRef.current = compareOn
   const pickSlotRef = useRef(pickSlot)
-  pickSlotRef.current = pickSlot
   const urlInitRef = useRef(false)
 
+  // Sync ref mirrors via effects (react-hooks/refs: no writes during render).
+  useEffect(() => {
+    groupVisibleRef.current = groupVisible
+  }, [groupVisible])
+  useEffect(() => {
+    selectedNoradRef.current = selectedNorad
+  }, [selectedNorad])
+  useEffect(() => {
+    compareOnRef.current = compareOn
+  }, [compareOn])
+  useEffect(() => {
+    pickSlotRef.current = pickSlot
+  }, [pickSlot])
+
   const sats = dataset?.sats ?? EMPTY_SATS
+
+  // norad -> dataset index, derived during render (memoized) so render-time
+  // lookups (compare selection, tooltip) never touch the ref.
+  const noradMap = useMemo(() => {
+    const m = new Map<number, number>()
+    sats.forEach((s, i) => m.set(s.norad, i))
+    return m
+  }, [sats])
 
   const getRec = useCallback((index: number): satellite.SatRec | null => {
     const cached = recCache.current.get(index)
@@ -130,10 +154,14 @@ export default function Home() {
   const orbitProvider = useCallback(
     (index: number, simMs: number, past: Float32Array, future: Float32Array) => {
       const rec = getRec(index)
-      if (!rec) return
+      if (!rec) return 0
       const periodMs = ((2 * Math.PI) / rec.no) * 60 * 1000
       const n = past.length / 3
-      const fill = (out: Float32Array, startMs: number, endMs: number) => {
+      const fill = (out: Float32Array, startMs: number, endMs: number): number => {
+        // RDP decimation (patent 12,450,265 trajectory compression): propagate
+        // the full ring, then keep only shape-defining points (~30% of SGP4
+        // calls on the main thread) and write the kept subset.
+        const raw: Array<{ x: number; y: number; z: number }> = []
         let lx = 0
         let ly = 0
         let lz = 0
@@ -150,11 +178,18 @@ export default function Home() {
           } catch {
             /* keep last */
           }
-          out.set([lx, ly, lz], i * 3)
+          raw.push({ x: lx, y: ly, z: lz })
         }
+        const kept = rdpIndices(raw, 0.01)
+        for (let j = 0; j < kept.length; j++) {
+          const p = raw[kept[j]]
+          out.set([p.x, p.y, p.z], j * 3)
+        }
+        return kept.length
       }
-      fill(past, simMs - periodMs / 2, simMs)
-      fill(future, simMs, simMs + periodMs / 2)
+      const usedPast = fill(past, simMs - periodMs / 2, simMs)
+      const usedFuture = fill(future, simMs, simMs + periodMs / 2)
+      return Math.max(usedPast, usedFuture)
     },
     [getRec],
   )
@@ -240,6 +275,7 @@ export default function Home() {
   useEffect(() => {
     if (!webglOk || !mountRef.current) return
     let engine: GlobeEngine | null = null
+    let failTimer: number | undefined = undefined
     try {
       engine = new GlobeEngine(mountRef.current, {
         getSimTime: clock.getTime,
@@ -255,9 +291,10 @@ export default function Home() {
       engineRef.current = engine
     } catch (err) {
       console.error('GlobeEngine init failed', err)
-      setCtxLost(true)
+      failTimer = window.setTimeout(() => setCtxLost(true), 0)
     }
     return () => {
+      if (failTimer !== undefined) clearTimeout(failTimer)
       engine?.dispose()
       engineRef.current = null
     }
@@ -342,9 +379,24 @@ export default function Home() {
       })
     }
 
+    // Ontology cross-filters: dim watchlist objects that do not match
+    const filterActive = filtersActive(boardFilters)
+    const matchingNorads = new Set<number>()
+    if (filterActive && riskReport) {
+      for (const b of riskReport.board) {
+        if (matchesFilters(b, boardFilters)) matchingNorads.add(b.norad_id)
+      }
+    }
+
     if (riskReport) {
       for (const b of riskReport.board) {
         if (catalogFocus === 'military' && b.role !== 'asset' && b.role !== 'suspect') {
+          continue
+        }
+        if (filterActive && !matchingNorads.has(b.norad_id)) {
+          // non-matching: de-emphasize on the globe (size 0, no threat color)
+          const idxD = noradMapRef.current.get(b.norad_id)
+          if (idxD !== undefined) sizes.set(idxD, 0)
           continue
         }
         const idx = noradMapRef.current.get(b.norad_id)
@@ -371,15 +423,15 @@ export default function Home() {
       clearTimeout(t)
       clearTimeout(t2)
     }
-  }, [dataset, riskReport, catalogFocus])
+  }, [dataset, riskReport, catalogFocus, boardFilters])
 
   const { degraded } = usePropagator(dataset, engineRef, clock)
 
   // ---- telemetry for the selected satellite (direct SGP4 at exact sim time) ----
   useEffect(() => {
     if (selectedIndex === null) {
-      setTelemetry(null)
-      return
+      const id = window.setTimeout(() => setTelemetry(null), 0)
+      return () => clearTimeout(id)
     }
     const update = () => {
       const rec = getRec(selectedIndex)
@@ -463,28 +515,10 @@ export default function Home() {
     [selectSat],
   )
 
-  const resolveSat = useCallback(
-    (norad: number | null): SatInfo | null => {
-      if (norad === null) return null
-      const idx = noradMapRef.current.get(norad)
-      if (idx === undefined) return null
-      return satsRef.current[idx] ?? null
-    },
-    // re-resolve when dataset refreshes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dataset],
-  )
-
-  const satA = resolveSat(compareNoradA)
-  const satB = resolveSat(compareNoradB)
-  const idxA =
-    compareNoradA !== null
-      ? (noradMapRef.current.get(compareNoradA) ?? null)
-      : null
-  const idxB =
-    compareNoradB !== null
-      ? (noradMapRef.current.get(compareNoradB) ?? null)
-      : null
+  const satA = compareNoradA !== null ? (sats[noradMap.get(compareNoradA) ?? -1] ?? null) : null
+  const satB = compareNoradB !== null ? (sats[noradMap.get(compareNoradB) ?? -1] ?? null) : null
+  const idxA = compareNoradA !== null ? (noradMap.get(compareNoradA) ?? null) : null
+  const idxB = compareNoradB !== null ? (noradMap.get(compareNoradB) ?? null) : null
 
   const applyCrossToEngine = useCallback(
     (result: CrossAnalysis, liveA: number | null, liveB: number | null) => {
@@ -541,23 +575,23 @@ export default function Home() {
   // Draw single orbit while only one slot filled
   useEffect(() => {
     if (!compareOn) {
-      setCrossAnalysis(null)
+      const id = window.setTimeout(() => setCrossAnalysis(null), 0)
       engineRef.current?.clearCompareRoutes()
-      return
+      return () => clearTimeout(id)
     }
     if (compareNoradA === null && compareNoradB === null) {
-      setCrossAnalysis(null)
+      const id = window.setTimeout(() => setCrossAnalysis(null), 0)
       engineRef.current?.clearCompareRoutes()
-      return
+      return () => clearTimeout(id)
     }
     // Wait for both before full analysis; show single ring if only one
     if (compareNoradA === null || compareNoradB === null) {
-      setCrossAnalysis(null)
+      const id = window.setTimeout(() => setCrossAnalysis(null), 0)
       const onlyIdx = idxA ?? idxB
       const rec = onlyIdx !== null ? getRec(onlyIdx) : null
       if (!rec) {
         engineRef.current?.clearCompareRoutes()
-        return
+        return () => clearTimeout(id)
       }
       const ring = sampleOrbitRing(rec, clock.getTime(), 120)
       engineRef.current?.setCompareRoutes(
@@ -568,24 +602,24 @@ export default function Home() {
         idxA,
         idxB,
       )
-      return
+      return () => clearTimeout(id)
     }
     if (compareNoradA === compareNoradB) {
-      setCrossAnalysis(null)
+      const id = window.setTimeout(() => setCrossAnalysis(null), 0)
       engineRef.current?.clearCompareRoutes()
-      return
+      return () => clearTimeout(id)
     }
 
     const recA = idxA !== null ? getRec(idxA) : null
     const recB = idxB !== null ? getRec(idxB) : null
     if (!recA || !recB) {
-      setCrossAnalysis(null)
+      const id = window.setTimeout(() => setCrossAnalysis(null), 0)
       engineRef.current?.clearCompareRoutes()
-      return
+      return () => clearTimeout(id)
     }
 
     let cancelled = false
-    setCrossComputing(true)
+    const computingTimer = window.setTimeout(() => setCrossComputing(true), 0)
 
     const handle = window.setTimeout(() => {
       const result = analyzeOrbitCross(recA, recB, clock.getTime())
@@ -602,6 +636,7 @@ export default function Home() {
     return () => {
       cancelled = true
       clearTimeout(handle)
+      clearTimeout(computingTimer)
     }
   }, [
     compareOn,
@@ -683,7 +718,10 @@ export default function Home() {
 
   // Auto-open right dock when a sat is selected
   useEffect(() => {
-    if (selSat) setRightOpen(true)
+    if (selSat) {
+      const id = window.setTimeout(() => setRightOpen(true), 0)
+      return () => clearTimeout(id)
+    }
   }, [selSat])
 
   // tooltip stays inside the viewport
@@ -693,7 +731,7 @@ export default function Home() {
         top: Math.min(hover.y + 14, window.innerHeight - 44),
       }
     : null
-  const hoverSat = hover ? satsRef.current[hover.index] : null
+  const hoverSat = hover ? sats[hover.index] : null
 
   if (!webglOk) {
     return (
@@ -751,6 +789,22 @@ export default function Home() {
             mlDay={riskReport?.day ?? null}
             watchlistN={riskReport?.summary.n_scored ?? null}
           />
+          {/* Provenance badge (DST-style): which TLE snapshot / report day */}
+          {(dataset || riskReport) && (
+            <div className="pointer-events-auto flex flex-col gap-1">
+              {dataset?.epochMs ? (
+                <div className="border border-white/10 bg-black/50 px-2 py-1 text-[11px] uppercase tracking-wider text-zinc-400">
+                  Data: CelesTrak TLE · {formatUtc(dataset.epochMs)}
+                </div>
+              ) : null}
+              {riskReport ? (
+                <div className="border border-emerald-400/20 bg-black/50 px-2 py-1 text-[11px] uppercase tracking-wider text-emerald-300/80">
+                  risk_report {riskReport.day}
+                  {riskReport.generated_at ? ` · ${riskReport.generated_at.slice(11, 16)}Z` : ''}
+                </div>
+              ) : null}
+            </div>
+          )}
           <div className="flex flex-col gap-1.5 pt-0.5">
             <button
               type="button"
@@ -903,6 +957,8 @@ export default function Home() {
           reportError={riskError}
           onOpenPoc={openPoc}
           pocOpen={pocOpen}
+          filters={boardFilters}
+          onFiltersChange={setBoardFilters}
           extra={
             <CrossRoutePanel
               enabled={compareOn}

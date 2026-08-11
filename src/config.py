@@ -28,7 +28,14 @@ except ImportError:
 MU_EARTH_KM3_S2 = 398600.4418
 R_EARTH_KM = 6371.0
 
+# --- Feature window (epochs per feature vector) ---
+# WINDOW=30: ~30 days of daily-cadence TLE; activates DFA/ADF (inert at 20).
+# Set to 20 if the longer window regresses validation (re-run paper validation).
+MIN_WINDOW = 20
+
 # --- Feature vector used by Isolation Forest + XGBoost (order fixed) ---
+# delta_sma_7d/30d are EPOCH-based (rows -7 / row 0 of a 20-epoch window),
+# NOT calendar days — documented here to avoid semantic confusion.
 FEATURE_COLUMNS = [
     # Instantaneous Keplerian
     "semi_major_axis_km",
@@ -36,25 +43,33 @@ FEATURE_COLUMNS = [
     "inclination_deg",
     "raan_deg",
     "mean_motion_rev_per_day",
-    # Temporal deltas
+    # Temporal deltas (epoch-based)
     "delta_sma_7d_km",
     "delta_sma_30d_km",
     "delta_inc_30d_deg",
-    "maneuver_count_30d",
-    # Math framework (Shannon → RKHS) + multi-scale persistence (paper / micro-trajectory)
+    "regime_changes_30d",
+    # Corrected math framework (see docs/PROOF_DOSSIER.md for citations)
     "shannon_entropy_sma_30d",
     "shannon_entropy_sma_short",
-    "kolmogorov_proxy_7d",
-    "hurst_exponent_sma",
-    "hurst_exponent_sma_short",
-    "persistence_hurst_gap",
+    "lz76_complexity",
+    "permutation_entropy",
+    "complexity_entropy_c",
+    "dfa_hurst_sma",
+    "dfa_hurst_sma_short",
+    "persistence_dfa_gap",
     "mandelbrot_tail_score",
     "adf_pvalue",
-    "williams_threat",
-    "l1_cusum_sma",
-    "spectral_anomaly_rkhs",
-    "chern_simons_proxy",
-    "ricci_mean",
+    "static_threat",
+    "page_cusum_sma",
+    "ewma_sma",
+    "bocpd_change_prob_3d",
+    "bocpd_pred_ll",
+    "innovation_score",
+    "innovation_max_eps",
+    "ssa_residual_last",
+    "ssa_energy_ratio",
+    "mmd_typicality",
+    "mmd_stat",
     "h0_persistent",
     "h1_persistent",
     "tle_age_hours",
@@ -73,18 +88,19 @@ FEATURE_COLUMNS = [
     "space_weather_available",
     "min_distance_to_military_km",
     "cointegration_pvalue",
-    "lukasiewicz_implication",
+    "dcca_rho",
 ]
 
-# Isolation Forest trains WITHOUT multi-object context (proximity / coint)
-# Space weather IS included in IF — part of the "normal climate" background
-# spectral_anomaly_rkhs excluded: requires a live reference matrix; dead constant
-# features must not enter the IF baseline (honest quant vector).
+# Isolation Forest trains WITHOUT multi-object / reference context
+# (proximity, cointegration, DCCA) and WITHOUT live-reference features
+# (MMD requires a normality reference matrix at prediction time). Space
+# weather IS included in IF — part of the "normal climate" background.
 IFOREST_COLUMNS = [c for c in FEATURE_COLUMNS if c not in (
     "min_distance_to_military_km",
     "cointegration_pvalue",
-    "lukasiewicz_implication",
-    "spectral_anomaly_rkhs",
+    "dcca_rho",
+    "mmd_typicality",
+    "mmd_stat",
 )]
 
 # XGBoost uses full feature set including anomaly_score injected after IF

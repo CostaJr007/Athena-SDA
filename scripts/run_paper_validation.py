@@ -72,15 +72,16 @@ GEO_HEADLINE = {
 }
 
 FEAT_KEYS = [
-    "hurst_exponent_sma",
-    "hurst_exponent_sma_short",
-    "persistence_hurst_gap",
+    "dfa_hurst_sma",
+    "dfa_hurst_sma_short",
+    "persistence_dfa_gap",
     "shannon_entropy_sma_30d",
     "shannon_entropy_sma_short",
-    "kolmogorov_proxy_7d",
-    "l1_cusum_sma",
+    "lz76_complexity",
+    "permutation_entropy",
+    "page_cusum_sma",
     "delta_sma_7d_km",
-    "maneuver_count_30d",
+    "regime_changes_30d",
 ]
 
 

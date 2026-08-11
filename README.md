@@ -10,7 +10,7 @@
 | **Watchlist** | 24 NORADs (7 **asset** · 11 **suspect** · 6 **baseline**) |
 | **History** | ~12.5 years of TLEs (2014-01-01 → 2026-07-27) · ~250k epochs |
 | **Space weather** | GFZ F10.7 / Ap / Kp + geomagnetic storm flag |
-| **Validation** | Claims **A+B**: GEO interest **5/5** hard hits vs civil EO **0/7** · gap ~0.19 · Mann–Whitney *p*≈0.001 |
+| **Validation** | Claims **A+B** (re-validated 2026-08, corrected framework): GEO interest **5/5** hard hits vs civil EO **0/7** · gap ~0.26 · Mann–Whitney *p*≈0.001 |
 
 ---
 
@@ -20,13 +20,16 @@
 
 | Resource | Content |
 |----------|---------|
+| **[Proof dossier](docs/PROOF_DOSSIER.md)** | Embasamento por feature (DOI), reprodução, diferencial, limitações |
 | **[LaTeX paper](docs/paper/athena_sda_article.tex)** | Full methods, math, Claims A+B, figures, glossary |
 | **[Methods & claims](docs/paper/METHODS_AND_CLAIMS.md)** | Formal validation design |
 | **[Results tables](docs/paper/RESULTS_TABLES.md)** | Headline metrics + per-event table |
 | **[Figures](docs/paper/figures/)** | Pre-peak IF score curves (asof vs \(t_{\mathrm{peak}}\)) |
 | **[Limitations](docs/paper/LIMITATIONS.md)** | Sample size, TLE noise, orbit-class scope |
 | **[Foundation](docs/FOUNDATION_QUANT_VALIDATION.md)** | Doctrine + what is validated |
-| **[Walk-forward PoC HTML](src/frontend/public/reports/walkforward_poc.html)** | Demo narrative for judges |
+| **[Palantir patents (verified)](docs/references/palantir_patents.md)** | Corrected citations + architectural mapping |
+| **[Pitch script](docs/PITCH.md)** | 1-minute demo narrative (honest framing) |
+| **[Walk-forward PoC HTML](src/frontend/public/reports/walkforward_poc.html)** | In-browser demo narrative |
 | **Mission board UI** | `cd src/frontend && npm run dev` |
 
 ```bash
@@ -40,10 +43,10 @@ python scripts/plot_prepeak_curves.py
 
 Operators cannot watch the entire catalog equally. Athena-SDA focuses a **military-first watchlist** and turns **public TLE history** + **GFZ space weather** into:
 
-1. **Quantitative noise features** — Shannon, multi-scale Hurst, CUSUM, Kolmogorov proxy, ADF, ΔSMA, topology proxies, solar/geomagnetic context  
+1. **Quantitative noise features** — LZ76, DFA, Page CUSUM/EWMA (ARL), permutation entropy, SSA, BOCPD, LKF innovation (Zollo & Weigel), MMD typicality, ΔSMA, space weather  
 2. **Anomaly score** — Isolation Forest past-only, trained on **baseline + asset** normality  
 3. **Alerts** — elevated score and/or day-over-day shift on **suspects** (and platform-health flags on assets)  
-4. **Priority** — XGBoost weak labels, fuzzy calibration, suspect×asset pair risk, Kelly attention  
+4. **Priority** — XGBoost weak labels, Dempster-Shafer evidence fusion, suspect×asset pair risk, Kelly attention  
 5. **Explanation** — quant HTML reports + Bob copilot (reads scores; does not recompute them)  
 6. **Validation** — walk-forward against open-source report windows and civil EO placebos  
 
@@ -65,7 +68,7 @@ Suspects are **not** used to define IF normality. Commercial mega-constellations
 |------|---------|
 | **Noise** | Structure in the orbital series beyond quiet Keplerian coasting: irregular Δaltitude, persistent drift, complex control, jumps, non-stationarity |
 | **Anomaly score** \(s\in[0,1]\) | How isolated the current feature vector is vs trained normality (Isolation Forest) |
-| **Micro-trajectory / persistence** | Multi-scale Hurst & Shannon, CUSUM, ΔSMA, maneuver proxies |
+| **Micro-trajectory / persistence** | DFA, permutation entropy, Page CUSUM/EWMA, SSA residual, BOCPD, LKF innovation, ΔSMA |
 | **Pair risk** | Distance + cointegration suspect→asset — **priority** channel |
 | **Hard hit** | \(s \ge 0.50\) near public \(t_{\mathrm{peak}}\) in past-only walk-forward |
 
@@ -80,7 +83,7 @@ Sliding window → quantitative noise feature vector
         ↓
 Isolation Forest (train: baseline+asset, past-only) → anomaly_score
         ↓
-Priority: XGB + fuzzy + pair_risk + Kelly + data quality
+Priority: XGB + evidence fusion (DS) + pair_risk + Kelly + data quality
         ↓
 Risk board JSON · quant HTML · Bob briefing
         ↓
@@ -97,17 +100,24 @@ s(x)=\mathrm{clip}\bigl(0.5-\mathrm{IF.decision\_function}(x),\,0,\,1\bigr)
 
 ## 4. Quantitative features and space weather
 
+> **Math framework corrected (2026-08):** every feature maps to a verified
+> reference (see [`docs/PROOF_DOSSIER.md`](docs/PROOF_DOSSIER.md)). The old
+> zlib "Kolmogorov proxy", biased R/S Hurst, `1−max` RKHS and fake
+> "L1-CUSUM" were replaced by LZ76 (Kaspar-Schuster), DFA (Peng 1994),
+> MMD typicality (Gretton 2012) and ARL-calibrated Page CUSUM + EWMA.
+
 | Block | Examples | Role in analysis |
 |-------|----------|------------------|
 | Keplerian | SMA, ecc, inc, RAAN, \(n\) | Geometry |
-| Deltas / activity | ΔSMA 7d/30d, maneuver count | Relocation / active ops |
-| Persistence | Hurst full/short, \(\Delta H\), Shannon full/short | Micro-trajectory / sustained control |
-| Complexity / breaks | Kolmogorov proxy, L1-CUSUM, ADF, Mandelbrot tail | Pattern complexity, regime change |
-| Topology proxies | Chern–Simons, Ricci, H0/H1 (proxy mode) | Structural support features |
+| Deltas / activity | ΔSMA 7d/30d (epoch-based), regime-change count | Relocation / active ops |
+| Persistence | DFA full/short, \(\Delta\alpha\), Shannon full/short, permutation entropy | Micro-trajectory / sustained control |
+| Complexity / breaks | LZ76, complexity-entropy \(C\), Page CUSUM, EWMA, BOCPD, ADF, SSA residual, LKF innovation (Zollo & Weigel) | Pattern complexity, regime change |
+| Topology / typicality | H0/H1 persistence (proxy mode), MMD typicality | Structural support features |
+| Evidence | Dempster-Shafer belief / plausibility / conflict K | Weak-detector fusion with explicit ignorance |
 | **Space weather (GFZ)** | F10.7, Ap, Kp, 7d deltas, geomagnetic_storm | Solar/geomagnetic context for LEO drag vs maneuver |
-| Pairs (not in IF) | min distance, cointegration | Shadowing / proximity priority |
+| Pairs (not in IF) | min distance, aligned cointegration, DCCA | Shadowing / proximity priority |
 
-**IF** measures series noise. **Pairs / XGB** rank operational attention.
+**IF** measures series noise. **Pairs / XGB + evidence fusion** rank operational attention.
 
 ---
 
@@ -115,26 +125,35 @@ s(x)=\mathrm{clip}\bigl(0.5-\mathrm{IF.decision\_function}(x),\,0,\,1\bigr)
 
 | Layer | Function |
 |-------|----------|
-| Feature engine (`engine.py`) | Deterministic math → noise vector |
+| Feature engine (`engine.py` + `innovation.py`) | Deterministic math → noise vector (corrected framework) |
 | Monitor Isolation Forest | Normality = baseline+asset; daily anomaly scores |
 | Pipeline Isolation Forest | Separate artifact for priority stack |
 | XGBoost | Weak-label priority tiers (operational) |
-| Fuzzy / Kelly / DQ | Soft calibration, attention budget, reliability |
-| Pair score | Suspect×asset relationship risk |
+| Evidence fusion (`evidence.py`) | Dempster-Shafer belief/plausibility from weak detectors |
+| Kelly / DQ | Attention budget, reliability |
+| Pair score | Suspect×asset relationship risk (aligned cointegration + DCCA) |
 | Bob | Natural-language briefing from computed scores |
-| Registry | `models/registry.json` — versioned micro-models |
+| Ontology + contracts | `ontology.json` typed objects · `schemas/risk_report.v1.schema.json` Open API |
+| Registry | `models/registry.json` — versioned micro-models (hot-swap per day) |
 
 ---
 
 ## 6. Validation (Claims A + B)
 
-| Claim | Statement | GEO headline result |
-|-------|-----------|---------------------|
-| **A** | Interest cases at open-source anchors show elevated past-only IF scores / hard hits | **5/5** hard · mean max **~0.65** |
-| **B** | Civil EO placebos under the same protocol stay lower | **0/7** hard · mean max **~0.46** · p95 **~0.50** |
-| Separation | Interest scores stochastically higher | Gap **~0.19** · Mann–Whitney **p≈0.001** |
+> **Re-validated 2026-08-10 with the corrected math framework** (LZ76, DFA,
+> MMD, ARL CUSUM/EWMA, SSA, BOCPD, LKF innovation). The headline claims are
+> **preserved** — and now rest on verified methods (see
+> [`docs/PROOF_DOSSIER.md`](docs/PROOF_DOSSIER.md)).
 
-Open-source reports (Gunter, CSIS, SWF, press) supply **event windows** \(t_{\mathrm{peak}}\) for evaluation. Expanded LEO/MEO interest panels are reported separately (hard-hit rate lower; GEO remains the headline panel).
+| Claim | Statement | Result (corrected framework) |
+|-------|-----------|---------------------|
+| **A (GEO headline)** | Interest cases (Luch/SY-12 class) show elevated past-only IF scores / hard hits | **5/5** hard · mean max **0.716** · pre-peak mean 0.637 |
+| **A (core panel)** | 11 interest events, 9 unique NORADs (GEO+LEO+MEO) | **7/11** hard · mean max **0.616** |
+| **B** | Civil EO placebos under the same protocol stay lower | **0/7** hard · mean max **0.457** · p95 **0.495** |
+| Separation (GEO) | Interest scores stochastically higher | Gap **0.260** · Mann–Whitney **p≈0.0013** |
+| Separation (core) | Interest vs placebo max scores | Gap 0.160 · Mann–Whitney **p≈0.010** |
+
+Open-source reports (Gunter, CSIS, SWF, press) supply **event windows** \(t_{\mathrm{peak}}\) for evaluation. Expanded LEO/MEO interest panels are reported separately (hard-hit rate lower; GEO remains the headline panel). Honest notes: LEO recon (Yaogan-3/29) misses are expected (TLE noise floor); Shiyan-7 reached 0.55 (below hard threshold 0.50 sustained near peak).
 
 ### Paper pack
 
@@ -210,19 +229,20 @@ Athena-SDA/
 ├── requirements.txt
 ├── scripts/                 # monitor, walkforward, paper validation, plots, sync
 ├── src/
-│   ├── engine.py            # quantitative math
-│   ├── space_weather.py     # GFZ indices
+│   ├── engine.py            # corrected math framework (LZ76, DFA, MMD, CUSUM…)
+│   ├── innovation.py        # LKF innovation score (Zollo & Weigel 2023)
+│   ├── evidence.py          # Dempster-Shafer belief/plausibility fusion
+│   ├── changepoint.py       # offline change-point (auto-label)
+│   ├── ontology.py/.json    # typed object model (Palantir-inspired)
+│   ├── contracts.py         # risk_report.v1 schema validation
 │   ├── models.py            # features + IF/XGB
-│   ├── doctrine.py          # military roles
-│   ├── calibration.py       # threshold from normality quantiles
-│   ├── anomaly_monitor.py   # daily scoring
-│   ├── walkforward.py
-│   ├── pair_score.py
-│   ├── bob.py
-│   └── frontend/            # React mission board + globe
-├── models/
-├── data/
-└── docs/paper/              # article, figures, claims, limitations
+│   ├── space_weather.py     # GFZ indices
+│   ├── anomaly_monitor.py   # daily scoring (hot-swap model snapshots)
+│   ├── walkforward.py / pair_score.py / bob.py / doctrine.py
+│   └── frontend/            # React mission board + globe (cross-filters, replay)
+├── schemas/                 # risk_report.v1.schema.json (Open API contract)
+├── models/ · data/
+└── docs/                    # paper pack · proof dossier · pitch · patents (verified)
 ```
 
 ---

@@ -370,7 +370,12 @@ def main() -> None:
         "score",
         help="Compare latest window of each satellite against series baseline (+ pairs)",
     )
-    s.add_argument("--threshold", type=float, default=0.55)
+    s.add_argument(
+        "--threshold",
+        type=float,
+        default=None,
+        help="Anomaly hard threshold (default: calibrated value from anomaly_monitor_meta.json, else 0.50)",
+    )
     s.add_argument(
         "--delta-relevance",
         type=float,
@@ -400,7 +405,12 @@ def main() -> None:
     )
     s.add_argument("--holdout-days", type=int, default=1)
     s.add_argument("--contamination", type=float, default=0.08)
-    s.add_argument("--threshold", type=float, default=0.55)
+    s.add_argument(
+        "--threshold",
+        type=float,
+        default=None,
+        help="Anomaly hard threshold (default: calibrated value from meta, else 0.50)",
+    )
     s.add_argument("--delta-relevance", type=float, default=0.08)
     s.add_argument(
         "--sample-mode",

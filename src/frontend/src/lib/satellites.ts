@@ -211,16 +211,16 @@ export function buildDataset(
   return { sats, counts, epochMs: epoch, source, fetchedAt, total: sats.length }
 }
 
-/** "3h 12m" / "2d 4h" style age string from the median TLE epoch. */
-export function tleAge(epochMs: number, nowMs: number): string {
-  if (!epochMs) return 'unknown'
-  const mins = Math.max(0, Math.round((nowMs - epochMs) / 60000))
-  if (mins < 60) return `${mins}m`
-  const h = Math.floor(mins / 60)
-  if (h < 48) return `${h}h ${mins % 60}m`
-  return `${Math.floor(h / 24)}d ${h % 24}h`
+export interface Telemetry {
+  lat: number
+  lon: number
+  alt: number
+  speed: number
+  period: number
+  incl: number
 }
 
+/** "3h 12m" / "2d 4h" style age string from the median TLE epoch. */
 export function formatUtc(ms: number): string {
   const d = new Date(ms)
   const p = (v: number) => String(v).padStart(2, '0')

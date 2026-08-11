@@ -63,9 +63,9 @@ def _threat_color(tier: str) -> str:
 def _feature_rows(fs: Dict[str, Any]) -> List[Dict[str, str]]:
     specs = [
         (
-            "hurst_exponent_sma",
-            "Hurst H (R/S)",
-            "Altitude series persistence. H>0.5: drift/low thrust; H≈0.5: noise; H<0.5: mean reversion.",
+            "dfa_hurst_sma",
+            "DFA exponent α",
+            "Drag-detrended fluctuation scaling. α>0.5: persistent drift/low thrust; α≈0.5: noise; α<0.5: mean reversion.",
         ),
         (
             "shannon_entropy_sma_30d",
@@ -73,14 +73,19 @@ def _feature_rows(fs: Dict[str, Any]) -> List[Dict[str, str]]:
             "Disorder in altitude change (~30 days). High: irregular orbit / active control.",
         ),
         (
-            "kolmogorov_proxy_7d",
-            "Kolmogorov Proxy",
-            "Complexity of the up/down pattern. Active control patterns are less “simple”.",
+            "lz76_complexity",
+            "LZ76 complexity",
+            "Lempel-Ziv complexity of the up/down pattern (Kaspar-Schuster). Active control patterns are less regular.",
         ),
         (
-            "l1_cusum_sma",
-            "CUSUM L1",
-            "Accumulated deviations — helps see when the series left its prior regime.",
+            "page_cusum_sma",
+            "Page CUSUM",
+            "ARL-calibrated cumulative deviation — sees when the series left its prior regime.",
+        ),
+        (
+            "permutation_entropy",
+            "Permutation entropy",
+            "Rank-order complexity (Bandt-Pompe), robust for short noisy TLE windows.",
         ),
         (
             "delta_sma_7d_km",
@@ -201,15 +206,15 @@ def _plain_summary(entry: Dict[str, Any], tier: str) -> Dict[str, Any]:
         )
 
     try:
-        h = fs.get("hurst_exponent_sma")
+        h = fs.get("dfa_hurst_sma")
         if h is not None and float(h) >= 0.7:
             points.append(
-                f"Altitude shows <strong>persistence</strong> (Hurst ≈ {float(h):.2f}): "
+                f"Altitude shows <strong>persistence</strong> (DFA α ≈ {float(h):.2f}): "
                 "the series tends to keep the same direction (slow drift / low thrust)."
             )
         elif h is not None and float(h) <= 0.4:
             points.append(
-                f"Altitude <strong>mean-reverts</strong> (Hurst ≈ {float(h):.2f}): "
+                f"Altitude <strong>mean-reverts</strong> (DFA α ≈ {float(h):.2f}): "
                 "more station-keeping than continuous drift."
             )
     except (TypeError, ValueError):

@@ -28,6 +28,18 @@ Copy-IfExists "walkforward_summary.json"
 Copy-IfExists "feature_ablation_latest.json"
 Copy-IfExists "paper_validation_latest.json"
 
+# Walk-forward per-event curves (event replay UI, patent 265 temporal tiles)
+$WfSrc = Join-Path $Src "walkforward"
+$WfDst = Join-Path $Dst "walkforward"
+if (Test-Path -LiteralPath $WfSrc) {
+  New-Item -ItemType Directory -Force -Path $WfDst | Out-Null
+  Get-ChildItem -LiteralPath $WfSrc -Filter "wf_*.json" -File | Copy-Item -Destination $WfDst -Force
+  if (-not $Quiet) {
+    $n = (Get-ChildItem -LiteralPath $WfDst -File).Count
+    Write-Host "  + walkforward/ ($n event curves)"
+  }
+}
+
 $RDir = Join-Path $Src "reports"
 $RDst = Join-Path $Root "src\frontend\public\reports"
 if (Test-Path -LiteralPath $RDir) {

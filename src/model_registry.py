@@ -43,9 +43,16 @@ def register_model(
     """
     reg = load_registry()
     models = reg.setdefault("models", {})
+    # Store repo-relative paths (models/<file>) so metadata is portable across
+    # machines — the old registry carried Windows "D:\\Athena-SDA\\models\\..." paths.
+    try:
+        rel = Path(path).resolve().relative_to(MODELS_DIR.resolve())
+        path_str = str(rel)
+    except Exception:
+        path_str = str(path)
     entry: Dict[str, Any] = {
         "role": role,
-        "path": str(path),
+        "path": path_str,
         "feature_columns": list(feature_columns),
         "feature_schema_hash": feature_schema_hash(feature_columns),
         "registered_at": datetime.now(timezone.utc).isoformat(),

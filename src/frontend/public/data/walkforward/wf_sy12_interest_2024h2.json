@@ -1,0 +1,864 @@
+{
+  "event_id": "sy12_interest_2024h2",
+  "type": "rpo_interest",
+  "methodology": "Walk-forward expanding window: at each asof, Isolation Forest is fit only on feature windows with window_end < asof-holdout (past noise/regime). Target is scored at asof. Metrics test whether anomalous noise rises before public report anchors (t_peak), vs placebo baselines. Not a classified ground-truth claim.",
+  "t_start": "2024-06-01",
+  "t_peak": "2024-11-01",
+  "t_end": "2025-02-01",
+  "norad_ids": [
+    50321
+  ],
+  "pair_with": [],
+  "sources": [
+    "AMOS / open SSA: SY-12 GEO proximity literature",
+    "SWF Chinese RPO fact sheet (SY-12 family)"
+  ],
+  "notes": "Shiyan-12 01 — experimental platform; 2024H2 interest anchor.",
+  "params": {
+    "step_days": 14,
+    "holdout_days": 3,
+    "anomaly_threshold": 0.5,
+    "hit_window_days": 45,
+    "contamination": 0.08
+  },
+  "n_folds": 18,
+  "folds": [
+    {
+      "asof": "2024-06-01",
+      "cutoff": "2024-05-29",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.49083256628084393,
+          "window_end": "2024-05-31 20:39:57.815712",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_18846h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 18845.55125795194
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 1.9334975949679492,
+            "hurst_exponent_sma": 0.8920496612629348,
+            "kolmogorov_proxy_7d": 0.7894736842105263,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7647078969517456,
+            "adf_pvalue": 0.24392192782135214,
+            "delta_sma_7d_km": 0.3291921916897991,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 18845.55125795194
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 4e-05,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.4429096548263798
+        }
+      }
+    },
+    {
+      "asof": "2024-06-15",
+      "cutoff": "2024-06-12",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.4899615065573545,
+          "window_end": "2024-06-14 21:20:42.754272",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_18509h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 18508.872108351945
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.404793302461803,
+            "hurst_exponent_sma": 0.9356252845512639,
+            "kolmogorov_proxy_7d": 1.0,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.6867557735460228,
+            "adf_pvalue": 0.9758476889243448,
+            "delta_sma_7d_km": 0.40244622784666717,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 18508.872108351945
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.425782,
+            "pair_risk": 0.2547,
+            "risk_level": "LOW",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.3605676779508096
+        }
+      }
+    },
+    {
+      "asof": "2024-06-29",
+      "cutoff": "2024-06-26",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.4812890679839663,
+          "window_end": "2024-06-28 21:59:41.954784",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_18172h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 18172.222330431945
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.18680859456305,
+            "hurst_exponent_sma": 0.9195176610769625,
+            "kolmogorov_proxy_7d": 1.0,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7626255135243816,
+            "adf_pvalue": 0.47529758382679305,
+            "delta_sma_7d_km": 0.31361743203160586,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 18172.222330431945
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.437867,
+            "pair_risk": 0.2505,
+            "risk_level": "LOW",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.35435508059278487
+        }
+      }
+    },
+    {
+      "asof": "2024-07-13",
+      "cutoff": "2024-07-10",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.4837683301367717,
+          "window_end": "2024-07-12 22:22:09.099264",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_17836h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 17835.848123631946
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.5423289894137593,
+            "hurst_exponent_sma": 0.9066604416314349,
+            "kolmogorov_proxy_7d": 0.9473684210526315,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.6888845114774172,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.32845834047475364,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 17835.848123631946
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.40428,
+            "pair_risk": 0.2622,
+            "risk_level": "LOW",
+            "asset_norad": 28874,
+            "asset_name": "GPS BIIRM-1 (PRN 17)"
+          },
+          "attention_score": 0.3619057485615472
+        }
+      }
+    },
+    {
+      "asof": "2024-07-27",
+      "cutoff": "2024-07-24",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.4777349698205484,
+          "window_end": "2024-07-26 18:33:29.537856",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_17504h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 17503.659112911944
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.8258459340407502,
+            "hurst_exponent_sma": 0.8922502715587873,
+            "kolmogorov_proxy_7d": 1.0,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.6617034547579059,
+            "adf_pvalue": 0.8750168278960055,
+            "delta_sma_7d_km": 0.14230009366292506,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 17503.659112911944
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.318929,
+            "pair_risk": 0.2921,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3756357364192468
+        }
+      }
+    },
+    {
+      "asof": "2024-08-10",
+      "cutoff": "2024-08-07",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.4946363490199377,
+          "window_end": "2024-08-09 18:44:30.320736",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_17167h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 17167.475562111944
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.80004461847901,
+            "hurst_exponent_sma": 0.88160947157812,
+            "kolmogorov_proxy_7d": 0.631578947368421,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.2485227004512386,
+            "adf_pvalue": 0.983257449418822,
+            "delta_sma_7d_km": 0.03187149863515515,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 17167.475562111944
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.428864,
+            "pair_risk": 0.2536,
+            "risk_level": "LOW",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.362066357058972
+        }
+      }
+    },
+    {
+      "asof": "2024-08-24",
+      "cutoff": "2024-08-21",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.48007455010075306,
+          "window_end": "2024-08-23 15:10:32.048832",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_16835h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 16835.041748751944
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.792586226369732,
+            "hurst_exponent_sma": 0.9142561890488676,
+            "kolmogorov_proxy_7d": 1.0,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.28177919815973873,
+            "delta_sma_7d_km": -0.04221681444323622,
+            "maneuver_count_30d": 2.0,
+            "tle_age_hours": 16835.041748751944
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.325719,
+            "pair_risk": 0.2897,
+            "risk_level": "LOW",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.3753685475453389
+        }
+      }
+    },
+    {
+      "asof": "2024-09-07",
+      "cutoff": "2024-09-04",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.4752660563593103,
+          "window_end": "2024-09-06 15:22:55.011072",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_16499h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 16498.835370351946
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.0182155146751497,
+            "hurst_exponent_sma": 0.8987465213288491,
+            "kolmogorov_proxy_7d": 0.8421052631578947,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.744934516948123,
+            "delta_sma_7d_km": -0.12384860187012237,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 16498.835370351946
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.187836,
+            "pair_risk": 0.338,
+            "risk_level": "LOW",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.39976972536168964
+        }
+      }
+    },
+    {
+      "asof": "2024-09-21",
+      "cutoff": "2024-09-18",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.47151898087166877,
+          "window_end": "2024-09-20 20:14:11.349024",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_16158h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 16157.980832031944
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.5423289894137597,
+            "hurst_exponent_sma": 0.8986268966273272,
+            "kolmogorov_proxy_7d": 0.8421052631578947,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.946518869911961,
+            "delta_sma_7d_km": -0.1267669680819381,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 16157.980832031944
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.652481,
+            "pair_risk": 0.1753,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.30859854139225096
+        }
+      }
+    },
+    {
+      "asof": "2024-10-05",
+      "cutoff": "2024-10-02",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.462208474919655,
+          "window_end": "2024-10-04 21:53:42.571392",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_15820h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 15820.322159151943
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.7100706213976054,
+            "hurst_exponent_sma": 0.9143748492276949,
+            "kolmogorov_proxy_7d": 0.7368421052631579,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.0,
+            "adf_pvalue": 0.6708640838329609,
+            "delta_sma_7d_km": 0.005059236216766294,
+            "maneuver_count_30d": 3.0,
+            "tle_age_hours": 15820.322159151943
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.578971,
+            "pair_risk": 0.2011,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3185988137138448
+        }
+      }
+    },
+    {
+      "asof": "2024-10-19",
+      "cutoff": "2024-10-16",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.4739100608229718,
+          "window_end": "2024-10-18 22:06:54.977760",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_15484h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 15484.102046271946
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.439268146254097,
+            "hurst_exponent_sma": 0.9342421779947189,
+            "kolmogorov_proxy_7d": 0.8947368421052632,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.766493528036977,
+            "adf_pvalue": 0.9694949637354511,
+            "delta_sma_7d_km": 0.0455347761453595,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 15484.102046271946
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.487345,
+            "pair_risk": 0.2331,
+            "risk_level": "LOW",
+            "asset_norad": 31598,
+            "asset_name": "COSMO-SKYMED 1"
+          },
+          "attention_score": 0.34146452737033733
+        }
+      }
+    },
+    {
+      "asof": "2024-11-02",
+      "cutoff": "2024-10-30",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.483065494907586,
+          "window_end": "2024-11-01 22:40:44.856768",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_15148h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 15147.538190991945
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.5048003829823355,
+            "hurst_exponent_sma": 0.9208811108626992,
+            "kolmogorov_proxy_7d": 0.9473684210526315,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7512350537337193,
+            "adf_pvalue": 0.9803404469285772,
+            "delta_sma_7d_km": 0.1813009492252604,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 15147.538190991945
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.0993,
+            "pair_risk": 0.369,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.4203294727084137
+        }
+      }
+    },
+    {
+      "asof": "2024-11-16",
+      "cutoff": "2024-11-13",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.4942924092023967,
+          "window_end": "2024-11-15 21:53:43.520928",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_14812h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 14812.321895391946
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.462867147080763,
+            "hurst_exponent_sma": 0.909966959553911,
+            "kolmogorov_proxy_7d": 1.0,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7378879425586402,
+            "adf_pvalue": 0.05840268478874682,
+            "delta_sma_7d_km": 0.31990861765370937,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 14812.321895391946
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.816464,
+            "pair_risk": 0.1179,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.28727658414107854
+        }
+      }
+    },
+    {
+      "asof": "2024-11-30",
+      "cutoff": "2024-11-27",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.48032198306878526,
+          "window_end": "2024-11-29 19:51:07.822368",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_14478h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 14478.365144991945
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.4842551447947994,
+            "hurst_exponent_sma": 0.9003599387525781,
+            "kolmogorov_proxy_7d": 1.0,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.6486888777614926,
+            "adf_pvalue": 0.6249136544785594,
+            "delta_sma_7d_km": 0.3055988085689023,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 14478.365144991945
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.667199,
+            "pair_risk": 0.1702,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3097548923809534
+        }
+      }
+    },
+    {
+      "asof": "2024-12-14",
+      "cutoff": "2024-12-11",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.47773668002682856,
+          "window_end": "2024-12-13 17:36:32.214816",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_14145h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 14144.608369311945
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.6947814605842733,
+            "hurst_exponent_sma": 0.9263785547452045,
+            "kolmogorov_proxy_7d": 0.8947368421052632,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.6631025488521519,
+            "adf_pvalue": 0.9168936426263793,
+            "delta_sma_7d_km": 0.290176997987146,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 14144.608369311945
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.001776,
+            "pair_risk": 0.4037,
+            "risk_level": "WATCH",
+            "asset_norad": 25544,
+            "asset_name": "ISS (ZARYA)"
+          },
+          "attention_score": 0.43701650601207287
+        }
+      }
+    },
+    {
+      "asof": "2024-12-28",
+      "cutoff": "2024-12-25",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.4604347539813878,
+          "window_end": "2024-12-27 22:50:31.358112",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_13803h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 13803.375273951944
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.3598063039211006,
+            "hurst_exponent_sma": 0.9039051531633724,
+            "kolmogorov_proxy_7d": 0.8947368421052632,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.755178046794584,
+            "adf_pvalue": 0.8965359590631262,
+            "delta_sma_7d_km": 0.2767124067468103,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 13803.375273951944
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.122758,
+            "pair_risk": 0.3607,
+            "risk_level": "WATCH",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.4055806392916246
+        }
+      }
+    },
+    {
+      "asof": "2025-01-11",
+      "cutoff": "2025-01-08",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.47253691015210797,
+          "window_end": "2025-01-10 21:19:12.436032",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_13469h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 13468.897196751945
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.815333779292342,
+            "hurst_exponent_sma": 0.927365938562843,
+            "kolmogorov_proxy_7d": 0.8947368421052632,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7258603917255373,
+            "adf_pvalue": 0.6067718182759797,
+            "delta_sma_7d_km": 0.2219052377913613,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 13468.897196751945
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.236099,
+            "pair_risk": 0.3211,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.3892466095684486
+        }
+      }
+    },
+    {
+      "asof": "2025-01-25",
+      "cutoff": "2025-01-22",
+      "n_train_ok": true,
+      "targets": {
+        "50321": {
+          "ok": true,
+          "anomaly_score": 0.4732451337273569,
+          "window_end": "2025-01-24 20:57:02.092032",
+          "data_quality": {
+            "score": 0.65,
+            "issues": [
+              "tle_stale_13133h"
+            ],
+            "reliable": true,
+            "tle_age_hours": 13133.266736751944
+          },
+          "features": {
+            "shannon_entropy_sma_30d": 2.140606459901073,
+            "hurst_exponent_sma": 0.9185110694833295,
+            "kolmogorov_proxy_7d": 1.0,
+            "l1_cusum_sma": 0.0,
+            "mandelbrot_tail_score": 0.7413068796273208,
+            "adf_pvalue": 1.0,
+            "delta_sma_7d_km": 0.2686136169140809,
+            "maneuver_count_30d": 0.0,
+            "tle_age_hours": 13133.266736751944
+          },
+          "norad_id": 50321,
+          "object_name": "SHIYAN-12 01 (SY-12 01)",
+          "is_hit": false,
+          "pair": {
+            "ok": true,
+            "min_distance_km": 2000.0,
+            "cointegration_pvalue": 0.406341,
+            "pair_risk": 0.2615,
+            "risk_level": "LOW",
+            "asset_norad": 35951,
+            "asset_name": "DMSP 5D-3 F18 (USA 210)"
+          },
+          "attention_score": 0.35678531017731063
+        }
+      }
+    }
+  ],
+  "metrics": {
+    "50321": {
+      "norad_id": 50321,
+      "object_name": "SHIYAN-12 01 (SY-12 01)",
+      "n_folds_scored": 18,
+      "anomaly_score_mean": 0.47904634877445723,
+      "anomaly_score_max": 0.4946363490199377,
+      "anomaly_score_at_nearest_peak": 0.483065494907586,
+      "hit_at_event": false,
+      "soft_hit_at_event": true,
+      "n_hits_in_window": 0,
+      "lead_time_days": null,
+      "feature_early_vs_late": {
+        "shannon_entropy_sma_30d": {
+          "early_mean": 2.175033163997601,
+          "late_mean": 2.5638892523551537
+        },
+        "hurst_exponent_sma": {
+          "early_mean": 0.9157308689637205,
+          "late_mean": 0.9157479746165803
+        },
+        "l1_cusum_sma": {
+          "early_mean": 0.0,
+          "late_mean": 0.0
+        },
+        "kolmogorov_proxy_7d": {
+          "early_mean": 0.9298245614035089,
+          "late_mean": 0.8245614035087719
+        }
+      },
+      "pair_risk_max": 0.4037,
+      "pre_peak_noise": {
+        "description": "Scores computed ONLY with models trained on data strictly before each fold (no peeking past asof). Compares early vs late noise before public t_peak.",
+        "n_pre_peak_folds": 11,
+        "pre_peak_anomaly_mean": 0.4801091738976165,
+        "pre_peak_anomaly_max": 0.4946363490199377,
+        "early_pre_peak_mean": 0.48736104694072163,
+        "late_pre_peak_mean": 0.4692125055380985,
+        "noise_ramp": -0.01814854140262312,
+        "pre_peak_pair_risk_max": 0.4037,
+        "elevated_noise_before_peak": true
+      },
+      "is_placebo": false
+    }
+  }
+}

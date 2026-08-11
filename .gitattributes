@@ -1,0 +1,26 @@
+# Athena-SDA — line-ending policy
+# Repo was authored on Windows (CRLF) and is developed on Linux (LF).
+# Normalize everything to LF on checkout; never let CRLF noise enter diffs.
+
+* text=auto eol=lf
+
+# Binary artifacts — never renormalized, never diffed as text
+*.joblib binary
+*.parquet binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.zip binary
+*.gz binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.ico binary
+*.gltf binary
+*.glb binary
+*.h5 binary
+*.pkl binary
+*.lock binary

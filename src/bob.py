@@ -220,15 +220,16 @@ def generate_bob_briefing(
     ambiguity = float(fuzzy_result.get("ambiguity", 1 - confidence))
 
     shannon = features.get("shannon_entropy_sma_30d", 0.0)
-    kolmogorov = features.get("kolmogorov_proxy_7d", 0.0)
-    hurst = features.get("hurst_exponent_sma", 0.5)
+    lz76 = features.get("lz76_complexity", 0.0)
+    perm_entropy = features.get("permutation_entropy", 0.0)
+    dfa = features.get("dfa_hurst_sma", 0.5)
     adf = features.get("adf_pvalue", 0.0)
-    l1_cusum = features.get("l1_cusum_sma", 0.0)
+    cusum = features.get("page_cusum_sma", 0.0)
     delta_sma = features.get("delta_sma_7d_km", 0.0)
     tle_age = features.get("tle_age_hours", 12.0)
     coint = features.get("cointegration_pvalue", 1.0)
-    ricci = features.get("ricci_mean", 0.0)
-    rkhs = features.get("spectral_anomaly_rkhs", 0.0)
+    bocpd = features.get("bocpd_change_prob_3d", 0.0)
+    mmd = features.get("mmd_typicality", 0.5)
     cases = tool_get_case_study_citations(int(norad_id))
 
     xgb_line = ""
@@ -265,14 +266,14 @@ METADATA:
 QUANTITATIVE (immutable):
 - Distance to protected military asset: {min_dist_mil:.2f} km
 - ΔSMA 7d: {delta_sma:.4f} km | TLE age: {tle_age:.1f}h
-- Shannon: {shannon:.2f} | Kolmogorov: {kolmogorov:.2f} | Hurst: {hurst:.2f}
-- ADF p: {adf:.4f} | CUSUM L1: {l1_cusum:.2f} | Cointegration p: {coint:.4f}
-- Ricci: {ricci:.3f} | RKHS anomaly: {rkhs:.3f}
+- Shannon: {shannon:.2f} | LZ76: {lz76:.2f} | Perm-Entropy: {perm_entropy:.2f}
+- DFA: {dfa:.2f} | ADF p: {adf:.4f} | Page CUSUM: {cusum:.2f} | Cointegration p: {coint:.4f}
+- BOCPD change-prob: {bocpd:.2f} | MMD typicality: {mmd:.2f}
 {xgb_line}- Fuzzy: {classification} | threat={threat_level:.2f} | conf={confidence*100:.1f}%
 {case_block}
 INSTRUCTIONS:
 1. Header with classification and confidence (use given numbers only).
-2. Justify with physics/math (Hurst, Kolmogorov, CUSUM, cointegration).
+2. Justify with physics/math (DFA, LZ76, CUSUM, cointegration, BOCPD).
 3. If case studies listed, cite as "pattern compatible with {{source}}" without claiming confirmed espionage.
 4. Assess RPO / conjunction box (~10 km).
 5. List 3 prioritized tactical actions.
@@ -291,15 +292,15 @@ BRIEFING:"""
 
     return _local_briefing(
         sat_metadata, norad_id, classification, threat_level, confidence, ambiguity,
-        hurst, kolmogorov, adf, l1_cusum, delta_sma, tle_age, min_dist_mil, coint,
-        ricci, rkhs, ml_context, cases=cases,
+        dfa, lz76, perm_entropy, adf, cusum, delta_sma, tle_age, min_dist_mil, coint,
+        bocpd, mmd, ml_context, cases=cases,
     )
 
 
 def _local_briefing(
     sat_metadata, norad_id, classification, threat_level, confidence, ambiguity,
-    hurst, kolmogorov, adf, l1_cusum, delta_sma, tle_age, min_dist_mil, coint,
-    ricci, rkhs, ml_context, cases: Optional[List[Dict[str, Any]]] = None,
+    dfa, lz76, perm_entropy, adf, cusum, delta_sma, tle_age, min_dist_mil, coint,
+    bocpd, mmd, ml_context, cases: Optional[List[Dict[str, Any]]] = None,
 ) -> str:
     xgb_bit = ""
     if ml_context:
@@ -335,11 +336,11 @@ OBJECT: {sat_metadata.get('name')} (#{norad_id}) | ORIGIN: {sat_metadata.get('co
 CLASSIFICATION: **{classification}** (risk {threat_level:.2f}) | CONFIDENCE: {confidence*100:.1f}% | AMBIGUITY: {ambiguity*100:.1f}%
 
 QUANTITATIVE ANALYSIS (immutable scores from ML pipeline):
-{xgb_bit}- **Hurst H={hurst:.2f}:** {"active propulsion persistence (low thrust)" if hurst > 0.55 else "near-noise / mean-reverting behavior"}.
-- **Kolmogorov K={kolmogorov:.2f}:** {"high-complexity trajectory (active control)" if kolmogorov > 0.5 else "compressible / Keplerian dynamics"}.
-- **ADF p={adf:.4f} | CUSUM L1={l1_cusum:.2f}:** structural break {"detected" if (adf > 0.05 or l1_cusum > 0.5) else "not dominant"}.
+{xgb_bit}- **DFA H={dfa:.2f}:** {"active propulsion persistence (low thrust)" if dfa > 0.55 else "near-noise / mean-reverting behavior"}.
+- **LZ76 complexity={lz76:.2f} | Perm-Entropy={perm_entropy:.2f}:** {"high-complexity trajectory (active control)" if lz76 > 0.9 or perm_entropy > 0.8 else "compressible / Keplerian dynamics"}.
+- **ADF p={adf:.4f} | Page CUSUM={cusum:.2f}:** structural break {"detected" if (adf > 0.05 or cusum > 0.5) else "not dominant"}.
 - **ΔSMA 7d = {delta_sma:.4f} km** | TLE age **{tle_age:.1f} h**
-- **Military proximity: {min_dist_mil:.2f} km** | Ricci≈{ricci:.2f} | RKHS≈{rkhs:.2f}
+- **Military proximity: {min_dist_mil:.2f} km** | BOCPD change-prob≈{bocpd:.2f} | MMD typicality≈{mmd:.2f}
 {shadow}{case_bit}
 """
 
