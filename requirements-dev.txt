@@ -1,0 +1,4 @@
+# Development / CI dependencies for Athena-SDA (run pytest, lint, type-check)
+-r requirements.txt
+pytest>=8.0,<9
+jsonschema>=4.20,<5

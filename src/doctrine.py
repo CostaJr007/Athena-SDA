@@ -57,7 +57,7 @@ def ids_for_if_training(
     so station-keeping mega-constellations do not define "normal" for SDA suspects.
     """
     try:
-        from src.catalog import asset_ids, baseline_ids, all_norad_ids, get_meta
+        from src.catalog import asset_ids, baseline_ids, get_meta
 
         train_set = set(baseline_ids()) | set(asset_ids())
         if exclude_commercial_constellations:
@@ -69,20 +69,13 @@ def ids_for_if_training(
                 if purpose == "commercial" or "STARLINK" in name:
                     continue
                 cleaned.add(int(nid))
-            if len(cleaned) >= min_ids:
-                train_set = cleaned
+            train_set = cleaned
         if available is not None:
             avail = set(int(x) for x in available)
             train_set &= avail
         ids = sorted(train_set)
-        if len(ids) >= min_ids:
-            return ids
-        if available is not None:
-            return sorted(set(int(x) for x in available))
-        return sorted(all_norad_ids())
+        return ids
     except Exception:
-        if available is not None:
-            return sorted(set(int(x) for x in available))
         return []
 
 

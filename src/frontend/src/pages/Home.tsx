@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as satellite from 'satellite.js'
 import { GlobeEngine } from '@/lib/globe-engine'
 import { rdpIndices } from '@/lib/rdp'
@@ -29,13 +29,30 @@ import CatalogPanel from '@/components/hud/CatalogPanel'
 import type { CatalogFocus } from '@/components/hud/CatalogPanel'
 import CrossRoutePanel from '@/components/hud/CrossRoutePanel'
 import type { CompareSlot } from '@/components/hud/CrossRoutePanel'
-import WalkforwardPocPanel from '@/components/hud/WalkforwardPocPanel'
+import type { PaletteAction } from '@/components/hud/CommandPalette'
+import { usePaperValidation } from '@/hooks/usePaperValidation'
+import { useWalkforwardIndex } from '@/hooks/useWalkforwardIndex'
+import { useInvestigation } from '@/hooks/useInvestigation'
+import { useOperatorHotkeys } from '@/hooks/useOperatorHotkeys'
+
+const InvestigationCanvas = lazy(() => import('@/components/hud/InvestigationCanvas'))
+const CommandPalette = lazy(() => import('@/components/hud/CommandPalette'))
 import {
   analyzeOrbitCross,
   sampleOrbitRing,
   EARTH_R_KM,
   type CrossAnalysis,
 } from '@/lib/orbit-crossing'
+
+const POC_HTML = `${import.meta.env.BASE_URL}reports/walkforward_poc.html`
+
+const POC_HASH: Record<string, string> = {
+  luch1_intelsat_mid2015: '#case-luch-mid2015',
+  luch1_intelsat_2015: '#case-luch-2015',
+  luch1_athena_fidus_2018: '#case-athena-fidus',
+  sy12_geo_rpo_2021_22: '#case-sy12',
+  luch2_trailing_2023: '#case-luch2',
+}
 
 const EARTH_R = 6371
 const EMPTY_SATS: SatInfo[] = []
@@ -60,6 +77,7 @@ function setUrlSat(norad: number | null) {
   const url = new URL(window.location.href)
   if (norad === null) url.searchParams.delete('sat')
   else url.searchParams.set('sat', String(norad))
+  url.searchParams.delete('view')
   window.history.replaceState(null, '', url)
 }
 
@@ -89,11 +107,15 @@ export default function Home() {
   const [follow, setFollow] = useState(false)
   const [fps, setFps] = useState(0)
   const [leftOpen, setLeftOpen] = useState(true)
-  const [rightOpen, setRightOpen] = useState(true)
+  const [rightOpen, setRightOpen] = useState(false)
   const [catalogOpen, setCatalogOpen] = useState(false)
   const [catalogFocus, setCatalogFocus] = useState<CatalogFocus>('all')
   const [boardFilters, setBoardFilters] = useState<BoardFilters>(EMPTY_FILTERS)
-  const [pocOpen, setPocOpen] = useState(false)
+  const [graphOpen, setGraphOpen] = useState(false)
+  const [paletteOpen, setPaletteOpen] = useState(false)
+  const paperClaims = usePaperValidation()
+  const wfCases = useWalkforwardIndex()
+  const investigation = useInvestigation()
 
   // Dual-route compare
   const [compareOn, setCompareOn] = useState(false)
@@ -351,6 +373,13 @@ export default function Home() {
         const idx = map.get(parseInt(p, 10))
         if (idx !== undefined) selectSat(idx)
       }
+      // Never auto-open investigation / PoC on boot — even if a leftover
+      // ?view=graph is in the address bar.
+      if (params.has('view')) {
+        const clean = new URL(window.location.href)
+        clean.searchParams.delete('view')
+        window.history.replaceState(null, '', clean)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataset])
@@ -472,25 +501,39 @@ export default function Home() {
     engineRef.current?.setFollow(follow)
   }, [follow])
 
-  // Escape: close PoC first, else clear selection
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        if (pocOpen) {
-          setPocOpen(false)
-          return
-        }
-        selectSat(null)
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [selectSat, pocOpen])
+  const openPoc = useCallback((eventId?: string) => {
+    const hash = eventId ? (POC_HASH[eventId] ?? '#cases') : ''
+    window.open(`${POC_HTML}${hash}`, '_blank', 'noopener,noreferrer')
+  }, [])
 
-  const openPoc = useCallback(() => {
-    setPocOpen(true)
+  const openGraph = useCallback(() => {
+    setGraphOpen(true)
     setCatalogOpen(false)
   }, [])
+
+  const investigateNorad = useCallback(
+    (norad: number) => {
+      const idx = noradMapRef.current.get(norad)
+      if (idx !== undefined) selectSat(idx)
+      else setUrlSat(norad)
+      setRightOpen(true)
+      openGraph()
+    },
+    [selectSat, openGraph],
+  )
+
+  useOperatorHotkeys({
+    selectSat,
+    graphOpen,
+    setGraphOpen,
+    catalogOpen,
+    setCatalogOpen,
+    paletteOpen,
+    setPaletteOpen,
+    setLeftOpen,
+    setRightOpen,
+    openPoc,
+  })
 
   const toggleGroup = (i: number) => {
     setGroupVisible((prev) => {
@@ -716,6 +759,90 @@ export default function Home() {
   const selBoard =
     selectedNorad !== null ? (boardMap.get(selectedNorad) ?? null) : null
 
+  const paletteActions = useMemo<PaletteAction[]>(
+    () => [
+      {
+        id: 'act-graph',
+        group: 'action',
+        label: 'Investigate selected (object graph)',
+        hint: 'G · ontology links + quant fingerprint',
+        run: () => {
+          if (selectedNorad != null) investigateNorad(selectedNorad)
+          else openGraph()
+        },
+      },
+      {
+        id: 'act-poc',
+        group: 'action',
+        label: 'Open walk-forward proof (Claims A+B)',
+        hint: 'P · new tab · GEO 5/5 vs EO 0/7',
+        run: () => openPoc(),
+      },
+      {
+        id: 'act-compare',
+        group: 'action',
+        label: compareOn ? 'Close conjunction lab' : 'Open conjunction lab',
+        hint: 'two-orbit TCA',
+        run: () => toggleCompare(!compareOn),
+      },
+      {
+        id: 'act-catalog-wl',
+        group: 'action',
+        label: 'Globe focus · watchlist',
+        run: () => {
+          setCatalogFocus('watchlist')
+          setCatalogOpen(true)
+        },
+      },
+      {
+        id: 'act-catalog-mil',
+        group: 'action',
+        label: 'Globe focus · military',
+        run: () => {
+          setCatalogFocus('military')
+          setCatalogOpen(true)
+        },
+      },
+      {
+        id: 'flt-suspect',
+        group: 'filter',
+        label: 'Filter · role suspect',
+        run: () => setBoardFilters((f) => ({ ...f, roles: ['suspect'] })),
+      },
+      {
+        id: 'flt-asset',
+        group: 'filter',
+        label: 'Filter · role asset',
+        run: () => setBoardFilters((f) => ({ ...f, roles: ['asset'] })),
+      },
+      {
+        id: 'flt-cn',
+        group: 'filter',
+        label: 'Filter · country CN',
+        run: () => setBoardFilters((f) => ({ ...f, countries: ['CN'] })),
+      },
+      {
+        id: 'flt-ru',
+        group: 'filter',
+        label: 'Filter · country RU',
+        run: () => setBoardFilters((f) => ({ ...f, countries: ['RU'] })),
+      },
+      {
+        id: 'flt-geo',
+        group: 'filter',
+        label: 'Filter · orbit GEO',
+        run: () => setBoardFilters((f) => ({ ...f, orbits: ['GEO'] })),
+      },
+      {
+        id: 'flt-clear',
+        group: 'filter',
+        label: 'Clear all cross-filters',
+        run: () => setBoardFilters(EMPTY_FILTERS),
+      },
+    ],
+    [selectedNorad, investigateNorad, openPoc, openGraph, compareOn, toggleCompare],
+  )
+
   // Auto-open right dock when a sat is selected
   useEffect(() => {
     if (selSat) {
@@ -781,85 +908,22 @@ export default function Home() {
         </div>
       )}
 
-      {/* ── Command strip ── */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-3 p-2.5 md:p-3">
-        <div className="pointer-events-auto flex flex-wrap items-start gap-2">
-          <IdentityBlock
-            total={dataset?.total ?? 0}
-            mlDay={riskReport?.day ?? null}
-            watchlistN={riskReport?.summary.n_scored ?? null}
-          />
-          {/* Provenance badge (DST-style): which TLE snapshot / report day */}
-          {(dataset || riskReport) && (
-            <div className="pointer-events-auto flex flex-col gap-1">
-              {dataset?.epochMs ? (
-                <div className="border border-white/10 bg-black/50 px-2 py-1 text-[11px] uppercase tracking-wider text-zinc-400">
-                  Data: CelesTrak TLE · {formatUtc(dataset.epochMs)}
-                </div>
-              ) : null}
-              {riskReport ? (
-                <div className="border border-emerald-400/20 bg-black/50 px-2 py-1 text-[11px] uppercase tracking-wider text-emerald-300/80">
-                  risk_report {riskReport.day}
-                  {riskReport.generated_at ? ` · ${riskReport.generated_at.slice(11, 16)}Z` : ''}
-                </div>
-              ) : null}
-            </div>
-          )}
-          <div className="flex flex-col gap-1.5 pt-0.5">
-            <button
-              type="button"
-              onClick={() => setLeftOpen((v) => !v)}
-              className="athena-btn hidden px-2.5 py-1.5 text-[13px] md:inline-flex"
-              title="Toggle mission board"
-            >
-              {leftOpen ? '⟨ Board' : 'Board ⟩'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setCatalogOpen((v) => !v)}
-              className={`px-2.5 py-1.5 text-[13px] ${
-                catalogOpen || catalogFocus !== 'all'
-                  ? 'athena-btn athena-btn-active'
-                  : 'athena-btn'
-              }`}
-              title="Catalog layers and watchlist / military focus"
-            >
-              Catalog{catalogFocus !== 'all' ? ' ·' : ''}
-              {catalogFocus === 'watchlist'
-                ? ' WL'
-                : catalogFocus === 'military'
-                  ? ' MIL'
-                  : ''}
-            </button>
-            <button
-              type="button"
-              onClick={() => toggleCompare(!compareOn)}
-              className={`px-2.5 py-1.5 text-[13px] ${
-                compareOn ? 'athena-btn athena-btn-warn' : 'athena-btn'
-              }`}
-              title="Conjunction lab — two-orbit compare"
-            >
-              Conj {compareOn ? 'ON' : ''}
-            </button>
-            <button
-              type="button"
-              onClick={() => (pocOpen ? setPocOpen(false) : openPoc())}
-              className={`px-2.5 py-1.5 text-[13px] ${
-                pocOpen ? 'athena-btn athena-btn-active' : 'athena-btn'
-              }`}
-              title="Walk-forward ML proof of concept (judges)"
-            >
-              PoC {pocOpen ? 'ON' : ''}
-            </button>
+      {/* ── Command strip (two rows: identity / tools — never stacked over docks) ── */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
+        <div className="flex items-start justify-between gap-2 p-2.5 pb-1.5 md:p-3 md:pb-1.5">
+          <div className="pointer-events-auto flex min-w-0 flex-wrap items-start gap-2">
+            <IdentityBlock
+              total={dataset?.total ?? 0}
+              mlDay={riskReport?.day ?? null}
+              watchlistN={riskReport?.summary.n_scored ?? null}
+              claims={paperClaims}
+              onOpenProof={() => openPoc()}
+            />
           </div>
-        </div>
-
-        <div className="pointer-events-auto">
-          <ClockCard clock={clock} />
-        </div>
-
-        <div className="pointer-events-auto flex w-[min(340px,46vw)] flex-col items-end gap-2">
-          <div className="flex w-full items-center gap-2">
+          <div className="pointer-events-auto hidden shrink-0 md:block">
+            <ClockCard clock={clock} />
+          </div>
+          <div className="pointer-events-auto hidden w-[min(320px,42vw)] items-center gap-2 md:flex">
             <div className="min-w-0 flex-1">
               <SearchBox sats={sats} onSelect={selectSat} />
             </div>
@@ -872,6 +936,72 @@ export default function Home() {
               {rightOpen ? 'Intel ⟩' : '⟨ Intel'}
             </button>
           </div>
+        </div>
+        <div className="pointer-events-auto hidden flex-wrap items-center gap-1.5 border-t border-white/5 bg-black/55 px-2.5 py-1.5 md:flex md:px-3">
+          <button
+            type="button"
+            onClick={() => setLeftOpen((v) => !v)}
+            className="athena-btn hidden px-2.5 py-1.5 text-[13px] md:inline-flex"
+            title="Toggle mission board"
+          >
+            {leftOpen ? '⟨ Board' : 'Board ⟩'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setCatalogOpen((v) => !v)}
+            className={`px-2.5 py-1.5 text-[13px] ${
+              catalogOpen || catalogFocus !== 'all'
+                ? 'athena-btn athena-btn-active'
+                : 'athena-btn'
+            }`}
+            title="Catalog layers and watchlist / military focus"
+          >
+            Catalog{catalogFocus !== 'all' ? ' ·' : ''}
+            {catalogFocus === 'watchlist'
+              ? ' WL'
+              : catalogFocus === 'military'
+                ? ' MIL'
+                : ''}
+          </button>
+          <button
+            type="button"
+            onClick={() => toggleCompare(!compareOn)}
+            className={`px-2.5 py-1.5 text-[13px] ${
+              compareOn ? 'athena-btn athena-btn-warn' : 'athena-btn'
+            }`}
+            title="Conjunction lab — two-orbit compare"
+          >
+            Conj {compareOn ? 'ON' : ''}
+          </button>
+          <button
+            type="button"
+            onClick={() => (graphOpen ? setGraphOpen(false) : openGraph())}
+            className={`px-2.5 py-1.5 text-[13px] ${
+              graphOpen ? 'athena-btn athena-btn-active' : 'athena-btn'
+            }`}
+            title="Object-graph investigation (G)"
+          >
+            Graph {graphOpen ? 'ON' : ''}
+          </button>
+          <button
+            type="button"
+            onClick={() => openPoc()}
+            className="athena-btn px-2.5 py-1.5 text-[13px]"
+            title="Walk-forward proof — opens in a new tab (P)"
+          >
+            PoC ↗
+          </button>
+          {dataset?.epochMs ? (
+            <span className="border border-white/10 bg-black/50 px-2 py-1 text-[11px] uppercase tracking-wider text-zinc-500">
+              TLE {formatUtc(dataset.epochMs)}
+            </span>
+          ) : null}
+          {riskReport ? (
+            <span className="border border-emerald-400/20 bg-black/50 px-2 py-1 text-[11px] uppercase tracking-wider text-emerald-300/80">
+              report {riskReport.day}
+              {riskReport.generated_at ? ` · ${riskReport.generated_at.slice(11, 16)}Z` : ''}
+            </span>
+          ) : null}
         </div>
       </div>
 
@@ -902,17 +1032,33 @@ export default function Home() {
         </button>
         <button
           type="button"
-          onClick={() => (pocOpen ? setPocOpen(false) : openPoc())}
+          onClick={() => (graphOpen ? setGraphOpen(false) : openGraph())}
           className={`athena-btn px-3 py-2 text-[13px] ${
-            pocOpen ? 'athena-btn-active' : ''
+            graphOpen ? 'athena-btn-active' : ''
           }`}
         >
-          PoC
+          Graph
+        </button>
+        <button
+          type="button"
+          onClick={() => openPoc()}
+          className="athena-btn px-3 py-2 text-[13px]"
+        >
+          PoC ↗
         </button>
       </div>
 
-      {/* Walk-forward PoC — in-app panel (same console as globe) */}
-      <WalkforwardPocPanel open={pocOpen} onClose={() => setPocOpen(false)} />
+      <Suspense fallback={null}>
+        <CommandPalette
+          open={paletteOpen}
+          onClose={() => setPaletteOpen(false)}
+          board={riskReport?.board ?? []}
+          onSelectNorad={(norad) => {
+            investigateNorad(norad)
+          }}
+          actions={paletteActions}
+        />
+      </Suspense>
 
       {/* Floating catalog (layers + focus) — not buried under board scroll */}
       <div
@@ -943,7 +1089,7 @@ export default function Home() {
 
       {/* ── Left dock ── */}
       <div
-        className={`absolute bottom-[78px] left-3 top-[148px] z-20 w-[min(340px,calc(100vw-1.5rem))] transition-transform duration-300 ease-out md:left-4 md:top-[158px] md:w-[340px] ${
+        className={`absolute bottom-[78px] left-3 top-[132px] z-20 w-[min(340px,calc(100vw-1.5rem))] transition-transform duration-300 ease-out md:left-4 md:top-[212px] md:w-[340px] ${
           leftOpen
             ? 'translate-x-0'
             : 'pointer-events-none -translate-x-[110%]'
@@ -955,33 +1101,34 @@ export default function Home() {
           report={riskReport}
           reportStatus={riskStatus}
           reportError={riskError}
-          onOpenPoc={openPoc}
-          pocOpen={pocOpen}
           filters={boardFilters}
           onFiltersChange={setBoardFilters}
+          onInvestigate={investigateNorad}
           extra={
-            <CrossRoutePanel
-              enabled={compareOn}
-              onToggle={toggleCompare}
-              pickSlot={pickSlot}
-              onPickSlot={setPickSlot}
-              satA={satA}
-              satB={satB}
-              onClearSlot={clearCompareSlot}
-              onClearAll={clearCompareAll}
-              onUseSelectedAs={useSelectedAs}
-              hasPrimarySelection={selectedNorad !== null}
-              analysis={crossAnalysis}
-              nowMs={clock.getTime()}
-              computing={crossComputing}
-            />
+            compareOn ? (
+              <CrossRoutePanel
+                enabled={compareOn}
+                onToggle={toggleCompare}
+                pickSlot={pickSlot}
+                onPickSlot={setPickSlot}
+                satA={satA}
+                satB={satB}
+                onClearSlot={clearCompareSlot}
+                onClearAll={clearCompareAll}
+                onUseSelectedAs={useSelectedAs}
+                hasPrimarySelection={selectedNorad !== null}
+                analysis={crossAnalysis}
+                nowMs={clock.getTime()}
+                computing={crossComputing}
+              />
+            ) : null
           }
         />
       </div>
 
       {/* ── Right dock ── */}
       <div
-        className={`absolute bottom-[78px] right-3 top-[100px] z-20 w-[min(360px,calc(100vw-1.5rem))] transition-transform duration-300 ease-out md:right-4 md:top-[110px] md:w-[360px] ${
+        className={`absolute bottom-[78px] right-3 top-[132px] z-20 w-[min(360px,calc(100vw-1.5rem))] transition-transform duration-300 ease-out md:right-4 md:top-[212px] md:w-[360px] ${
           rightOpen
             ? 'translate-x-0'
             : 'pointer-events-none translate-x-[110%]'
@@ -1009,9 +1156,32 @@ export default function Home() {
         <TimeController clock={clock} />
       </div>
 
+      <div
+        className={`absolute z-[28] transition-opacity duration-200 ${
+          graphOpen
+            ? 'pointer-events-auto opacity-100'
+            : 'pointer-events-none opacity-0'
+        } bottom-[78px] left-3 right-3 top-[132px] md:top-[212px] ${
+          leftOpen ? 'md:left-[calc(1rem+340px+0.75rem)]' : 'md:left-4'
+        } ${rightOpen ? 'md:right-[calc(1rem+360px+0.75rem)]' : 'md:right-4'}`}
+      >
+        <Suspense fallback={null}>
+          <InvestigationCanvas
+            open={graphOpen}
+            onClose={() => setGraphOpen(false)}
+            entry={selBoard}
+            report={riskReport}
+            cases={wfCases}
+            onSelectNorad={selectByNorad}
+            onOpenCase={(eventId) => openPoc(eventId)}
+            investigation={investigation}
+          />
+        </Suspense>
+      </div>
+
       <div className="pointer-events-none absolute bottom-1 left-1/2 z-10 hidden -translate-x-1/2 text-[13px] tracking-wider text-zinc-500 md:block">
-        ATHENA-SDA · live TLE · SGP4 · risk_report
-        {riskReport ? ` · ${riskReport.day}` : ''} · conjunction lab
+        ATHENA-SDA · Ctrl+K · G investigate · / search
+        {riskReport ? ` · ${riskReport.day}` : ''}
       </div>
 
       {degraded && (

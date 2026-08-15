@@ -31,7 +31,7 @@ Decorative globe tracks are not the training objective.
 
 ```
 Data (TLE + GFZ)
-  → Quant features (Hurst, Shannon, CUSUM, Kolmogorov, space weather, …)
+  → Quant features (LZ76, DFA, Page CUSUM, Shannon, EWMA, BOCPD, space weather, …)
   → Isolation Forest (past-only; normality = baseline+asset)
   → Priority (XGB weak labels + fuzzy + pair_risk + Kelly)
   → Bob explains scores

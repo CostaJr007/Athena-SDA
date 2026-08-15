@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { UI_GROUPS } from '@/lib/satellites'
 
 export type CatalogFocus = 'all' | 'watchlist' | 'military'
@@ -100,6 +101,8 @@ export default function CatalogPanel({
         )}
       </div>
 
+      <WatchlistEditor />
+
       <div className="athena-scroll min-h-0 flex-1 overflow-y-auto px-2 py-2">
         <div className="mb-1.5 px-1 text-[11px] uppercase tracking-[0.16em] text-zinc-500">
           Layers
@@ -130,6 +133,130 @@ export default function CatalogPanel({
             </button>
           ))}
         </div>
+      </div>
+    </div>
+  )
+}
+
+interface WlObj {
+  norad_id: number
+  name: string
+  role: string
+}
+
+function WatchlistEditor() {
+  const [rows, setRows] = useState<WlObj[] | null>(null)
+  const [norad, setNorad] = useState('')
+  const [name, setName] = useState('')
+  const [role, setRole] = useState('suspect')
+  const [err, setErr] = useState<string | null>(null)
+
+  const refresh = async () => {
+    try {
+      const res = await fetch('/api/watchlist')
+      if (!res.ok) {
+        setRows(null)
+        return
+      }
+      const data = (await res.json()) as { objects?: WlObj[] }
+      setRows(data.objects ?? [])
+      setErr(null)
+    } catch {
+      setRows(null)
+    }
+  }
+
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      void refresh()
+    }, 0)
+    return () => window.clearTimeout(id)
+  }, [])
+
+  if (rows == null) {
+    return (
+      <p className="border-t border-white/10 px-3 py-2 text-[11px] text-zinc-600">
+        Watchlist edits need the sidecar (`python scripts/serve_granite_explain.py`).
+      </p>
+    )
+  }
+
+  const add = async () => {
+    const n = parseInt(norad, 10)
+    if (!Number.isFinite(n)) {
+      setErr('NORAD required')
+      return
+    }
+    try {
+      const res = await fetch('/api/watchlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ norad_id: n, name: name || `NORAD-${n}`, role }),
+      })
+      if (!res.ok) {
+        setErr('upsert failed')
+        return
+      }
+      setNorad('')
+      setName('')
+      await refresh()
+    } catch {
+      setErr('sidecar offline')
+    }
+  }
+
+  const remove = async (id: number) => {
+    await fetch(`/api/watchlist?norad=${id}`, { method: 'DELETE' })
+    await refresh()
+  }
+
+  return (
+    <div className="border-t border-white/10 px-3 py-2">
+      <div className="text-[11px] uppercase tracking-[0.16em] text-zinc-500">
+        Watchlist · persist
+      </div>
+      <div className="mt-1.5 flex flex-wrap gap-1">
+        <input
+          value={norad}
+          onChange={(e) => setNorad(e.target.value)}
+          placeholder="NORAD"
+          className="athena-input w-16 px-1 py-0.5 text-[11px]"
+        />
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="name"
+          className="athena-input min-w-0 flex-1 px-1 py-0.5 text-[11px]"
+        />
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="athena-input px-1 py-0.5 text-[11px]"
+        >
+          <option value="asset">asset</option>
+          <option value="suspect">suspect</option>
+          <option value="baseline">baseline</option>
+        </select>
+        <button type="button" className="athena-btn px-1.5 py-0.5 text-[11px]" onClick={() => void add()}>
+          Add
+        </button>
+      </div>
+      {err && <p className="mt-1 text-[11px] text-rose-300">{err}</p>}
+      <div className="athena-scroll mt-1 max-h-24 overflow-y-auto text-[11px] text-zinc-400">
+        {rows.slice(0, 12).map((r) => (
+          <div key={r.norad_id} className="flex items-center justify-between gap-1 py-0.5">
+            <span className="truncate">
+              #{r.norad_id} {r.name} · {r.role}
+            </span>
+            <button
+              type="button"
+              className="text-[10px] text-zinc-500 hover:text-rose-300"
+              onClick={() => void remove(r.norad_id)}
+            >
+              rm
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   )

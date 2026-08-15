@@ -161,7 +161,7 @@ def score_pair(
 
     last_s = hist_s.iloc[-1]
     last_a = hist_a.iloc[-1]
-    return {
+    rec = {
         "suspect_norad": int(suspect_id),
         "suspect_name": names.get(suspect_id) or meta_s.get("name") or str(suspect_id),
         "suspect_country": meta_s.get("country", "UNKNOWN"),
@@ -184,6 +184,15 @@ def score_pair(
         "suspect_window_end": str(last_s.get("timestamp", "")),
         "asset_window_end": str(last_a.get("timestamp", "")),
     }
+    # Extra fields only — pair_risk stays the geometry+coint formula above.
+    try:
+        from src.conjunction import attach_conjunction, estimate_conjunction
+
+        rec = attach_conjunction(rec, estimate_conjunction(hist_s, hist_a))
+    except Exception:
+        rec.setdefault("pc", None)
+        rec.setdefault("tca_utc", None)
+    return rec
 
 
 def score_all_pairs(
@@ -267,8 +276,9 @@ def score_all_pairs(
         "pairs": pairs,
         "best_by_suspect": {str(k): v for k, v in best_by_suspect.items()},
         "notes": (
-            "Proximity is a coarse Kepler sampling proxy (not full SGP4 TCA). "
-            "Cointegration uses aligned SMA tails. pair_risk fuses geometry + temporal coupling."
+            "pair_risk is geometry + cointegration/DCCA (unchanged). "
+            "pc / tca_utc / miss_distance_km / covariance are extra conjunction fields "
+            "(SGP4 when installed, else Kepler-circular fallback)."
         ),
     }
 
@@ -319,6 +329,9 @@ def merge_pairs_into_alerts(
             "cointegration_pvalue": pair.get("cointegration_pvalue"),
             "pair_risk": pair.get("pair_risk"),
             "risk_level": pair.get("risk_level"),
+            "pc": pair.get("pc"),
+            "tca_utc": pair.get("tca_utc"),
+            "miss_distance_km": pair.get("miss_distance_km"),
         }
         # Operational fuse: strong pair elevates military attention (suspects only)
         pr = float(pair.get("pair_risk") or 0)

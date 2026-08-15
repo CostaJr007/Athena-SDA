@@ -1,0 +1,40 @@
+services:
+  pipeline:
+    build: .
+    image: athena-sda:local
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    command: ["status"]
+
+  sidecar:
+    image: athena-sda:local
+    depends_on:
+      - pipeline
+    environment:
+      ATHENA_BIND: "0.0.0.0"
+      ATHENA_PORT: "8787"
+      WATSONX_APIKEY: ${WATSONX_APIKEY:-}
+      WATSONX_PROJECT_ID: ${WATSONX_PROJECT_ID:-}
+      WATSONX_URL: ${WATSONX_URL:-https://us-south.ml.cloud.ibm.com}
+      WATSONX_MODEL: ${WATSONX_MODEL:-ibm/granite-3-8b-instruct}
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    # Sidecar stays on the compose network only. The board reaches it via
+    # nginx /api/. Publishing 8787 would expose unauthenticated watchlist writes.
+    entrypoint: ["python", "scripts/serve_granite_explain.py"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8787/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - sidecar

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import EventReplayPanel from '@/components/hud/EventReplayPanel'
 
 type PocTab = 'overview' | 'method' | 'math' | 'cases' | 'placebos' | 'replay'
@@ -6,6 +6,8 @@ type PocTab = 'overview' | 'method' | 'math' | 'cases' | 'placebos' | 'replay'
 interface WalkforwardPocPanelProps {
   open: boolean
   onClose: () => void
+  /** When set, open on the Replay tab for this walk-forward event id. */
+  replayEventId?: string | null
 }
 
 const TABS: { id: PocTab; label: string }[] = [
@@ -32,6 +34,13 @@ const REPLAY_EVENTS: { id: string; label: string }[] = [
   { id: 'tianhe_css_assembly_2021', label: 'Tianhe · CSS assembly (2021)' },
   { id: 'cosmos2550_military_leo_2022', label: 'Cosmos-2550 · mil LEO (2022)' },
   { id: 'beidou3_m11_meo_2019', label: 'Beidou-3 M11 · MEO (2019)' },
+  { id: 'placebo_terra_2015', label: 'Placebo · TERRA 2015' },
+  { id: 'placebo_terra_2018', label: 'Placebo · TERRA 2018' },
+  { id: 'placebo_aqua_2015', label: 'Placebo · AQUA 2015' },
+  { id: 'placebo_aqua_2020', label: 'Placebo · AQUA 2020' },
+  { id: 'placebo_landsat8_2018', label: 'Placebo · Landsat-8 2018' },
+  { id: 'placebo_noaa18_2021', label: 'Placebo · NOAA-18 2021' },
+  { id: 'placebo_noaa20_2023', label: 'Placebo · NOAA-20 2023' },
 ]
 
 type RefLink = { label: string; url: string }
@@ -56,7 +65,7 @@ const CASES: {
     peak: '2015-04-15',
     lead: 182,
     score: 0.724,
-    why: 'ΔSMA ≈ −72 km (GEO slot move) + DFA α 0.72. Quiet weather (Ap=9).',
+    why: 'Page CUSUM ≈ 1.0 + LZ76 ~1.4–1.7 on the ΔSMA series (GEO slot move). DFA α stays ~0.5 on n≈20 — not a Hurst read.',
     report:
       'Open catalog history: Olymp-K moved ~Apr 2015 between Intelsat 7 and 901 (~18.1°W).',
     refs: [
@@ -82,7 +91,7 @@ const CASES: {
     peak: '2015-09-15',
     lead: 243,
     score: 0.699,
-    why: 'DFA α 0.94 + Page CUSUM elevated + Shannon high. Later ΔSMA +62 km fold.',
+    why: 'Page CUSUM elevated (early mean 1.0) + Shannon H~1.9–2.0 + LZ76 ~1.6. DFA α = 0.5 (short-window floor).',
     report:
       'Open sources: late Sep 2015 move to ~24.4°W next to Intelsat 905 at 24.5°W; Intelsat criticism of non-normal behavior.',
     refs: [
@@ -108,7 +117,7 @@ const CASES: {
     peak: '2018-09-01',
     lead: 243,
     score: 0.724,
-    why: 'DFA α 0.96 + LZ76 0.58 under quiet Sun (F10.7≈70). Later ΔSMA −110 km.',
+    why: 'Page CUSUM = 1.0 + LZ76 1.38→1.71 + Shannon rising 1.52→1.87 under quiet Sun. DFA α = 0.5.',
     report:
       'French MoD (Florence Parly, Sep 2018) publicly described Luch-Olymp proximity to Athena-Fidus as espionage-like; also noted on Gunter.',
     refs: [
@@ -134,7 +143,7 @@ const CASES: {
     peak: '2022-06-15',
     lead: 154,
     score: 0.712,
-    why: 'LZ76 0.63 + Page CUSUM elevated + DFA α 0.89 — inspection-like control.',
+    why: 'Shannon H rises 1.51→2.72 + LZ76 ~1.5 early + Page CUSUM 0.75 early. DFA α = 0.5 (do not cite α≈0.89).',
     report:
       'Secure World Foundation tracks SY-12 among Chinese military/intelligence GEO RPO missions; open SSA literature discusses SY-12 proximity ops.',
     refs: [
@@ -156,7 +165,7 @@ const CASES: {
     peak: '2023-10-15',
     lead: 197,
     score: 0.722,
-    why: 'Shannon 2.12 + DFA α 0.91 weeks after launch. Max 0.722 near Sep 2023.',
+    why: 'Shannon H ~1.8–1.9 + short Shannon rising to 2.26 + elevated IF (max 0.722). DFA α = 0.5.',
     report:
       'Breaking Defense (17 Oct 2023): second Russian Luch/Olymp reported trailing Western systems in GEO.',
     refs: [
@@ -179,8 +188,20 @@ const CASES: {
 export default function WalkforwardPocPanel({
   open,
   onClose,
+  replayEventId = null,
 }: WalkforwardPocPanelProps) {
   const [tab, setTab] = useState<PocTab>('overview')
+  const [eventId, setEventId] = useState<string>(REPLAY_EVENTS[0]?.id ?? '')
+
+  useEffect(() => {
+    if (!open) return
+    if (!replayEventId) return
+    const t = window.setTimeout(() => {
+      setTab('replay')
+      setEventId(replayEventId)
+    }, 0)
+    return () => clearTimeout(t)
+  }, [open, replayEventId])
 
   if (!open) return null
 
@@ -265,13 +286,15 @@ export default function WalkforwardPocPanel({
         {tab === 'method' && <MethodTab />}
         {tab === 'math' && <MathTab />}
         {tab === 'cases' && <CasesTab />}
-        {tab === 'replay' && <ReplayTab />}
+        {tab === 'replay' && (
+          <ReplayTab eventId={eventId} onEventId={setEventId} />
+        )}
         {tab === 'placebos' && <PlacebosTab />}
       </div>
 
       <div className="shrink-0 border-t border-white/12 bg-[#0a1018] px-3 py-2 text-[11px] text-zinc-500 md:px-4">
         Use <strong className="text-zinc-400">New tab</strong> for full-page HTML · backdrop
-        click or Esc closes · run 2026-07-26 · Athena-SDA
+        click or Esc closes · walk-forward 2026-08-11 · Athena-SDA
       </div>
       </div>
     </>
@@ -292,8 +315,8 @@ function OverviewTab() {
       <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
         <Stat k="GEO interest" v="5/5 hard" ok />
         <Stat k="Civil EO" v="0/7 hard" ok />
-        <Stat k="Mean max GEO" v="0.65" ok />
-        <Stat k="Mean max EO" v="0.46" />
+        <Stat k="Mean max GEO" v="0.716" ok />
+        <Stat k="Mean max EO" v="0.457" />
       </div>
 
       <div className="border border-emerald-400/35 bg-[#0c1814] p-2.5">
@@ -302,7 +325,7 @@ function OverviewTab() {
         </div>
         <ul className="mt-1.5 list-disc space-y-1 pl-4 text-[12px] text-zinc-200 md:text-[13px]">
           <li>Ingest public multi-year TLE + GFZ F10.7/Ap/Kp</li>
-          <li>Build quant noise features (Hurst, Shannon, CUSUM, …)</li>
+          <li>Build quant noise features (LZ76, DFA, Page CUSUM, Shannon, …)</li>
           <li>Train IF on baseline+asset; score suspects for micro-anomalies</li>
           <li>Validate GEO interest vs civil EO placebos (Claims A+B)</li>
           <li>Priority layer (pairs, XGB) ranks operator attention</li>
@@ -360,12 +383,12 @@ function MethodTab() {
 
 function MathTab() {
   const rows = [
-    ['Shannon', 'How messy are altitude steps?', 'Irregular burns / SK'],
-    ['Hurst', 'Does the series keep drifting one way?', 'H ≫ 0.5 → low-thrust / control'],
-    ['Kolmogorov', 'Hard to compress up/down pattern?', 'Active control complexity'],
-    ['L1-CUSUM', 'When did the series break?', 'Structural change onset'],
-    ['ΔSMA / maneuvers', 'How far / how often?', 'Slot moves, busy GEO ops'],
-    ['Space weather', 'Is the Sun stormy?', 'Drag vs intentional change'],
+    ['Shannon H', 'How messy are ΔSMA steps?', 'Irregular burns / SK'],
+    ['DFA α (Peng 1994)', 'Does the series keep a scaling trend?', 'α≫0.5 persistence; n=20 often floors at 0.5'],
+    ['LZ76 (Kaspar–Schuster)', 'Hard to compress the up/down pattern?', 'Active control complexity'],
+    ['Page CUSUM (ARL)', 'When did the series leave its regime?', 'Structural change onset'],
+    ['EWMA / BOCPD', 'Small shifts / Bayesian change prob?', 'Busy GEO ops, regime switches'],
+    ['Space weather (GFZ)', 'Is the Sun stormy?', 'LEO drag vs intentional change'],
     ['IF anomaly', 'Is the full profile rare vs past?', 'Operational noise trigger'],
   ] as const
   return (
@@ -473,9 +496,13 @@ function CasesTab() {
 
 function PlacebosTab() {
   const rows = [
-    ['TERRA #25994', '2015-09-15 vs Luch', '0.478', 'NO'],
-    ['TERRA #25994', '2018-09-01 vs Fidus', '0.489', 'NO'],
-    ['NOAA-20 #43013', '2023-10-15 vs Luch-2', '0.463', 'NO'],
+    ['TERRA #25994', '2015-09-15 vs Luch', '0.470', 'NO'],
+    ['TERRA #25994', '2018-09-01 vs Fidus', '0.457', 'NO'],
+    ['AQUA #27424', '2015 vs Luch', '0.490', 'NO'],
+    ['AQUA #27424', '2020', '0.401', 'NO'],
+    ['Landsat-8 #39084', '2018', '0.459', 'NO'],
+    ['NOAA-18 #28654', '2021', '0.423', 'NO'],
+    ['NOAA-20 #43013', '2023-10-15 vs Luch-2', '0.498', 'NO'],
   ] as const
   return (
     <div className="space-y-3">
@@ -506,8 +533,9 @@ function PlacebosTab() {
         </table>
       </div>
       <p className="border border-white/12 bg-[#0c0e12] p-2.5 text-[12px] text-zinc-300">
-        Discriminator = orbital regime features (Hurst / Shannon / ΔSMA / joint IF profile), not
-        F10.7 alone.
+        Claim B = these 7 civil EO placebos (0/7 hard). Starlink / GPS can hard-hit
+        (station-keeping) and are <strong className="text-zinc-100">not</strong> in the 0/7
+        panel. Discriminator = LZ76 / Page CUSUM / Shannon / joint IF — not F10.7 alone.
       </p>
     </div>
   )
@@ -536,8 +564,13 @@ function Stat({
   )
 }
 
-function ReplayTab() {
-  const [eventId, setEventId] = useState<string>(REPLAY_EVENTS[0]?.id ?? '')
+function ReplayTab({
+  eventId,
+  onEventId,
+}: {
+  eventId: string
+  onEventId: (id: string) => void
+}) {
   return (
     <div className="space-y-2">
       <p className="text-[12px] text-zinc-400">
@@ -550,11 +583,16 @@ function ReplayTab() {
         <span className="text-[11px] uppercase tracking-wider text-zinc-500">Event</span>
         <select
           value={eventId}
-          onChange={(e) => setEventId(e.target.value)}
+          onChange={(e) => onEventId(e.target.value)}
           className="athena-input min-w-0 flex-1 px-2 py-1 text-[13px]"
           aria-label="walk-forward event"
         >
-          {REPLAY_EVENTS.map((e) => (
+          {[
+            ...REPLAY_EVENTS,
+            ...(!REPLAY_EVENTS.some((e) => e.id === eventId) && eventId
+              ? [{ id: eventId, label: eventId.replace(/_/g, ' ') }]
+              : []),
+          ].map((e) => (
             <option key={e.id} value={e.id}>
               {e.label}
             </option>

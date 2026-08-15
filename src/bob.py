@@ -45,7 +45,9 @@ def get_watsonx_model():
         }
         # Prefer newer Granite instruct if available; SDK will error → catch
         for model_id in (
+            os.environ.get("WATSONX_MODEL") or "ibm/granite-3-8b-instruct",
             "ibm/granite-3-8b-instruct",
+            "ibm/granite-3-3-8b-instruct",
             "ibm/granite-13b-instruct-v2",
         ):
             try:
@@ -231,6 +233,17 @@ def generate_bob_briefing(
     bocpd = features.get("bocpd_change_prob_3d", 0.0)
     mmd = features.get("mmd_typicality", 0.5)
     cases = tool_get_case_study_citations(int(norad_id))
+    try:
+        from src.rag import format_citations, retrieve
+
+        rag_hits = retrieve(
+            f"{sat_metadata.get('name', '')} {norad_id} anomaly pair weather CUSUM doctrine",
+            k=3,
+        )
+        rag_block = format_citations(rag_hits)
+    except Exception:
+        rag_hits = []
+        rag_block = ""
 
     xgb_line = ""
     if ml_context:
@@ -270,7 +283,8 @@ QUANTITATIVE (immutable):
 - DFA: {dfa:.2f} | ADF p: {adf:.4f} | Page CUSUM: {cusum:.2f} | Cointegration p: {coint:.4f}
 - BOCPD change-prob: {bocpd:.2f} | MMD typicality: {mmd:.2f}
 {xgb_line}- Fuzzy: {classification} | threat={threat_level:.2f} | conf={confidence*100:.1f}%
-{case_block}
+{case_block}{rag_block}
+
 INSTRUCTIONS:
 1. Header with classification and confidence (use given numbers only).
 2. Justify with physics/math (DFA, LZ76, CUSUM, cointegration, BOCPD).
@@ -293,7 +307,7 @@ BRIEFING:"""
     return _local_briefing(
         sat_metadata, norad_id, classification, threat_level, confidence, ambiguity,
         dfa, lz76, perm_entropy, adf, cusum, delta_sma, tle_age, min_dist_mil, coint,
-        bocpd, mmd, ml_context, cases=cases,
+        bocpd, mmd, ml_context, cases=cases, rag_hits=rag_hits,
     )
 
 
@@ -301,6 +315,7 @@ def _local_briefing(
     sat_metadata, norad_id, classification, threat_level, confidence, ambiguity,
     dfa, lz76, perm_entropy, adf, cusum, delta_sma, tle_age, min_dist_mil, coint,
     bocpd, mmd, ml_context, cases: Optional[List[Dict[str, Any]]] = None,
+    rag_hits: Optional[List[Dict[str, Any]]] = None,
 ) -> str:
     xgb_bit = ""
     if ml_context:
@@ -316,6 +331,12 @@ def _local_briefing(
             f"- **Shadowing / cointegration:** p-value={coint:.4f} < 0.05 — altitude series "
             f"cointegrated with a high-value asset (escort / pursuit pattern).\n"
         )
+
+    rag_bit = ""
+    if rag_hits:
+        rag_bit = "DOSSIER CITATIONS (do not change scores):\n"
+        for h in rag_hits:
+            rag_bit += f"- {h.get('citation')}\n"
 
     case_bit = ""
     if cases:
@@ -341,7 +362,7 @@ QUANTITATIVE ANALYSIS (immutable scores from ML pipeline):
 - **ADF p={adf:.4f} | Page CUSUM={cusum:.2f}:** structural break {"detected" if (adf > 0.05 or cusum > 0.5) else "not dominant"}.
 - **ΔSMA 7d = {delta_sma:.4f} km** | TLE age **{tle_age:.1f} h**
 - **Military proximity: {min_dist_mil:.2f} km** | BOCPD change-prob≈{bocpd:.2f} | MMD typicality≈{mmd:.2f}
-{shadow}{case_bit}
+{shadow}{case_bit}{rag_bit}
 """
 
     if classification in ("HOSTILE", "HOSTIL"):

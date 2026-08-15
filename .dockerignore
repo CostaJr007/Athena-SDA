@@ -1,0 +1,17 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.pyc
+src/frontend/node_modules/
+src/frontend/dist/
+# Runtime volumes — mount at run time, do not bake into the image.
+data/
+models/
+tests/
+*.log
+docs/references/sessions/

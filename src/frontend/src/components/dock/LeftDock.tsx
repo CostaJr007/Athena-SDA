@@ -1,19 +1,17 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import SidePanel from './SidePanel'
 import {
-  boardHistogram,
   boardThreat,
   EMPTY_FILTERS,
   filtersActive,
+  histogramExcluding,
   matchesFilters,
   sortedBoard,
-  THREAT_HEX,
   THREAT_STYLE,
   ROLE_HEX,
   type BoardFilters,
   type RiskReport,
 } from '@/lib/risk-report'
-import { countryLabel } from '@/lib/country-flag'
 import CountryFlag from '@/components/hud/CountryFlag'
 
 interface LeftDockProps {
@@ -23,12 +21,11 @@ interface LeftDockProps {
   reportStatus: 'loading' | 'ready' | 'error'
   reportError?: string | null
   extra?: ReactNode
-  /** Open in-app walk-forward PoC panel (globe HUD tab) */
-  onOpenPoc?: () => void
-  pocOpen?: boolean
   /** Ontology cross-filters (role × country × orbit) driving board + globe */
   filters?: BoardFilters
   onFiltersChange?: (f: BoardFilters) => void
+  /** Open the object-graph investigation for a NORAD */
+  onInvestigate?: (norad: number) => void
 }
 
 export default function LeftDock({
@@ -38,10 +35,9 @@ export default function LeftDock({
   reportStatus,
   reportError,
   extra,
-  onOpenPoc,
-  pocOpen = false,
   filters = EMPTY_FILTERS,
   onFiltersChange,
+  onInvestigate,
 }: LeftDockProps) {
   const boardAll = sortedBoard(report)
   const active = filtersActive(filters)
@@ -60,6 +56,12 @@ export default function LeftDock({
   }
 
   const clearFilters = () => onFiltersChange?.(EMPTY_FILTERS)
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  useEffect(() => {
+    if (!active) return
+    const id = window.setTimeout(() => setFiltersOpen(true), 0)
+    return () => window.clearTimeout(id)
+  }, [active])
 
   return (
     <SidePanel
@@ -70,6 +72,8 @@ export default function LeftDock({
           ? `ML day ${report.day} · ${report.summary.n_scored} scored`
           : 'Fusion scores · priority objects'
       }
+      scrollBody={false}
+      bodyClassName="flex flex-col"
       footer={
         <div className="grid grid-cols-4 gap-1.5 text-[13px]">
           <StatChip label="HST" value={hostiles} tone="text-rose-300" />
@@ -79,133 +83,83 @@ export default function LeftDock({
         </div>
       }
     >
-      <div className="space-y-4">
-        {extra}
+      {extra && (
+        <div className="shrink-0 max-h-[34%] overflow-y-auto border-b border-white/10 px-3 pt-2">
+          {extra}
+        </div>
+      )}
 
-        <section className="border border-emerald-400/25 bg-emerald-500/5 px-2.5 py-2">
-          <div className="text-[13px] uppercase tracking-[0.2em] text-emerald-300/90">
-            ML proof of concept
-          </div>
-          <p className="mt-1.5 text-[13px] leading-relaxed text-zinc-400">
-            Walk-forward validation: GEO interest 5/5 hard hits vs civil EO placebos 0/7
-            (Claims A+B). Opens as a panel on this console.
-          </p>
-          <button
-            type="button"
-            onClick={() => onOpenPoc?.()}
-            className={`mt-2 inline-flex w-full items-center justify-center gap-1.5 border px-2 py-1.5 text-[12px] font-medium uppercase tracking-[0.12em] transition-colors ${
-              pocOpen
-                ? 'border-emerald-300/70 bg-emerald-400/20 text-emerald-100'
-                : 'border-emerald-400/35 bg-black/40 text-emerald-300 hover:border-emerald-300/60 hover:text-emerald-200'
-            }`}
-          >
-            {pocOpen ? 'PoC panel open' : 'Open PoC panel'}
-          </button>
-        </section>
-
-        {report && (
-          <section className="border border-white/10 bg-black/50 px-2.5 py-2">
-            <div className="text-[13px] uppercase tracking-[0.2em] text-zinc-400">
-              Risk report
+      <section className="flex min-h-0 flex-1 flex-col">
+        <div className="shrink-0 space-y-1 px-3 pb-1.5 pt-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="text-[12px] uppercase tracking-[0.18em] text-zinc-400">
+              Priority tracks{active ? ` · ${board.length}` : ` · ${boardAll.length}`}
             </div>
-            <div className="mt-1.5 grid grid-cols-2 gap-1.5 text-[14px]">
-              <Meta k="Anomalies" v={String(report.summary.n_anomalies)} />
-              <Meta
-                k="Mil detect"
-                v={String(report.summary.n_military_detections ?? '—')}
-              />
-              <Meta k="Pairs" v={String(report.summary.n_pairs)} />
-              <Meta k="Elevated" v={String(report.summary.n_pair_elevated)} />
-              <Meta k="Thr" v={report.summary.threshold.toFixed(2)} />
-              <Meta k="Scored" v={String(report.summary.n_scored)} />
-            </div>
-            {report.doctrine && (
-              <p className="mt-1.5 text-[11px] uppercase tracking-wider text-zinc-500">
-                {report.doctrine.replace(/_/g, ' ')}
-              </p>
-            )}
-            {report.top_pairs?.[0] && (
-              <p className="mt-2 text-[13px] leading-relaxed text-zinc-400">
-                Top pair:{' '}
-                <span className="text-zinc-200">
-                  {report.top_pairs[0].suspect_name}
-                </span>{' '}
-                → {report.top_pairs[0].asset_name} ·{' '}
-                {report.top_pairs[0].min_distance_km.toFixed(0)} km ·{' '}
-                {report.top_pairs[0].risk_level}
-              </p>
-            )}
-            <div className="mt-2 flex flex-wrap gap-x-2 gap-y-1 border-t border-white/10 pt-2 text-[12px] text-zinc-400">
-              {(
-                [
-                  ['HOSTILE', THREAT_HEX.HOSTILE],
-                  ['SUSPECT', THREAT_HEX.SUSPECT],
-                  ['ANOMALY', THREAT_HEX.ANOMALY],
-                  ['NOMINAL', THREAT_HEX.NOMINAL],
-                  ['asset', ROLE_HEX.asset],
-                ] as const
-              ).map(([label, hex]) => (
-                <span key={label} className="inline-flex items-center gap-1">
-                  <span
-                    className="inline-block h-1.5 w-1.5"
-                    style={{ background: hex }}
-                  />
-                  {label}
-                </span>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <section className="border border-white/10 bg-black/50 px-2.5 py-2">
-          <div className="flex items-center justify-between">
-            <div className="text-[13px] uppercase tracking-[0.2em] text-zinc-400">
-              Cross-filters
-            </div>
-            {active && (
+            <div className="flex items-center gap-1.5">
+              {active && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="border border-white/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-zinc-300 hover:border-emerald-400/50 hover:text-emerald-200"
+                >
+                  Clear
+                </button>
+              )}
               <button
                 type="button"
-                onClick={clearFilters}
-                className="border border-white/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-zinc-300 hover:border-emerald-400/50 hover:text-emerald-200"
+                onClick={() => setFiltersOpen((v) => !v)}
+                className="border border-white/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-zinc-400 hover:border-emerald-400/40 hover:text-zinc-200"
               >
-                Clear
+                Filters {filtersOpen ? '▾' : '▸'}
               </button>
-            )}
+            </div>
           </div>
-          <p className="mt-1 text-[11px] uppercase tracking-wider text-zinc-500">
-            role · country · orbit (histogram drill-down)
-          </p>
-          <FilterHistogram
-            label="Role"
-            values={boardHistogram(boardAll, (b) => b.role)}
-            selected={filters.roles}
-            onToggle={(v) => toggle('roles', v)}
-            hex={(v) => ROLE_HEX[v] ?? '#a1a1aa'}
-          />
-          <FilterHistogram
-            label="Country"
-            values={boardHistogram(boardAll, (b) => b.country)}
-            selected={filters.countries}
-            onToggle={(v) => toggle('countries', v)}
-          />
-          <FilterHistogram
-            label="Orbit"
-            values={boardHistogram(boardAll, (b) => b.orbit_class)}
-            selected={filters.orbits}
-            onToggle={(v) => toggle('orbits', v)}
-          />
-          {active && (
-            <p className="mt-1.5 text-[12px] text-emerald-300/90">
-              {board.length} of {boardAll.length} objects shown
+          {report && (
+            <p className="truncate text-[11px] text-zinc-500">
+              anom {report.summary.n_anomalies} · mil{' '}
+              {report.summary.n_military_detections ?? '—'} · thr{' '}
+              {report.summary.threshold.toFixed(2)}
+              {report.top_pairs?.[0]
+                ? ` · ${report.top_pairs[0].suspect_name} → ${report.top_pairs[0].asset_name} ${report.top_pairs[0].min_distance_km.toFixed(0)} km`
+                : ''}
             </p>
           )}
-        </section>
+          {filtersOpen && (
+            <div className="border border-white/10 bg-black/50 px-2 py-1.5">
+              <FilterHistogram
+                label="Role"
+                values={histogramExcluding(boardAll, filters, 'roles', (b) => b.role)}
+                selected={filters.roles}
+                onToggle={(v) => toggle('roles', v)}
+                hex={(v) => ROLE_HEX[v] ?? '#a1a1aa'}
+              />
+              <FilterHistogram
+                label="Country"
+                values={histogramExcluding(
+                  boardAll,
+                  filters,
+                  'countries',
+                  (b) => b.country,
+                )}
+                selected={filters.countries}
+                onToggle={(v) => toggle('countries', v)}
+              />
+              <FilterHistogram
+                label="Orbit"
+                values={histogramExcluding(
+                  boardAll,
+                  filters,
+                  'orbits',
+                  (b) => b.orbit_class,
+                )}
+                selected={filters.orbits}
+                onToggle={(v) => toggle('orbits', v)}
+              />
+            </div>
+          )}
+        </div>
 
-        <section>
-          <div className="mb-2 text-[13px] uppercase tracking-[0.2em] text-zinc-400">
-            Priority tracks{active ? ` · ${board.length}` : ''}
-          </div>
-
+        <div className="athena-scroll min-h-0 flex-1 space-y-1 overflow-y-auto px-3 pb-3">
           {reportStatus === 'loading' && (
             <div className="border border-dashed border-white/15 px-3 py-4 text-center text-[14px] text-zinc-400">
               Loading risk_report…
@@ -226,97 +180,93 @@ export default function LeftDock({
             </div>
           )}
 
-          <div className="space-y-1.5">
-            {board.map((t) => {
-              const threat = boardThreat(t)
-              const style = THREAT_STYLE[threat]
-              const active = selectedNorad === t.norad_id
-              const attPct = Math.max(0, Math.min(100, t.attention_score * 100))
-              return (
-                <button
-                  key={t.norad_id}
-                  type="button"
-                  onClick={() => onSelectNorad(t.norad_id)}
-                  className={`w-full border px-2.5 py-2 text-left transition-colors ${
-                    active
-                      ? 'border-emerald-400/50 bg-emerald-400/10'
-                      : `${style.border} ${style.bg} hover:bg-white/[0.04]`
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-[14px] font-semibold text-zinc-100">
-                      #{t.norad_id}
+          {board.map((t) => {
+            const threat = boardThreat(t)
+            const style = THREAT_STYLE[threat]
+            const selected = selectedNorad === t.norad_id
+            const attPct = Math.max(0, Math.min(100, t.attention_score * 100))
+            return (
+              <div
+                key={t.norad_id}
+                role="button"
+                tabIndex={0}
+                onClick={() => onSelectNorad(t.norad_id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    onSelectNorad(t.norad_id)
+                  }
+                }}
+                className={`w-full cursor-pointer border px-2 py-1 text-left transition-colors ${
+                  selected
+                    ? 'border-emerald-400/50 bg-emerald-400/10'
+                    : `${style.border} ${style.bg} hover:bg-white/[0.04]`
+                }`}
+                title={`${t.object_name} · att ${t.attention_score.toFixed(2)} · anom ${t.anomaly_score.toFixed(2)}${
+                  t.pair
+                    ? ` · → ${t.pair.asset_name} ${t.pair.min_distance_km.toFixed(0)} km`
+                    : ''
+                }`}
+              >
+                <div className="flex items-center gap-1.5">
+                  <CountryFlag code={t.country} size={14} />
+                  <span className="shrink-0 text-[12px] font-semibold tabular-nums text-zinc-100">
+                    #{t.norad_id}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-[12px] text-zinc-200">
+                    {t.object_name}
+                  </span>
+                  {t.is_military_detection && (
+                    <span className="shrink-0 text-[9px] uppercase tracking-wider text-amber-200">
+                      mil
                     </span>
-                    <span
-                      className={`border px-1.5 py-0.5 text-[12px] tracking-wider ${style.border} ${style.color}`}
-                    >
-                      {style.label}
-                    </span>
-                  </div>
-                  <div className="mt-0.5 flex min-w-0 items-center gap-2">
-                    <CountryFlag code={t.country} size={18} />
-                    <span className="min-w-0 flex-1 truncate text-sm text-zinc-300">
-                      {t.object_name}
-                    </span>
-                    <a
-                      href={`${import.meta.env.BASE_URL}reports/quant_${t.norad_id}_latest.html`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="shrink-0 border border-emerald-400/30 px-1.5 py-0.5 text-[10px] uppercase tracking-wider text-emerald-300/90 hover:bg-emerald-400/10"
-                      title="Quant report (new tab)"
-                    >
-                      Quant
-                    </a>
-                  </div>
-                  <div className="mt-1.5 flex items-center justify-between text-[13px] text-zinc-400">
-                    <span>
-                      att {t.attention_score.toFixed(2)} · anom{' '}
-                      {t.anomaly_score.toFixed(2)}
-                    </span>
-                    <span className="text-zinc-400">
-                      {t.role} · {countryLabel(t.country)}
-                    </span>
-                  </div>
-                  {(t.is_military_detection ||
-                    t.is_platform_health_flag ||
-                    t.is_calibration_object) && (
-                    <div className="mt-1 flex flex-wrap gap-1">
-                      {t.is_military_detection && (
-                        <span className="border border-amber-400/40 bg-amber-400/10 px-1 py-0.5 text-[10px] uppercase tracking-wider text-amber-200">
-                          mil detect
-                        </span>
-                      )}
-                      {t.is_platform_health_flag && (
-                        <span className="border border-sky-400/40 bg-sky-400/10 px-1 py-0.5 text-[10px] uppercase tracking-wider text-sky-200">
-                          asset health
-                        </span>
-                      )}
-                      {t.is_calibration_object && (
-                        <span className="border border-zinc-500/40 bg-zinc-500/10 px-1 py-0.5 text-[10px] uppercase tracking-wider text-zinc-400">
-                          calibration
-                        </span>
-                      )}
-                    </div>
                   )}
-                  {t.pair && (
-                    <div className="mt-1 truncate text-[13px] text-zinc-400">
-                      → {t.pair.asset_name} · {t.pair.min_distance_km.toFixed(0)} km ·{' '}
-                      {t.pair.risk_level}
-                    </div>
-                  )}
-                  <div className="mt-1.5 h-1 overflow-hidden bg-black">
-                    <div
-                      className={`h-full ${style.bar}`}
-                      style={{ width: `${attPct}%` }}
-                    />
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        </section>
-      </div>
+                  <span
+                    className={`shrink-0 border px-1 py-px text-[9px] tracking-wider ${style.border} ${style.color}`}
+                  >
+                    {style.label}
+                  </span>
+                </div>
+                <div className="mt-0.5 flex items-center gap-1.5 text-[10px] text-zinc-500">
+                  <span className="min-w-0 flex-1 truncate">
+                    {t.attention_score.toFixed(2)}/{t.anomaly_score.toFixed(2)}
+                    {t.pair ? ` · ${t.pair.min_distance_km.toFixed(0)} km` : ''}
+                    {t.pair?.pc != null ? ` · Pc` : ''}
+                    {t.triage && t.triage !== 'OPEN' ? ` · ${t.triage}` : ''}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onInvestigate?.(t.norad_id)
+                    }}
+                    className="shrink-0 border border-violet-400/30 px-1 py-px text-[9px] uppercase tracking-wider text-violet-200 hover:bg-violet-400/10"
+                    title="Open object-graph investigation"
+                  >
+                    Graph
+                  </button>
+                  <a
+                    href={`${import.meta.env.BASE_URL}reports/quant_${t.norad_id}_latest.html`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="shrink-0 border border-emerald-400/30 px-1 py-px text-[9px] uppercase tracking-wider text-emerald-300/90 hover:bg-emerald-400/10"
+                    title="Quant report (new tab)"
+                  >
+                    Quant
+                  </a>
+                </div>
+                <div className="mt-0.5 h-0.5 overflow-hidden bg-black">
+                  <div
+                    className={`h-full ${style.bar}`}
+                    style={{ width: `${attPct}%` }}
+                  />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </section>
     </SidePanel>
   )
 }
@@ -338,15 +288,6 @@ function StatChip({
   )
 }
 
-function Meta({ k, v }: { k: string; v: string }) {
-  return (
-    <div className="border border-white/10 bg-black/40 px-2 py-1">
-      <div className="text-[12px] uppercase tracking-wider text-zinc-400">{k}</div>
-      <div className="tabular-nums text-zinc-100">{v}</div>
-    </div>
-  )
-}
-
 interface FilterHistogramProps {
   label: string
   values: Array<{ value: string; count: number }>
@@ -355,35 +296,39 @@ interface FilterHistogramProps {
   hex?: (value: string) => string
 }
 
-/** One histogram row (Palantir 011 drill-down): click a bar to toggle a filter. */
+/** Histogram bars that regenerate after sibling filters (Palantir 011). */
 function FilterHistogram({ label, values, selected, onToggle, hex }: FilterHistogramProps) {
   const max = Math.max(1, ...values.map((v) => v.count))
   if (values.length === 0) return null
   return (
-    <div className="mt-2">
-      <div className="text-[11px] uppercase tracking-wider text-zinc-500">{label}</div>
-      <div className="mt-1 flex flex-wrap gap-1">
+    <div className="mt-1">
+      <div className="text-[10px] uppercase tracking-wider text-zinc-500">{label}</div>
+      <div className="mt-0.5 space-y-0.5">
         {values.map(({ value, count }) => {
           const on = selected.includes(value)
-          const color = hex ? hex(value) : undefined
+          const color = hex ? hex(value) : '#34d399'
           return (
             <button
               key={value}
               type="button"
               onClick={() => onToggle(value)}
               title={`${label}: ${value} (${count})`}
-              className={`group relative flex h-6 min-w-[26px] items-center justify-center border px-1 text-[11px] tabular-nums transition-colors ${
-                on
-                  ? 'border-emerald-300/70 bg-emerald-400/20 text-emerald-100'
-                  : 'border-white/12 text-zinc-400 hover:border-white/30 hover:text-zinc-200'
+              className={`flex w-full items-center gap-2 px-1 py-0.5 text-left text-[11px] tabular-nums ${
+                on ? 'bg-emerald-400/12 text-emerald-100' : 'text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200'
               }`}
             >
-              <span
-                className="absolute inset-x-0 bottom-0 opacity-25"
-                style={{ background: color ?? 'currentColor', height: `${Math.round((count / max) * 100)}%` }}
-              />
-              <span className="relative">{value}</span>
-              <span className="relative ml-0.5 text-[9px] opacity-70">{count}</span>
+              <span className="w-[4.5rem] shrink-0 truncate">{value}</span>
+              <span className="relative h-2 min-w-0 flex-1 bg-black/80">
+                <span
+                  className="absolute inset-y-0 left-0"
+                  style={{
+                    width: `${Math.round((count / max) * 100)}%`,
+                    background: color,
+                    opacity: on ? 0.9 : 0.45,
+                  }}
+                />
+              </span>
+              <span className="w-5 shrink-0 text-right text-[10px] text-zinc-500">{count}</span>
             </button>
           )
         })}

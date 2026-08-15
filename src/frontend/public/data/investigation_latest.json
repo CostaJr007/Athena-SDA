@@ -1,0 +1,3117 @@
+{
+  "schema": "athena.investigation.v1",
+  "generated_at": "2026-08-13T14:36:29.885852+00:00",
+  "day": "2026-08-12",
+  "lineage": {
+    "risk_report_schema": "athena.risk_report.v1",
+    "doctrine": "military_first_sda",
+    "protocol": "military_baseline_train__suspect_score",
+    "threshold": 0.5270930754575622,
+    "hit_rule": "past-only Isolation Forest \u00b7 hard hit iff score>=thr near public t_peak \u00b7 Claims A+B"
+  },
+  "provenance": {
+    "registry": {
+      "updated": "2026-08-12T20:03:39.469276+00:00",
+      "version": 1
+    },
+    "monitor_meta": {
+      "trained_at": "2026-08-12T20:03:39.467857+00:00",
+      "n_windows": 960,
+      "n_sats": 12,
+      "train_roles": [
+        "baseline",
+        "asset"
+      ],
+      "holdout_days": 1,
+      "contamination": 0.08,
+      "versioned_model": null,
+      "recommended_anomaly_threshold": 0.5270930754575622
+    },
+    "models": {
+      "pipeline_if": {
+        "path": "isolation_forest.joblib",
+        "feature_schema_hash": "ecd26c54958e74a9",
+        "registered_at": "2026-08-11T03:00:59.744118+00:00",
+        "n_samples": 1426,
+        "contamination": 0.06,
+        "cutoff_utc": null
+      },
+      "xgboost": {
+        "path": "xgboost_model.joblib",
+        "feature_schema_hash": "88e9358102c235f6",
+        "registered_at": "2026-08-11T03:00:59.744586+00:00",
+        "n_samples": null,
+        "contamination": null,
+        "cutoff_utc": null
+      },
+      "rkhs_reference": {
+        "path": "rkhs_reference.joblib",
+        "feature_schema_hash": "fb3f09744fe9d628",
+        "registered_at": "2026-08-11T03:00:59.745027+00:00",
+        "n_samples": null,
+        "contamination": null,
+        "cutoff_utc": null
+      },
+      "monitor_if": {
+        "path": "isolation_forest_monitor.joblib",
+        "feature_schema_hash": "ecd26c54958e74a9",
+        "registered_at": "2026-08-12T20:03:39.469276+00:00",
+        "n_samples": null,
+        "contamination": 0.08,
+        "cutoff_utc": "2026-08-11 20:03:32.431765+00:00"
+      }
+    }
+  },
+  "object_sets": [
+    {
+      "id": "suspects",
+      "label": "Watchlist suspects",
+      "ids": [
+        "sat:48865",
+        "sat:41727",
+        "sat:32289",
+        "sat:39208",
+        "sat:41038",
+        "sat:48274",
+        "sat:55841",
+        "sat:50321",
+        "sat:40258",
+        "sat:39150",
+        "sat:43603"
+      ]
+    },
+    {
+      "id": "assets",
+      "label": "Protected assets",
+      "ids": [
+        "sat:25544",
+        "sat:39166",
+        "sat:28874",
+        "sat:31598",
+        "sat:35951",
+        "sat:28054",
+        "sat:31698"
+      ]
+    },
+    {
+      "id": "alerts",
+      "label": "Elevated / mil-detect",
+      "ids": [
+        "sat:48865",
+        "sat:41727",
+        "sat:32289",
+        "sat:39208",
+        "sat:41038",
+        "sat:48274",
+        "sat:55841",
+        "sat:25544"
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "id": "sat:48865",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 48865,
+      "label": "COSMOS 2550",
+      "role": "suspect",
+      "status": "ANOMALY",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "RU",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.6891,
+        "anomaly": 0.5421411709119481,
+        "belief": 0.6724054104492949
+      },
+      "links": [
+        {
+          "type": "threatens",
+          "target": "sat:31698",
+          "norad": 31698,
+          "label": "TERRASAR-X \u00b7 107.566 km \u00b7 TCA 15:16Z \u00b7 Pc 0.0",
+          "pc": 0.0,
+          "tca_utc": "2026-08-13T15:16:29.715794+00:00",
+          "miss_distance_km": 11056.963
+        },
+        {
+          "type": "hasAlert",
+          "target": "alert:48865",
+          "label": "ANOMALY"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:cosmos2550_military_leo_2022",
+          "event_id": "cosmos2550_military_leo_2022",
+          "label": "cosmos2550_military_leo_2022",
+          "is_placebo": false,
+          "hit": false,
+          "t_peak": "2022-07-01",
+          "lead_days": 167.0
+        },
+        {
+          "type": "weather",
+          "target": "wx:48865",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:48865",
+          "label": "Bel 0.6724054104492949 \u00b7 K 0.26085375368405905"
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:39150",
+          "norad": 39150,
+          "label": "GAOFEN-1",
+          "pair_risk": 0.5384
+        }
+      ]
+    },
+    {
+      "id": "alert:48865",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 48865,
+      "label": "ANOMALY",
+      "status": "ANOMALY",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:48865",
+          "label": "COSMOS 2550"
+        }
+      ]
+    },
+    {
+      "id": "ev:48865",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 48865,
+      "label": "Bel 0.6724054104492949",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:48865",
+          "label": "COSMOS 2550"
+        }
+      ]
+    },
+    {
+      "id": "wx:48865",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 48865,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:48865",
+          "label": "COSMOS 2550"
+        }
+      ]
+    },
+    {
+      "id": "sat:41727",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 41727,
+      "label": "GAOFEN-3",
+      "role": "suspect",
+      "status": "PAIR_ELEVATED",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "CN",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.6654,
+        "anomaly": 0.3931922238901193,
+        "belief": 0.006666710109401489
+      },
+      "links": [
+        {
+          "type": "threatens",
+          "target": "sat:35951",
+          "norad": 35951,
+          "label": "DMSP 5D-3 F18 (USA 210) \u00b7 91.396 km \u00b7 TCA 14:36Z \u00b7 Pc 0.0",
+          "pc": 0.0,
+          "tca_utc": "2026-08-14T14:36:29.703009+00:00",
+          "miss_distance_km": 9930.587
+        },
+        {
+          "type": "hasAlert",
+          "target": "alert:41727",
+          "label": "PAIR_ELEVATED"
+        },
+        {
+          "type": "weather",
+          "target": "wx:41727",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:41727",
+          "label": "Bel 0.006666710109401489 \u00b7 K 0.08969086276985691"
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:41038",
+          "norad": 41038,
+          "label": "YAOGAN-29",
+          "pair_risk": 0.6591
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:32289",
+          "norad": 32289,
+          "label": "YAOGAN-3",
+          "pair_risk": 0.577
+        }
+      ]
+    },
+    {
+      "id": "alert:41727",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 41727,
+      "label": "PAIR_ELEVATED",
+      "status": "PAIR_ELEVATED",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:41727",
+          "label": "GAOFEN-3"
+        }
+      ]
+    },
+    {
+      "id": "ev:41727",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 41727,
+      "label": "Bel 0.006666710109401489",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:41727",
+          "label": "GAOFEN-3"
+        }
+      ]
+    },
+    {
+      "id": "wx:41727",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 41727,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:41727",
+          "label": "GAOFEN-3"
+        }
+      ]
+    },
+    {
+      "id": "sat:32289",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 32289,
+      "label": "YAOGAN-3",
+      "role": "suspect",
+      "status": "PAIR_ELEVATED",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "CN",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.6481,
+        "anomaly": 0.47903128174845955,
+        "belief": 0.18828595379682472
+      },
+      "links": [
+        {
+          "type": "threatens",
+          "target": "sat:31598",
+          "norad": 31598,
+          "label": "COSMO-SKYMED 1 \u00b7 19.745 km \u00b7 TCA 17:51Z \u00b7 Pc 0.0",
+          "pc": 0.0,
+          "tca_utc": "2026-08-13T17:51:29.727571+00:00",
+          "miss_distance_km": 2276.624
+        },
+        {
+          "type": "hasAlert",
+          "target": "alert:32289",
+          "label": "PAIR_ELEVATED"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:yaogan3_recon_2016",
+          "event_id": "yaogan3_recon_2016",
+          "label": "yaogan3_recon_2016",
+          "is_placebo": false,
+          "hit": false,
+          "t_peak": "2016-07-01",
+          "lead_days": null
+        },
+        {
+          "type": "weather",
+          "target": "wx:32289",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:32289",
+          "label": "Bel 0.18828595379682472 \u00b7 K 0.26763272636258273"
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:41038",
+          "norad": 41038,
+          "label": "YAOGAN-29",
+          "pair_risk": 0.6688
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:39208",
+          "norad": 39208,
+          "label": "SHIYAN-7 (SY-7)",
+          "pair_risk": 0.664
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:41727",
+          "norad": 41727,
+          "label": "GAOFEN-3",
+          "pair_risk": 0.586
+        }
+      ]
+    },
+    {
+      "id": "alert:32289",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 32289,
+      "label": "PAIR_ELEVATED",
+      "status": "PAIR_ELEVATED",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:32289",
+          "label": "YAOGAN-3"
+        }
+      ]
+    },
+    {
+      "id": "ev:32289",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 32289,
+      "label": "Bel 0.18828595379682472",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:32289",
+          "label": "YAOGAN-3"
+        }
+      ]
+    },
+    {
+      "id": "wx:32289",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 32289,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:32289",
+          "label": "YAOGAN-3"
+        }
+      ]
+    },
+    {
+      "id": "sat:39208",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 39208,
+      "label": "SHIYAN-7 (SY-7)",
+      "role": "suspect",
+      "status": "PAIR_ELEVATED",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "CN",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.5656,
+        "anomaly": 0.4454156422992861,
+        "belief": 0.027320448117515897
+      },
+      "links": [
+        {
+          "type": "threatens",
+          "target": "sat:31598",
+          "norad": 31598,
+          "label": "COSMO-SKYMED 1 \u00b7 78.44 km \u00b7 TCA 14:56Z \u00b7 Pc 0.0",
+          "pc": 0.0,
+          "tca_utc": "2026-08-13T14:56:29.765178+00:00",
+          "miss_distance_km": 1428.031
+        },
+        {
+          "type": "hasAlert",
+          "target": "alert:39208",
+          "label": "PAIR_ELEVATED"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:shiyan7_experimental_2015",
+          "event_id": "shiyan7_experimental_2015",
+          "label": "shiyan7_experimental_2015",
+          "is_placebo": false,
+          "hit": false,
+          "t_peak": "2015-07-01",
+          "lead_days": 167.0
+        },
+        {
+          "type": "weather",
+          "target": "wx:39208",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:39208",
+          "label": "Bel 0.027320448117515897 \u00b7 K 0.1706831899152395"
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:32289",
+          "norad": 32289,
+          "label": "YAOGAN-3",
+          "pair_risk": 0.7864
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:41038",
+          "norad": 41038,
+          "label": "YAOGAN-29",
+          "pair_risk": 0.6688
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:41727",
+          "norad": 41727,
+          "label": "GAOFEN-3",
+          "pair_risk": 0.586
+        }
+      ]
+    },
+    {
+      "id": "alert:39208",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 39208,
+      "label": "PAIR_ELEVATED",
+      "status": "PAIR_ELEVATED",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:39208",
+          "label": "SHIYAN-7 (SY-7)"
+        }
+      ]
+    },
+    {
+      "id": "ev:39208",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 39208,
+      "label": "Bel 0.027320448117515897",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:39208",
+          "label": "SHIYAN-7 (SY-7)"
+        }
+      ]
+    },
+    {
+      "id": "wx:39208",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 39208,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:39208",
+          "label": "SHIYAN-7 (SY-7)"
+        }
+      ]
+    },
+    {
+      "id": "sat:41038",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 41038,
+      "label": "YAOGAN-29",
+      "role": "suspect",
+      "status": "PAIR_ELEVATED",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "CN",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.5505,
+        "anomaly": 0.40592676425330937,
+        "belief": 0.014481230595093767
+      },
+      "links": [
+        {
+          "type": "threatens",
+          "target": "sat:31598",
+          "norad": 31598,
+          "label": "COSMO-SKYMED 1 \u00b7 44.307 km \u00b7 TCA 13:21Z \u00b7 Pc 0.0",
+          "pc": 0.0,
+          "tca_utc": "2026-08-14T13:21:29.752674+00:00",
+          "miss_distance_km": 2580.12
+        },
+        {
+          "type": "hasAlert",
+          "target": "alert:41038",
+          "label": "PAIR_ELEVATED"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:yaogan29_recon_2020",
+          "event_id": "yaogan29_recon_2020",
+          "label": "yaogan29_recon_2020",
+          "is_placebo": false,
+          "hit": false,
+          "t_peak": "2020-07-01",
+          "lead_days": null
+        },
+        {
+          "type": "weather",
+          "target": "wx:41038",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:41038",
+          "label": "Bel 0.014481230595093767 \u00b7 K 0.13367355571569528"
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:32289",
+          "norad": 32289,
+          "label": "YAOGAN-3",
+          "pair_risk": 0.7864
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:39208",
+          "norad": 39208,
+          "label": "SHIYAN-7 (SY-7)",
+          "pair_risk": 0.664
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:41727",
+          "norad": 41727,
+          "label": "GAOFEN-3",
+          "pair_risk": 0.586
+        },
+        {
+          "type": "samePeak",
+          "target": "case:placebo_aqua_2020",
+          "event_id": "placebo_aqua_2020",
+          "norad": 27424,
+          "label": "AQUA",
+          "is_placebo": true
+        }
+      ]
+    },
+    {
+      "id": "alert:41038",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 41038,
+      "label": "PAIR_ELEVATED",
+      "status": "PAIR_ELEVATED",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:41038",
+          "label": "YAOGAN-29"
+        }
+      ]
+    },
+    {
+      "id": "ev:41038",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 41038,
+      "label": "Bel 0.014481230595093767",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:41038",
+          "label": "YAOGAN-29"
+        }
+      ]
+    },
+    {
+      "id": "wx:41038",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 41038,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:41038",
+          "label": "YAOGAN-29"
+        }
+      ]
+    },
+    {
+      "id": "sat:48274",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 48274,
+      "label": "CSS (TIANHE)",
+      "role": "suspect",
+      "status": "ANOMALY",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "CN",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.4763,
+        "anomaly": 0.6399218488987263,
+        "belief": 0.9616930988111504
+      },
+      "links": [
+        {
+          "type": "threatens",
+          "target": "sat:28054",
+          "norad": 28054,
+          "label": "DMSP 5D-3 F16 (USA 172) \u00b7 599.689 km \u00b7 TCA 17:01Z \u00b7 Pc 0.0",
+          "pc": 0.0,
+          "tca_utc": "2026-08-13T17:01:29.825736+00:00",
+          "miss_distance_km": 503.461
+        },
+        {
+          "type": "hasAlert",
+          "target": "alert:48274",
+          "label": "ANOMALY"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:tianhe_css_assembly_2021",
+          "event_id": "tianhe_css_assembly_2021",
+          "label": "tianhe_css_assembly_2021",
+          "is_placebo": false,
+          "hit": true,
+          "t_peak": "2021-10-15",
+          "lead_days": 155.0
+        },
+        {
+          "type": "weather",
+          "target": "wx:48274",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:48274",
+          "label": "Bel 0.9616930988111504 \u00b7 K 0.14889095379149156"
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:41727",
+          "norad": 41727,
+          "label": "GAOFEN-3",
+          "pair_risk": 0.6758
+        }
+      ]
+    },
+    {
+      "id": "alert:48274",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 48274,
+      "label": "ANOMALY",
+      "status": "ANOMALY",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:48274",
+          "label": "CSS (TIANHE)"
+        }
+      ]
+    },
+    {
+      "id": "ev:48274",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 48274,
+      "label": "Bel 0.9616930988111504",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:48274",
+          "label": "CSS (TIANHE)"
+        }
+      ]
+    },
+    {
+      "id": "wx:48274",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 48274,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:48274",
+          "label": "CSS (TIANHE)"
+        }
+      ]
+    },
+    {
+      "id": "sat:55841",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 55841,
+      "label": "LUCH-5X (OLYMP-K 2)",
+      "role": "suspect",
+      "status": "ANOMALY",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "RU",
+      "orbit_class": "GEO",
+      "scores": {
+        "attention": 0.4303,
+        "anomaly": 0.5791772307964134,
+        "belief": 0.944842889295855
+      },
+      "links": [
+        {
+          "type": "threatens",
+          "target": "sat:31598",
+          "norad": 31598,
+          "label": "COSMO-SKYMED 1 \u00b7 2000.0 km \u00b7 TCA 09:51Z \u00b7 Pc 0.0",
+          "pc": 0.0,
+          "tca_utc": "2026-08-14T09:51:29.836971+00:00",
+          "miss_distance_km": 35219.135
+        },
+        {
+          "type": "hasAlert",
+          "target": "alert:55841",
+          "label": "ANOMALY"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch2_trailing_2023",
+          "event_id": "luch2_trailing_2023",
+          "label": "luch2_trailing_2023",
+          "is_placebo": false,
+          "hit": true,
+          "t_peak": "2023-10-15",
+          "lead_days": 197.0
+        },
+        {
+          "type": "weather",
+          "target": "wx:55841",
+          "label": "F10.7 97.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:55841",
+          "label": "Bel 0.944842889295855 \u00b7 K 0.14521367549309974"
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:32289",
+          "norad": 32289,
+          "label": "YAOGAN-3",
+          "pair_risk": 0.7864
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:41038",
+          "norad": 41038,
+          "label": "YAOGAN-29",
+          "pair_risk": 0.6688
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:39208",
+          "norad": 39208,
+          "label": "SHIYAN-7 (SY-7)",
+          "pair_risk": 0.664
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:41727",
+          "norad": 41727,
+          "label": "GAOFEN-3",
+          "pair_risk": 0.586
+        },
+        {
+          "type": "samePeak",
+          "target": "case:placebo_noaa20_2023",
+          "event_id": "placebo_noaa20_2023",
+          "norad": 43013,
+          "label": "NOAA 20 (JPSS-1)",
+          "is_placebo": true
+        }
+      ]
+    },
+    {
+      "id": "alert:55841",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 55841,
+      "label": "ANOMALY",
+      "status": "ANOMALY",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:55841",
+          "label": "LUCH-5X (OLYMP-K 2)"
+        }
+      ]
+    },
+    {
+      "id": "ev:55841",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 55841,
+      "label": "Bel 0.944842889295855",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:55841",
+          "label": "LUCH-5X (OLYMP-K 2)"
+        }
+      ]
+    },
+    {
+      "id": "wx:55841",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 55841,
+      "label": "F10.7 97.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:55841",
+          "label": "LUCH-5X (OLYMP-K 2)"
+        }
+      ]
+    },
+    {
+      "id": "sat:50321",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 50321,
+      "label": "SHIYAN-12 01 (SY-12 01)",
+      "role": "suspect",
+      "status": "UNRELIABLE_DATA",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "CN",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.6556154367163759,
+        "anomaly": 0.6556154367163759,
+        "belief": 0.9625034925481014
+      },
+      "links": [
+        {
+          "type": "threatens",
+          "target": "sat:28054",
+          "norad": 28054,
+          "label": "DMSP 5D-3 F16 (USA 172) \u00b7 2000.0 km \u00b7 TCA 04:16Z \u00b7 Pc 0.0",
+          "pc": 0.0,
+          "tca_utc": "2026-08-14T04:16:29.847178+00:00",
+          "miss_distance_km": 34966.537
+        },
+        {
+          "type": "hasAlert",
+          "target": "alert:50321",
+          "label": "UNRELIABLE_DATA"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:sy12_geo_rpo_2021_22",
+          "event_id": "sy12_geo_rpo_2021_22",
+          "label": "sy12_geo_rpo_2021_22",
+          "is_placebo": false,
+          "hit": true,
+          "t_peak": "2022-06-15",
+          "lead_days": 154.0
+        },
+        {
+          "type": "weather",
+          "target": "wx:50321",
+          "label": "F10.7 97.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:50321",
+          "label": "Bel 0.9625034925481014 \u00b7 K 0.13614442146548078"
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:41727",
+          "norad": 41727,
+          "label": "GAOFEN-3",
+          "pair_risk": 0.6758
+        },
+        {
+          "type": "samePeak",
+          "target": "case:placebo_noaa18_2021",
+          "event_id": "placebo_noaa18_2021",
+          "norad": 28654,
+          "label": "NOAA 18",
+          "is_placebo": true
+        }
+      ]
+    },
+    {
+      "id": "alert:50321",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 50321,
+      "label": "UNRELIABLE_DATA",
+      "status": "UNRELIABLE_DATA",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:50321",
+          "label": "SHIYAN-12 01 (SY-12 01)"
+        }
+      ]
+    },
+    {
+      "id": "ev:50321",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 50321,
+      "label": "Bel 0.9625034925481014",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:50321",
+          "label": "SHIYAN-12 01 (SY-12 01)"
+        }
+      ]
+    },
+    {
+      "id": "wx:50321",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 50321,
+      "label": "F10.7 97.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:50321",
+          "label": "SHIYAN-12 01 (SY-12 01)"
+        }
+      ]
+    },
+    {
+      "id": "sat:40258",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 40258,
+      "label": "LUCH (OLYMP-K 1)",
+      "role": "suspect",
+      "status": "UNRELIABLE_DATA",
+      "triage": {
+        "status": "RESOLVED",
+        "updated_at": "2026-08-13T13:54:39.538342+00:00",
+        "operator": "test"
+      },
+      "country": "RU",
+      "orbit_class": "GEO",
+      "scores": {
+        "attention": 0.6382134289216024,
+        "anomaly": 0.6382134289216024,
+        "belief": 0.9716118392547012
+      },
+      "links": [
+        {
+          "type": "threatens",
+          "target": "sat:39166",
+          "norad": 39166,
+          "label": "NAVSTAR 68 (USA 242) \u00b7 2000.0 km \u00b7 TCA 00:21Z \u00b7 Pc 0.0",
+          "pc": 0.0,
+          "tca_utc": "2026-08-14T00:21:29.857519+00:00",
+          "miss_distance_km": 19202.573
+        },
+        {
+          "type": "hasAlert",
+          "target": "alert:40258",
+          "label": "UNRELIABLE_DATA"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch1_intelsat_2015",
+          "event_id": "luch1_intelsat_2015",
+          "label": "luch1_intelsat_2015",
+          "is_placebo": false,
+          "hit": true,
+          "t_peak": "2015-09-15",
+          "lead_days": 243.0
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch1_intelsat_mid2015",
+          "event_id": "luch1_intelsat_mid2015",
+          "label": "luch1_intelsat_mid2015",
+          "is_placebo": false,
+          "hit": true,
+          "t_peak": "2015-04-15",
+          "lead_days": 182.0
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch1_athena_fidus_2018",
+          "event_id": "luch1_athena_fidus_2018",
+          "label": "luch1_athena_fidus_2018",
+          "is_placebo": false,
+          "hit": true,
+          "t_peak": "2018-09-01",
+          "lead_days": 243.0
+        },
+        {
+          "type": "weather",
+          "target": "wx:40258",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:40258",
+          "label": "Bel 0.9716118392547012 \u00b7 K 0.15596836887969254"
+        },
+        {
+          "type": "samePeak",
+          "target": "case:placebo_terra_2015",
+          "event_id": "placebo_terra_2015",
+          "norad": 25994,
+          "label": "TERRA",
+          "is_placebo": true
+        },
+        {
+          "type": "samePeak",
+          "target": "case:placebo_terra_2018",
+          "event_id": "placebo_terra_2018",
+          "norad": 25994,
+          "label": "TERRA",
+          "is_placebo": true
+        },
+        {
+          "type": "samePeak",
+          "target": "case:placebo_aqua_2015",
+          "event_id": "placebo_aqua_2015",
+          "norad": 27424,
+          "label": "AQUA",
+          "is_placebo": true
+        }
+      ]
+    },
+    {
+      "id": "alert:40258",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 40258,
+      "label": "UNRELIABLE_DATA",
+      "status": "UNRELIABLE_DATA",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:40258",
+          "label": "LUCH (OLYMP-K 1)"
+        }
+      ]
+    },
+    {
+      "id": "ev:40258",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 40258,
+      "label": "Bel 0.9716118392547012",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:40258",
+          "label": "LUCH (OLYMP-K 1)"
+        }
+      ]
+    },
+    {
+      "id": "wx:40258",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 40258,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:40258",
+          "label": "LUCH (OLYMP-K 1)"
+        }
+      ]
+    },
+    {
+      "id": "sat:25544",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 25544,
+      "label": "ISS (ZARYA)",
+      "role": "asset",
+      "status": "ASSET_REGIME_NOISE",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "INTL",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.557648800569798,
+        "anomaly": 0.557648800569798,
+        "belief": 0.7524366828085302
+      },
+      "links": [
+        {
+          "type": "hasAlert",
+          "target": "alert:25544",
+          "label": "ASSET_REGIME_NOISE"
+        },
+        {
+          "type": "weather",
+          "target": "wx:25544",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:25544",
+          "label": "Bel 0.7524366828085302 \u00b7 K 0.2449893942962676"
+        }
+      ]
+    },
+    {
+      "id": "alert:25544",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 25544,
+      "label": "ASSET_REGIME_NOISE",
+      "status": "ASSET_REGIME_NOISE",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:25544",
+          "label": "ISS (ZARYA)"
+        }
+      ]
+    },
+    {
+      "id": "ev:25544",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 25544,
+      "label": "Bel 0.7524366828085302",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:25544",
+          "label": "ISS (ZARYA)"
+        }
+      ]
+    },
+    {
+      "id": "wx:25544",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 25544,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:25544",
+          "label": "ISS (ZARYA)"
+        }
+      ]
+    },
+    {
+      "id": "sat:39166",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 39166,
+      "label": "NAVSTAR 68 (USA 242)",
+      "role": "asset",
+      "status": "NOMINAL",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "US",
+      "orbit_class": "MEO",
+      "scores": {
+        "attention": 0.5314994327474319,
+        "anomaly": 0.5314994327474319,
+        "belief": 0.9027762679880482
+      },
+      "links": [
+        {
+          "type": "weather",
+          "target": "wx:39166",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:39166",
+          "label": "Bel 0.9027762679880482 \u00b7 K 0.1951637612265713"
+        }
+      ]
+    },
+    {
+      "id": "ev:39166",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 39166,
+      "label": "Bel 0.9027762679880482",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:39166",
+          "label": "NAVSTAR 68 (USA 242)"
+        }
+      ]
+    },
+    {
+      "id": "wx:39166",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 39166,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:39166",
+          "label": "NAVSTAR 68 (USA 242)"
+        }
+      ]
+    },
+    {
+      "id": "sat:28874",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 28874,
+      "label": "GPS BIIRM-1 (PRN 17)",
+      "role": "asset",
+      "status": "NOMINAL",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "US",
+      "orbit_class": "MEO",
+      "scores": {
+        "attention": 0.5128079038486616,
+        "anomaly": 0.5128079038486616,
+        "belief": 0.24735308781861834
+      },
+      "links": [
+        {
+          "type": "weather",
+          "target": "wx:28874",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:28874",
+          "label": "Bel 0.24735308781861834 \u00b7 K 0.26105927601057843"
+        }
+      ]
+    },
+    {
+      "id": "ev:28874",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 28874,
+      "label": "Bel 0.24735308781861834",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:28874",
+          "label": "GPS BIIRM-1 (PRN 17)"
+        }
+      ]
+    },
+    {
+      "id": "wx:28874",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 28874,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:28874",
+          "label": "GPS BIIRM-1 (PRN 17)"
+        }
+      ]
+    },
+    {
+      "id": "sat:39150",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 39150,
+      "label": "GAOFEN-1",
+      "role": "suspect",
+      "status": "NOMINAL",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "CN",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.4979,
+        "anomaly": 0.44848198246502907,
+        "belief": 0.025041843326668613
+      },
+      "links": [
+        {
+          "type": "threatens",
+          "target": "sat:31698",
+          "norad": 31698,
+          "label": "TERRASAR-X \u00b7 131.821 km \u00b7 TCA 13:31Z \u00b7 Pc 0.0",
+          "pc": 0.0,
+          "tca_utc": "2026-08-14T13:31:29.814322+00:00",
+          "miss_distance_km": 521.595
+        },
+        {
+          "type": "weather",
+          "target": "wx:39150",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:39150",
+          "label": "Bel 0.025041843326668613 \u00b7 K 0.1655306815180867"
+        },
+        {
+          "type": "sameAsset",
+          "target": "sat:48865",
+          "norad": 48865,
+          "label": "COSMOS 2550",
+          "pair_risk": 0.8093
+        }
+      ]
+    },
+    {
+      "id": "ev:39150",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 39150,
+      "label": "Bel 0.025041843326668613",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:39150",
+          "label": "GAOFEN-1"
+        }
+      ]
+    },
+    {
+      "id": "wx:39150",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 39150,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:39150",
+          "label": "GAOFEN-1"
+        }
+      ]
+    },
+    {
+      "id": "sat:31598",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 31598,
+      "label": "COSMO-SKYMED 1",
+      "role": "asset",
+      "status": "NOMINAL",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "IT",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.4797080341284816,
+        "anomaly": 0.4797080341284816,
+        "belief": 0.24134750396819163
+      },
+      "links": [
+        {
+          "type": "weather",
+          "target": "wx:31598",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:31598",
+          "label": "Bel 0.24134750396819163 \u00b7 K 0.2762487725690145"
+        },
+        {
+          "type": "threatenedBy",
+          "target": "sat:32289",
+          "norad": 32289,
+          "label": "YAOGAN-3",
+          "pair_risk": 0.7864
+        },
+        {
+          "type": "threatenedBy",
+          "target": "sat:41038",
+          "norad": 41038,
+          "label": "YAOGAN-29",
+          "pair_risk": 0.6688
+        },
+        {
+          "type": "threatenedBy",
+          "target": "sat:39208",
+          "norad": 39208,
+          "label": "SHIYAN-7 (SY-7)",
+          "pair_risk": 0.664
+        },
+        {
+          "type": "threatenedBy",
+          "target": "sat:41727",
+          "norad": 41727,
+          "label": "GAOFEN-3",
+          "pair_risk": 0.586
+        }
+      ]
+    },
+    {
+      "id": "ev:31598",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 31598,
+      "label": "Bel 0.24134750396819163",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:31598",
+          "label": "COSMO-SKYMED 1"
+        }
+      ]
+    },
+    {
+      "id": "wx:31598",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 31598,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:31598",
+          "label": "COSMO-SKYMED 1"
+        }
+      ]
+    },
+    {
+      "id": "sat:43603",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 43603,
+      "label": "BEIDOU-3 M11",
+      "role": "suspect",
+      "status": "NOMINAL",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "CN",
+      "orbit_class": "MEO",
+      "scores": {
+        "attention": 0.4262,
+        "anomaly": 0.5341801143249783,
+        "belief": 0.7937995424432795
+      },
+      "links": [
+        {
+          "type": "threatens",
+          "target": "sat:39166",
+          "norad": 39166,
+          "label": "NAVSTAR 68 (USA 242) \u00b7 1346.207 km \u00b7 TCA 15:16Z \u00b7 Pc 0.0",
+          "pc": 0.0,
+          "tca_utc": "2026-08-13T15:16:29.868445+00:00",
+          "miss_distance_km": 19208.712
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:beidou3_m11_meo_2019",
+          "event_id": "beidou3_m11_meo_2019",
+          "label": "beidou3_m11_meo_2019",
+          "is_placebo": false,
+          "hit": true,
+          "t_peak": "2019-07-01",
+          "lead_days": 13.0
+        },
+        {
+          "type": "weather",
+          "target": "wx:43603",
+          "label": "F10.7 97.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:43603",
+          "label": "Bel 0.7937995424432795 \u00b7 K 0.21342628563222252"
+        }
+      ]
+    },
+    {
+      "id": "ev:43603",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 43603,
+      "label": "Bel 0.7937995424432795",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:43603",
+          "label": "BEIDOU-3 M11"
+        }
+      ]
+    },
+    {
+      "id": "wx:43603",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 43603,
+      "label": "F10.7 97.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:43603",
+          "label": "BEIDOU-3 M11"
+        }
+      ]
+    },
+    {
+      "id": "sat:35951",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 35951,
+      "label": "DMSP 5D-3 F18 (USA 210)",
+      "role": "asset",
+      "status": "NOMINAL",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "US",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.42485348129663175,
+        "anomaly": 0.42485348129663175,
+        "belief": 0.015693998365880348
+      },
+      "links": [
+        {
+          "type": "weather",
+          "target": "wx:35951",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:35951",
+          "label": "Bel 0.015693998365880348 \u00b7 K 0.13641104117299427"
+        },
+        {
+          "type": "threatenedBy",
+          "target": "sat:41727",
+          "norad": 41727,
+          "label": "GAOFEN-3",
+          "pair_risk": 0.8881
+        },
+        {
+          "type": "threatenedBy",
+          "target": "sat:41038",
+          "norad": 41038,
+          "label": "YAOGAN-29",
+          "pair_risk": 0.6591
+        },
+        {
+          "type": "threatenedBy",
+          "target": "sat:32289",
+          "norad": 32289,
+          "label": "YAOGAN-3",
+          "pair_risk": 0.577
+        }
+      ]
+    },
+    {
+      "id": "ev:35951",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 35951,
+      "label": "Bel 0.015693998365880348",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:35951",
+          "label": "DMSP 5D-3 F18 (USA 210)"
+        }
+      ]
+    },
+    {
+      "id": "wx:35951",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 35951,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:35951",
+          "label": "DMSP 5D-3 F18 (USA 210)"
+        }
+      ]
+    },
+    {
+      "id": "sat:28054",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 28054,
+      "label": "DMSP 5D-3 F16 (USA 172)",
+      "role": "asset",
+      "status": "NOMINAL",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "US",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.41047271320169126,
+        "anomaly": 0.41047271320169126,
+        "belief": 0.00973743510219497
+      },
+      "links": [
+        {
+          "type": "weather",
+          "target": "wx:28054",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:28054",
+          "label": "Bel 0.00973743510219497 \u00b7 K 0.11159941207315105"
+        },
+        {
+          "type": "threatenedBy",
+          "target": "sat:41727",
+          "norad": 41727,
+          "label": "GAOFEN-3",
+          "pair_risk": 0.6758
+        }
+      ]
+    },
+    {
+      "id": "ev:28054",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 28054,
+      "label": "Bel 0.00973743510219497",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:28054",
+          "label": "DMSP 5D-3 F16 (USA 172)"
+        }
+      ]
+    },
+    {
+      "id": "wx:28054",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 28054,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:28054",
+          "label": "DMSP 5D-3 F16 (USA 172)"
+        }
+      ]
+    },
+    {
+      "id": "sat:31698",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 31698,
+      "label": "TERRASAR-X",
+      "role": "asset",
+      "status": "NOMINAL",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "DE",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.37642463301206264,
+        "anomaly": 0.37642463301206264,
+        "belief": 0.019063224995577513
+      },
+      "links": [
+        {
+          "type": "weather",
+          "target": "wx:31698",
+          "label": "F10.7 94.0 \u00b7 Ap 3.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:31698",
+          "label": "Bel 0.019063224995577513 \u00b7 K 0.0738515358773105"
+        },
+        {
+          "type": "threatenedBy",
+          "target": "sat:48865",
+          "norad": 48865,
+          "label": "COSMOS 2550",
+          "pair_risk": 0.8093
+        },
+        {
+          "type": "threatenedBy",
+          "target": "sat:39150",
+          "norad": 39150,
+          "label": "GAOFEN-1",
+          "pair_risk": 0.5384
+        }
+      ]
+    },
+    {
+      "id": "ev:31698",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 31698,
+      "label": "Bel 0.019063224995577513",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:31698",
+          "label": "TERRASAR-X"
+        }
+      ]
+    },
+    {
+      "id": "wx:31698",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 31698,
+      "label": "F10.7 94.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:31698",
+          "label": "TERRASAR-X"
+        }
+      ]
+    },
+    {
+      "id": "sat:44714",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 44714,
+      "label": "STARLINK-1008",
+      "role": "baseline",
+      "status": "CALIBRATION_BASELINE",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "US",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.21613218957567237,
+        "anomaly": 0.6175205416447782,
+        "belief": 0.9671439629576566
+      },
+      "links": [
+        {
+          "type": "hasAlert",
+          "target": "alert:44714",
+          "label": "CALIBRATION_BASELINE"
+        },
+        {
+          "type": "weather",
+          "target": "wx:44714",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:44714",
+          "label": "Bel 0.9671439629576566 \u00b7 K 0.14402541162176122"
+        }
+      ]
+    },
+    {
+      "id": "alert:44714",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 44714,
+      "label": "CALIBRATION_BASELINE",
+      "status": "CALIBRATION_BASELINE",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:44714",
+          "label": "STARLINK-1008"
+        }
+      ]
+    },
+    {
+      "id": "ev:44714",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 44714,
+      "label": "Bel 0.9671439629576566",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:44714",
+          "label": "STARLINK-1008"
+        }
+      ]
+    },
+    {
+      "id": "wx:44714",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 44714,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:44714",
+          "label": "STARLINK-1008"
+        }
+      ]
+    },
+    {
+      "id": "sat:27424",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 27424,
+      "label": "AQUA",
+      "role": "baseline",
+      "status": "CALIBRATION_BASELINE",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "US",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.1566936217259798,
+        "anomaly": 0.447696062074228,
+        "belief": 0.05621078653791175
+      },
+      "links": [
+        {
+          "type": "hasAlert",
+          "target": "alert:27424",
+          "label": "CALIBRATION_BASELINE"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_aqua_2015",
+          "event_id": "placebo_aqua_2015",
+          "label": "placebo_aqua_2015",
+          "is_placebo": true,
+          "hit": false,
+          "t_peak": "2015-09-15",
+          "lead_days": null
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_aqua_2020",
+          "event_id": "placebo_aqua_2020",
+          "label": "placebo_aqua_2020",
+          "is_placebo": true,
+          "hit": false,
+          "t_peak": "2020-07-01",
+          "lead_days": null
+        },
+        {
+          "type": "weather",
+          "target": "wx:27424",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:27424",
+          "label": "Bel 0.05621078653791175 \u00b7 K 0.21286568276358914"
+        },
+        {
+          "type": "samePeak",
+          "target": "case:placebo_terra_2015",
+          "event_id": "placebo_terra_2015",
+          "norad": 25994,
+          "label": "TERRA",
+          "is_placebo": true
+        }
+      ]
+    },
+    {
+      "id": "alert:27424",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 27424,
+      "label": "CALIBRATION_BASELINE",
+      "status": "CALIBRATION_BASELINE",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:27424",
+          "label": "AQUA"
+        }
+      ]
+    },
+    {
+      "id": "ev:27424",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 27424,
+      "label": "Bel 0.05621078653791175",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:27424",
+          "label": "AQUA"
+        }
+      ]
+    },
+    {
+      "id": "wx:27424",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 27424,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:27424",
+          "label": "AQUA"
+        }
+      ]
+    },
+    {
+      "id": "sat:25994",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 25994,
+      "label": "TERRA",
+      "role": "baseline",
+      "status": "CALIBRATION_BASELINE",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "US",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.14516880914787028,
+        "anomaly": 0.41476802613677227,
+        "belief": 0.02250399974503566
+      },
+      "links": [
+        {
+          "type": "hasAlert",
+          "target": "alert:25994",
+          "label": "CALIBRATION_BASELINE"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_terra_2015",
+          "event_id": "placebo_terra_2015",
+          "label": "placebo_terra_2015",
+          "is_placebo": true,
+          "hit": false,
+          "t_peak": "2015-09-15",
+          "lead_days": null
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_terra_2018",
+          "event_id": "placebo_terra_2018",
+          "label": "placebo_terra_2018",
+          "is_placebo": true,
+          "hit": false,
+          "t_peak": "2018-09-01",
+          "lead_days": null
+        },
+        {
+          "type": "weather",
+          "target": "wx:25994",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:25994",
+          "label": "Bel 0.02250399974503566 \u00b7 K 0.15928960951024917"
+        },
+        {
+          "type": "samePeak",
+          "target": "case:placebo_aqua_2015",
+          "event_id": "placebo_aqua_2015",
+          "norad": 27424,
+          "label": "AQUA",
+          "is_placebo": true
+        }
+      ]
+    },
+    {
+      "id": "alert:25994",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 25994,
+      "label": "CALIBRATION_BASELINE",
+      "status": "CALIBRATION_BASELINE",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:25994",
+          "label": "TERRA"
+        }
+      ]
+    },
+    {
+      "id": "ev:25994",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 25994,
+      "label": "Bel 0.02250399974503566",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:25994",
+          "label": "TERRA"
+        }
+      ]
+    },
+    {
+      "id": "wx:25994",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 25994,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:25994",
+          "label": "TERRA"
+        }
+      ]
+    },
+    {
+      "id": "sat:39084",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 39084,
+      "label": "LANDSAT 8",
+      "role": "baseline",
+      "status": "CALIBRATION_BASELINE",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "US",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.14371420070027863,
+        "anomaly": 0.4106120020007961,
+        "belief": 0.018352483278594373
+      },
+      "links": [
+        {
+          "type": "hasAlert",
+          "target": "alert:39084",
+          "label": "CALIBRATION_BASELINE"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_landsat8_2018",
+          "event_id": "placebo_landsat8_2018",
+          "label": "placebo_landsat8_2018",
+          "is_placebo": true,
+          "hit": false,
+          "t_peak": "2018-09-01",
+          "lead_days": null
+        },
+        {
+          "type": "weather",
+          "target": "wx:39084",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:39084",
+          "label": "Bel 0.018352483278594373 \u00b7 K 0.14843259614213983"
+        },
+        {
+          "type": "samePeak",
+          "target": "case:placebo_terra_2018",
+          "event_id": "placebo_terra_2018",
+          "norad": 25994,
+          "label": "TERRA",
+          "is_placebo": true
+        }
+      ]
+    },
+    {
+      "id": "alert:39084",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 39084,
+      "label": "CALIBRATION_BASELINE",
+      "status": "CALIBRATION_BASELINE",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:39084",
+          "label": "LANDSAT 8"
+        }
+      ]
+    },
+    {
+      "id": "ev:39084",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 39084,
+      "label": "Bel 0.018352483278594373",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:39084",
+          "label": "LANDSAT 8"
+        }
+      ]
+    },
+    {
+      "id": "wx:39084",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 39084,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:39084",
+          "label": "LANDSAT 8"
+        }
+      ]
+    },
+    {
+      "id": "sat:28654",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 28654,
+      "label": "NOAA 18",
+      "role": "baseline",
+      "status": "CALIBRATION_BASELINE",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "US",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.14238384615005772,
+        "anomaly": 0.40681098900016494,
+        "belief": 0.015092660747531223
+      },
+      "links": [
+        {
+          "type": "hasAlert",
+          "target": "alert:28654",
+          "label": "CALIBRATION_BASELINE"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_noaa18_2021",
+          "event_id": "placebo_noaa18_2021",
+          "label": "placebo_noaa18_2021",
+          "is_placebo": true,
+          "hit": false,
+          "t_peak": "2022-06-15",
+          "lead_days": null
+        },
+        {
+          "type": "weather",
+          "target": "wx:28654",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:28654",
+          "label": "Bel 0.015092660747531223 \u00b7 K 0.1377152868039772"
+        }
+      ]
+    },
+    {
+      "id": "alert:28654",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 28654,
+      "label": "CALIBRATION_BASELINE",
+      "status": "CALIBRATION_BASELINE",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:28654",
+          "label": "NOAA 18"
+        }
+      ]
+    },
+    {
+      "id": "ev:28654",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 28654,
+      "label": "Bel 0.015092660747531223",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:28654",
+          "label": "NOAA 18"
+        }
+      ]
+    },
+    {
+      "id": "wx:28654",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 28654,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:28654",
+          "label": "NOAA 18"
+        }
+      ]
+    },
+    {
+      "id": "sat:43013",
+      "kind": "satellite",
+      "gotham_category": "Entity",
+      "norad": 43013,
+      "label": "NOAA 20 (JPSS-1)",
+      "role": "baseline",
+      "status": "CALIBRATION_BASELINE",
+      "triage": {
+        "status": "OPEN",
+        "updated_at": null,
+        "operator": null
+      },
+      "country": "US",
+      "orbit_class": "LEO",
+      "scores": {
+        "attention": 0.14227522311171736,
+        "anomaly": 0.4065006374620496,
+        "belief": 0.011590385228650127
+      },
+      "links": [
+        {
+          "type": "hasAlert",
+          "target": "alert:43013",
+          "label": "CALIBRATION_BASELINE"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_noaa20_2023",
+          "event_id": "placebo_noaa20_2023",
+          "label": "placebo_noaa20_2023",
+          "is_placebo": true,
+          "hit": false,
+          "t_peak": "2023-10-15",
+          "lead_days": null
+        },
+        {
+          "type": "weather",
+          "target": "wx:43013",
+          "label": "F10.7 99.0 \u00b7 Ap 6.0"
+        },
+        {
+          "type": "fusedAs",
+          "target": "ev:43013",
+          "label": "Bel 0.011590385228650127 \u00b7 K 0.12254137569581505"
+        }
+      ]
+    },
+    {
+      "id": "alert:43013",
+      "kind": "alert",
+      "gotham_category": "Event",
+      "norad": 43013,
+      "label": "CALIBRATION_BASELINE",
+      "status": "CALIBRATION_BASELINE",
+      "links": [
+        {
+          "type": "source",
+          "target": "sat:43013",
+          "label": "NOAA 20 (JPSS-1)"
+        }
+      ]
+    },
+    {
+      "id": "ev:43013",
+      "kind": "evidence",
+      "gotham_category": "Event",
+      "norad": 43013,
+      "label": "Bel 0.011590385228650127",
+      "links": [
+        {
+          "type": "about",
+          "target": "sat:43013",
+          "label": "NOAA 20 (JPSS-1)"
+        }
+      ]
+    },
+    {
+      "id": "wx:43013",
+      "kind": "weather",
+      "gotham_category": "Event",
+      "norad": 43013,
+      "label": "F10.7 99.0",
+      "links": [
+        {
+          "type": "windowOf",
+          "target": "sat:43013",
+          "label": "NOAA 20 (JPSS-1)"
+        }
+      ]
+    },
+    {
+      "id": "case:luch1_intelsat_2015",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "luch1_intelsat_2015",
+      "t_peak": "2015-09-15",
+      "links": []
+    },
+    {
+      "id": "doc:gunter--olymp-k-moved--apr-2015-between-intelsat",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Gunter: Olymp-K moved ~Apr 2015 between Intelsat 7/901 at 18.1W",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:luch1_intelsat_2015",
+          "label": "luch1_intelsat_2015"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch1_intelsat_2015",
+          "label": "luch1_intelsat_2015"
+        }
+      ]
+    },
+    {
+      "id": "doc:gunter-open-press---sep-2015-near-intelsat-905-a",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Gunter/open press: ~Sep 2015 near Intelsat 905 at 24.4\u201324.5W",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:luch1_intelsat_2015",
+          "label": "luch1_intelsat_2015"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch1_intelsat_2015",
+          "label": "luch1_intelsat_2015"
+        }
+      ]
+    },
+    {
+      "id": "doc:csis-unusual-behavior-in-geo--olymp-k---luch",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "CSIS Unusual Behavior in GEO: Olymp-K / Luch",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:luch1_intelsat_2015",
+          "label": "luch1_intelsat_2015"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch1_intelsat_2015",
+          "label": "luch1_intelsat_2015"
+        }
+      ]
+    },
+    {
+      "id": "case:luch1_intelsat_mid2015",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "luch1_intelsat_mid2015",
+      "t_peak": "2015-04-15",
+      "links": []
+    },
+    {
+      "id": "doc:gunter--first-colocation-between-intelsat-7-and-",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Gunter: first colocation between Intelsat 7 and 901 ~April 2015",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:luch1_intelsat_mid2015",
+          "label": "luch1_intelsat_mid2015"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch1_intelsat_mid2015",
+          "label": "luch1_intelsat_mid2015"
+        }
+      ]
+    },
+    {
+      "id": "case:luch1_athena_fidus_2018",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "luch1_athena_fidus_2018",
+      "t_peak": "2018-09-01",
+      "links": []
+    },
+    {
+      "id": "doc:open-press---gunter--2018-proximity-concerns-re-",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Open press / Gunter: 2018 proximity concerns re Athena-Fidus (FR military comms)",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:luch1_athena_fidus_2018",
+          "label": "luch1_athena_fidus_2018"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch1_athena_fidus_2018",
+          "label": "luch1_athena_fidus_2018"
+        }
+      ]
+    },
+    {
+      "id": "doc:french-government-space-security-statements--ope",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "French government space security statements (open reporting)",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:luch1_athena_fidus_2018",
+          "label": "luch1_athena_fidus_2018"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch1_athena_fidus_2018",
+          "label": "luch1_athena_fidus_2018"
+        }
+      ]
+    },
+    {
+      "id": "case:sy12_geo_rpo_2021_22",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "sy12_geo_rpo_2021_22",
+      "t_peak": "2022-06-15",
+      "links": []
+    },
+    {
+      "id": "doc:amos-papers---open-ssa--sy-12-01-02-geo-proximit",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "AMOS papers / open SSA: SY-12 01/02 GEO proximity with US objects",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:sy12_geo_rpo_2021_22",
+          "label": "sy12_geo_rpo_2021_22"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:sy12_geo_rpo_2021_22",
+          "label": "sy12_geo_rpo_2021_22"
+        }
+      ]
+    },
+    {
+      "id": "doc:swf-chinese-military-rpo-fact-sheet--sy-12",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "SWF Chinese Military RPO fact sheet (SY-12)",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:sy12_geo_rpo_2021_22",
+          "label": "sy12_geo_rpo_2021_22"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:sy12_geo_rpo_2021_22",
+          "label": "sy12_geo_rpo_2021_22"
+        }
+      ]
+    },
+    {
+      "id": "case:luch2_trailing_2023",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "luch2_trailing_2023",
+      "t_peak": "2023-10-15",
+      "links": []
+    },
+    {
+      "id": "doc:launch-luch-olymp-k-2--12-mar-2023",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Launch Luch/Olymp-K 2 ~12 Mar 2023",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:luch2_trailing_2023",
+          "label": "luch2_trailing_2023"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch2_trailing_2023",
+          "label": "luch2_trailing_2023"
+        }
+      ]
+    },
+    {
+      "id": "doc:breaking-defense-oct-2023--second-luch-trailing-",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Breaking Defense Oct 2023: second Luch trailing Western systems in GEO",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:luch2_trailing_2023",
+          "label": "luch2_trailing_2023"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:luch2_trailing_2023",
+          "label": "luch2_trailing_2023"
+        }
+      ]
+    },
+    {
+      "id": "case:shiyan7_experimental_2015",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "shiyan7_experimental_2015",
+      "t_peak": "2015-07-01",
+      "links": []
+    },
+    {
+      "id": "doc:open-ssa-literature--shiyan-7--sy-7--experimenta",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Open SSA literature: Shiyan-7 (SY-7) experimental spacecraft associated with proximity-operations discussion in public sources",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:shiyan7_experimental_2015",
+          "label": "shiyan7_experimental_2015"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:shiyan7_experimental_2015",
+          "label": "shiyan7_experimental_2015"
+        }
+      ]
+    },
+    {
+      "id": "doc:public-catalog-notes-on-chinese-experimental-shi",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Public catalog notes on Chinese experimental Shiyan series maneuverability",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:shiyan7_experimental_2015",
+          "label": "shiyan7_experimental_2015"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:shiyan7_experimental_2015",
+          "label": "shiyan7_experimental_2015"
+        }
+      ]
+    },
+    {
+      "id": "case:yaogan29_recon_2020",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "yaogan29_recon_2020",
+      "t_peak": "2020-07-01",
+      "links": []
+    },
+    {
+      "id": "doc:public-dual-use-yaogan-recon---eo-catalog-class",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Public dual-use Yaogan recon / EO catalog class",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:yaogan29_recon_2020",
+          "label": "yaogan29_recon_2020"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:yaogan29_recon_2020",
+          "label": "yaogan29_recon_2020"
+        }
+      ]
+    },
+    {
+      "id": "doc:open-source-ssa-listings-of-yaogan-29-leo-recon-",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Open-source SSA listings of Yaogan-29 LEO recon operations",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:yaogan29_recon_2020",
+          "label": "yaogan29_recon_2020"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:yaogan29_recon_2020",
+          "label": "yaogan29_recon_2020"
+        }
+      ]
+    },
+    {
+      "id": "case:tianhe_css_assembly_2021",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "tianhe_css_assembly_2021",
+      "t_peak": "2021-10-15",
+      "links": []
+    },
+    {
+      "id": "doc:public-cnsa-open-press--tianhe-core-module-launc",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Public CNSA/open press: Tianhe core module launch Apr 2021; multiple cargo/crew dockings 2021\u201322",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:tianhe_css_assembly_2021",
+          "label": "tianhe_css_assembly_2021"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:tianhe_css_assembly_2021",
+          "label": "tianhe_css_assembly_2021"
+        }
+      ]
+    },
+    {
+      "id": "doc:open-ssa-timelines-of-css-assembly-sequence--202",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Open SSA timelines of CSS assembly sequence (2021)",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:tianhe_css_assembly_2021",
+          "label": "tianhe_css_assembly_2021"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:tianhe_css_assembly_2021",
+          "label": "tianhe_css_assembly_2021"
+        }
+      ]
+    },
+    {
+      "id": "case:yaogan3_recon_2016",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "yaogan3_recon_2016",
+      "t_peak": "2016-07-01",
+      "links": []
+    },
+    {
+      "id": "doc:public-catalog---dual-use-eo-sar-recon-class--ya",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Public catalog / dual-use EO-SAR recon class (Yaogan series)",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:yaogan3_recon_2016",
+          "label": "yaogan3_recon_2016"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:yaogan3_recon_2016",
+          "label": "yaogan3_recon_2016"
+        }
+      ]
+    },
+    {
+      "id": "doc:open-literature-on-yaogan-leo-recon-constellatio",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Open literature on Yaogan LEO recon constellation operations",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:yaogan3_recon_2016",
+          "label": "yaogan3_recon_2016"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:yaogan3_recon_2016",
+          "label": "yaogan3_recon_2016"
+        }
+      ]
+    },
+    {
+      "id": "case:cosmos2550_military_leo_2022",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "cosmos2550_military_leo_2022",
+      "t_peak": "2022-07-01",
+      "links": []
+    },
+    {
+      "id": "doc:public-catalog--cosmos-2550-military-leo-class--",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Public catalog: COSMOS 2550 military LEO class (Russian MOD series identifiers in open catalogs)",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:cosmos2550_military_leo_2022",
+          "label": "cosmos2550_military_leo_2022"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:cosmos2550_military_leo_2022",
+          "label": "cosmos2550_military_leo_2022"
+        }
+      ]
+    },
+    {
+      "id": "doc:open-source-space-situational-awareness-listings",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Open-source space situational awareness listings of Cosmos military spacecraft",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:cosmos2550_military_leo_2022",
+          "label": "cosmos2550_military_leo_2022"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:cosmos2550_military_leo_2022",
+          "label": "cosmos2550_military_leo_2022"
+        }
+      ]
+    },
+    {
+      "id": "case:beidou3_m11_meo_2019",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "beidou3_m11_meo_2019",
+      "t_peak": "2019-07-01",
+      "links": []
+    },
+    {
+      "id": "doc:public-beidou-3-constellation-deployment-timelin",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Public BeiDou-3 constellation deployment timelines (MEO M-series)",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:beidou3_m11_meo_2019",
+          "label": "beidou3_m11_meo_2019"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:beidou3_m11_meo_2019",
+          "label": "beidou3_m11_meo_2019"
+        }
+      ]
+    },
+    {
+      "id": "doc:open-documentation-of-beidou-3-pnt-dual-use-gnss",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Open documentation of BeiDou-3 PNT dual-use GNSS operations",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:beidou3_m11_meo_2019",
+          "label": "beidou3_m11_meo_2019"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:beidou3_m11_meo_2019",
+          "label": "beidou3_m11_meo_2019"
+        }
+      ]
+    },
+    {
+      "id": "case:placebo_terra_2015",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "placebo_terra_2015",
+      "t_peak": "2015-09-15",
+      "links": []
+    },
+    {
+      "id": "doc:control-eo-scientific-same-calendar-as-luch-inte",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Control EO scientific same calendar as Luch Intelsat 2015",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:placebo_terra_2015",
+          "label": "placebo_terra_2015"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_terra_2015",
+          "label": "placebo_terra_2015"
+        }
+      ]
+    },
+    {
+      "id": "case:placebo_terra_2018",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "placebo_terra_2018",
+      "t_peak": "2018-09-01",
+      "links": []
+    },
+    {
+      "id": "doc:control-same-calendar-as-athena-fidus-window",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Control same calendar as Athena-Fidus window",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:placebo_terra_2018",
+          "label": "placebo_terra_2018"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_terra_2018",
+          "label": "placebo_terra_2018"
+        }
+      ]
+    },
+    {
+      "id": "case:placebo_aqua_2015",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "placebo_aqua_2015",
+      "t_peak": "2015-09-15",
+      "links": []
+    },
+    {
+      "id": "doc:a-train-scientific-control-same-calendar-as-luch",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "A-Train scientific control same calendar as Luch 2015",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:placebo_aqua_2015",
+          "label": "placebo_aqua_2015"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_aqua_2015",
+          "label": "placebo_aqua_2015"
+        }
+      ]
+    },
+    {
+      "id": "case:placebo_landsat8_2018",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "placebo_landsat8_2018",
+      "t_peak": "2018-09-01",
+      "links": []
+    },
+    {
+      "id": "doc:civil-eo-control-vs-athena-fidus-calendar",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Civil EO control vs Athena-Fidus calendar",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:placebo_landsat8_2018",
+          "label": "placebo_landsat8_2018"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_landsat8_2018",
+          "label": "placebo_landsat8_2018"
+        }
+      ]
+    },
+    {
+      "id": "case:placebo_noaa20_2023",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "placebo_noaa20_2023",
+      "t_peak": "2023-10-15",
+      "links": []
+    },
+    {
+      "id": "doc:control-vs-luch-2-2023-window",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Control vs Luch-2 2023 window",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:placebo_noaa20_2023",
+          "label": "placebo_noaa20_2023"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_noaa20_2023",
+          "label": "placebo_noaa20_2023"
+        }
+      ]
+    },
+    {
+      "id": "case:placebo_noaa18_2021",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "placebo_noaa18_2021",
+      "t_peak": "2022-06-15",
+      "links": []
+    },
+    {
+      "id": "doc:control-same-calendar-as-sy-12-window",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Control same calendar as SY-12 window",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:placebo_noaa18_2021",
+          "label": "placebo_noaa18_2021"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_noaa18_2021",
+          "label": "placebo_noaa18_2021"
+        }
+      ]
+    },
+    {
+      "id": "case:placebo_aqua_2020",
+      "kind": "case",
+      "gotham_category": "Event",
+      "label": "placebo_aqua_2020",
+      "t_peak": "2020-07-01",
+      "links": []
+    },
+    {
+      "id": "doc:scientific-control-vs-yaogan-29-2020-window",
+      "kind": "document",
+      "gotham_category": "Document",
+      "label": "Scientific control vs Yaogan-29 2020 window",
+      "links": [
+        {
+          "type": "mentions",
+          "target": "case:placebo_aqua_2020",
+          "label": "placebo_aqua_2020"
+        },
+        {
+          "type": "validatedBy",
+          "target": "case:placebo_aqua_2020",
+          "label": "placebo_aqua_2020"
+        }
+      ]
+    }
+  ]
+}

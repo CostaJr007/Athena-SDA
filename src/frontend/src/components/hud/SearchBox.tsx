@@ -77,7 +77,8 @@ export default function SearchBox({ sats, onSelect }: SearchBoxProps) {
             setOpen(false)
           }
         }}
-        placeholder="NORAD / name…"
+        id="athena-search"
+        placeholder="NORAD / name…  ( / )"
         className="athena-input w-full py-2.5 pl-9 pr-3 text-sm tracking-wide"
       />
       {open && results.length > 0 && (

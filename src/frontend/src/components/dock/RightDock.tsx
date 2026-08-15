@@ -1,17 +1,18 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import SidePanel from './SidePanel'
 import type { SatInfo } from '@/lib/satellites'
 import { UI_GROUPS, formatUtc } from '@/lib/satellites'
 import type { Telemetry } from '@/lib/satellites'
 import {
-  bobBrief,
   boardThreat,
   formatOnsetDate,
+  formatPc,
   THREAT_STYLE,
   type BoardEntry,
 } from '@/lib/risk-report'
 import { countryLabel } from '@/lib/country-flag'
 import CountryFlag from '@/components/hud/CountryFlag'
+import QuantFingerprint from '@/components/hud/QuantFingerprint'
 
 interface RightDockProps {
   sat: SatInfo | null
@@ -44,56 +45,10 @@ export default function RightDock({
   fps,
   reportDay,
 }: RightDockProps) {
-  const [chatInput, setChatInput] = useState('')
-  const [chatLog, setChatLog] = useState<
-    { role: 'op' | 'bob'; text: string }[]
-  >([
-    {
-      role: 'bob',
-      text: 'Cmdr. Bob online. Select a watchlist track for a quant briefing (scores only — no invented threat).',
-    },
-  ])
   const [tasking, setTasking] = useState<'IDLE' | 'DRAFT' | 'VALIDATED' | 'APPROVED'>('IDLE')
 
   const group = sat ? UI_GROUPS[sat.group] : null
   const threat = boardEntry ? boardThreat(boardEntry) : null
-
-  const lastBriefedRef = useRef<number | null>(null)
-  useEffect(() => {
-    if (!boardEntry) return
-    const norad = boardEntry.norad_id
-    if (lastBriefedRef.current === norad) return
-    lastBriefedRef.current = norad
-    const brief = bobBrief(boardEntry)
-    // Defer the append so the setState is not synchronous inside the effect
-    // (react-hooks/set-state-in-effect rule).
-    const id = window.setTimeout(() => {
-      setChatLog((prev) => {
-        if (prev[prev.length - 1]?.role === 'bob' && prev[prev.length - 1].text === brief) {
-          return prev
-        }
-        return [...prev, { role: 'bob' as const, text: brief }].slice(-12)
-      })
-    }, 0)
-    return () => clearTimeout(id)
-  }, [boardEntry])
-
-  const sendChat = (e: React.FormEvent) => {
-    e.preventDefault()
-    const q = chatInput.trim()
-    if (!q) return
-    let reply: string
-    if (boardEntry) {
-      reply = bobBrief(boardEntry)
-    } else if (sat) {
-      reply = `Track #${sat.norad} (${sat.name}): no row in risk_report for this NORAD — orbital telemetry only. Watchlist objects carry IF/pair scores.`
-    } else {
-      reply =
-        'No object selected. Open a priority track on the mission board or click a satellite on the globe.'
-    }
-    setChatLog((prev) => [...prev, { role: 'op', text: q }, { role: 'bob', text: reply }])
-    setChatInput('')
-  }
 
   return (
     <SidePanel
@@ -101,8 +56,8 @@ export default function RightDock({
       title="Track intel"
       subtitle={
         reportDay
-          ? `Telemetry · ML ${reportDay} · Bob`
-          : 'Telemetry · fusion · Bob'
+          ? `Telemetry · ML ${reportDay}`
+          : 'Telemetry · fusion'
       }
       footer={
         <div className="flex items-center justify-between text-[13px] text-zinc-400">
@@ -293,15 +248,21 @@ export default function RightDock({
                     <Metric k="Anomaly" v={boardEntry.anomaly_score.toFixed(3)} />
                     <Metric k="Status" v={boardEntry.status} />
                     <Metric
+                      k="Triage"
+                      v={boardEntry.triage && boardEntry.triage !== 'OPEN' ? boardEntry.triage : 'OPEN'}
+                    />
+                    <Metric
                       k="Mil detect"
                       v={boardEntry.is_military_detection ? 'YES' : 'no'}
                     />
                     <Metric
                       k="DQ"
                       v={
-                        boardEntry.data_quality.reliable
-                          ? `${(boardEntry.data_quality.score * 100).toFixed(0)}%`
-                          : 'UNRELIABLE'
+                        boardEntry.data_quality?.reliable
+                          ? `${((boardEntry.data_quality.score ?? 0) * 100).toFixed(0)}%`
+                          : boardEntry.data_quality
+                            ? 'UNRELIABLE'
+                            : '—'
                       }
                     />
                     <Metric
@@ -315,7 +276,7 @@ export default function RightDock({
                     <Metric
                       k="DFA α"
                       v={
-                        boardEntry.features_snapshot.dfa_hurst_sma != null
+                        boardEntry.features_snapshot?.dfa_hurst_sma != null
                           ? boardEntry.features_snapshot.dfa_hurst_sma.toFixed(3)
                           : '—'
                       }
@@ -323,7 +284,7 @@ export default function RightDock({
                     <Metric
                       k="Shannon H"
                       v={
-                        boardEntry.features_snapshot.shannon_entropy_sma_30d != null
+                        boardEntry.features_snapshot?.shannon_entropy_sma_30d != null
                           ? boardEntry.features_snapshot.shannon_entropy_sma_30d.toFixed(
                               2,
                             )
@@ -334,7 +295,7 @@ export default function RightDock({
                     <Metric
                       k="F10.7"
                       v={
-                        boardEntry.features_snapshot.f10_7 != null
+                        boardEntry.features_snapshot?.f10_7 != null
                           ? String(boardEntry.features_snapshot.f10_7)
                           : '—'
                       }
@@ -352,9 +313,25 @@ export default function RightDock({
                         dist {boardEntry.pair.min_distance_km.toFixed(1)} km · coint p=
                         {boardEntry.pair.cointegration_pvalue.toExponential(2)} · risk{' '}
                         {boardEntry.pair.pair_risk.toFixed(3)}
+                        {boardEntry.pair.tca_utc
+                          ? ` · TCA ${boardEntry.pair.tca_utc.slice(11, 16)}Z`
+                          : ''}
+                        {boardEntry.pair.pc != null
+                          ? ` · Pc ${formatPc(boardEntry.pair.pc)}`
+                          : ''}
                       </div>
                     </div>
                   )}
+
+                  <div className="mt-2 border border-white/10 bg-black/40 px-2 py-2">
+                    <div className="text-[12px] uppercase tracking-wider text-zinc-400">
+                      Quant fingerprint
+                    </div>
+                    <p className="mt-0.5 text-[10px] text-zinc-600">
+                      Cited noise identity — LZ76 · DFA · CUSUM · DS
+                    </p>
+                    <QuantFingerprint entry={boardEntry} size="sm" />
+                  </div>
 
                   {boardEntry.evidence && (
                     <div className="mt-2 border border-violet-400/25 bg-violet-500/10 px-2.5 py-2">
@@ -444,50 +421,10 @@ export default function RightDock({
           )}
         </section>
 
-        <section className="flex min-h-0 flex-1 flex-col">
-          <div className="mb-2 text-[13px] uppercase tracking-[0.2em] text-zinc-400">
-            Bob · tactical copilot
-          </div>
-          <div className="flex min-h-[160px] flex-1 flex-col border border-white/12 bg-black/60">
-            <div className="athena-scroll min-h-[120px] flex-1 space-y-2 overflow-y-auto p-2.5">
-              {chatLog.map((m, i) => (
-                <div
-                  key={i}
-                  className={`px-2.5 py-2 text-[14px] leading-relaxed ${
-                    m.role === 'bob'
-                      ? 'border border-emerald-400/25 bg-emerald-400/10 text-zinc-100'
-                      : 'border border-white/10 bg-white/[0.03] text-zinc-300'
-                  }`}
-                >
-                  <div className="mb-0.5 text-[12px] uppercase tracking-wider text-zinc-400">
-                    {m.role === 'bob' ? 'BOB' : 'CMDR'}
-                  </div>
-                  {m.text}
-                </div>
-              ))}
-            </div>
-            <form
-              onSubmit={sendChat}
-              className="flex gap-1.5 border-t border-white/10 p-2"
-            >
-              <input
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Ask Bob about this track…"
-                className="athena-input min-w-0 flex-1 px-2.5 py-1.5 text-[14px]"
-              />
-              <button
-                type="submit"
-                className="athena-btn athena-btn-active px-2.5 py-1.5 text-[13px]"
-              >
-                Send
-              </button>
-            </form>
-          </div>
-          <p className="mt-1.5 text-[12px] text-zinc-500">
-            Local quant brief · watsonx optional later
-          </p>
-        </section>
+        <p className="border border-sky-400/20 bg-sky-500/[0.05] px-2.5 py-2 text-[12px] leading-relaxed text-zinc-400">
+          Investigation (G) walks typed ontology links for the selected
+          object. Scores stay on this dock.
+        </p>
       </div>
     </SidePanel>
   )

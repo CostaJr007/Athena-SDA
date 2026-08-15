@@ -14,7 +14,7 @@
 
 ---
 
-**Integration:** Backend risk report ↔ frontend mission board is wired via `athena.risk_report.v1` + `scripts/sync_frontend_data.ps1`. See [`docs/FINAL_INTEGRATION_STATUS.md`](docs/FINAL_INTEGRATION_STATUS.md).
+**Integration:** Backend risk report ↔ frontend mission board is wired via `athena.risk_report.v1` + `scripts/sync_frontend_data.py` (cross-platform; replaces the old `.ps1`/`.sh` pair). See [`docs/FINAL_INTEGRATION_STATUS.md`](docs/FINAL_INTEGRATION_STATUS.md).
 
 ### Start here
 
@@ -29,6 +29,8 @@
 | **[Foundation](docs/FOUNDATION_QUANT_VALIDATION.md)** | Doctrine + what is validated |
 | **[Palantir patents (verified)](docs/references/palantir_patents.md)** | Corrected citations + architectural mapping |
 | **[Pitch script](docs/PITCH.md)** | 1-minute demo narrative (honest framing) |
+| **[Strategic roadmap](docs/ROADMAP_ESTRATEGICO.md)** | Cronograma do que falta (tracks T1–T9) |
+| **[Agent handoff](docs/AGENT_HANDOFF.md)** | Instruções para outra IA analisar / continuar |
 | **[Walk-forward PoC HTML](src/frontend/public/reports/walkforward_poc.html)** | In-browser demo narrative |
 | **Mission board UI** | `cd src/frontend && npm run dev` |
 
@@ -197,10 +199,15 @@ cd docs/paper && pdflatex athena_sda_article.tex
 | Full HF TLE cache | No | Optional re-seed |
 
 ```bash
+# one-time seed
 python scripts/run_anomaly_monitor.py seed-history --hf --start-year 2014
 python scripts/run_anomaly_monitor.py seed-space-weather --force --start-year 2014
-python scripts/run_anomaly_monitor.py run-daily
-powershell -File scripts/sync_frontend_data.ps1
+
+# daily refresh (organized pipeline: weather → ingest → baseline → score → sync)
+bash scripts/run_daily_ingest.sh
+
+# optional: schedule it daily at 03:15 UTC (idempotent, reversible)
+bash scripts/install_daily_cron.sh
 ```
 
 ---
@@ -217,6 +224,28 @@ pip install -r requirements.txt
 ```bash
 cd src/frontend && npm install && npm run dev
 # http://127.0.0.1:3000
+```
+
+### Developer tooling
+
+```bash
+# Run the test suite (pytest) — fast, network-free unit tests
+pip install -r requirements-dev.txt
+python -m pytest -q
+
+# Continuous validation / drift health check → data/alerts/validation_health.json
+python scripts/run_continuous_validation.py            # stats + drift + calibration
+python scripts/run_continuous_validation.py --run-paper  # also re-run Claims A+B
+
+# Align risk_report (pc/tca) + investigation.v1 + frontend public/
+python scripts/compat_refresh.py
+
+# One-shot sync of ML artifacts into the frontend public/ folder
+python scripts/sync_frontend_data.py
+
+# CI (.github/workflows/ci.yml) runs pytest + frontend lint/build on every PR.
+# Reproducible image: docker build -t athena-sda .
+# Full board + sidecar: docker compose up --build
 ```
 
 ---

@@ -174,4 +174,22 @@ continuation); US20250329089A1 (patent 5 continuation).
 - No separate Palantir patent on orbital-maneuver detection or TLE processing
   exists; the two space-relevant families are patents 1 and 4 above.
 
-*Athena-SDA Patent Research Reference — citations verified 2026-08-10.*
+---
+
+## 6. Dynamic ontology (foundational, not Athena-specific)
+
+* **US 7,962,495 B2 / US 9,589,014 B2** — *Creating data in a data store using a dynamic ontology* (Gettings et al.). Objects, properties, links as a user-defined model over heterogeneous stores. Athena implements a **fixed military-first subset** (`src/ontology.json` + `athena.investigation.v1`), not a general ontology editor.
+* **Government context (not a patent):** In-Q-Tel funded Palantir early; CIA used Gotham circa 2008 to join siloed intel databases (public reporting / 2013 client-list leak). Athena uses **public TLE + GFZ only** and does not ingest person-level intel.
+
+## 7. Object-layer mapping (2026-08)
+
+| Gotham / Foundry | Athena artifact |
+|------------------|-----------------|
+| OMS (types) | `src/ontology.json` |
+| OSS (reads) | `data/alerts/investigation_latest.json` |
+| Actions + log | `data/alerts/actions.jsonl` + `/api/actions` |
+| Object View + Graph | Investigation canvas (G) |
+| Temporal tile | `EventReplayPanel` in the same fiche |
+| Dossier | client-exported `dossier_{norad}_{day}.html` |
+
+*Athena-SDA Patent Research Reference — citations verified 2026-08-10; object-layer mapping 2026-08-12.*

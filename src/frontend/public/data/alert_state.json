@@ -1,0 +1,22 @@
+{
+  "schema": "athena.alert_state.v1",
+  "alerts": {
+    "40258": {
+      "norad": 40258,
+      "status": "RESOLVED",
+      "previous_status": "ACKNOWLEDGED",
+      "updated_at": "2026-08-13T13:54:39.538342+00:00",
+      "operator": "test",
+      "note": "closed"
+    },
+    "99999": {
+      "norad": 99999,
+      "status": "RESOLVED",
+      "previous_status": "OPEN",
+      "updated_at": "2026-08-13T13:54:39.538823+00:00",
+      "operator": "test",
+      "note": ""
+    }
+  },
+  "updated": "2026-08-13T13:54:39.538825+00:00"
+}
