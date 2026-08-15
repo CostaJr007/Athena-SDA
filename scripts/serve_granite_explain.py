@@ -86,7 +86,17 @@ class Handler(BaseHTTPRequestHandler):
         path = parsed.path
         q = parse_qs(parsed.query)
         if path in ("/health", "/api/health"):
-            self._json(200, {"ok": True, "service": "athena-sidecar"})
+            from src.graph_qa import groq_api_key, tavily_api_key
+
+            self._json(
+                200,
+                {
+                    "ok": True,
+                    "service": "athena-sidecar",
+                    "groq": bool(groq_api_key()),
+                    "tavily": bool(tavily_api_key()),
+                },
+            )
             return
         if path in ("/investigation", "/api/investigation"):
             inv = _read_investigation()

@@ -11,19 +11,26 @@ interface OntologyExplainPanelProps {
   graph: ObjectGraph | null
 }
 
+interface WebCite {
+  title?: string
+  url?: string
+}
+
 interface ExplainResponse {
   text: string
   model: string
-  source: 'watsonx' | 'fallback'
+  source: 'groq' | 'fallback' | 'watsonx'
+  citations?: WebCite[]
 }
 
 interface ChatTurn {
-  who: 'op' | 'granite'
+  who: 'op' | 'copilot'
   text: string
+  cites?: WebCite[]
 }
 
 /**
- * Granite column beside the object graph: situation brief + ask.
+ * Groq + Tavily column beside the object graph.
  * Never surfaces sidecar / .env / script copy.
  */
 export default function OntologyExplainPanel({
@@ -31,10 +38,8 @@ export default function OntologyExplainPanel({
   graph,
 }: OntologyExplainPanelProps) {
   const [turns, setTurns] = useState<ChatTurn[]>([])
-  const [model, setModel] = useState<string>('granite')
-  const [source, setSource] = useState<'watsonx' | 'fallback' | 'loading'>(
-    'loading',
-  )
+  const [model, setModel] = useState<string>('groq')
+  const [source, setSource] = useState<'groq' | 'fallback' | 'loading'>('loading')
   const [question, setQuestion] = useState('')
   const [busy, setBusy] = useState(false)
   const logRef = useRef<HTMLDivElement>(null)
@@ -72,14 +77,15 @@ export default function OntologyExplainPanel({
   const applyAnswer = (
     seq: number,
     text: string,
-    from: 'watsonx' | 'fallback',
+    from: 'groq' | 'fallback',
     remoteModel?: string,
+    cites?: WebCite[],
   ) => {
     if (seq !== seqRef.current) return
-    setTurns((prev) => [...prev, { who: 'granite', text }])
+    setTurns((prev) => [...prev, { who: 'copilot', text, cites }])
     setSource(from)
-    if (from === 'watsonx' && remoteModel) setModel(remoteModel)
-    else if (from === 'fallback') setModel('granite')
+    if (from === 'groq' && remoteModel) setModel(remoteModel)
+    else if (from === 'fallback') setModel('local')
   }
 
   const run = async (q?: string) => {
@@ -104,13 +110,16 @@ export default function OntologyExplainPanel({
       const data = (await res.json()) as ExplainResponse
       const remote = (data.text ?? '').trim()
       const leakedOps =
-        /sidecar|serve_granite|\.env|WATSONX_APIKEY|watsonx keys/i.test(remote)
-      if (remote && !leakedOps && data.source === 'watsonx') {
-        applyAnswer(seq, remote, 'watsonx', data.model || 'ibm/granite')
+        /sidecar|serve_granite|\.env|WATSONX_APIKEY|GROQ_API_KEY|TAVILY_API_KEY/i.test(
+          remote,
+        )
+      const cites = (data.citations ?? []).filter((c) => c.url)
+      if (remote && !leakedOps && data.source === 'groq') {
+        applyAnswer(seq, remote, 'groq', data.model || 'groq', cites)
         return
       }
       if (remote && !leakedOps) {
-        applyAnswer(seq, remote, 'fallback', data.model)
+        applyAnswer(seq, remote, 'fallback', data.model, cites)
         return
       }
       applyAnswer(seq, answerSituation(body), 'fallback')
@@ -153,22 +162,22 @@ export default function OntologyExplainPanel({
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-white/10 px-2.5 py-1.5">
         <div className="min-w-0">
           <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-sky-200/90">
-            IBM Granite
+            Graph copilot
           </div>
           <p className="mt-0.5 truncate text-[10px] text-zinc-500">
-            Ask about this object — scores stay immutable
+            Groq + Tavily — scores stay immutable
           </p>
         </div>
         <span
           className={`shrink-0 border px-1.5 py-0.5 text-[10px] uppercase tracking-wider ${
-            source === 'watsonx'
+            source === 'groq'
               ? 'border-sky-400/50 text-sky-200'
               : source === 'loading'
                 ? 'border-white/15 text-zinc-500'
                 : 'border-sky-400/30 text-sky-200/80'
           }`}
         >
-          {source === 'loading' ? 'reading…' : source === 'watsonx' ? model : 'granite'}
+          {source === 'loading' ? 'reading…' : source === 'groq' ? model : 'local'}
         </span>
       </div>
       <div
@@ -190,6 +199,22 @@ export default function OntologyExplainPanel({
               </div>
             )}
             {t.text}
+            {t.who === 'copilot' && t.cites && t.cites.length > 0 && (
+              <ul className="mt-1.5 space-y-0.5 text-[11px] text-sky-200/80">
+                {t.cites.slice(0, 3).map((c) => (
+                  <li key={c.url} className="truncate">
+                    <a
+                      href={c.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline decoration-sky-400/40 underline-offset-2"
+                    >
+                      {c.title || c.url}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         ))}
         {busy && (
@@ -203,7 +228,7 @@ export default function OntologyExplainPanel({
         <input
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Ask about this situation (pair, alert, weather, scores)…"
+          placeholder="Ask about this graph (pair, alert, weather, scores)…"
           className="athena-input min-w-0 flex-1 px-2 py-1.5 text-[13px]"
         />
         <button

@@ -65,3 +65,6 @@ cd docs/paper && pdflatex athena_sda_article.tex
 **Operational FE↔BE contract is complete** for the mission board (`athena.risk_report.v1` + sync).  
 **Scientific proof pack is complete** for demo and paper draft.  
 Globe remains a visualization layer; quant truth is the risk report + walk-forward artifacts.
+
+Graph Ask uses **Groq** (LLM) + **Tavily** (public web cites) via `/api/explain`.
+Without those keys the same panel walks the graph locally. Scores stay immutable.

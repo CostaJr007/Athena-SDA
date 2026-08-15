@@ -34,6 +34,20 @@
 | **[Walk-forward PoC HTML](src/frontend/public/reports/walkforward_poc.html)** | In-browser demo narrative |
 | **Mission board UI** | `cd src/frontend && npm run dev` |
 
+### Hackathon demo (this is the closed build)
+
+Free APIs only: **Groq** (graph answers) + **Tavily** (public web citations).
+Quant scores stay immutable.
+
+```powershell
+copy .env.example .env
+# set GROQ_API_KEY and TAVILY_API_KEY in .env
+powershell -File scripts/run_hackathon_demo.ps1
+```
+
+Sidecar: http://127.0.0.1:8787/api/health  
+Board: http://127.0.0.1:3000 — open an object, ask about the graph.
+
 ```bash
 python scripts/run_paper_validation.py --threshold 0.50
 python scripts/plot_prepeak_curves.py

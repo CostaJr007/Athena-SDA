@@ -176,7 +176,7 @@ function WatchlistEditor() {
   if (rows == null) {
     return (
       <p className="border-t border-white/10 px-3 py-2 text-[11px] text-zinc-600">
-        Watchlist edits need the sidecar (`python scripts/serve_granite_explain.py`).
+        Watchlist edits need the sidecar on :8787.
       </p>
     )
   }

@@ -52,7 +52,7 @@ Nesta rodada anterior foram concluídos:
 cd /run/media/adeilsoncosta/Novo\ volume/Athena-SDA   # ajuste o caminho real
 
 # Testes (rápidos, sem rede)
-python -m pytest -q                 # esperado: 57+ passed
+python -m pytest -q                 # esperado: 61+ passed
 
 # Smoke test do núcleo quant
 python scripts/smoke_test.py        # esperado: SMOKE OK
