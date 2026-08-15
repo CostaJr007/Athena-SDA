@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "athena-sda"
+version = "0.1.0"
+description = "Military-first Space Domain Awareness (SDA) copilot — quantitative orbital noise analysis and micro-anomaly detection."
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = { text = "Proprietary" }
+authors = [{ name = "Athena-SDA" }]
+# Runtime dependencies are pinned by lower/upper bounds in requirements.txt;
+# keep this block informational to avoid duplicating version policy.
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0,<9",
+    "jsonschema>=4.20,<5",
+]
+
+[tool.setuptools]
+# The code imports as `src.*` (namespace package). Keep it simple: do not
+# attempt a strict wheel layout — scripts run from the repo root.
+py-modules = []
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"

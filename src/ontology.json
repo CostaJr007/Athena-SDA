@@ -1,9 +1,10 @@
 {
   "ontology": "athena.sda.v1",
-  "description": "Typed object model for Athena-SDA (Palantir Ontology-inspired; see docs/references/palantir_patents.md — US 12,374,011 B2 Interactive data object map). dataset->object type, row->object, column->property, join->link type.",
+  "description": "Typed object model for Athena-SDA. Gotham-style categories Entity/Event/Document (Foundry type mapping). Inspiration: US 12,374,011 B2 object map; US 7,962,495 / 9,589,014 dynamic ontology; In-Q-Tel/CIA lineage is historical context only — no affiliation. dataset->object type, row->object, column->property, join->link type.",
   "objectTypes": {
     "Satellite": {
       "apiName": "Satellite",
+      "gothamCategory": "Entity",
       "primaryKey": "noradId",
       "properties": {
         "noradId": { "dataType": "integer", "required": true },
@@ -22,11 +23,17 @@
       },
       "links": {
         "threatens": { "target": "Satellite", "multiplicity": "MANY", "description": "suspect -> protected asset pair (shadowing / RPO proxy)" },
+        "threatenedBy": { "target": "Satellite", "multiplicity": "MANY", "description": "asset -> suspects in top_pairs (search-around)" },
+        "hasAlert": { "target": "Alert", "multiplicity": "ONE", "description": "elevated noise / mil detect / non-nominal" },
+        "validatedBy": { "target": "Case", "multiplicity": "MANY", "description": "walk-forward public t_peak (past-only IF)" },
+        "weather": { "target": "Weather", "multiplicity": "ONE", "description": "GFZ F10.7/Ap/Kp window" },
+        "fusedAs": { "target": "Evidence", "multiplicity": "ONE", "description": "Dempster-Shafer belief / conflict K" },
         "calibrationAnchor": { "target": "Satellite", "multiplicity": "MANY", "description": "baseline normality anchor" }
       }
     },
     "Alert": {
       "apiName": "Alert",
+      "gothamCategory": "Event",
       "primaryKey": "alertId",
       "properties": {
         "alertId": { "dataType": "string", "required": true },
@@ -42,8 +49,60 @@
         "source": { "target": "Satellite", "multiplicity": "ONE" }
       }
     },
+    "Case": {
+      "apiName": "Case",
+      "gothamCategory": "Event",
+      "primaryKey": "eventId",
+      "properties": {
+        "eventId": { "dataType": "string", "required": true },
+        "tPeak": { "dataType": "datetime" },
+        "hit": { "dataType": "boolean" },
+        "isPlacebo": { "dataType": "boolean" },
+        "leadDays": { "dataType": "double" }
+      },
+      "links": {
+        "subject": { "target": "Satellite", "multiplicity": "ONE" },
+        "samePeak": { "target": "Case", "multiplicity": "MANY", "description": "placebo or interest sharing t_peak calendar" }
+      }
+    },
+    "Weather": {
+      "apiName": "Weather",
+      "gothamCategory": "Event",
+      "primaryKey": "weatherId",
+      "properties": {
+        "weatherId": { "dataType": "string", "required": true },
+        "f107": { "dataType": "double" },
+        "apIndex": { "dataType": "double" },
+        "geomagneticStorm": { "dataType": "boolean" }
+      }
+    },
+    "Evidence": {
+      "apiName": "Evidence",
+      "gothamCategory": "Event",
+      "primaryKey": "evidenceId",
+      "properties": {
+        "evidenceId": { "dataType": "string", "required": true },
+        "beliefAnomalous": { "dataType": "double" },
+        "conflictK": { "dataType": "double" }
+      }
+    },
+    "Document": {
+      "apiName": "Document",
+      "gothamCategory": "Document",
+      "primaryKey": "documentId",
+      "properties": {
+        "documentId": { "dataType": "string", "required": true },
+        "title": { "dataType": "string" },
+        "source": { "dataType": "string" }
+      },
+      "links": {
+        "mentions": { "target": "Satellite", "multiplicity": "MANY" },
+        "validatedBy": { "target": "Case", "multiplicity": "MANY" }
+      }
+    },
     "Sensor": {
       "apiName": "Sensor",
+      "gothamCategory": "Entity",
       "primaryKey": "sensorId",
       "properties": {
         "sensorId": { "dataType": "string", "required": true },
@@ -55,6 +114,7 @@
     },
     "TaskingOrder": {
       "apiName": "TaskingOrder",
+      "gothamCategory": "Event",
       "primaryKey": "orderId",
       "properties": {
         "orderId": { "dataType": "string", "required": true },
@@ -81,6 +141,35 @@
       "operations": [{ "type": "createObject", "objectTypeApiName": "TaskingOrder" }],
       "validateOnly": true,
       "description": "Create a sensor tasking order for a satellite (validated, not executed — operator approval required)."
+    },
+    "AcknowledgeAlert": {
+      "apiName": "AcknowledgeAlert",
+      "parameters": {
+        "targetNorad": { "dataType": "integer" }
+      },
+      "validateOnly": true,
+      "description": "Operator ACK on today's alert — writes the action log only (US 12,657,514 Actions)."
+    },
+    "OpenCase": {
+      "apiName": "OpenCase",
+      "parameters": {
+        "targetNorad": { "dataType": "integer" },
+        "eventId": { "dataType": "string" }
+      },
+      "validateOnly": true,
+      "description": "Open a walk-forward case on this object — log only, does not change scores."
+    },
+    "ResolveAlert": {
+      "apiName": "ResolveAlert",
+      "parameters": { "targetNorad": { "dataType": "integer" } },
+      "validateOnly": true,
+      "description": "Close an acknowledged/open alert. Bookkeeping only — scores immutable."
+    },
+    "SuppressAlert": {
+      "apiName": "SuppressAlert",
+      "parameters": { "targetNorad": { "dataType": "integer" } },
+      "validateOnly": true,
+      "description": "Suppress a known/nuisance alert. Bookkeeping only — scores immutable."
     }
   }
 }

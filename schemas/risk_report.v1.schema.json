@@ -83,6 +83,10 @@
           "asset_name": { "type": ["string", "null"] },
           "min_distance_km": { "type": ["number", "null"] },
           "cointegration_pvalue": { "type": ["number", "null"] },
+          "pc": { "type": ["number", "null"] },
+          "tca_utc": { "type": ["string", "null"] },
+          "miss_distance_km": { "type": ["number", "null"] },
+          "covariance": { "type": ["object", "null"] },
           "pair_risk": { "type": ["number", "null"] },
           "risk_level": { "type": ["string", "null"] }
         }

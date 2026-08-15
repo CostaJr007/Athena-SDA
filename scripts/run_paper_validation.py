@@ -269,7 +269,7 @@ def build_package(*, thr: float = 0.50) -> Dict[str, Any]:
         "threshold": thr,
         "methods_summary": {
             "data": "Public TLE history (~2014–2026) + GFZ F10.7/Ap/Kp",
-            "features": "Keplerian + multi-scale Hurst/Shannon + CUSUM + Kolmogorov + SW",
+            "features": "Keplerian + LZ76/DFA/Shannon + Page CUSUM/EWMA/BOCPD + GFZ SW",
             "model": "Isolation Forest trained on baseline+asset past windows only",
             "protocol": "Walk-forward: at each asof, fit IF on past only; score target window",
             "priority_layer": "XGB weak labels + suspect×asset pairs (not used for Claim A/B hits)",

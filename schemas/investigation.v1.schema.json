@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://athena-sda.local/schemas/investigation.v1.schema.json",
+  "title": "athena.investigation.v1",
+  "description": "Gotham-lite object layer (OMS/OSS inspiration). Scores stay immutable copies of risk_report.v1. Palantir US 12,657,514 B2 Open API; US 12,374,011 B2 object map.",
+  "type": "object",
+  "required": ["schema", "generated_at", "objects"],
+  "properties": {
+    "schema": { "const": "athena.investigation.v1" },
+    "generated_at": { "type": "string" },
+    "day": { "type": ["string", "null"] },
+    "lineage": {
+      "type": "object",
+      "properties": {
+        "risk_report_schema": { "type": "string" },
+        "doctrine": { "type": "string" },
+        "protocol": { "type": "string" },
+        "threshold": { "type": "number" },
+        "hit_rule": { "type": "string" }
+      }
+    },
+    "object_sets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "ids"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "ids": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "gotham_category"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": {
+            "type": "string",
+            "enum": ["satellite", "alert", "case", "weather", "evidence", "document", "peer"]
+          },
+          "triage": { "type": "object" },
+          "gotham_category": { "enum": ["Entity", "Event", "Document"] },
+          "norad": { "type": ["integer", "null"] },
+          "label": { "type": "string" },
+          "links": { "type": "array" }
+        }
+      }
+    }
+  }
+}

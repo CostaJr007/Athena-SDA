@@ -63,3 +63,30 @@ def validate_risk_report(report: Dict[str, Any]) -> List[str]:
             if key not in entry:
                 violations.append(f"board entry missing '{key}'")
     return violations
+
+
+def validate_investigation(bundle: Dict[str, Any]) -> List[str]:
+    """Validate athena.investigation.v1 (object layer, not scores)."""
+    violations: List[str] = []
+    try:
+        import jsonschema  # type: ignore
+
+        schema = _load_schema("investigation.v1.schema.json")
+        if schema is None:
+            return ["investigation schema file missing"]
+        try:
+            jsonschema.validate(bundle, schema)
+            return []
+        except jsonschema.ValidationError as e:
+            return [f"investigation schema violation: {e.message}"]
+    except ImportError:
+        pass
+    except Exception as e:  # pragma: no cover
+        violations.append(f"investigation schema error: {e}")
+        return violations
+
+    if bundle.get("schema") != "athena.investigation.v1":
+        violations.append("missing schema='athena.investigation.v1'")
+    if "objects" not in bundle or not isinstance(bundle.get("objects"), list):
+        violations.append("objects must be a list")
+    return violations

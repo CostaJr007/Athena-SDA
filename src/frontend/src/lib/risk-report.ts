@@ -39,6 +39,9 @@ export interface PairInfo {
   cointegration_pvalue: number
   pair_risk: number
   risk_level: string
+  pc?: number | null
+  tca_utc?: string | null
+  miss_distance_km?: number | null
 }
 
 /** Corrected math framework — feature names match src/config.py (post-audit). */
@@ -115,6 +118,8 @@ export interface BoardEntry {
   window_end?: string | null
   score_delta_1d?: number | null
   anomaly_threshold_used?: number | null
+  /** Operational FSM (OPEN/ACK/…) — not a quant score. */
+  triage?: string
 }
 
 export interface TopPair {
@@ -130,6 +135,9 @@ export interface TopPair {
   risk_level: string
   proximity_score?: number
   coint_score?: number
+  pc?: number | null
+  tca_utc?: string | null
+  miss_distance_km?: number | null
 }
 
 export interface RiskSummary {
@@ -233,6 +241,27 @@ export function matchesFilters(b: BoardEntry, f: BoardFilters): boolean {
   return true
 }
 
+/**
+ * Histogram of one dimension after applying every filter *except* that
+ * dimension — Palantir US 12,374,011 B2 sub-histogram regeneration.
+ */
+export function histogramExcluding(
+  board: BoardEntry[],
+  filters: BoardFilters,
+  exclude: keyof BoardFilters,
+  keyFn: (b: BoardEntry) => string,
+): Array<{ value: string; count: number }> {
+  const f: BoardFilters = {
+    roles: exclude === 'roles' ? [] : filters.roles,
+    countries: exclude === 'countries' ? [] : filters.countries,
+    orbits: exclude === 'orbits' ? [] : filters.orbits,
+  }
+  return boardHistogram(
+    board.filter((b) => matchesFilters(b, f)),
+    keyFn,
+  )
+}
+
 /** Histogram of a board dimension (role / country / orbit) with counts. */
 export function boardHistogram<K extends string>(
   board: BoardEntry[],
@@ -316,6 +345,26 @@ export function sortedBoard(report: RiskReport | null): BoardEntry[] {
 }
 
 /** Format onset ISO/timestamp to short date for UI. */
+export function formatPc(pc: number | null | undefined): string {
+  if (pc == null || !Number.isFinite(pc)) return '—'
+  if (pc === 0) return '0'
+  if (pc < 0.001) return pc.toExponential(2)
+  return pc.toFixed(4)
+}
+
+export function applyTriageMap(
+  report: RiskReport,
+  alerts: Record<string, { status?: string }>,
+): RiskReport {
+  return {
+    ...report,
+    board: report.board.map((b) => ({
+      ...b,
+      triage: alerts[String(b.norad_id)]?.status ?? b.triage ?? 'OPEN',
+    })),
+  }
+}
+
 export function formatOnsetDate(raw?: string | null): string | null {
   if (!raw) return null
   const d = new Date(raw)
@@ -366,9 +415,18 @@ export function bobBrief(b: BoardEntry): string {
     parts.push('Geomagnetic storm context active (space weather).')
   }
   if (b.pair) {
+    const extra = [
+      b.pair.tca_utc ? `TCA ${b.pair.tca_utc.slice(11, 16)}Z` : '',
+      b.pair.pc != null ? `Pc ${formatPc(b.pair.pc)}` : '',
+    ]
+      .filter(Boolean)
+      .join(' · ')
     parts.push(
-      `Pair vs ${b.pair.asset_name} (#${b.pair.asset_norad}): dist ${b.pair.min_distance_km.toFixed(1)} km · pair_risk ${b.pair.pair_risk.toFixed(2)} (${b.pair.risk_level}).`,
+      `Pair vs ${b.pair.asset_name} (#${b.pair.asset_norad}): dist ${b.pair.min_distance_km.toFixed(1)} km · pair_risk ${b.pair.pair_risk.toFixed(2)} (${b.pair.risk_level})${extra ? ` · ${extra}` : ''}.`,
     )
+  }
+  if (b.triage && b.triage !== 'OPEN') {
+    parts.push(`Triage ${b.triage} (bookkeeping — scores unchanged).`)
   }
   if (!b.data_quality?.reliable) {
     parts.push(`DQ: unreliable (${(b.data_quality?.issues ?? []).join(', ') || 'issues'}).`)
@@ -389,14 +447,21 @@ const dataQualitySchema = z.object({
   tle_age_hours: z.number().optional(),
 })
 
-const pairInfoSchema = z.object({
-  asset_norad: z.number().optional(),
-  asset_name: z.string().optional(),
-  min_distance_km: z.number().optional(),
-  cointegration_pvalue: z.number().optional(),
-  pair_risk: z.number().optional(),
-  risk_level: z.string().optional(),
-})
+const pairInfoSchema = z
+  .object({
+    asset_norad: z.number().optional(),
+    asset_name: z.string().optional(),
+    min_distance_km: z.number().optional(),
+    cointegration_pvalue: z.number().optional(),
+    pair_risk: z.number().optional(),
+    risk_level: z.string().optional(),
+    pc: z.number().nullable().optional(),
+    tca_utc: z.string().nullable().optional(),
+    miss_distance_km: z.number().nullable().optional(),
+    conjunction_method: z.string().optional(),
+    hours_to_tca: z.number().nullable().optional(),
+  })
+  .passthrough()
 
 const featuresSnapshotSchema = z
   .object({
@@ -414,30 +479,33 @@ const evidenceSchema = z.object({
   conflict_K: z.number().optional(),
 })
 
-const boardEntrySchema = z.object({
-  norad_id: z.number(),
-  object_name: z.string().optional(),
-  role: z.string().optional(),
-  country: z.string().optional(),
-  purpose: z.string().optional(),
-  orbit_class: z.string().optional(),
-  anomaly_score: z.number(),
-  attention_score: z.number(),
-  kelly_allocation: z.number().optional(),
-  is_anomaly: z.boolean().optional(),
-  is_military_detection: z.boolean().optional(),
-  is_platform_health_flag: z.boolean().optional(),
-  is_calibration_object: z.boolean().optional(),
-  status: z.string().optional(),
-  xgb_class: z.string().nullable().optional(),
-  data_quality: dataQualitySchema.optional(),
-  evidence: evidenceSchema.optional(),
-  features_snapshot: featuresSnapshotSchema.optional(),
-  pair: pairInfoSchema.nullable().optional(),
-  anomaly_onset: z.unknown().optional(),
-  window_end: z.string().nullable().optional(),
-  score_delta_1d: z.number().nullable().optional(),
-})
+const boardEntrySchema = z
+  .object({
+    norad_id: z.number(),
+    object_name: z.string().optional(),
+    role: z.string().optional(),
+    country: z.string().optional(),
+    purpose: z.string().optional(),
+    orbit_class: z.string().optional(),
+    anomaly_score: z.number(),
+    attention_score: z.number(),
+    kelly_allocation: z.number().optional(),
+    is_anomaly: z.boolean().optional(),
+    is_military_detection: z.boolean().optional(),
+    is_platform_health_flag: z.boolean().optional(),
+    is_calibration_object: z.boolean().optional(),
+    status: z.string().optional(),
+    xgb_class: z.string().nullable().optional(),
+    data_quality: dataQualitySchema.passthrough().optional(),
+    evidence: evidenceSchema.passthrough().optional(),
+    features_snapshot: featuresSnapshotSchema.optional(),
+    pair: pairInfoSchema.nullable().optional(),
+    anomaly_onset: z.unknown().optional(),
+    window_end: z.string().nullable().optional(),
+    score_delta_1d: z.number().nullable().optional(),
+    triage: z.string().optional(),
+  })
+  .passthrough()
 
 const riskSummarySchema = z.object({
   n_scored: z.number().nullable().optional(),

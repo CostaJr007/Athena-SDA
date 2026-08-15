@@ -250,11 +250,11 @@
         calendars did not cross the threshold.
       </p>
       <div class="badge-row">
-        <span class="badge hit">5 / 5 interest hits</span>
-        <span class="badge hit">0 / 3 placebo hard hits</span>
-        <span class="badge warn">~201 day mean lead-time</span>
+        <span class="badge hit">GEO 5 / 5 hard hits</span>
+        <span class="badge hit">civil EO 0 / 7 hard hits</span>
+        <span class="badge warn">mean max 0.716 vs 0.457 · p≈0.001</span>
         <span class="badge">IF past-only · thr 0.50</span>
-        <span class="badge">Run 2026-07-26</span>
+        <span class="badge">Run 2026-08-11</span>
       </div>
     </header>
 
@@ -315,7 +315,7 @@
       </p>
       <div class="pipeline">
         <div class="pipe-step"><span class="pipe-n">1</span><span>Ingest public TLE history (Hugging Face / CelesTrak) + GFZ F10.7, Ap, Kp</span></div>
-        <div class="pipe-step"><span class="pipe-n">2</span><span>20-epoch window → features: Kepler + Shannon / Hurst / Kolmogorov / CUSUM / Mandelbrot / ADF + weather</span></div>
+        <div class="pipe-step"><span class="pipe-n">2</span><span>20-epoch window → features: Kepler + Shannon / DFA / LZ76 / Page CUSUM / EWMA / BOCPD + weather</span></div>
         <div class="pipe-step"><span class="pipe-n">3</span><span>Isolation Forest trains on windows ending before asof − 3 days (past only)</span></div>
         <div class="pipe-step"><span class="pipe-n">4</span><span>anomaly_score = clip(0.5 − decision_function) · hard hit if score ≥ 0.50 near public peak</span></div>
         <div class="pipe-step"><span class="pipe-n">5</span><span>Story: first hit date → lead-time → open-source report confirmation</span></div>
@@ -354,27 +354,27 @@
             <td>Irregular burns spread the histogram</td>
           </tr>
           <tr>
-            <td>Hurst R/S (1951)</td>
-            <td><code>hurst_exponent_sma</code></td>
-            <td>Does the series keep drifting one way?</td>
-            <td>H ≫ 0.5 → persistent low-thrust / control</td>
+            <td>DFA α (Peng 1994)</td>
+            <td><code>dfa_hurst_sma</code></td>
+            <td>Does the series keep a scaling trend?</td>
+            <td>α≫0.5 persistence; n=20 often floors at 0.5</td>
           </tr>
           <tr>
-            <td>Kolmogorov proxy</td>
-            <td><code>kolmogorov_proxy_7d</code></td>
+            <td>LZ76 (Kaspar–Schuster)</td>
+            <td><code>lz76_complexity</code></td>
             <td>Is the up/down pattern hard to compress?</td>
             <td>Active control resists simple compression</td>
           </tr>
           <tr>
-            <td>L1-CUSUM</td>
-            <td><code>l1_cusum_sma</code></td>
-            <td>When did the series break?</td>
-            <td>Localized break (often secondary in GEO folds)</td>
+            <td>Page CUSUM (ARL)</td>
+            <td><code>page_cusum_sma</code></td>
+            <td>When did the series leave its regime?</td>
+            <td>Structural change onset (GEO slot / control)</td>
           </tr>
           <tr>
-            <td>ΔSMA / maneuvers</td>
-            <td><code>delta_sma_7d_km</code>, <code>maneuver_count_30d</code></td>
-            <td>How far / how often did altitude jump?</td>
+            <td>ΔSMA / EWMA / BOCPD</td>
+            <td><code>delta_sma_7d_km</code>, <code>ewma_sma</code>, <code>bocpd_change_prob_3d</code></td>
+            <td>How far / small shifts / change probability?</td>
             <td>Slot moves of tens of km, busy SK</td>
           </tr>
           <tr>
@@ -588,7 +588,7 @@
         <div class="tl-item hit">
           <div class="tl-date">2015-01-15 · ATHENA DETECTS</div>
           <div class="tl-body">
-            Score 0.537 with <strong>Hurst ≈ 0.94</strong> and <strong>6 maneuvers / 30 days</strong> —
+            Score 0.699 with <strong>Page CUSUM elevated</strong> and <strong>LZ76 ~1.6</strong> —
             a busy, persistently controlled GEO object from day one of the window.
           </div>
         </div>

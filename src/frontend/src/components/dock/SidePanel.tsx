@@ -7,6 +7,10 @@ interface SidePanelProps {
   children: ReactNode
   footer?: ReactNode
   className?: string
+  /** Extra classes on the body (e.g. flex column without outer scroll). */
+  bodyClassName?: string
+  /** When false, the body does not scroll — children manage their own overflow. */
+  scrollBody?: boolean
 }
 
 export default function SidePanel({
@@ -16,6 +20,8 @@ export default function SidePanel({
   children,
   footer,
   className = '',
+  bodyClassName = '',
+  scrollBody = true,
 }: SidePanelProps) {
   return (
     <aside
@@ -35,7 +41,13 @@ export default function SidePanel({
           </div>
         )}
       </header>
-      <div className="athena-scroll relative z-[2] min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-3 py-3 text-[14px] leading-snug text-zinc-200">
+      <div
+        className={`relative z-[2] min-h-0 flex-1 text-[14px] leading-snug text-zinc-200 ${
+          scrollBody
+            ? 'athena-scroll overflow-y-auto overflow-x-hidden px-3 py-3'
+            : 'overflow-hidden'
+        } ${bodyClassName}`}
+      >
         {children}
       </div>
       {footer && (

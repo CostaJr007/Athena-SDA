@@ -9,6 +9,7 @@ Loads data/catalog/watchlist.json and exposes:
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Set
@@ -171,6 +172,85 @@ def summary() -> Dict[str, Any]:
         "counts": counts,
         "norad_ids": all_norad_ids(),
     }
+
+
+def _atomic_write_json(path: Path, payload: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    tmp.replace(path)
+
+
+def _assert_persist_allowed(obj: Dict[str, Any]) -> None:
+    """Block commercial mega-constellations from becoming IF normality anchors."""
+    name = str(obj.get("name") or "").upper()
+    purpose = str(obj.get("purpose") or "").lower()
+    role = str(obj.get("role") or "")
+    if "STARLINK" in name:
+        raise ValueError("Starlink cannot be added to the military watchlist")
+    if purpose == "commercial" and role in ("baseline", "asset"):
+        raise ValueError("commercial constellation cannot be a baseline/asset IF anchor")
+
+
+def upsert_watchlist_object(raw: Dict[str, Any], path: Optional[Path] = None) -> Dict[str, Any]:
+    """Add or replace a NORAD on the curated watchlist. Does not retrain."""
+    obj = _normalize_object(raw)
+    if obj is None:
+        raise ValueError("invalid watchlist object (need integer norad_id)")
+    _assert_persist_allowed(obj)
+    p = Path(path) if path else WATCHLIST_PATH
+    data: Dict[str, Any] = {"version": 1, "objects": []}
+    if p.exists():
+        try:
+            loaded = json.loads(p.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                data = loaded
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"watchlist JSON corrupt: {exc}") from exc
+    objects = [o for o in (data.get("objects") or []) if int(o.get("norad_id") or -1) != obj["norad_id"]]
+    objects.append(
+        {
+            "norad_id": obj["norad_id"],
+            "name": obj["name"],
+            "role": obj["role"],
+            "country": obj["country"],
+            "purpose": obj["purpose"],
+            "orbit_class": obj["orbit_class"],
+            "notes": obj.get("notes") or "",
+        }
+    )
+    objects.sort(key=lambda o: int(o["norad_id"]))
+    data["objects"] = objects
+    data["updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    _atomic_write_json(p, data)
+    clear_watchlist_cache()
+    return obj
+
+
+def remove_watchlist_object(norad_id: int, path: Optional[Path] = None) -> bool:
+    """Remove a NORAD from the watchlist JSON. Returns True if it was present."""
+    p = Path(path) if path else WATCHLIST_PATH
+    if not p.exists():
+        return False
+    data = json.loads(p.read_text(encoding="utf-8"))
+    before = list(data.get("objects") or [])
+    after = [o for o in before if int(o.get("norad_id") or -1) != int(norad_id)]
+    if len(after) == len(before):
+        return False
+    data["objects"] = after
+    data["updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    _atomic_write_json(p, data)
+    clear_watchlist_cache()
+    return True
+
+
+def persist_watchlist_role(norad_id: int, role: str, path: Optional[Path] = None) -> Dict[str, Any]:
+    role = str(role or "").lower().strip()
+    if role not in VALID_ROLES:
+        raise ValueError(f"role must be one of {sorted(VALID_ROLES)}")
+    existing = get_object(int(norad_id)) or {"norad_id": int(norad_id), "name": f"NORAD-{int(norad_id)}"}
+    existing["role"] = role
+    return upsert_watchlist_object(existing, path=path)
 
 
 def filter_ids(

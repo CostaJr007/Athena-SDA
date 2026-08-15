@@ -45,9 +45,9 @@ For each sliding window (default ≥20 epochs), `extract_satellite_features` bui
 |-------|---------------------|------------------------|
 | Keplerian state | SMA, ecc, inc, RAAN, \(n\) | Geometry |
 | Deltas / activity | \(\Delta\)SMA 7d/30d, maneuver proxy | Relocation / impulses |
-| **Multi-scale persistence** | Hurst full/short, `persistence_hurst_gap`, Shannon full/short | **Micro-trajectory / sustained control** |
-| Complexity / breaks | Kolmogorov proxy, L1-CUSUM, ADF, Mandelbrot tail | Pattern complexity, regime breaks |
-| Topology proxy | Chern–Simons, Ricci, H0/H1 (proxy mode) | Structural change (approximate) |
+| **Multi-scale persistence** | DFA α full/short, `persistence_dfa_gap`, Shannon full/short, permutation entropy | **Micro-trajectory / sustained control** |
+| Complexity / breaks | LZ76, Page CUSUM (ARL), EWMA, BOCPD, ADF, Mandelbrot tail, SSA residual | Pattern complexity, regime breaks |
+| Typicality | MMD typicality (not in IF vector) | Out-of-support flag |
 | Space weather | F10.7, Ap, Kp, storm flags | Confounder control |
 
 **Isolation Forest inputs** exclude pair geometry (distance/coint) so the detector measures **series strangeness**, not “near an asset”. Pairs are a **priority** channel only.

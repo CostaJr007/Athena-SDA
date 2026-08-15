@@ -23,4 +23,6 @@ matplotlib>=3.7,<4
 # spacetrack>=0.16
 # duckdb>=0.10
 # ripser>=0.6
-# sgp4>=2.22
+# SGP4 conjunction (Pc / TCA). pair_score keeps the legacy pair_risk formula
+# and adds pc/tca as extra fields when this is installed.
+sgp4>=2.22,<3

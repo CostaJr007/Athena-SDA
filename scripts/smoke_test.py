@@ -213,6 +213,20 @@ def main() -> int:
     except Exception as e:
         errors.append(f"doctrine smoke failed: {e}")
 
+    # --- investigation object layer (does not recompute scores) ---
+    try:
+        from src.object_layer import materialize_investigation
+        from src.contracts import validate_investigation
+
+        inv = materialize_investigation()
+        viol = validate_investigation(inv)
+        if viol:
+            errors.append("investigation.v1: " + viol[0])
+        if inv.get("schema") != "athena.investigation.v1":
+            errors.append("investigation schema id")
+    except Exception as e:
+        errors.append(f"investigation smoke failed: {e}")
+
     # --- registry ---
     reg = ROOT / "models" / "registry.json"
     if reg.exists():

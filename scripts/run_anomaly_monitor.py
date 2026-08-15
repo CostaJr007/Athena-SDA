@@ -70,7 +70,10 @@ def cmd_seed_history(args: argparse.Namespace) -> None:
 
 
 def cmd_ingest_daily(args: argparse.Namespace) -> None:
+    import datetime as _dt
+
     from src.tle_store import (
+        DAILY_DIR,
         DEFAULT_WATCHLIST,
         append_epochs,
         fetch_celestrak_watchlist,
@@ -83,6 +86,19 @@ def cmd_ingest_daily(args: argparse.Namespace) -> None:
     ids = list(names.keys()) if names else list(DEFAULT_WATCHLIST.keys())
     print("=== ingest-daily ===")
     print(f"Watchlist targets: {len(ids)}")
+
+    # Idempotency guard: skip re-fetching when today's snapshot already exists
+    # unless --force is passed. Makes cron / run-daily safe to re-run.
+    if getattr(args, "skip_if_fresh", False) and not getattr(args, "force", False):
+        today = _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d")
+        snap = DAILY_DIR / f"tle_{today}.csv"
+        if snap.exists() and snap.stat().st_size > 0:
+            print(
+                f"  snapshot for {today} already exists ({snap.name}); "
+                f"skipping network fetch (use --force to re-ingest)."
+            )
+            return
+
     frames = []
 
     if args.source in ("celestrak", "both"):
@@ -174,6 +190,13 @@ def cmd_score(args: argparse.Namespace) -> None:
             f"{a.get('object_name','')[:20]:20}  "
             f"pair->{pair.get('asset_name','-')[:18]} r={pair.get('pair_risk','-')}"
         )
+    try:
+        from src.object_layer import write_investigation
+
+        path = write_investigation()
+        print(f"investigation.v1 → {path}")
+    except Exception as exc:
+        print(f"investigation.v1 skipped: {exc}")
 
 
 def cmd_score_pairs(args: argparse.Namespace) -> None:
@@ -322,6 +345,10 @@ def json_dumps(obj) -> str:
 
 
 def main() -> None:
+    from src.logging_setup import setup_logging
+
+    setup_logging()
+
     p = argparse.ArgumentParser(description="Athena-SDA anomaly monitor (past train + daily inject)")
     sub = p.add_subparsers(dest="cmd", required=True)
 
@@ -349,6 +376,16 @@ def main() -> None:
         "--groups-only",
         action="store_true",
         help="Skip per-NORAD CATNR; only use GROUP dumps (legacy)",
+    )
+    s.add_argument(
+        "--skip-if-fresh",
+        action="store_true",
+        help="Skip network fetch when today's snapshot already exists (idempotent for cron)",
+    )
+    s.add_argument(
+        "--force",
+        action="store_true",
+        help="Re-fetch today's TLEs even if a snapshot for today already exists",
     )
     s.set_defaults(func=cmd_ingest_daily)
 
@@ -398,6 +435,16 @@ def main() -> None:
     s.add_argument("--source", choices=["celestrak", "hf", "both"], default="celestrak")
     s.add_argument("--groups", default="visual,stations,resource,weather,gps-ops")
     s.add_argument("--groups-only", action="store_true")
+    s.add_argument(
+        "--skip-if-fresh",
+        action="store_true",
+        help="Skip ingest when today's TLE snapshot already exists (cron-safe)",
+    )
+    s.add_argument(
+        "--force",
+        action="store_true",
+        help="Re-ingest today's TLEs even if a snapshot already exists",
+    )
     s.add_argument(
         "--skip-retrain",
         action="store_true",

@@ -20,6 +20,7 @@ Design:
 from __future__ import annotations
 
 import json
+import re
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
@@ -39,6 +40,14 @@ from src.tle_store import (
     history_as_sat_histories,
     load_history,
 )
+from src.logging_setup import get_logger
+
+logger = get_logger(__name__)
+
+
+def versioned_monitor_stamp(cutoff) -> str:
+    """Date stamp for isolation_forest_monitor_<stamp>.joblib (from cutoff, not meta_out)."""
+    return re.sub(r"[^0-9]", "", str(cutoff))[:8] or datetime.now(timezone.utc).strftime("%Y%m%d")
 
 
 def _watchlist_names() -> dict:
@@ -267,7 +276,12 @@ def build_feature_windows(
                     # run. score_latest computes MMD once per satellite per day.
                     reference_matrix=None,
                 )
-            except Exception:
+            except Exception as exc:
+                logger.warning(
+                    "feature extraction failed for norad %s (window skipped): %s",
+                    sid,
+                    exc,
+                )
                 continue
             rows.append(feats)
             meta.append(
@@ -327,12 +341,10 @@ def train_baseline_from_history(
 
     hists = history_as_sat_histories(norad_ids=train_ids, min_epochs=WINDOW)
     if not hists:
-        hists = history_as_sat_histories(norad_ids=all_ids, min_epochs=WINDOW)
-    if not hists:
-        hists = history_as_sat_histories(min_epochs=WINDOW)
-    if not hists:
         raise RuntimeError(
-            "Insufficient history. Run: seed-history and/or ingest-daily before training."
+            "No baseline+asset history for IF training. "
+            "Suspects are never used as normality anchors. "
+            "Run seed-history / ingest-daily for asset and baseline NORADs."
         )
 
     train_norads = sorted(hists.keys())
@@ -346,10 +358,11 @@ def train_baseline_from_history(
         names=names,
     )
     if len(X) < 30:
-        print("Few windows with holdout -- training on all available history for train roles.")
+        print("Few holdout windows -- densifying samples still ending before cutoff.")
         X, meta = build_feature_windows(
             hists,
-            step=2,
+            end_before=cutoff,
+            step=1,
             max_windows_per_sat=max(100, max_windows_per_sat),
             sample_mode=sample_mode,
             names=names,
@@ -382,14 +395,19 @@ def train_baseline_from_history(
     # fold): keep a dated snapshot so any report can reference exactly which
     # baseline produced the scores (DMP re-fit -> AIP score, walk-forward
     # analogy applied to daily operations).
+    #
+    # NOTE: v_stamp derives from the training `cutoff` directly — NOT from
+    # `meta_out`, which is only assembled further below (a former NameError
+    # path silently disabled this snapshot). The resulting filename is then
+    # recorded in `meta_out["versioned_model"]`.
+    versioned_name = None
     try:
-        cutoff_ts = meta_out.get("cutoff_utc") or datetime.now(timezone.utc).isoformat()
-        v_stamp = re.sub(r"[^0-9]", "", str(cutoff_ts))[:8] or datetime.now(timezone.utc).strftime("%Y%m%d")
+        v_stamp = versioned_monitor_stamp(cutoff)
         versioned = MODELS_DIR / f"isolation_forest_monitor_{v_stamp}.joblib"
         joblib.dump(iforest, versioned)
-        meta_out["versioned_model"] = str(versioned.name)
+        versioned_name = str(versioned.name)
     except Exception as exc:
-        print(f"Warning: versioned model snapshot failed: {exc}")
+        logger.warning("versioned model snapshot failed: %s", exc)
 
     raw = iforest.decision_function(X)
     scores = np.clip(0.5 - raw, 0.0, 1.0)
@@ -439,6 +457,7 @@ def train_baseline_from_history(
             (calibration.get("global") or {}).get("recommended_thr") or 0.50
         ),
         "cutoff_utc": str(cutoff),
+        "versioned_model": versioned_name,
         "train_window_end_min": win_min,
         "train_window_end_max": win_max,
         "doctrine_summary": doctrine_summary(),
@@ -668,6 +687,34 @@ def estimate_anomaly_onset(
 
 # -- Score daily / latest ----------------------------------------------------
 
+def resolve_thresholds(
+    anomaly_threshold: Optional[float],
+    mon_meta: Dict[str, Any],
+) -> Tuple[float, float]:
+    """Resolve the operational hard/elevated thresholds from calibration/meta.
+
+    `anomaly_threshold` may be None (the CLI default). In that case the
+    calibrated (or fallback 0.50) value is used, so downstream code never
+    calls `float(None)` or `None - 0.10` (the former silently disabled the
+    anomaly-onset estimate on the default daily run).
+    """
+    calibration = mon_meta.get("calibration") or {}
+    if anomaly_threshold is not None:
+        thr_global = float(anomaly_threshold)
+    else:
+        thr_global = float(
+            mon_meta.get("recommended_anomaly_threshold")
+            or (calibration.get("global") or {}).get("recommended_thr")
+            or 0.50
+        )
+    thr_elevated = float(
+        (calibration.get("global") or {}).get("p90")
+        or mon_meta.get("score_p95")
+        or max(0.45, thr_global - 0.05)
+    )
+    return thr_global, thr_elevated
+
+
 def score_latest(
     *,
     anomaly_threshold: float = 0.55,
@@ -731,17 +778,7 @@ def score_latest(
     calibration = mon_meta.get("calibration") or {}
     from src.calibration import threshold_for_orbit
 
-    thr_global = float(
-        mon_meta.get("recommended_anomaly_threshold")
-        or (calibration.get("global") or {}).get("recommended_thr")
-        or anomaly_threshold
-        or 0.50
-    )
-    thr_elevated = float(
-        (calibration.get("global") or {}).get("p90")
-        or mon_meta.get("score_p95")
-        or max(0.45, thr_global - 0.05)
-    )
+    thr_global, thr_elevated = resolve_thresholds(anomaly_threshold, mon_meta)
 
     for sid, hist in hists.items():
         hist = hist.sort_values("timestamp").reset_index(drop=True)
@@ -835,8 +872,8 @@ def score_latest(
             ds_belief = float(_ds["belief_anomalous"])
             ds_plaus = float(_ds["plausibility_anomalous"])
             ds_conflict = float(_ds["conflict_K"])
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.warning("Dempster-Shafer fusion skipped for #%s: %s", sid, exc)
 
         # Per-orbit calibrated hard threshold (paper A+B)
         thr_use = threshold_for_orbit(calibration, str(orbit_guess), default=thr_global)
@@ -929,14 +966,18 @@ def score_latest(
             except Exception as e:
                 rec["xgb_error"] = str(e)
 
-        # Onset of anomalous noise on the series
+        # Onset of anomalous noise on the series.
+        # Normalize the CLI threshold (may be None → resolve from calibration),
+        # otherwise `float(None)`/`None - 0.10` raises TypeError and silently
+        # disables onset estimation on the default daily run.
+        onset_thr = float(anomaly_threshold) if anomaly_threshold is not None else float(thr_global)
         try:
             rec["anomaly_onset"] = estimate_anomaly_onset(
                 hist,
                 iforest,
                 norad_id=int(sid),
-                threshold=float(anomaly_threshold),
-                soft_threshold=float(max(0.40, anomaly_threshold - 0.10)),
+                threshold=onset_thr,
+                soft_threshold=float(max(0.40, onset_thr - 0.10)),
                 sustained=2,
                 max_windows=32,
                 step=7,
@@ -969,7 +1010,7 @@ def score_latest(
             "military_alert": "suspects with series outlier / change; pair elevates priority",
             "calibration": "baseline role scored but not threat-escalated",
             "relevance": (
-                f"anomaly_score>={anomaly_threshold} OR "
+                f"anomaly_score>={thr_global:.2f} OR "
                 f"delta_score_1d>={delta_relevance} with elevated level"
             ),
             "prev_day_scores_loaded": len(prev_scores),
@@ -1054,4 +1095,14 @@ def score_latest(
         f"unreliable={report['n_unreliable']}"
     )
     print(f"Report: {out_path}")
+
+    # Every score path (CLI `score` and `run-daily`) must emit investigation.v1
+    # so the sidecar / mission board are not left on a stale object graph.
+    try:
+        from src.object_layer import write_investigation
+
+        inv_path = write_investigation()
+        print(f"investigation.v1 → {inv_path}")
+    except Exception as exc:
+        print(f"investigation.v1 skipped: {exc}")
     return report

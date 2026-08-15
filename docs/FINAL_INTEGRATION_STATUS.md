@@ -1,6 +1,6 @@
 # Final integration status — Athena-SDA
 
-**Branch:** `feat/walkforward-poc-html`  
+**Branch:** `main`  
 **Language:** English (docs, paper, watchlist, UI copy)
 
 ## Stack closed loop
@@ -11,8 +11,8 @@ TLE history + GFZ weather
   → Isolation Forest (baseline+asset normality, past-only)
   → doctrine alerts (suspect detection / asset health / baseline calibration)
   → pairs + XGB priority
-  → data/alerts/*_latest.json
-  → scripts/sync_frontend_data.ps1|.sh
+  → data/alerts/*_latest.json + investigation_latest.json
+  → scripts/sync_frontend_data.py
   → src/frontend/public/data/*
   → React mission board (risk_report.v1)
 ```
@@ -22,7 +22,7 @@ TLE history + GFZ weather
 | Component | Status |
 |-----------|--------|
 | Military doctrine IF train | Done (`src/doctrine.py`) |
-| Multi-scale Hurst/Shannon | Done |
+| Multi-scale DFA / Shannon / LZ76 / Page CUSUM | Done |
 | Space weather in IF | Done (GFZ) |
 | Calibration thr | Done (`src/calibration.py`) |
 | Registry | Done (`models/registry.json`) |
@@ -38,14 +38,17 @@ TLE history + GFZ weather
 | Doctrine badges (`mil detect`, calibration) | Done |
 | Summary mil detections + doctrine label | Done |
 | Multi-scale keys typed in features_snapshot | Done |
-| Walk-forward PoC panel | Done (static proof UI) |
-| Globe | Demo tracks + live TLE where available (not full SGP4 TCA product) |
+| Walk-forward PoC panel | Done (in-HUD + `walkforward_poc.html`) |
+| Object graph + quant fingerprint | Done (investigation canvas, `G`) |
+| Command palette | Done (`Ctrl+K`) |
+| Globe | Live CelesTrak TLE + SGP4; conjunction lab TCA (~3 h) |
 
 ## Daily refresh
 
 ```bash
 python scripts/run_anomaly_monitor.py run-daily
-powershell -File scripts/sync_frontend_data.ps1
+python scripts/sync_frontend_data.py
+# or the full orchestrator: bash scripts/run_daily_ingest.sh
 cd src/frontend && npm run dev
 ```
 
@@ -62,3 +65,6 @@ cd docs/paper && pdflatex athena_sda_article.tex
 **Operational FE↔BE contract is complete** for the mission board (`athena.risk_report.v1` + sync).  
 **Scientific proof pack is complete** for demo and paper draft.  
 Globe remains a visualization layer; quant truth is the risk report + walk-forward artifacts.
+
+Graph Ask uses **Groq** (LLM) + **Tavily** (public web cites) via `/api/explain`.
+Without those keys the same panel walks the graph locally. Scores stay immutable.

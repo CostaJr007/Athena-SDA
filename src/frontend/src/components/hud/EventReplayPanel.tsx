@@ -28,9 +28,17 @@ interface WfEvent {
 interface EventReplayPanelProps {
   eventId: string
   threshold?: number
+  /** Prefer this NORAD's fold series (Object View). */
+  norad?: number
+  compact?: boolean
 }
 
-export default function EventReplayPanel({ eventId, threshold = 0.5 }: EventReplayPanelProps) {
+export default function EventReplayPanel({
+  eventId,
+  threshold = 0.5,
+  norad: noradProp,
+  compact = false,
+}: EventReplayPanelProps) {
   const [data, setData] = useState<WfEvent | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [cursor, setCursor] = useState(0)
@@ -66,17 +74,24 @@ export default function EventReplayPanel({ eventId, threshold = 0.5 }: EventRepl
 
   const series = useMemo(() => {
     if (!data?.folds?.length) return []
-    const norad = data.norad_ids?.[0] ?? Object.keys(data.folds[0]?.targets ?? {})[0]
-    if (!norad) return []
+    const key =
+      noradProp != null
+        ? String(noradProp)
+        : String(data.norad_ids?.[0] ?? Object.keys(data.folds[0]?.targets ?? {})[0] ?? '')
+    if (!key) return []
+    const pick = (f: WfFold) =>
+      f.targets[key]?.anomaly_score ??
+      f.targets[Number(key) as unknown as string]?.anomaly_score ??
+      null
     return data.folds
       .map((f) => ({
         asof: f.asof,
-        score: f.targets[norad]?.anomaly_score ?? null,
+        score: pick(f),
       }))
       .filter((p) => p.score != null) as Array<{ asof: string; score: number }>
-  }, [data])
+  }, [data, noradProp])
 
-  const norad = data?.norad_ids?.[0]
+  const norad = noradProp ?? data?.norad_ids?.[0]
   const metrics = norad != null ? data?.metrics?.[String(norad)] : null
   const idx = Math.min(cursor, Math.max(0, series.length - 1))
   const current = series[idx] ?? null
@@ -99,7 +114,7 @@ export default function EventReplayPanel({ eventId, threshold = 0.5 }: EventRepl
       : ''
 
   return (
-    <div className="border border-white/12 bg-black/50 p-2.5">
+    <div className={`border border-white/12 bg-black/50 ${compact ? 'p-2' : 'p-2.5'}`}>
       <div className="flex items-center justify-between">
         <div className="text-[12px] uppercase tracking-[0.16em] text-zinc-400">
           Event replay · {eventId}
@@ -221,7 +236,7 @@ export default function EventReplayPanel({ eventId, threshold = 0.5 }: EventRepl
               {data.t_end ? ` → ${data.t_end.slice(0, 10)}` : ''}
             </p>
           )}
-          {data.sources && data.sources.length > 0 && (
+          {!compact && data.sources && data.sources.length > 0 && (
             <ul className="mt-1.5 space-y-0.5">
               {data.sources.slice(0, 3).map((s, i) => (
                 <li key={i} className="text-[11px] leading-relaxed text-zinc-500">
