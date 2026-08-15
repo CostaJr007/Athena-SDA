@@ -11,10 +11,11 @@ from typing import Any, Dict, List, Optional
 import requests
 from dotenv import load_dotenv
 
+from src.config import ROOT
 from src.logging_setup import get_logger
 from src.rag import format_citations, retrieve
 
-load_dotenv()
+load_dotenv(ROOT / ".env")
 logger = get_logger(__name__)
 
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"

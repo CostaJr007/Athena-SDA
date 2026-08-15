@@ -32,8 +32,7 @@ Write-Host "Board    http://127.0.0.1:3000"
 Write-Host ""
 
 $sidecarCmd = @($pyArgs + @("$Root\scripts\serve_granite_explain.py")) -join " "
-$sidecar = Start-Process -FilePath $pyExe -ArgumentList ($pyArgs + @("$Root\scripts\serve_granite_explain.py")) -PassThru -WindowStyle Minimized
-Remove-Variable sidecarCmd -ErrorAction SilentlyContinue
+$sidecar = Start-Process -FilePath $pyExe -ArgumentList ($pyArgs + @("$Root\scripts\serve_granite_explain.py")) -WorkingDirectory $Root -PassThru -WindowStyle Minimized
 
 Start-Sleep -Seconds 2
 Set-Location "$Root\src\frontend"
