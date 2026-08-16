@@ -121,12 +121,12 @@ void main() {
   float luma = dot(dayT, vec3(0.299, 0.587, 0.114));
   dayT = clamp(mix(vec3(luma), dayT, 1.28), 0.0, 1.0); // livelier oceans
   vec3 nightT = texture2D(uNight, vUv).rgb;
-  float lit = clamp(sd * 1.1, 0.0, 1.0);
-  vec3 col = dayT * lit * 0.78 + dayT * 0.02;
-  col += nightT * (1.0 - dayMix) * 0.85;
+  float lit = clamp(sd * 1.25, 0.0, 1.0);
+  vec3 col = dayT * lit * 1.18 + dayT * 0.14;
+  col += nightT * (1.0 - dayMix) * 1.15;
   vec3 v = normalize(cameraPosition - vPosW);
-  float rim = pow(1.0 - max(dot(n, v), 0.0), 3.5);
-  col += vec3(0.20, 0.40, 0.72) * rim * (0.15 + 0.85 * dayMix) * 0.4;
+  float rim = pow(1.0 - max(dot(n, v), 0.0), 3.2);
+  col += vec3(0.28, 0.52, 0.88) * rim * (0.25 + 0.75 * dayMix) * 0.7;
   gl_FragColor = vec4(col, 1.0);
 }
 `
@@ -143,7 +143,7 @@ const ATMO_FRAG = /* glsl */ `
 varying vec3 vN;
 void main() {
   float intensity = pow(max(0.60 - dot(normalize(vN), vec3(0.0, 0.0, 1.0)), 0.0), 4.5);
-  gl_FragColor = vec4(0.30, 0.55, 1.05, 1.0) * intensity * 1.6;
+  gl_FragColor = vec4(0.38, 0.62, 1.12, 1.0) * intensity * 2.4;
 }
 `
 
@@ -793,7 +793,7 @@ export class GlobeEngine {
           uDur: { value: 1 },
           uScale: { value: 1 },
           uPixelRatio: { value: this.appliedDpr || 1 },
-          uIntensity: { value: 2.1 },
+          uIntensity: { value: 2.8 },
         },
         transparent: true,
         blending: THREE.AdditiveBlending,
