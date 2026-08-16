@@ -878,7 +878,7 @@ export default function Home() {
         className="pointer-events-none absolute inset-0 z-[1]"
         style={{
           background:
-            'radial-gradient(ellipse 78% 68% at 50% 50%, transparent 48%, rgba(0,0,0,0.28) 100%)',
+            'radial-gradient(ellipse 70% 60% at 50% 50%, transparent 35%, rgba(0,0,0,0.55) 100%)',
         }}
       />
 

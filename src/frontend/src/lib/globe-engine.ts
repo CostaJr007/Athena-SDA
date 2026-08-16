@@ -12,6 +12,10 @@
 import * as THREE from 'three'
 import * as satellite from 'satellite.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
 import { CITIES, latLonToUnit } from '@/lib/cities'
 
 export interface EngineCallbacks {
@@ -121,12 +125,12 @@ void main() {
   float luma = dot(dayT, vec3(0.299, 0.587, 0.114));
   dayT = clamp(mix(vec3(luma), dayT, 1.28), 0.0, 1.0); // livelier oceans
   vec3 nightT = texture2D(uNight, vUv).rgb;
-  float lit = clamp(sd * 1.25, 0.0, 1.0);
-  vec3 col = dayT * lit * 1.18 + dayT * 0.14;
-  col += nightT * (1.0 - dayMix) * 1.15;
+  float lit = clamp(sd * 1.1, 0.0, 1.0);
+  vec3 col = dayT * lit * 0.78 + dayT * 0.02;
+  col += nightT * (1.0 - dayMix) * 0.85;
   vec3 v = normalize(cameraPosition - vPosW);
-  float rim = pow(1.0 - max(dot(n, v), 0.0), 3.2);
-  col += vec3(0.28, 0.52, 0.88) * rim * (0.25 + 0.75 * dayMix) * 0.7;
+  float rim = pow(1.0 - max(dot(n, v), 0.0), 3.5);
+  col += vec3(0.20, 0.40, 0.72) * rim * (0.15 + 0.85 * dayMix) * 0.4;
   gl_FragColor = vec4(col, 1.0);
 }
 `
@@ -143,7 +147,7 @@ const ATMO_FRAG = /* glsl */ `
 varying vec3 vN;
 void main() {
   float intensity = pow(max(0.60 - dot(normalize(vN), vec3(0.0, 0.0, 1.0)), 0.0), 4.5);
-  gl_FragColor = vec4(0.38, 0.62, 1.12, 1.0) * intensity * 2.4;
+  gl_FragColor = vec4(0.30, 0.55, 1.05, 1.0) * intensity * 1.6;
 }
 `
 
@@ -215,6 +219,8 @@ export class GlobeEngine {
   private container: HTMLElement
   private cb: EngineCallbacks
   private renderer: THREE.WebGLRenderer
+  private composer: EffectComposer
+  private bloom: UnrealBloomPass
   private scene = new THREE.Scene()
   private camera: THREE.PerspectiveCamera
   private controls: OrbitControls
@@ -296,7 +302,6 @@ export class GlobeEngine {
     })
     // Pure black void — chrome UI sits on starfield panels; globe is the star
     this.renderer.setClearColor(0x000000, 1)
-    this.renderer.outputColorSpace = THREE.SRGBColorSpace
     // HMR / remount can leave a previous canvas — two contexts flicker.
     container.querySelectorAll('canvas').forEach((c) => c.remove())
     container.appendChild(this.renderer.domElement)
@@ -536,6 +541,11 @@ export class GlobeEngine {
     this.markerB.visible = false
     this.scene.add(this.markerB)
 
+    this.composer = new EffectComposer(this.renderer)
+    this.composer.addPass(new RenderPass(this.scene, this.camera))
+    this.bloom = new UnrealBloomPass(new THREE.Vector2(initW, initH), 0.55, 0.35, 1.0)
+    this.composer.addPass(this.bloom)
+    this.composer.addPass(new OutputPass())
     this.applySize()
 
     // --- events ---
@@ -724,6 +734,8 @@ export class GlobeEngine {
     ) {
       return
     }
+    const prevW = this.appliedW
+    const prevH = this.appliedH
     this.appliedW = w
     this.appliedH = h
     this.appliedDpr = dpr
@@ -732,6 +744,12 @@ export class GlobeEngine {
     this.camera.updateProjectionMatrix()
     this.renderer.setPixelRatio(dpr)
     this.renderer.setSize(w, h)
+    // Resize bloom buffers only on first paint or a large window change.
+    // Small HUD ticks realloc the composer and flash the globe.
+    if (prevW === 0 || Math.abs(w - prevW) >= 48 || Math.abs(h - prevH) >= 48) {
+      this.composer.setPixelRatio(dpr)
+      this.composer.setSize(w, h)
+    }
     for (const g of this.groups) g.mat.uniforms.uPixelRatio.value = dpr
     if (this.replacement) {
       for (const g of this.replacement) g.mat.uniforms.uPixelRatio.value = dpr
@@ -793,7 +811,7 @@ export class GlobeEngine {
           uDur: { value: 1 },
           uScale: { value: 1 },
           uPixelRatio: { value: this.appliedDpr || 1 },
-          uIntensity: { value: 2.8 },
+          uIntensity: { value: 2.1 },
         },
         transparent: true,
         blending: THREE.AdditiveBlending,
@@ -1346,7 +1364,7 @@ export class GlobeEngine {
     }
 
     this.controls.update()
-    this.renderer.render(this.scene, this.camera)
+    this.composer.render()
     this.monitorPerf(performance.now())
   }
 
@@ -1381,8 +1399,11 @@ export class GlobeEngine {
         }
       }
     })
+    for (const pass of this.composer.passes) {
+      ;(pass as { dispose?: () => void }).dispose?.()
+    }
+    this.composer.dispose()
     this.renderer.dispose()
-    this.renderer.domElement.remove()
     el.remove()
   }
 }
