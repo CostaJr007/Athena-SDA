@@ -241,6 +241,7 @@ export class GlobeEngine {
   private appliedH = 0
   private appliedDpr = 0
   private resizeObserver: ResizeObserver | null = null
+  private resizeTimer = 0
   private raf = 0
   private hidden = false
   private contextLost = false
@@ -554,8 +555,12 @@ export class GlobeEngine {
     el.addEventListener('pointermove', this.onPointerMove)
     el.addEventListener('webglcontextlost', this.onContextLost, false)
     el.addEventListener('webglcontextrestored', this.onContextRestored, false)
-    // the container may resize without a window resize event
-    this.resizeObserver = new ResizeObserver(() => this.applySize())
+    // Debounce: opening docks/panels fires many layout ticks; each
+    // composer.setSize reallocates bloom buffers and flashes the globe.
+    this.resizeObserver = new ResizeObserver(() => {
+      window.clearTimeout(this.resizeTimer)
+      this.resizeTimer = window.setTimeout(() => this.applySize(), 80)
+    })
     this.resizeObserver.observe(container)
     document.addEventListener('visibilitychange', this.onVisibility)
 
@@ -721,7 +726,13 @@ export class GlobeEngine {
     const w = Math.max(1, this.container.clientWidth)
     const h = Math.max(1, this.container.clientHeight)
     const dpr = this.computeDpr(w, h)
-    if (w === this.appliedW && h === this.appliedH && dpr === this.appliedDpr) return
+    if (
+      Math.abs(w - this.appliedW) < 2 &&
+      Math.abs(h - this.appliedH) < 2 &&
+      dpr === this.appliedDpr
+    ) {
+      return
+    }
     this.appliedW = w
     this.appliedH = h
     this.appliedDpr = dpr
@@ -1362,6 +1373,7 @@ export class GlobeEngine {
     el.removeEventListener('webglcontextlost', this.onContextLost)
     el.removeEventListener('webglcontextrestored', this.onContextRestored)
     this.resizeObserver?.disconnect()
+    window.clearTimeout(this.resizeTimer)
     document.removeEventListener('visibilitychange', this.onVisibility)
     this.controls.dispose()
     this.disposeGroups(this.groups)
