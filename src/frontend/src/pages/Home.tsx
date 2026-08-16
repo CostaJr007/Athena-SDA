@@ -878,7 +878,7 @@ export default function Home() {
         className="pointer-events-none absolute inset-0 z-[1]"
         style={{
           background:
-            'radial-gradient(ellipse 70% 60% at 50% 50%, transparent 35%, rgba(0,0,0,0.55) 100%)',
+            'radial-gradient(ellipse 80% 70% at 50% 50%, transparent 50%, rgba(0,0,0,0.22) 100%)',
         }}
       />
 
@@ -937,7 +937,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-        <div className="pointer-events-auto hidden flex-wrap items-center gap-1.5 border-t border-white/5 bg-black/55 px-2.5 py-1.5 md:flex md:px-3">
+        <div className="pointer-events-auto hidden w-fit max-w-[calc(100%-1.25rem)] flex-wrap items-center gap-1.5 bg-black/55 px-2.5 py-1.5 md:inline-flex md:px-3">
           <button
             type="button"
             onClick={() => setLeftOpen((v) => !v)}

@@ -6,7 +6,8 @@ board. Tavily adds public-web context; it never becomes a score source.
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List, Optional
+import re
+from typing import Any, Dict, List, Optional, Tuple
 
 import requests
 from dotenv import load_dotenv
@@ -23,15 +24,36 @@ TAVILY_URL = "https://api.tavily.com/search"
 DEFAULT_GROQ_MODEL = "llama-3.1-8b-instant"
 TIMEOUT = 20
 
+# Plain-language only. Keys stay stable for older imports.
 LINK_GLOSSARY = {
-    "threatens": "suspect → protected asset (pair risk / shadowing proxy)",
-    "hasAlert": "Satellite → Alert (elevated noise, pair, or health flag)",
-    "validatedBy": "Satellite → walk-forward Case (public t_peak, past-only IF)",
-    "weather": "Satellite → GFZ space-weather context (drag vs maneuver)",
-    "fusedAs": "Satellite → Dempster–Shafer evidence (belief / conflict K)",
-    "sameAsset": "peer suspect sharing the same protected asset",
-    "samePeak": "placebo / peer case on the same public t_peak",
-    "threatenedBy": "inbound pair link onto a protected asset",
+    "threatens": "getting close to a satellite we protect",
+    "hasAlert": "something on this object is flagged for a closer look",
+    "validatedBy": "a past public event we already tested against",
+    "weather": "how active the Sun is right now",
+    "fusedAs": "how strong the combined evidence is",
+    "sameAsset": "another watched satellite tied to the same protected one",
+    "samePeak": "a quiet comparison case on the same date",
+    "threatenedBy": "another satellite flagged near this protected one",
+}
+
+ROLE_PLAIN = {
+    "suspect": "a satellite we watch because it may affect something we protect",
+    "asset": "a satellite we protect",
+    "baseline": "a quiet reference satellite, used to learn what normal looks like",
+}
+
+STATUS_PLAIN = {
+    "NOMINAL": "nothing unusual right now",
+    "ANOMALY": "its recent motion looks unusual",
+    "PAIR_ELEVATED": "it is flagged for getting close to a satellite we protect",
+    "UNRELIABLE_DATA": "the tracking data for this object is not trustworthy",
+    "ASSET_REGIME_NOISE": "the protected satellite's own motion looks noisier than usual",
+    "CALIBRATION_BASELINE": "this is a calibration / reference object",
+    "CHANGE_RELEVANT": "a relevant change was flagged",
+    "PAIR ↑": "it is flagged for getting close to a satellite we protect",
+    "MIL DETECT": "it was flagged as a military-interest detection",
+    "UNRELIABLE": "the tracking data for this object is not trustworthy",
+    "REGIME": "the protected satellite's own motion looks noisier than usual",
 }
 
 
@@ -45,6 +67,163 @@ def tavily_api_key() -> str:
 
 def groq_model() -> str:
     return (os.environ.get("GROQ_MODEL") or DEFAULT_GROQ_MODEL).strip()
+
+
+def _round_long_floats(text: str) -> str:
+    def _repl(m: re.Match[str]) -> str:
+        try:
+            return f"{float(m.group(0)):.2f}"
+        except ValueError:
+            return m.group(0)
+
+    return re.sub(r"\d+\.\d{3,}", _repl, text or "")
+
+
+def _head_name(label: str) -> str:
+    raw = _round_long_floats(label or "")
+    return re.split(r"\s*[·|]\s*", raw, maxsplit=1)[0].strip() or raw.strip()
+
+
+def _score_words(score: Any) -> Optional[str]:
+    try:
+        n = float(score)
+    except (TypeError, ValueError):
+        return None
+    if n < 0.15:
+        band = "very low"
+    elif n < 0.35:
+        band = "low"
+    elif n < 0.55:
+        band = "moderate"
+    elif n < 0.75:
+        band = "high"
+    else:
+        band = "very high"
+    return f"{band} ({n:.2f})"
+
+
+def _role_plain(role: Any) -> str:
+    key = str(role or "").strip().lower()
+    return ROLE_PLAIN.get(key, "a satellite on the watch list")
+
+
+def _status_plain(status: Any) -> str:
+    key = str(status or "").strip().upper()
+    if key in STATUS_PLAIN:
+        return STATUS_PLAIN[key]
+    cleaned = key.replace("_", " ").strip().lower()
+    return cleaned or "status not given"
+
+
+def _weather_plain(label: str) -> str:
+    text = label or ""
+    m = re.search(r"F10\.7\s*([0-9.]+)", text, re.I)
+    storm = "storm" in text.lower()
+    if m:
+        try:
+            f107 = float(m.group(1))
+        except ValueError:
+            f107 = None
+        if f107 is not None:
+            if storm or f107 >= 180:
+                mood = "very active (storm-level)"
+            elif f107 >= 120:
+                mood = "active"
+            elif f107 >= 80:
+                mood = "fairly quiet"
+            else:
+                mood = "quiet"
+            return f"the Sun is {mood} (radio index F10.7 = {f107:.0f})"
+    if "quiet" in text.lower():
+        return "the Sun is quiet"
+    if storm:
+        return "there is a geomagnetic storm"
+    return "space weather looks ordinary"
+
+
+def _belief_from_label(label: str) -> Optional[str]:
+    m = re.search(r"Bel(?:ief)?\s*([0-9.]+)", label or "", re.I)
+    if not m:
+        return None
+    return _score_words(m.group(1))
+
+
+def _plain_fact(kind: str, label: str) -> str:
+    name = _head_name(label)
+    km = re.search(r"(\d+(?:\.\d+)?)\s*km", label or "", re.I)
+    dist = ""
+    if km:
+        try:
+            dist = f" about {int(round(float(km.group(1))))} km away"
+        except ValueError:
+            dist = ""
+    if kind == "threatens":
+        return (
+            f"It is flagged near {name}{dist}, a satellite we protect. "
+            "That is a close-approach watch, not proof of an attack."
+        )
+    if kind == "threatenedBy":
+        return f"{name} is flagged near this protected satellite{dist}."
+    if kind == "hasAlert":
+        return f"There is an alert: {_status_plain(name)}."
+    if kind == "weather":
+        return (
+            f"Space weather: {_weather_plain(label)}. "
+            "Use this to tell solar drag apart from a real maneuver."
+        )
+    if kind == "fusedAs":
+        bel = _belief_from_label(label)
+        if bel is None:
+            raw = re.search(r"([0-9]*\.?[0-9]+)", label or "")
+            bel = _score_words(raw.group(1) if raw else None)
+        if bel:
+            return (
+                f"Combined evidence that something is wrong is {bel}. "
+                "A very low number means do not treat this as confirmed."
+            )
+        return "Combined evidence is weak — not a confirmed problem."
+    if kind == "sameAsset":
+        return f"{name} is another watched satellite tied to the same protected one."
+    if kind == "validatedBy":
+        return f"There is a past public case on file: {name}."
+    if kind == "samePeak":
+        return f"A quiet comparison case on the same date: {name}."
+    return _round_long_floats(name or label)
+
+
+def _facts(payload: Dict[str, Any]) -> Tuple[str, List[str], List[str]]:
+    name = str(payload.get("object_name") or "This object")
+    norad = payload.get("norad")
+    role = payload.get("role") or "unknown"
+    status = payload.get("status") or "—"
+    orbit = payload.get("orbit_class") or ""
+    country = payload.get("country") or ""
+    scores = payload.get("scores") or {}
+    who = f"{name}" + (f" (catalog #{norad})" if norad is not None else "")
+    where = " · ".join(p for p in (str(country).strip(), str(orbit).strip()) if p and p != "—")
+    header = f"{who} is {_role_plain(role)}" + (f" · {where}" if where else "") + "."
+    header += f" Right now: {_status_plain(status)}."
+
+    score_lines: List[str] = []
+    att = _score_words(scores.get("attention"))
+    anom = _score_words(scores.get("anomaly"))
+    bel = _score_words(scores.get("belief"))
+    if att:
+        score_lines.append(f"attention needed: {att}")
+    if anom:
+        score_lines.append(f"how unusual the orbit looks: {anom}")
+    if bel:
+        score_lines.append(f"combined evidence: {bel}")
+
+    facts: List[str] = []
+    seen: set[str] = set()
+    for lk in payload.get("links") or []:
+        kind = str(lk.get("type") or "link")
+        line = _plain_fact(kind, str(lk.get("label") or ""))
+        if line and line not in seen:
+            seen.add(line)
+            facts.append(line)
+    return header, score_lines, facts
 
 
 def tavily_search(query: str, *, max_results: int = 3) -> List[Dict[str, str]]:
@@ -95,48 +274,30 @@ def format_web_hits(hits: List[Dict[str, str]]) -> str:
 
 
 def local_graph_brief(payload: Dict[str, Any], web_hits: Optional[List[Dict[str, str]]] = None) -> str:
-    name = payload.get("object_name") or "Unknown object"
-    norad = payload.get("norad")
-    role = payload.get("role") or "unknown"
-    status = payload.get("status") or "—"
-    links: List[Dict[str, Any]] = list(payload.get("links") or [])
-    scores = payload.get("scores") or {}
+    header, score_lines, facts = _facts(payload)
     q = (payload.get("question") or "").strip()
-
-    lines = [
-        f"{name} (NORAD {norad}) · role {role} · status {status}.",
-        "This is the typed object graph. Scores below are copies of the risk report.",
-    ]
-    if links:
-        lines.append("Links:")
-        for lk in links:
-            kind = str(lk.get("type") or "link")
-            gloss = LINK_GLOSSARY.get(kind, kind)
-            label = lk.get("label") or ""
-            lines.append(f"- {kind}: {label} — {gloss}")
-    else:
-        lines.append("No ontology links on the current graph.")
-
-    att = scores.get("attention")
-    anom = scores.get("anomaly")
-    bel = scores.get("belief")
-    bits = []
-    if att is not None:
-        bits.append(f"attention={float(att):.3f}")
-    if anom is not None:
-        bits.append(f"anomaly={float(anom):.3f}")
-    if bel is not None:
-        bits.append(f"DS belief={float(bel):.3f}")
-    if bits:
-        lines.append("Immutable scores: " + " · ".join(bits) + ".")
+    lines = [header, ""]
+    if facts:
+        lines.append("What matters now:")
+        for fact in facts[:6]:
+            lines.append(f"• {fact}")
+        lines.append("")
+    if score_lines:
+        lines.append("Scores (unchanged copies of the risk report): " + "; ".join(score_lines) + ".")
     if web_hits:
-        lines.append("Public web context:")
+        lines.append("Public pages:")
         for h in web_hits[:3]:
-            lines.append(f"- {h.get('title')} ({h.get('url')})")
-    lines.append("Pattern-of-life is not intent. The copilot does not change Isolation Forest scores.")
+            lines.append(f"• {h.get('title')} ({h.get('url')})")
+    bottom = "Unusual motion is not the same as hostile intent."
+    if score_lines:
+        bottom += " These scores are not recalculated here."
+    if facts and any("close" in f.lower() or "protect" in f.lower() for f in facts):
+        lines.append(f"Bottom line: watch the close-approach pair. {bottom}")
+    else:
+        lines.append(f"Bottom line: {bottom}")
     if q:
-        lines.append(f"Operator question: {q}")
-    return "\n".join(lines)
+        lines.append(f"Your question: {q}")
+    return "\n".join(lines).strip()
 
 
 def build_graph_prompt(
@@ -145,53 +306,45 @@ def build_graph_prompt(
     web_hits: Optional[List[Dict[str, str]]] = None,
 ) -> str:
     name = payload.get("object_name") or "Unknown"
-    norad = payload.get("norad")
-    role = payload.get("role") or "unknown"
-    status = payload.get("status") or "—"
-    orbit = payload.get("orbit_class") or "—"
-    country = payload.get("country") or "—"
-    links: List[Dict[str, Any]] = list(payload.get("links") or [])
-    nodes: List[Dict[str, Any]] = list(payload.get("nodes") or [])
-    scores = payload.get("scores") or {}
     q = (payload.get("question") or "").strip() or (
-        "Explain this object's graph links for an SDA operator."
+        "Give a plain briefing: what is this object, and what should a person actually care about?"
     )
-    rag_q = " ".join([str(name), str(role), str(status), q, "space domain awareness"])
+    rag_q = " ".join([str(name), str(payload.get("role") or ""), q, "satellite"])
     cites = format_citations(retrieve(rag_q, k=3))
     web = format_web_hits(web_hits or [])
+    header, score_lines, facts = _facts(payload)
+    fact_block = "\n".join(f"- {f}" for f in facts) or "- No extra facts on the board."
+    score_block = "\n".join(f"- {s}" for s in score_lines) or "- no scores attached"
 
-    link_lines = []
-    for lk in links:
-        kind = str(lk.get("type") or "link")
-        link_lines.append(
-            f"- {kind} → {lk.get('label') or '?'}  ({LINK_GLOSSARY.get(kind, kind)})"
-        )
-    node_lines = [
-        f"- {n.get('kind')}: {n.get('label')} ({n.get('sub') or ''})"
-        for n in nodes
-    ]
+    return f"""You are Athena's briefing writer. Explain this satellite to ANY reader.
+No jargon. No graph-theory. No raw field names.
 
-    return f"""You are the Athena-SDA graph copilot. Explain the current object graph.
-You never invent or change numeric scores. Pattern-of-life is not intent.
+ALREADY TRANSLATED FACTS — use these, do not restate raw types:
+{header}
 
-CURRENT OBJECT:
-- {name} NORAD {norad} · role {role} · {country} · {orbit} · status {status}
-- attention={scores.get('attention')} anomaly={scores.get('anomaly')} belief={scores.get('belief')}
+Scores (copy the numbers; never invent or change them):
+{score_block}
 
-GRAPH NODES:
-{chr(10).join(node_lines) or '- (none)'}
+What the board already knows:
+{fact_block}
 
-GRAPH LINKS:
-{chr(10).join(link_lines) or '- (none)'}
+WRITE LIKE THIS:
+- Opening sentence (no number): who this object is and why we watch it.
+- Then 3–5 short bullets starting with "•". Each bullet = one fact + what it means in everyday words.
+- Last line starting with "Bottom line:".
 
 RULES:
-- English, 80–140 words, operator tone.
-- Answer from THIS graph first. Use WEB CONTEXT only for public identity / history.
+- English. 80–130 words. Short sentences.
+- Never use these words: threatens, hasAlert, fusedAs, sameAsset, validatedBy, Dempster, Isolation Forest, NORAD, ontology, walk-forward, pair risk, shadowing.
+- Never dump a 10-digit decimal. If you mention a score, use the low/moderate/high form already given.
+- Do not write "this link indicates" or "these links provide context".
+- Do not claim attack, espionage, or classified intent.
+- Unusual motion is not hostile intent.
+- Answer from the facts above. Use WEB CONTEXT only for public identity / history.
 - Never invent or change numeric scores.
-- Do not claim espionage or classified intent.
-- If a Case link exists, say it is a public-anchor walk-forward, not ground truth.
+- If asked a specific question, lead with the answer, then one or two supporting bullets.
 
-OPERATOR QUESTION:
+QUESTION:
 {q}
 
 {cites}
@@ -220,8 +373,8 @@ def groq_complete(prompt: str) -> Optional[str]:
                     {
                         "role": "system",
                         "content": (
-                            "You explain an SDA object graph. "
-                            "Never invent or rewrite anomaly/attention/belief scores."
+                            "You write a short, plain-language satellite briefing "
+                            "for any reader. No jargon. Never invent or rewrite scores."
                         ),
                     },
                     {"role": "user", "content": prompt},

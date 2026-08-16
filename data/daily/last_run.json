@@ -1,0 +1,32 @@
+{
+  "day": "2026-08-12",
+  "finished_at": "2026-08-12T20:06:26Z",
+  "overall": "ok",
+  "stages": {
+    "space_weather": {
+      "status": "ok",
+      "exit_code": 0,
+      "seconds": 3
+    },
+    "ingest_daily": {
+      "status": "ok",
+      "exit_code": 0,
+      "seconds": 0
+    },
+    "train_baseline": {
+      "status": "ok",
+      "exit_code": 0,
+      "seconds": 8
+    },
+    "score": {
+      "status": "ok",
+      "exit_code": 0,
+      "seconds": 167
+    },
+    "sync_frontend": {
+      "status": "ok",
+      "exit_code": 0,
+      "seconds": 0
+    }
+  }
+}

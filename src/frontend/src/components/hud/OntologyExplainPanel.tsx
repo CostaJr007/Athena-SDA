@@ -165,7 +165,7 @@ export default function OntologyExplainPanel({
             Graph copilot
           </div>
           <p className="mt-0.5 truncate text-[10px] text-zinc-500">
-            Groq + Tavily — scores stay immutable
+            Plain briefing — numbers stay as computed
           </p>
         </div>
         <span
@@ -228,7 +228,7 @@ export default function OntologyExplainPanel({
         <input
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Ask about this graph (pair, alert, weather, scores)…"
+          placeholder="Ask in plain words: what is this? is it dangerous? weather?"
           className="athena-input min-w-0 flex-1 px-2 py-1.5 text-[13px]"
         />
         <button

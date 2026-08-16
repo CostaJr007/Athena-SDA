@@ -175,33 +175,91 @@ function linkOf(payload: OntologyExplainPayload, type: string) {
   return payload.links.find((l) => l.type === type)
 }
 
-function fmtScore(n: number | null | undefined, digits = 3): string {
+function fmtScore(n: number | null | undefined, digits = 2): string {
   return n == null || !Number.isFinite(n) ? '—' : n.toFixed(digits)
+}
+
+function scoreWords(n: number | null | undefined): string {
+  if (n == null || !Number.isFinite(n)) return 'not available'
+  const band =
+    n < 0.15 ? 'very low' : n < 0.35 ? 'low' : n < 0.55 ? 'moderate' : n < 0.75 ? 'high' : 'very high'
+  return `${band} (${fmtScore(n)})`
+}
+
+function rolePlain(role: string): string {
+  if (role === 'suspect') return 'a satellite we watch because it may affect something we protect'
+  if (role === 'asset') return 'a satellite we protect'
+  if (role === 'baseline') return 'a quiet reference satellite, used to learn what normal looks like'
+  return 'a satellite on the watch list'
+}
+
+function statusPlain(status: string): string {
+  const key = (status || '').toUpperCase()
+  if (key === 'NOMINAL') return 'nothing unusual right now'
+  if (key === 'ANOMALY') return 'its recent motion looks unusual'
+  if (key === 'PAIR_ELEVATED' || key.includes('PAIR'))
+    return 'it is flagged for getting close to a satellite we protect'
+  if (key === 'UNRELIABLE_DATA' || key === 'UNRELIABLE')
+    return 'the tracking data for this object is not trustworthy'
+  if (key === 'ASSET_REGIME_NOISE' || key === 'REGIME')
+    return "the protected satellite's own motion looks noisier than usual"
+  if (key === 'MIL DETECT' || key.includes('MIL'))
+    return 'it was flagged as a military-interest detection'
+  return (status || 'status not given').replace(/_/g, ' ').toLowerCase()
+}
+
+function headName(label: string): string {
+  return (label || '').split(/\s*[·|]\s*/)[0]?.trim() || label
 }
 
 /** Situation brief for the selected object — not a type-system lecture. */
 export function situationBrief(payload: OntologyExplainPayload): string {
   const name = payload.object_name || 'This object'
-  const role = payload.role || 'unknown'
-  const status = payload.status || '—'
-  const orbit = payload.orbit_class || '—'
-  const country = payload.country || '—'
   const pair = linkOf(payload, 'threatens')
   const alert = linkOf(payload, 'hasAlert')
   const wx = linkOf(payload, 'weather')
   const ev = linkOf(payload, 'fusedAs')
   const wf = linkOf(payload, 'validatedBy')
+  const peers = payload.links.filter((l) => l.type === 'sameAsset')
 
   const lines = [
-    `${name} (#${payload.norad}) · ${role} · ${orbit} · ${country} · status ${status}.`,
-    `Attention ${fmtScore(payload.scores.attention)} · anomaly ${fmtScore(payload.scores.anomaly)} · DS belief ${fmtScore(payload.scores.belief)}.`,
+    `${name} (catalog #${payload.norad}) is ${rolePlain(payload.role)}. Right now: ${statusPlain(payload.status)}.`,
+    '',
+    'What matters now:',
   ]
-  if (pair) lines.push(`Pair: ${pair.label}.`)
-  if (alert) lines.push(`Alert: ${alert.label}.`)
-  if (wx) lines.push(`Weather window: ${wx.label}.`)
-  if (ev) lines.push(`Evidence: ${ev.label}.`)
-  if (wf) lines.push(`Walk-forward case: ${wf.label}.`)
-  lines.push('Ask about the pair, alert, weather, or scores. This panel does not change them.')
+  if (pair) {
+    lines.push(
+      `• It is flagged near ${headName(pair.label)}, a satellite we protect. That is a close-approach watch, not proof of an attack.`,
+    )
+  }
+  if (alert) {
+    lines.push(`• There is an alert: ${statusPlain(headName(alert.label))}.`)
+  }
+  if (wx) {
+    lines.push(
+      `• Space weather: ${wx.label.replace(/\s*·\s*#\d+.*$/, '')}. Use this to tell solar drag apart from a real maneuver.`,
+    )
+  }
+  if (ev) {
+    lines.push(
+      `• Combined evidence that something is wrong is ${scoreWords(payload.scores.belief)}. A very low number means do not treat this as confirmed.`,
+    )
+  }
+  if (wf) {
+    lines.push(`• There is a past public case on file: ${headName(wf.label)}.`)
+  }
+  if (peers.length) {
+    lines.push(
+      `• Also watched around the same protected satellite: ${peers.map((p) => headName(p.label)).join(', ')}.`,
+    )
+  }
+  lines.push('')
+  lines.push(
+    `Scores (unchanged): attention ${scoreWords(payload.scores.attention)}; unusual motion ${scoreWords(payload.scores.anomaly)}; evidence ${scoreWords(payload.scores.belief)}.`,
+  )
+  lines.push(
+    'Bottom line: unusual motion is not the same as hostile intent. These scores are not recalculated here.',
+  )
   return lines.join('\n')
 }
 
@@ -213,42 +271,40 @@ export function answerSituation(payload: OntologyExplainPayload): string {
   const pair = linkOf(payload, 'threatens')
   const alert = linkOf(payload, 'hasAlert')
   const wx = linkOf(payload, 'weather')
-  const ev = linkOf(payload, 'fusedAs')
   const wf = linkOf(payload, 'validatedBy')
 
-  if (/threaten|pair|asset|shadow|proxim|dist/.test(q)) {
+  if (/threaten|pair|asset|shadow|proxim|dist|close|perigo|risco/.test(q)) {
     if (!pair) {
-      return `${payload.object_name} has no pair link on this board. Attention is from its own series, not a named asset.`
+      return `${payload.object_name} is not flagged near a named protected satellite. Attention comes from its own motion only.`
     }
-    return `Pair on this object: ${pair.label}. That link ranks attention toward a protected asset. It is not a statement of intent.`
+    return `${payload.object_name} is flagged near ${headName(pair.label)}, a satellite we protect. That means “watch the pair”, not “this is an attack”.`
   }
-  if (/alert|anom|hostile|mil|flag|status/.test(q)) {
+  if (/alert|anom|hostile|mil|flag|status|perig/.test(q)) {
     if (!alert) {
-      return `${payload.object_name} has no alert node on this graph. Status ${payload.status}. Anomaly ${fmtScore(payload.scores.anomaly)}.`
+      return `${payload.object_name}: ${statusPlain(payload.status)}. Unusual-motion score is ${scoreWords(payload.scores.anomaly)}.`
     }
-    return `Alert on this object: ${alert.label}. Status ${payload.status}. Anomaly ${fmtScore(payload.scores.anomaly)}.`
+    return `Alert: ${statusPlain(headName(alert.label))}. Unusual-motion score is ${scoreWords(payload.scores.anomaly)}.`
   }
-  if (/weather|f10|storm|ap\b|kp\b|sun|drag/.test(q)) {
-    if (!wx) return 'No weather node on this graph.'
-    return `Weather on this window: ${wx.label}. Use it to separate drag from a control change — it does not set the IF score by itself.`
+  if (/weather|f10|storm|ap\b|kp\b|sun|drag|sol/.test(q)) {
+    if (!wx) return 'No space-weather reading is attached to this object.'
+    return `Space weather: ${wx.label.replace(/\s*·\s*#\d+.*$/, '')}. That helps tell solar drag apart from a real maneuver — it does not rewrite the anomaly score.`
   }
-  if (/score|belief|attention|anomal|ds |fusion|kelly/.test(q)) {
+  if (/score|belief|attention|anomal|ds |fusion|kelly|número|numero/.test(q)) {
     return [
-      `Immutable scores for ${payload.object_name}:`,
-      `attention ${fmtScore(payload.scores.attention)} · anomaly ${fmtScore(payload.scores.anomaly)} · DS belief ${fmtScore(payload.scores.belief)}.`,
-      ev ? `Fusion node: ${ev.label}.` : '',
-    ]
-      .filter(Boolean)
-      .join('\n')
+      `Scores for ${payload.object_name} (unchanged copies):`,
+      `• attention needed: ${scoreWords(payload.scores.attention)}`,
+      `• how unusual the orbit looks: ${scoreWords(payload.scores.anomaly)}`,
+      `• combined evidence: ${scoreWords(payload.scores.belief)}`,
+    ].join('\n')
   }
-  if (/case|walk|valid|proof|peak/.test(q)) {
+  if (/case|walk|valid|proof|peak|histórico|historico/.test(q)) {
     if (!wf) {
-      return `${payload.object_name} has no walk-forward case attached on this graph.`
+      return `${payload.object_name} has no past public case attached.`
     }
-    return `Walk-forward case: ${wf.label}. Public t_peak is an open-source anchor, not classified ground truth.`
+    return `Past public case on file: ${headName(wf.label)}. It is an open-source anchor, not classified proof.`
   }
 
-  return `${situationBrief(payload)}\n\nQuestion: ${payload.question}`
+  return `${situationBrief(payload)}\n\nYour question: ${payload.question}`
 }
 
 export type GraphKind =
