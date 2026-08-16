@@ -12,10 +12,6 @@
 import * as THREE from 'three'
 import * as satellite from 'satellite.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
-import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
 import { CITIES, latLonToUnit } from '@/lib/cities'
 
 export interface EngineCallbacks {
@@ -222,8 +218,7 @@ export class GlobeEngine {
   private scene = new THREE.Scene()
   private camera: THREE.PerspectiveCamera
   private controls: OrbitControls
-  private composer: EffectComposer
-  private bloom: UnrealBloomPass
+
   private earth: THREE.Mesh
   private earthMat: THREE.ShaderMaterial
   private cityLayer: THREE.Group
@@ -301,6 +296,9 @@ export class GlobeEngine {
     })
     // Pure black void — chrome UI sits on starfield panels; globe is the star
     this.renderer.setClearColor(0x000000, 1)
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace
+    // HMR / remount can leave a previous canvas — two contexts flicker.
+    container.querySelectorAll('canvas').forEach((c) => c.remove())
     container.appendChild(this.renderer.domElement)
 
     const initW = Math.max(1, container.clientWidth)
@@ -538,12 +536,6 @@ export class GlobeEngine {
     this.markerB.visible = false
     this.scene.add(this.markerB)
 
-    // --- selective bloom: threshold 1.0 keeps Earth/stars out of the glow ---
-    this.composer = new EffectComposer(this.renderer)
-    this.composer.addPass(new RenderPass(this.scene, this.camera))
-    this.bloom = new UnrealBloomPass(new THREE.Vector2(initW, initH), 0.55, 0.35, 1.0)
-    this.composer.addPass(this.bloom)
-    this.composer.addPass(new OutputPass())
     this.applySize()
 
     // --- events ---
@@ -555,8 +547,7 @@ export class GlobeEngine {
     el.addEventListener('pointermove', this.onPointerMove)
     el.addEventListener('webglcontextlost', this.onContextLost, false)
     el.addEventListener('webglcontextrestored', this.onContextRestored, false)
-    // Debounce: opening docks/panels fires many layout ticks; each
-    // composer.setSize reallocates bloom buffers and flashes the globe.
+    // Debounce: opening docks/panels fires many layout ticks.
     this.resizeObserver = new ResizeObserver(() => {
       window.clearTimeout(this.resizeTimer)
       this.resizeTimer = window.setTimeout(() => this.applySize(), 80)
@@ -741,8 +732,6 @@ export class GlobeEngine {
     this.camera.updateProjectionMatrix()
     this.renderer.setPixelRatio(dpr)
     this.renderer.setSize(w, h)
-    this.composer.setPixelRatio(dpr)
-    this.composer.setSize(w, h)
     for (const g of this.groups) g.mat.uniforms.uPixelRatio.value = dpr
     if (this.replacement) {
       for (const g of this.replacement) g.mat.uniforms.uPixelRatio.value = dpr
@@ -1357,7 +1346,7 @@ export class GlobeEngine {
     }
 
     this.controls.update()
-    this.composer.render()
+    this.renderer.render(this.scene, this.camera)
     this.monitorPerf(performance.now())
   }
 
@@ -1392,11 +1381,8 @@ export class GlobeEngine {
         }
       }
     })
-    for (const pass of this.composer.passes) {
-      ;(pass as { dispose?: () => void }).dispose?.()
-    }
-    this.composer.dispose()
     this.renderer.dispose()
+    this.renderer.domElement.remove()
     el.remove()
   }
 }
