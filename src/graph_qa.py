@@ -355,7 +355,7 @@ INSTRUCTIONS:
    - **3. Scores Matemáticos do Modelo (Imutáveis):** Explicação contextualizada de Atenção, Anomalia e Evidência Combinada (Dempster-Shafer).
    - **4. Implicações Operacionais & Riscos Orbitais:** Detalhar o que o alerta indica e o que NÃO indica (ex: aproximação vs ataque hostil; probabilidade de manobra vs ruído).
    - **5. Conclusão & Recomendação Tática.**
-4. Score Integrity: Never invent or recalculate numerical scores; reference the computed anomaly, attention, and evidence scores given above.
+4. Score Integrity: Never invent or change numeric scores. Reference the computed anomaly, attention, and evidence scores given above.
 
 USER QUESTION:
 {q}

@@ -1,3 +1,8 @@
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from src.graph_qa import build_graph_prompt, explain_graph, format_web_hits, local_graph_brief
 
 
@@ -35,7 +40,7 @@ def test_local_brief_copies_scores() -> None:
 
 def test_explain_graph_returns_contract() -> None:
     out = explain_graph({**_payload(), "question": ""})
-    assert out["source"] in ("groq", "fallback")
+    assert out["source"] in ("deepseek", "groq", "fallback")
     assert out["text"]
     assert "citations" in out
     if out["source"] == "fallback":
