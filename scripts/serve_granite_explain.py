@@ -13,7 +13,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[1] if "__file__" in globals() else Path.cwd()
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
@@ -90,13 +90,14 @@ class Handler(BaseHTTPRequestHandler):
         path = parsed.path
         q = parse_qs(parsed.query)
         if path in ("/health", "/api/health"):
-            from src.graph_qa import groq_api_key, tavily_api_key
+            from src.graph_qa import deepseek_api_key, groq_api_key, tavily_api_key
 
             self._json(
                 200,
                 {
                     "ok": True,
                     "service": "athena-sidecar",
+                    "deepseek": bool(deepseek_api_key()),
                     "groq": bool(groq_api_key()),
                     "tavily": bool(tavily_api_key()),
                 },

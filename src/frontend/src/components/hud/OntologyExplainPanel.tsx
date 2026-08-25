@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import {
   answerSituation,
   type ObjectGraph,
@@ -19,7 +21,7 @@ interface WebCite {
 interface ExplainResponse {
   text: string
   model: string
-  source: 'groq' | 'fallback' | 'watsonx'
+  source: 'deepseek' | 'groq' | 'fallback' | 'watsonx'
   citations?: WebCite[]
 }
 
@@ -30,16 +32,15 @@ interface ChatTurn {
 }
 
 /**
- * Groq + Tavily column beside the object graph.
- * Never surfaces sidecar / .env / script copy.
+ * AI Graph Copilot (DeepSeek / Groq) column beside the object graph.
  */
 export default function OntologyExplainPanel({
   entry,
   graph,
 }: OntologyExplainPanelProps) {
   const [turns, setTurns] = useState<ChatTurn[]>([])
-  const [model, setModel] = useState<string>('groq')
-  const [source, setSource] = useState<'groq' | 'fallback' | 'loading'>('loading')
+  const [model, setModel] = useState<string>('ai')
+  const [source, setSource] = useState<'deepseek' | 'groq' | 'fallback' | 'loading'>('loading')
   const [question, setQuestion] = useState('')
   const [busy, setBusy] = useState(false)
   const logRef = useRef<HTMLDivElement>(null)
@@ -77,14 +78,14 @@ export default function OntologyExplainPanel({
   const applyAnswer = (
     seq: number,
     text: string,
-    from: 'groq' | 'fallback',
+    from: 'deepseek' | 'groq' | 'fallback',
     remoteModel?: string,
     cites?: WebCite[],
   ) => {
     if (seq !== seqRef.current) return
     setTurns((prev) => [...prev, { who: 'copilot', text, cites }])
     setSource(from)
-    if (from === 'groq' && remoteModel) setModel(remoteModel)
+    if ((from === 'deepseek' || from === 'groq') && remoteModel) setModel(remoteModel)
     else if (from === 'fallback') setModel('local')
   }
 
@@ -110,12 +111,12 @@ export default function OntologyExplainPanel({
       const data = (await res.json()) as ExplainResponse
       const remote = (data.text ?? '').trim()
       const leakedOps =
-        /sidecar|serve_granite|\.env|WATSONX_APIKEY|GROQ_API_KEY|TAVILY_API_KEY/i.test(
+        /sidecar|serve_granite|\.env|WATSONX_APIKEY|GROQ_API_KEY|TAVILY_API_KEY|DEEPSEEK_API_KEY/i.test(
           remote,
         )
       const cites = (data.citations ?? []).filter((c) => c.url)
-      if (remote && !leakedOps && data.source === 'groq') {
-        applyAnswer(seq, remote, 'groq', data.model || 'groq', cites)
+      if (remote && !leakedOps && (data.source === 'deepseek' || data.source === 'groq')) {
+        applyAnswer(seq, remote, data.source, data.model || data.source, cites)
         return
       }
       if (remote && !leakedOps) {
@@ -165,19 +166,19 @@ export default function OntologyExplainPanel({
             Graph copilot
           </div>
           <p className="mt-0.5 truncate text-[10px] text-zinc-500">
-            Plain briefing — numbers stay as computed
+            Space Domain Awareness AI — immutable scores
           </p>
         </div>
         <span
           className={`shrink-0 border px-1.5 py-0.5 text-[10px] uppercase tracking-wider ${
-            source === 'groq'
-              ? 'border-sky-400/50 text-sky-200'
+            source === 'deepseek' || source === 'groq'
+              ? 'border-sky-400/50 bg-sky-500/10 text-sky-200'
               : source === 'loading'
                 ? 'border-white/15 text-zinc-500'
                 : 'border-sky-400/30 text-sky-200/80'
           }`}
         >
-          {source === 'loading' ? 'reading…' : source === 'groq' ? model : 'local'}
+          {source === 'loading' ? 'reading…' : source === 'deepseek' || source === 'groq' ? model : 'local'}
         </span>
       </div>
       <div
@@ -189,18 +190,102 @@ export default function OntologyExplainPanel({
             key={`${t.who}-${i}`}
             className={
               t.who === 'op'
-                ? 'ml-6 border border-white/10 bg-black/40 px-2 py-1.5 text-zinc-100'
-                : 'mr-2 whitespace-pre-wrap text-zinc-200'
+                ? 'ml-6 border border-sky-400/30 bg-sky-950/30 px-3 py-2 text-zinc-100'
+                : 'mr-1 border border-white/5 bg-black/20 p-2.5 text-zinc-200'
             }
           >
             {t.who === 'op' && (
-              <div className="mb-0.5 text-[10px] uppercase tracking-wider text-zinc-500">
-                You
+              <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-sky-400">
+                Operador
               </div>
             )}
-            {t.text}
+            {t.who === 'op' ? (
+              <div className="whitespace-pre-wrap text-[13px]">{t.text}</div>
+            ) : (
+              <div className="copilot-markdown text-[12.5px] leading-relaxed text-zinc-200">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    h1: ({ children }) => (
+                      <h1 className="mt-3 mb-2 border-b border-sky-400/30 pb-1 text-[13px] font-bold uppercase tracking-wider text-sky-200">
+                        {children}
+                      </h1>
+                    ),
+                    h2: ({ children }) => (
+                      <h2 className="mt-3 mb-1.5 text-[12px] font-semibold uppercase tracking-wide text-emerald-300">
+                        {children}
+                      </h2>
+                    ),
+                    h3: ({ children }) => (
+                      <h3 className="mt-2.5 mb-1 text-[11.5px] font-semibold text-sky-100">
+                        {children}
+                      </h3>
+                    ),
+                    p: ({ children }) => (
+                      <p className="mb-2 leading-relaxed text-zinc-300">{children}</p>
+                    ),
+                    ul: ({ children }) => (
+                      <ul className="my-1.5 list-disc space-y-1 pl-4 text-zinc-300">
+                        {children}
+                      </ul>
+                    ),
+                    ol: ({ children }) => (
+                      <ol className="my-1.5 list-decimal space-y-1 pl-4 text-zinc-300">
+                        {children}
+                      </ol>
+                    ),
+                    li: ({ children }) => <li className="leading-snug">{children}</li>,
+                    blockquote: ({ children }) => (
+                      <blockquote className="my-2 border-l-2 border-emerald-400/60 bg-emerald-500/5 px-2.5 py-1.5 text-[11.5px] italic text-zinc-300">
+                        {children}
+                      </blockquote>
+                    ),
+                    table: ({ children }) => (
+                      <div className="my-2 max-w-full overflow-x-auto rounded border border-white/10 bg-black/40">
+                        <table className="min-w-full divide-y divide-white/10 text-left text-[11px]">
+                          {children}
+                        </table>
+                      </div>
+                    ),
+                    thead: ({ children }) => (
+                      <thead className="bg-white/5 font-semibold text-zinc-200">
+                        {children}
+                      </thead>
+                    ),
+                    th: ({ children }) => (
+                      <th className="px-2.5 py-1.5 font-semibold text-sky-200">
+                        {children}
+                      </th>
+                    ),
+                    td: ({ children }) => (
+                      <td className="border-t border-white/5 px-2.5 py-1.5 text-zinc-300">
+                        {children}
+                      </td>
+                    ),
+                    code: ({ children, className }) => {
+                      const isInline = !className
+                      return isInline ? (
+                        <code className="rounded bg-white/10 px-1 py-0.5 font-mono text-[11px] text-sky-200">
+                          {children}
+                        </code>
+                      ) : (
+                        <pre className="my-2 overflow-x-auto rounded border border-white/10 bg-black/60 p-2 font-mono text-[11px] text-emerald-300">
+                          <code>{children}</code>
+                        </pre>
+                      )
+                    },
+                    hr: () => <hr className="my-2.5 border-white/10" />,
+                    strong: ({ children }) => (
+                      <strong className="font-semibold text-white">{children}</strong>
+                    ),
+                  }}
+                >
+                  {t.text}
+                </ReactMarkdown>
+              </div>
+            )}
             {t.who === 'copilot' && t.cites && t.cites.length > 0 && (
-              <ul className="mt-1.5 space-y-0.5 text-[11px] text-sky-200/80">
+              <ul className="mt-2 space-y-0.5 border-t border-white/5 pt-1.5 text-[11px] text-sky-200/80">
                 {t.cites.slice(0, 3).map((c) => (
                   <li key={c.url} className="truncate">
                     <a

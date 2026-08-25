@@ -391,7 +391,11 @@ export default function Home() {
     const sizes = new Map<number, number>()
 
     const focusNorads = new Set<number>()
-    if (riskReport) {
+    if (catalogFocus === 'selected') {
+      if (selectedNorad !== null) focusNorads.add(selectedNorad)
+      if (compareNoradA !== null) focusNorads.add(compareNoradA)
+      if (compareNoradB !== null) focusNorads.add(compareNoradB)
+    } else if (riskReport) {
       for (const b of riskReport.board) {
         if (catalogFocus === 'military') {
           if (b.role === 'asset' || b.role === 'suspect') focusNorads.add(b.norad_id)
@@ -402,7 +406,7 @@ export default function Home() {
     }
 
     // Hide non-focus sats when not "all"
-    if (catalogFocus !== 'all' && focusNorads.size > 0) {
+    if (catalogFocus !== 'all') {
       dataset.sats.forEach((s, i) => {
         if (!focusNorads.has(s.norad)) sizes.set(i, 0)
       })
@@ -417,9 +421,14 @@ export default function Home() {
       }
     }
 
+    const isFocusMode = catalogFocus !== 'all'
+
     if (riskReport) {
       for (const b of riskReport.board) {
         if (catalogFocus === 'military' && b.role !== 'asset' && b.role !== 'suspect') {
+          continue
+        }
+        if (catalogFocus === 'selected' && !focusNorads.has(b.norad_id)) {
           continue
         }
         if (filterActive && !matchingNorads.has(b.norad_id)) {
@@ -430,16 +439,41 @@ export default function Home() {
         }
         const idx = noradMapRef.current.get(b.norad_id)
         if (idx === undefined) continue
-        colors.set(idx, boardColor(b))
+
         const threat = boardThreat(b)
-        const boost =
-          threat === 'HOSTILE'
-            ? 3.4
-            : threat === 'SUSPECT'
-              ? 2.8
-              : threat === 'ANOMALY'
-                ? 2.4
-                : 2.0
+        // In focus modes (Watchlist / Military / Selected), use vivid ultra-saturated colors
+        if (isFocusMode) {
+          if (threat === 'HOSTILE') colors.set(idx, '#ff2255') // Neon Crimson
+          else if (threat === 'SUSPECT') colors.set(idx, '#ffaa00') // Vivid Amber
+          else if (threat === 'ANOMALY') colors.set(idx, '#ff7700') // Solar Orange
+          else if (b.role === 'asset') colors.set(idx, '#00f0ff') // Electric Cyan
+          else if (b.role === 'suspect') colors.set(idx, '#ffaa00') // Vivid Amber
+          else colors.set(idx, '#00ff88') // Laser Emerald
+        } else {
+          colors.set(idx, boardColor(b))
+        }
+
+        // Scale boost: extra prominent beacons when isolated on the globe
+        const isSelected = selectedNorad === b.norad_id
+        const boost = isFocusMode
+          ? isSelected
+            ? 8.0
+            : threat === 'HOSTILE'
+              ? 6.5
+              : threat === 'SUSPECT'
+                ? 5.8
+                : threat === 'ANOMALY'
+                  ? 5.2
+                  : 4.8
+          : isSelected
+            ? 5.0
+            : threat === 'HOSTILE'
+              ? 3.4
+              : threat === 'SUSPECT'
+                ? 2.8
+                : threat === 'ANOMALY'
+                  ? 2.4
+                  : 2.0
         sizes.set(idx, boost)
       }
     }
@@ -452,7 +486,7 @@ export default function Home() {
       clearTimeout(t)
       clearTimeout(t2)
     }
-  }, [dataset, riskReport, catalogFocus, boardFilters])
+  }, [dataset, riskReport, catalogFocus, boardFilters, selectedNorad, compareNoradA, compareNoradB])
 
   const { degraded } = usePropagator(dataset, engineRef, clock)
 

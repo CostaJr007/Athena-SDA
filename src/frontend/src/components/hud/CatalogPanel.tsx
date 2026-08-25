@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { UI_GROUPS } from '@/lib/satellites'
 
-export type CatalogFocus = 'all' | 'watchlist' | 'military'
+export type CatalogFocus = 'all' | 'watchlist' | 'military' | 'selected'
 
 interface CatalogPanelProps {
   open: boolean
@@ -32,7 +32,7 @@ export default function CatalogPanel({
   if (!open) return null
 
   return (
-    <div className="athena-panel pointer-events-auto flex max-h-[min(420px,55vh)] w-[min(300px,calc(100vw-1.5rem))] flex-col overflow-hidden">
+    <div className="athena-panel pointer-events-auto flex max-h-[min(460px,60vh)] w-[min(300px,calc(100vw-1.5rem))] flex-col overflow-hidden">
       <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-3 py-2">
         <div>
           <div className="text-[13px] font-semibold uppercase tracking-[0.14em] text-zinc-100">
@@ -72,6 +72,11 @@ export default function CatalogPanel({
                 id: 'military' as const,
                 label: `Military focus (${militaryN})`,
                 hint: 'Asset + suspect only',
+              },
+              {
+                id: 'selected' as const,
+                label: 'Selected only (Solo focus)',
+                hint: 'Isolate analyzed object',
               },
             ] as const
           ).map((opt) => {

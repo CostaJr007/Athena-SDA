@@ -20,8 +20,10 @@ load_dotenv(ROOT / ".env", override=True)
 logger = get_logger(__name__)
 
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
+DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
 TAVILY_URL = "https://api.tavily.com/search"
 DEFAULT_GROQ_MODEL = "llama-3.1-8b-instant"
+DEFAULT_DEEPSEEK_MODEL = "deepseek-chat"
 TIMEOUT = 20
 
 # Plain-language only. Keys stay stable for older imports.
@@ -55,6 +57,14 @@ STATUS_PLAIN = {
     "UNRELIABLE": "the tracking data for this object is not trustworthy",
     "REGIME": "the protected satellite's own motion looks noisier than usual",
 }
+
+
+def deepseek_api_key() -> str:
+    return (os.environ.get("DEEPSEEK_API_KEY") or "").strip()
+
+
+def deepseek_model() -> str:
+    return (os.environ.get("DEEPSEEK_MODEL") or DEFAULT_DEEPSEEK_MODEL).strip()
 
 
 def groq_api_key() -> str:
@@ -307,7 +317,7 @@ def build_graph_prompt(
 ) -> str:
     name = payload.get("object_name") or "Unknown"
     q = (payload.get("question") or "").strip() or (
-        "Give a plain briefing: what is this object, and what should a person actually care about?"
+        "Give a complete briefing: what is this object, characteristics, launch history, and what does the graph & risk show?"
     )
     rag_q = " ".join([str(name), str(payload.get("role") or ""), q, "satellite"])
     cites = format_citations(retrieve(rag_q, k=3))
@@ -316,42 +326,85 @@ def build_graph_prompt(
     fact_block = "\n".join(f"- {f}" for f in facts) or "- No extra facts on the board."
     score_block = "\n".join(f"- {s}" for s in score_lines) or "- no scores attached"
 
-    return f"""You are Athena's briefing writer. Explain this satellite to ANY reader.
-No jargon. No graph-theory. No raw field names.
+    return f"""You are Athena's Space Domain Awareness (SDA) Expert Copilot.
+You assist satellite operators, intelligence analysts, and domain experts.
 
-ALREADY TRANSLATED FACTS — use these, do not restate raw types:
-{header}
+SATELLITE UNDER INVESTIGATION:
+- Name: {name}
+- Catalog/NORAD ID: {payload.get('norad')}
+- Country / Operator: {payload.get('country') or 'Unknown'}
+- Orbit Regime: {payload.get('orbit_class') or 'Unknown'}
+- Operational Role: {payload.get('role') or 'Unknown'}
+- Current Alert Status: {payload.get('status') or 'NOMINAL'}
 
-Scores (copy the numbers; never invent or change them):
+COMPUTED SCORES (Immutable from ML pipeline - copy exactly, never invent):
 {score_block}
 
-What the board already knows:
+OBJECT ONTOLOGY GRAPH & LIVE CONTACTS:
+{header}
 {fact_block}
 
-WRITE LIKE THIS:
-- Opening sentence (no number): who this object is and why we watch it.
-- Then 3–5 short bullets starting with "•". Each bullet = one fact + what it means in everyday words.
-- Last line starting with "Bottom line:".
+TIMEOUT = 35
 
-RULES:
-- English. 80–130 words. Short sentences.
-- Never use these words: threatens, hasAlert, fusedAs, sameAsset, validatedBy, Dempster, Isolation Forest, NORAD, ontology, walk-forward, pair risk, shadowing.
-- Never dump a 10-digit decimal. If you mention a score, use the low/moderate/high form already given.
-- Do not write "this link indicates" or "these links provide context".
-- Do not claim attack, espionage, or classified intent.
-- Unusual motion is not hostile intent.
-- Answer from the facts above. Use WEB CONTEXT only for public identity / history.
-- Never invent or change numeric scores.
-- If asked a specific question, lead with the answer, then one or two supporting bullets.
+INSTRUCTIONS:
+1. Language: Answer in the same language as the user's question (if asked in Portuguese, answer in fluent Portuguese; if asked in English, answer in English).
+2. Completeness: Always complete all sentences and sections thoroughly. Do not leave thoughts unfinished.
+3. Structure your response into clear, well-formatted Markdown sections:
+   - **1. Contexto & Ficha Técnica do Satélite:** Identificação, NORAD, Operador, Data e local de lançamento, Veículo lançador, Regime orbital e Capacidade/Propósito da missão.
+   - **2. Análise do Grafo de Ontologia:** Interpretação detalhada das conexões (ativos protegidos sob vigilância, alertas ativos, satélites relacionados da mesma constelação/operador e influência do clima espacial F10.7 na discriminação de arrasto vs manobra).
+   - **3. Scores Matemáticos do Modelo (Imutáveis):** Explicação contextualizada de Atenção, Anomalia e Evidência Combinada (Dempster-Shafer).
+   - **4. Implicações Operacionais & Riscos Orbitais:** Detalhar o que o alerta indica e o que NÃO indica (ex: aproximação vs ataque hostil; probabilidade de manobra vs ruído).
+   - **5. Conclusão & Recomendação Tática.**
+4. Score Integrity: Never invent or recalculate numerical scores; reference the computed anomaly, attention, and evidence scores given above.
 
-QUESTION:
+USER QUESTION:
 {q}
 
 {cites}
 
 {web}
 
-ANSWER:"""
+EXPERT BRIEFING:"""
+
+
+def deepseek_complete(prompt: str) -> Optional[str]:
+    key = deepseek_api_key()
+    if not key:
+        return None
+    try:
+        res = requests.post(
+            DEEPSEEK_URL,
+            headers={
+                "Authorization": f"Bearer {key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": deepseek_model(),
+                "temperature": 0.3,
+                "max_tokens": 2500,
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are Athena-SDA Copilot, a senior military and space domain awareness analyst AI. "
+                            "You provide elaborate, complete, highly organized, and professionally formatted briefings "
+                            "in the operator's language. Never leave an analysis cut off or incomplete."
+                        ),
+                    },
+                    {"role": "user", "content": prompt},
+                ],
+            },
+            timeout=TIMEOUT,
+        )
+        res.raise_for_status()
+        data = res.json()
+        text = (
+            ((data.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
+        ).strip()
+        return text or None
+    except Exception as exc:
+        logger.warning("deepseek complete failed: %s", exc)
+        return None
 
 
 def groq_complete(prompt: str) -> Optional[str]:
@@ -368,13 +421,13 @@ def groq_complete(prompt: str) -> Optional[str]:
             json={
                 "model": groq_model(),
                 "temperature": 0.2,
-                "max_tokens": 420,
+                "max_tokens": 1500,
                 "messages": [
                     {
                         "role": "system",
                         "content": (
-                            "You write a short, plain-language satellite briefing "
-                            "for any reader. No jargon. Never invent or rewrite scores."
+                            "You are Athena-SDA Copilot, an expert AI in Space Domain Awareness. "
+                            "Answer accurately in the user's language with complete structured sections without altering mathematical scores."
                         ),
                     },
                     {"role": "user", "content": prompt},
@@ -404,21 +457,37 @@ def _web_query(payload: Dict[str, Any]) -> str:
 
 
 def explain_graph(payload: Dict[str, Any]) -> Dict[str, Any]:
-    """Return {text, model, source, citations}. source is groq or fallback."""
+    """Return {text, model, source, citations}. source is deepseek, groq or fallback."""
     question = str(payload.get("question") or "").strip()
     web_hits: List[Dict[str, str]] = []
     if question and tavily_api_key():
         web_hits = tavily_search(_web_query(payload))
 
     prompt = build_graph_prompt(payload, web_hits=web_hits)
-    text = groq_complete(prompt)
-    if text:
-        return {
-            "text": text,
-            "model": groq_model(),
-            "source": "groq",
-            "citations": web_hits,
-        }
+
+    # 1. Try DeepSeek (High intelligence / knowledge)
+    if deepseek_api_key():
+        text = deepseek_complete(prompt)
+        if text:
+            return {
+                "text": text,
+                "model": deepseek_model(),
+                "source": "deepseek",
+                "citations": web_hits,
+            }
+
+    # 2. Try Groq
+    if groq_api_key():
+        text = groq_complete(prompt)
+        if text:
+            return {
+                "text": text,
+                "model": groq_model(),
+                "source": "groq",
+                "citations": web_hits,
+            }
+
+    # 3. Deterministic Local Fallback
     return {
         "text": local_graph_brief(payload, web_hits),
         "model": "local-graph",

@@ -63,6 +63,12 @@ uniform float uScale;
 uniform float uPixelRatio;
 varying vec3 vColor;
 void main() {
+  if (aSize <= 0.001) {
+    gl_Position = vec4(99999.0, 99999.0, 99999.0, 1.0);
+    gl_PointSize = 0.0;
+    vColor = vec3(0.0);
+    return;
+  }
   float s = clamp(uS / uDur, 0.0, 1.0);
   float s2 = s * s;
   float s3 = s2 * s;
@@ -74,8 +80,8 @@ void main() {
   vColor = aColor;
   vec4 mv = modelViewMatrix * vec4(p, 1.0);
   gl_Position = projectionMatrix * mv;
-  float ps = aSize * uScale * uPixelRatio * (3.1 / -mv.z);
-  gl_PointSize = clamp(ps, 1.0, 48.0);
+  float ps = aSize * uScale * uPixelRatio * (3.8 / -mv.z);
+  gl_PointSize = clamp(ps, 1.0, 56.0);
 }
 `
 
@@ -86,10 +92,11 @@ void main() {
   vec2 c = gl_PointCoord - 0.5;
   float d = length(c);
   if (d > 0.5) discard;
-  float core = smoothstep(0.30, 0.10, d);
-  float halo = smoothstep(0.5, 0.12, d) * 0.5;
-  vec3 col = vColor * (0.5 + uIntensity * core);
-  gl_FragColor = vec4(col, max(halo, core));
+  float core = smoothstep(0.35, 0.05, d);
+  float halo = smoothstep(0.50, 0.08, d) * 0.85;
+  vec3 col = mix(vColor, vec3(1.0), core * 0.65) * (0.85 + uIntensity * 1.25);
+  float alpha = clamp(core * 1.0 + halo * 0.75, 0.0, 1.0);
+  gl_FragColor = vec4(col, alpha);
 }
 `
 
@@ -119,15 +126,14 @@ void main() {
   float dayMix = smoothstep(-0.05, 0.15, sd);
   vec3 dayT = texture2D(uDay, vUv).rgb;
   float luma = dot(dayT, vec3(0.299, 0.587, 0.114));
-  dayT = clamp(mix(vec3(luma), dayT, 1.28), 0.0, 1.0); // livelier oceans
+  dayT = clamp(mix(vec3(luma), dayT, 1.15), 0.0, 1.0); // clean, crisp oceans & continents
   vec3 nightT = texture2D(uNight, vUv).rgb;
-  float lit = clamp(sd * 1.5, 0.0, 1.0);
-  vec3 col = dayT * lit * 1.55 + dayT * 0.30;
-  col += nightT * (1.0 - dayMix) * 1.45;
+  float lit = clamp(sd * 1.35, 0.0, 1.0);
+  vec3 col = dayT * lit * 1.25 + dayT * 0.12; // vivid, luminous daytime + soft ambient
+  col += nightT * (1.0 - dayMix) * 1.30; // crisp, glowing night city lights
   vec3 v = normalize(cameraPosition - vPosW);
-  float rim = pow(1.0 - max(dot(n, v), 0.0), 2.8);
-  col += vec3(0.38, 0.62, 1.00) * rim * (0.35 + 0.65 * dayMix) * 1.05;
-  col = clamp(col * 1.22, 0.0, 1.0);
+  float rim = pow(1.0 - max(dot(n, v), 0.0), 3.2);
+  col += vec3(0.26, 0.48, 0.85) * rim * (0.25 + 0.75 * dayMix) * 0.55;
   gl_FragColor = vec4(col, 1.0);
 }
 `
@@ -143,8 +149,8 @@ void main() {
 const ATMO_FRAG = /* glsl */ `
 varying vec3 vN;
 void main() {
-  float intensity = pow(max(0.60 - dot(normalize(vN), vec3(0.0, 0.0, 1.0)), 0.0), 4.5);
-  gl_FragColor = vec4(0.48, 0.72, 1.22, 1.0) * intensity * 3.4;
+  float intensity = pow(max(0.60 - dot(normalize(vN), vec3(0.0, 0.0, 1.0)), 0.0), 4.0);
+  gl_FragColor = vec4(0.32, 0.58, 1.12, 1.0) * intensity * 2.2;
 }
 `
 

@@ -4,13 +4,14 @@
 
 | | |
 |--|--|
-| **Challenge** | IBM SkillsBuild AI Builders — *Advance Space Exploration with AI* |
+| **Challenge** | IBM SkillsBuild AI Builders — *Advance Space Exploration with AI* (August 2026) |
 | **Mission** | Analyze TLE time series + space weather; detect elevated noise / micro-trajectory regimes; prioritize attention on **suspects** vs protected **assets** |
 | **Repo** | [github.com/CostaJr007/Athena-SDA](https://github.com/CostaJr007/Athena-SDA) |
 | **Watchlist** | 24 NORADs (7 **asset** · 11 **suspect** · 6 **baseline**) |
-| **History** | ~12.5 years of TLEs (2014-01-01 → 2026-07-27) · ~250k epochs |
-| **Space weather** | GFZ F10.7 / Ap / Kp + geomagnetic storm flag |
-| **Validation** | Claims **A+B** (re-validated 2026-08, corrected framework): GEO interest **5/5** hard hits vs civil EO **0/7** · gap ~0.26 · Mann–Whitney *p*≈0.001 |
+| **History** | **~12.6 years** longitudinal series (2014-01-01 → 2026-08-12) · **Full ~11-year Solar Cycle** coverage (Cycles 24 & 25) · ~250k epochs |
+| **Space weather** | GFZ Potsdam F10.7 / Ap / Kp + NOAA geomagnetic storm flags (physical drag vs maneuver decoupling) |
+| **AI Copilot** | **DeepSeek (`deepseek-chat`)** / **IBM Granite (watsonx.ai)** / **Groq** + **Tavily** web context · *Immutable math scores* |
+| **Validation** | Claims **A+B** (re-validated 2026-08, corrected framework): GEO interest **5/5** hard hits vs civil EO **0/7** · gap ~0.26 · Mann–Whitney *p*≈0.0013 |
 
 ---
 
@@ -34,19 +35,19 @@
 | **[Walk-forward PoC HTML](src/frontend/public/reports/walkforward_poc.html)** | In-browser demo narrative |
 | **Mission board UI** | `cd src/frontend && npm run dev` |
 
-### Hackathon demo (this is the closed build)
+### Hackathon demo (Live Interactive Stack)
 
-Free APIs only: **Groq** (graph answers) + **Tavily** (public web citations).
-Quant scores stay immutable.
+AI Copilot with immutable scores: **DeepSeek** (`DEEPSEEK_API_KEY`) / **IBM Granite** (`WATSONX_APIKEY`) / **Groq** (`GROQ_API_KEY`) + **Tavily** web context.
+Quant scores and ML anomaly metrics stay immutable.
 
 ```powershell
 copy .env.example .env
-# set GROQ_API_KEY and TAVILY_API_KEY in .env
-powershell -File scripts/run_hackathon_demo.ps1
+# configure your API keys in .env
+python scripts/serve_granite_explain.py
 ```
 
-Sidecar: http://127.0.0.1:8787/api/health  
-Board: http://127.0.0.1:3000 — open an object, ask about the graph.
+Sidecar API: http://127.0.0.1:8787/api/health  
+Tactical 3D Board: http://127.0.0.1:3000 — inspect live objects, open ontology graph (`G`), run Conjunction Lab (`C`).
 
 ```bash
 python scripts/run_paper_validation.py --threshold 0.50
