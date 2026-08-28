@@ -37,7 +37,7 @@
 
 ### Hackathon demo (Live Interactive Stack)
 
-AI Copilot with immutable scores: **DeepSeek** (`DEEPSEEK_API_KEY`) / **IBM Granite** (`WATSONX_APIKEY`) / **Groq** (`GROQ_API_KEY`) + **Tavily** web context.
+AI Copilot with immutable scores: **IBM Granite (`WATSONX_APIKEY` / `ibm/granite-3-8b-instruct`)** / **DeepSeek** (`DEEPSEEK_API_KEY`) / **Groq** (`GROQ_API_KEY`) + **Tavily** web context.
 Quant scores and ML anomaly metrics stay immutable.
 
 ```powershell
@@ -53,6 +53,18 @@ Tactical 3D Board: http://127.0.0.1:3000 — inspect live objects, open ontology
 python scripts/run_paper_validation.py --threshold 0.50
 python scripts/plot_prepeak_curves.py
 ```
+
+---
+
+## 🏆 Hackathon Alignment: IBM SkillsBuild AI Builders
+
+| Hackathon Criterion | Athena-SDA Implementation | Verification / Evidence |
+|---------------------|---------------------------|-------------------------|
+| **1. Space Exploration & Domain Safety** | Military-first Space Domain Awareness (SDA) monitoring 24 strategic satellites (assets, suspects, baselines). Decouples natural space weather drag (F10.7, Ap, Kp) from covert low-thrust maneuvers and RPO threats. | [`README.md #1-4`](#1-what-athena-sda-does) · [`docs/PROOF_DOSSIER.md`](docs/PROOF_DOSSIER.md) |
+| **2. IBM Technology & AI Innovation** | **IBM Granite (`ibm/granite-3-8b-instruct`)** on **watsonx.ai** powers the **Bob Copilot** and sidecar API (`scripts/serve_granite_explain.py`), translating multi-dimensional orbital noise vectors and ontology graphs into natural-language tactical briefings while preserving immutable math scores. | [`src/bob.py`](src/bob.py) · [`src/graph_qa.py`](src/graph_qa.py) · `WATSONX_APIKEY` in `.env` |
+| **3. Advanced ML & Deterministic Math** | Multi-model pipeline: LZ76 complexity, DFA, Page CUSUM/EWMA, Kalman innovation (Zollo & Weigel 2023), past-only Isolation Forest, XGBoost weak labeling, Dempster-Shafer evidential fusion, and Kelly attention allocation. | [`src/engine.py`](src/engine.py) · [`src/evidence.py`](src/evidence.py) |
+| **4. Architectural Foundation (Palantir-Inspired)** | Implements 5 public patent concepts: micro-model orchestration with daily hot-swapping, LLM-as-explainer / ML-as-scorer, 4D spatiotemporal replay, typed OpenAPI contracts (`risk_report.v1`), and interactive 3D ontology map with cross-filtering. | [`docs/references/palantir_patents.md`](docs/references/palantir_patents.md) |
+| **5. Empirical Validation & Reproducibility** | Validated across **12.6 years** of longitudinal TLE data (~250k epochs across Solar Cycles 24 & 25): **5/5 hard hits** on GEO interest cases with 150–240 days lead time vs **0/7** on civil placebos (*p* ≈ 0.0013). 100% automated test suite passing (62/62 tests). | [`docs/paper/`](docs/paper/) · `pytest -q` (62 passed) |
 
 ---
 

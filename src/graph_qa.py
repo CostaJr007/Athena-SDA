@@ -499,8 +499,24 @@ def _web_query(payload: Dict[str, Any]) -> str:
     return " ".join(b for b in bits if b)
 
 
+def watsonx_complete(prompt: str) -> Optional[str]:
+    """Generate response using IBM Granite via watsonx.ai."""
+    if not (os.environ.get("WATSONX_APIKEY") and os.environ.get("WATSONX_PROJECT_ID")):
+        return None
+    try:
+        from src.bob import get_watsonx_model
+        model = get_watsonx_model()
+        if model:
+            res = model.generate_text(prompt=prompt)
+            if res and isinstance(res, str) and res.strip():
+                return res.strip()
+    except Exception as exc:
+        logger.warning("watsonx generation failed: %s", exc)
+    return None
+
+
 def explain_graph(payload: Dict[str, Any]) -> Dict[str, Any]:
-    """Return {text, model, source, citations}. source is deepseek, groq or fallback."""
+    """Return {text, model, source, citations}. source is watsonx, deepseek, groq or fallback."""
     question = str(payload.get("question") or "").strip()
     web_hits: List[Dict[str, str]] = []
     if question and tavily_api_key():
@@ -508,7 +524,18 @@ def explain_graph(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     prompt = build_graph_prompt(payload, web_hits=web_hits)
 
-    # 1. Try DeepSeek (High intelligence / knowledge)
+    # 1. Try IBM Granite (watsonx.ai) if configured
+    if os.environ.get("WATSONX_APIKEY") and os.environ.get("WATSONX_PROJECT_ID"):
+        text = watsonx_complete(prompt)
+        if text:
+            return {
+                "text": text,
+                "model": os.environ.get("WATSONX_MODEL") or "ibm/granite-3-8b-instruct",
+                "source": "watsonx",
+                "citations": web_hits,
+            }
+
+    # 2. Try DeepSeek (High intelligence / knowledge)
     if deepseek_api_key():
         text = deepseek_complete(prompt)
         if text:
@@ -519,7 +546,7 @@ def explain_graph(payload: Dict[str, Any]) -> Dict[str, Any]:
                 "citations": web_hits,
             }
 
-    # 2. Try Groq
+    # 3. Try Groq
     if groq_api_key():
         text = groq_complete(prompt)
         if text:
@@ -530,7 +557,7 @@ def explain_graph(payload: Dict[str, Any]) -> Dict[str, Any]:
                 "citations": web_hits,
             }
 
-    # 3. Deterministic Local Fallback
+    # 4. Deterministic Local Fallback
     return {
         "text": local_graph_brief(payload, web_hits),
         "model": "local-graph",
