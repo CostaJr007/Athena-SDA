@@ -25,6 +25,15 @@ interface ExplainResponse {
   citations?: WebCite[]
 }
 
+interface StreamEvent {
+  delta?: string
+  done?: boolean
+  model?: string
+  source?: 'deepseek' | 'groq' | 'fallback'
+  text?: string
+  error?: string
+}
+
 interface ChatTurn {
   who: 'op' | 'copilot'
   text: string
@@ -89,6 +98,89 @@ export default function OntologyExplainPanel({
     else if (from === 'fallback') setModel('local')
   }
 
+  /** Append a delta to the last copilot turn (the live streaming bubble). */
+  const appendDelta = (delta: string) => {
+    setTurns((prev) => {
+      if (!prev.length) return prev
+      const next = [...prev]
+      const last = next[next.length - 1]
+      if (!last || last.who !== 'copilot') return prev
+      next[next.length - 1] = { ...last, text: last.text + delta }
+      return next
+    })
+  }
+
+  /** Consume /api/explain-stream (SSE). Returns true when handled. */
+  const runStream = async (body: OntologyExplainPayload, seq: number): Promise<boolean> => {
+    let res: Response
+    try {
+      res = await fetch('/api/explain-stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      if (!res.ok || !res.body) return false
+    } catch {
+      return false
+    }
+    setTurns((prev) => [...prev, { who: 'copilot', text: '' }])
+    const reader = res.body.getReader()
+    const decoder = new TextDecoder()
+    let buf = ''
+    let finalSource: 'deepseek' | 'groq' | 'fallback' = 'fallback'
+    let finalModel: string | undefined
+    try {
+      for (;;) {
+        const { value, done } = await reader.read()
+        if (done) break
+        buf += decoder.decode(value, { stream: true })
+        let idx: number
+        while ((idx = buf.indexOf('\n\n')) >= 0) {
+          const raw = buf.slice(0, idx)
+          buf = buf.slice(idx + 2)
+          for (const line of raw.split('\n')) {
+            if (!line.startsWith('data:')) continue
+            const data = line.slice(5).trim()
+            if (!data) continue
+            let ev: StreamEvent
+            try {
+              ev = JSON.parse(data) as StreamEvent
+            } catch {
+              continue
+            }
+            if (ev.error) throw new Error(ev.error)
+            if (ev.delta) appendDelta(ev.delta)
+            if (ev.done) {
+              if (ev.source) finalSource = ev.source
+              if (ev.model) finalModel = ev.model
+              if (ev.text) appendDelta(ev.text)
+            }
+          }
+        }
+      }
+    } catch {
+      // stream broke mid-way: keep whatever already arrived
+    }
+    if (seq !== seqRef.current) return true
+    setSource(finalSource)
+    if (finalSource === 'deepseek' || finalSource === 'groq') {
+      if (finalModel) setModel(finalModel)
+    } else {
+      setModel('local')
+    }
+    // If nothing arrived (e.g. provider failed mid-stream), fill with local answer.
+    setTurns((prev) => {
+      const last = prev[prev.length - 1]
+      if (last && last.who === 'copilot' && !last.text.trim()) {
+        const next = [...prev]
+        next[next.length - 1] = { ...last, text: answerSituation(body) }
+        return next
+      }
+      return prev
+    })
+    return true
+  }
+
   const run = async (q?: string) => {
     const seq = ++seqRef.current
     const asked = (q ?? '').trim()
@@ -99,6 +191,8 @@ export default function OntologyExplainPanel({
     setBusy(true)
     setSource('loading')
     try {
+      if (await runStream(body, seq)) return
+      // Legacy non-streaming path (older sidecar / stream unavailable).
       const res = await fetch('/api/explain', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

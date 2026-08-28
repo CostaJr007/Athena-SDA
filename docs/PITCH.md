@@ -1,76 +1,77 @@
 # Athena-SDA — Pitch Script (1 minute)
 
-> Framing honesto: arquitetura **inspirada em patentes públicas da Palantir** —
-> nunca "construído com Palantir" nem afiliação. Validação por walk-forward
-> em eventos documentados; benchmark público SPLID quando disponível.
+> Honest framing: architecture **inspired by Palantir's public patents** —
+> never "built with Palantir" nor an affiliation. Validation by walk-forward
+> on documented events; public SPLID benchmark when available.
 
 ---
 
-## Abertura (0:00–0:15) — o problema
+## Opening (0:00–0:15) — the problem
 
-> "Operadores não conseguem vigiar 45.000+ objetos do catálogo espacial
-> (18 SDS / USSPACECOM) o tempo todo. Legacy systems lançam alertas sem
-> explicar, priorizar ou recomendar ação. O Athena-SDA transforma TLE
-> públicos + clima espacial em **insights operacionais militares** — de
-> milhares de objetos para um punhado de decisões por dia."
+> "Operators cannot watch 45,000+ objects in the space catalog
+> (18 SDS / USSPACECOM) all the time. Legacy systems fire alerts without
+> explaining, prioritizing, or recommending action. Athena-SDA turns public
+> TLE + space weather into **military operational insights** — from thousands
+> of objects down to a handful of decisions per day."
 
-## A arquitetura (0:15–0:40) — o que construímos
+## The architecture (0:15–0:40) — what we built
 
-> "Implementamos a arquitetura de 5 patentes públicas da Palantir:
+> "We implemented the architecture of 5 public Palantir patents:
 >
-> - **Micro-modelos orquestrados** com hot-swap por dia (patente AI
->   Meta-Constellation): Isolation Forest de normalidade + XGBoost de
->   prioridade + fusão evidencial Dempster-Shafer;
-> - **LLM que explica, nunca reescreve scores** (patente ML+LLM geospatial):
->   o copiloto Bob contextualiza cada alerta e cita fontes abertas quando há
->   correspondência com eventos documentados;
-> - **Contratos de API tipados** (patente sensor-correlation): Data API
->   (TLE), Inference API (registry de modelos), Open API (risk_report v1
->   validado por schema);
-> - **Ontologia com cross-filters** (patente ontology-map): role × país ×
->   órbita filtram o board e o globo em tempo real;
-> - **Replay temporal** (patente time-series geo): a curva de score até o
->   âncora público com slider.
+> - **Orchestrated micro-models** with daily hot-swap (AI Meta-Constellation
+>   patent): a normality Isolation Forest + XGBoost priority + Dempster-Shafer
+>   evidential fusion;
+> - **An LLM that explains, never rewrites scores** (ML+LLM geospatial
+>   patent): the Bob copilot contextualizes each alert and cites open sources
+>   when they match documented events;
+> - **Typed API contracts** (sensor-correlation patent): Data API (TLE),
+>   Inference API (model registry), Open API (schema-validated
+>   risk_report v1);
+> - **Ontology with cross-filters** (ontology-map patent): role × country ×
+>   orbit filter the board and globe in real time;
+> - **Temporal replay** (time-series geo patent): the score curve up to the
+>   public anchor with a slider.
 >
-> E uma camada matemática **corrigida e citada por feature** — LZ76, DFA,
-> MMD, CUSUM/EWMA calibrados por ARL, SSA, BOCPD, inovação de Kalman
-> (Zollo & Weigel 2023) — com DOI por método no Proof Dossier."
+> Plus a **corrected, per-feature-cited math layer** — LZ76, DFA, MMD,
+> ARL-calibrated CUSUM/EWMA, SSA, BOCPD, Kalman innovation
+> (Zollo & Weigel 2023) — with a DOI per method in the Proof Dossier."
 
-## A prova (0:40–0:55) — funciona e é honesto
+## The proof (0:40–0:55) — it works and it is honest
 
-> "Validação **walk-forward em eventos militares documentados** (Luch/
-> Olymp-K, Yaogan, Shiyan, SY-12) com placebos civis: hard hits com lead de
-> 150–240 dias nos casos de interesse, e os placebos **não** disparam
-> (Claims A+B re-validadas). [Números finais aqui após a re-validação.]
-> Benchmark público SPLID (MIT ARCLab) — onde a top solução usa XGBoost, a
-> nossa stack — dá uma métrica comparável contra o estado da arte."
+> "**Walk-forward validation on documented military events** (Luch/
+> Olymp-K, Yaogan, Shiyan, SY-12) with civil placebos: hard hits with
+> 150–240 day lead on the interest cases, and the placebos **do not** fire
+> (Claims A+B re-validated). [Final numbers here after re-validation.]
+> The public SPLID benchmark (MIT ARCLab) — where the top solution uses
+> XGBoost, our stack — gives a comparable metric against the state of the
+> art."
 
-## Fechamento (0:55–1:00)
+## Close (0:55–1:00)
 
-> "O único pipeline open-source de SDA militar com validação temporal em
-> eventos documentados, framework matemático citado por feature e
-> arquitetura ontológica padrão Palantir. **De 30.000 objetos a ~15 decisões
-> por dia — com explicação.**"
+> "The only open-source military SDA pipeline with temporal validation on
+> documented events, a per-feature-cited mathematical framework, and a
+> Palantir-style ontological architecture. **From 30,000 objects to ~15
+> decisions per day — with explanation.**"
 
 ---
 
-## Roteiro de demo (3 min, ao vivo)
+## Demo script (3 min, live)
 
-1. **Globo + board** — abrir o mission board; hover nos watchlist tracks
-   (cores Maven: amarelo suspeito, azul asset).
-2. **Cross-filters** — filtrar CN + GEO + suspect → board e globo dim
-   (patente ontology-map).
-3. **Luch/Olymp-K** — selecionar #40258 → RightDock: belief/plausibility da
-   fusão evidencial + Kelly + "Task sensor" validate-only.
-4. **Replay** — aba Replay no PoC panel: slider até `t_peak` com a fonte
-   citada (patente time-series geo).
-5. **Quant report** — abrir o HTML por NORAD (features e sinais).
+1. **Globe + board** — open the mission board; hover the watchlist tracks
+   (Maven colors: yellow suspect, blue asset).
+2. **Cross-filters** — filter CN + GEO + suspect → board and globe dim
+   (ontology-map patent).
+3. **Luch/Olymp-K** — select #40258 → RightDock: belief/plausibility from the
+   evidential fusion + Kelly + "Task sensor" validate-only.
+4. **Replay** — Replay tab in the PoC panel: slider up to `t_peak` with the
+   cited source (time-series geo patent).
+5. **Quant report** — open the per-NORAD HTML (features and signals).
 
-## Armadilhas a evitar
+## Pitfalls to avoid
 
-- ❌ "Detectamos espiões com 99% de acurácia" — dizemos "análise
-  comportamental do catálogo público, pattern-of-life ≠ intenção".
-- ❌ "Real-time tracking" — TLE público é stale por definição; dizemos
-  "análise do catálogo público com cadência de 1–4 TLEs/dia".
-- ❌ "Construído com Palantir" — dizemos "arquitetura inspirada em patentes
-  públicas verificadas (docs/references/palantir_patents.md)".
+- ❌ "We detect spies with 99% accuracy" — we say "behavioral analysis of the
+  public catalog; pattern-of-life ≠ intent".
+- ❌ "Real-time tracking" — public TLE is stale by definition; we say
+  "analysis of the public catalog at 1–4 TLEs/day cadence".
+- ❌ "Built with Palantir" — we say "architecture inspired by verified public
+  patents (docs/references/palantir_patents.md)".

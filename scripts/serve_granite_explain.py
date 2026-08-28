@@ -36,7 +36,10 @@ from src.object_layer import (  # noqa: E402
     read_actions,
     update_alert_state,
 )
-from src.ontology_explain import explain_ontology_graph  # noqa: E402
+from src.ontology_explain import (
+    explain_graph_stream,
+    explain_ontology_graph,
+)
 from src.whatif import run_whatif  # noqa: E402
 
 HOST = os.environ.get("ATHENA_BIND", "127.0.0.1")
@@ -199,6 +202,28 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(500, {"error": str(exc)})
                 return
             self._json(200, result)
+            return
+
+        if path in ("/explain-stream", "/api/explain-stream"):
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+            self.send_header("Cache-Control", "no-cache")
+            self._cors()
+            self.end_headers()
+            try:
+                for ev in explain_graph_stream(payload):
+                    raw = ("data: " + json.dumps(ev, default=str) + "\n\n").encode("utf-8")
+                    self.wfile.write(raw)
+                    self.wfile.flush()
+            except (BrokenPipeError, ConnectionResetError):
+                pass
+            except Exception as exc:
+                raw = ("data: " + json.dumps({"error": str(exc)}) + "\n\n").encode("utf-8")
+                try:
+                    self.wfile.write(raw)
+                    self.wfile.flush()
+                except OSError:
+                    pass
             return
 
         if path not in ("/explain", "/api/explain"):

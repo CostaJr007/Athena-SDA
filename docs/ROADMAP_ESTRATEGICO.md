@@ -1,106 +1,106 @@
-# Athena-SDA — Cronograma do Estratégico (pós-Quick-Wins)
+# Athena-SDA — Strategic Roadmap (post-Quick-Wins)
 
-> Escopo militar / Palantir Gotham-Foundry. Quick-wins S0–S4 + S6 (agora
-> ligado na UI: `investigation.v1` + FSM via sidecar) estão no código.
-> Fatias iniciais de T1–T9 (hotkeys extraídos, code-split, Pc/TCA extra,
-> Document, RAG citado, what-if, watchlist API, compose) já existem.
-> Este documento cobre o que **ainda é profundo**: monólito do globe,
-> hops temporais ricos, Pc operacional com covariância real, RAG denso.
+> Military scope / Palantir Gotham-Foundry. Quick-wins S0–S4 + S6 (now wired
+> into the UI: `investigation.v1` + FSM via sidecar) are in the code.
+> Initial T1–T9 slices (extracted hotkeys, code-split, Pc/TCA extras,
+> Document, cited RAG, what-if, watchlist API, compose) already exist.
+> This document covers what is **still deep**: the globe monolith, rich
+> temporal hops, operational Pc with real covariance, dense RAG.
 
-Esforço: **S** = pequeno (≤1 semana) · **M** = médio (1–2 semanas) · **L** = grande (2–4 semanas).
+Effort: **S** = small (≤1 week) · **M** = medium (1–2 weeks) · **L** = large (2–4 weeks).
 
-## Visão geral das tracks
+## Track overview
 
-| # | Track | Esforço | Depende de | Entrega de saída |
-|---|-------|---------|------------|------------------|
-| T1 | Refactor do frontend monólito | M | — | `Home.tsx`/`globe-engine.ts` quebrados em módulos + Vitest |
-| T2 | Grafo objeto-cêntrico multi-hop (search-around) | L | T1, `object_layer.py` | Navegação 2–3 hops no `InvestigationCanvas` |
-| T3 | Conjunção/proximidade com covariância (Pc + TCA) | L | — (backend) | `pair_score.py` com SGP4 + elipsoide de covariância |
-| T4 | Documentos/OSINT como objetos de 1ª classe (multi-INT) | M | `ontology.json` | Tipo `Document`, ingestão de relatórios abertos |
-| T5 | Bob → copiloto analítico com RAG + citação | M | `bob.py`, `docs/` | Q&A multi-turno com fontes citadas |
-| T6 | What-if / sandbox adversário | S–M | `utils.py`, `EventReplayPanel` | Injeção de manobra sintética + detecção |
-| T7 | Watchlist dinâmica + ingesta Space-Track | M | `download_spacetrack.py`, UI | Gestão de NORAD/role pela UI |
-| T8 | Code-splitting + performance do frontend | S | T1 | Chunk < 500 kB, lazy-load do globe |
-| T9 | Operação & deploy | M | Dockerfile (feito) | Compose, persistência, monitoramento |
+| # | Track | Effort | Depends on | Output |
+|---|-------|--------|------------|--------|
+| T1 | Frontend monolith refactor | M | — | `Home.tsx`/`globe-engine.ts` split into modules + Vitest |
+| T2 | Multi-hop object-centric graph (search-around) | L | T1, `object_layer.py` | 2–3 hop navigation in `InvestigationCanvas` |
+| T3 | Conjunction/proximity with covariance (Pc + TCA) | L | — (backend) | `pair_score.py` with SGP4 + covariance ellipsoid |
+| T4 | Documents/OSINT as first-class objects (multi-INT) | M | `ontology.json` | `Document` type, open-report ingestion |
+| T5 | Bob → analytical copilot with RAG + citation | M | `bob.py`, `docs/` | Multi-turn Q&A with cited sources |
+| T6 | What-if / adversary sandbox | S–M | `utils.py`, `EventReplayPanel` | Synthetic maneuver injection + detection |
+| T7 | Dynamic watchlist + Space-Track ingest | M | `download_spacetrack.py`, UI | NORAD/role management from the UI |
+| T8 | Frontend code-splitting + performance | S | T1 | Chunk < 500 kB, globe lazy-load |
+| T9 | Operations & deploy | M | Dockerfile (done) | Compose, persistence, monitoring |
 
-## Cronograma (semanas 1–8, 3 trilhas paralelas)
+## Schedule (weeks 1–8, 3 parallel tracks)
 
 ```
-Semana  1     2     3     4     5     6     7     8
-Trilha A (frontend/UI)
-        [T1 refactor monólito]  [T2 grafo multi-hop        ]
+Week     1     2     3     4     5     6     7     8
+Track A (frontend/UI)
+        [T1 monolith refactor]  [T2 multi-hop graph        ]
                                       [T8 code-split ]
-Trilha B (astrodinâmica/backend)
-        [T3 SGP4 + covariância                 ]
-        [T4 multi-INT documentos  ]
-Trilha C (IA/operação)
-        [T5 Bob RAG+citação      ]
-        [T6 sandbox what-if]
-        [T7 watchlist dinâmica        ]
+Track B (astrodynamics/backend)
+        [T3 SGP4 + covariance                 ]
+        [T4 multi-INT documents  ]
+Track C (AI/operations)
+        [T5 Bob RAG+citation      ]
+        [T6 what-if sandbox]
+        [T7 dynamic watchlist        ]
         [T9 deploy/compose                          ]
 ```
 
-## Detalhamento por fase
+## Phase detail
 
-### Fase 1 (Semanas 1–2) — Fundações
+### Phase 1 (Weeks 1–2) — Foundations
 
-**T1 — Refactor do frontend monólito (M)**
-- Alvo: `src/frontend/src/pages/Home.tsx` (1.272 linhas) e `src/frontend/src/lib/globe-engine.ts` (1.390 linhas).
-- Plano: extrair estado/UI 3D para hooks (`useGlobe`, `useSelection`, `useTimeline`), separar a engine Three.js da renderização React, tipar os contratos com `zod` (já é dependência).
-- Exit: `npm run build` limpo; componentes HUD testados com Vitest; nenhuma regressão de comportamento.
-- **Bloqueia** T2 e T8.
+**T1 — Frontend monolith refactor (M)**
+- Target: `src/frontend/src/pages/Home.tsx` (1,272 lines) and `src/frontend/src/lib/globe-engine.ts` (1,390 lines).
+- Plan: extract 3D state/UI into hooks (`useGlobe`, `useSelection`, `useTimeline`), separate the Three.js engine from React rendering, type the contracts with `zod` (already a dependency).
+- Exit: clean `npm run build`; HUD components tested with Vitest; no behavior regression.
+- **Blocks** T2 and T8.
 
-**T4 — Documentos/OSINT como objetos (M)**
-- Adicionar tipo `Document`/`Intel` em `src/ontology.json` (categories Entity/Event/Document já previstas no docstring).
-- Ingerir `data/catalog/events_walkforward.json` + relatórios abertos (Gunter/CSIS/SWF) como objetos linkáveis a `Case`/`Satellite` via `validatedBy`/`mentions`.
-- Exit: `materialize_investigation` emite objetos `Document` com provenance; schema `investigation.v1` atualizado.
+**T4 — Documents/OSINT as objects (M)**
+- Add `Document`/`Intel` types to `src/ontology.json` (Entity/Event/Document categories already foreseen in the docstring).
+- Ingest `data/catalog/events_walkforward.json` + open reports (Gunter/CSIS/SWF) as objects linkable to `Case`/`Satellite` via `validatedBy`/`mentions`.
+- Exit: `materialize_investigation` emits `Document` objects with provenance; `investigation.v1` schema updated.
 
-### Fase 2 (Semanas 2–4) — Capacidade analítica
+### Phase 2 (Weeks 2–4) — Analytical capability
 
-**T3 — Conjunção com covariância SGP4 (L)**
-- Hoje `pair_score.py` usa distância + cointegração/DCCA. Subir para propagação SGP4 (o frontend já tem `propagator.worker.ts` + `satellite.js`; backend precisa de `sgp4>=2.22` — hoje comentado em `requirements.txt`).
-- Entregar Pc (probabilidade de colisão) e TCA (tempo de máxima aproximação) com elipsoide de covariância por par suspect→asset.
-- Exit: `score_all_pairs` emite `pc`/`tca`/`covariance` por par; `risk_report.v1.schema.json` atualizado; testes de regressão com pares sintéticos.
+**T3 — SGP4 conjunction with covariance (L)**
+- Today `pair_score.py` uses distance + cointegration/DCCA. Upgrade to SGP4 propagation (the frontend already has `propagator.worker.ts` + `satellite.js`; the backend needs `sgp4>=2.22` — currently commented in `requirements.txt`).
+- Deliver Pc (collision probability) and TCA (time of closest approach) with a per-pair covariance ellipsoid for suspect→asset.
+- Exit: `score_all_pairs` emits `pc`/`tca`/`covariance` per pair; `risk_report.v1.schema.json` updated; regression tests with synthetic pairs.
 
-**T5 — Bob RAG + citação (M)**
-- Sobre `src/bob.py` (tool-calling já esboçado): adicionar índice RAG sobre `docs/` (proof dossier, paper, referências, patentes) e briefing multi-turno **com citação de fonte**.
-- Invariante a preservar: Bob **explica**, nunca recomputa scores (princípio declarado no projeto).
-- Exit: briefing responde "o que sustenta este alerta?" citando o artefato exato.
+**T5 — Bob RAG + citation (M)**
+- On top of `src/bob.py` (tool-calling already sketched): add a RAG index over `docs/` (proof dossier, paper, references, patents) and multi-turn briefing **with source citation**.
+- Invariant to preserve: Bob **explains**, never recomputes scores (declared project principle).
+- Exit: briefing answers "what supports this alert?" citing the exact artifact.
 
-### Fase 3 (Semanas 3–6) — Interatividade e ingesta
+### Phase 3 (Weeks 3–6) — Interactivity and ingest
 
-**T2 — Grafo multi-hop (L)**
-- Sobre `src/object_layer.py` (links já existem: `threatens`, `sameAsset`, `samePeak`, `validatedBy`, `weather`, `fusedAs`): navegação 2–3 hops temporais no `InvestigationCanvas`.
-- Busca por qualquer entidade (NORAD, evento, documento, operador) com visualização de vizinhança.
-- Exit: expand-neighbors funciona; resultados materializados em `investigation_latest.json`.
+**T2 — Multi-hop graph (L)**
+- On top of `src/object_layer.py` (links already exist: `threatens`, `sameAsset`, `samePeak`, `validatedBy`, `weather`, `fusedAs`): 2–3 hop temporal navigation in the `InvestigationCanvas`.
+- Search by any entity (NORAD, event, document, operator) with neighborhood visualization.
+- Exit: expand-neighbors works; results materialized in `investigation_latest.json`.
 
-**T6 — Sandbox what-if (S–M)**
-- Sobre `src/utils.py` (`generate_mock_tle_history`, `generate_shadowing_pair`) e `EventReplayPanel`: injetar manobra sintética num suspeito e verificar se a detecção (IF + CUSUM/EWMA) dispara.
-- Exit: CLI/UI demonstra detecção de manobra injetada → serve de validação contínua de sensibilidade.
+**T6 — What-if sandbox (S–M)**
+- On top of `src/utils.py` (`generate_mock_tle_history`, `generate_shadowing_pair`) and `EventReplayPanel`: inject a synthetic maneuver into a suspect and check whether the detection (IF + CUSUM/EWMA) fires.
+- Exit: CLI/UI demonstrates detection of an injected maneuver → serves as continuous sensitivity validation.
 
-**T7 — Watchlist dinâmica (M)**
-- Sobre `download_spacetrack.py` + `data/catalog/watchlist.json`: UI para adicionar/remover NORAD, reclassificar role (asset/suspect/baseline) e agendar ingesta (`install_daily_cron.sh`).
-- Exit: mudança de catálogo persiste, re-treina baseline e reflete no board sem edição manual de JSON.
+**T7 — Dynamic watchlist (M)**
+- On top of `download_spacetrack.py` + `data/catalog/watchlist.json`: UI to add/remove NORAD, reclassify role (asset/suspect/baseline), and schedule ingest (`install_daily_cron.sh`).
+- Exit: catalog change persists, retrains the baseline, and reflects on the board without manual JSON editing.
 
-### Fase 4 (Semanas 6–8) — Operação e acabamento
+### Phase 4 (Weeks 6–8) — Operations and polish
 
 **T8 — Code-splitting (S)**
-- Vite reporta chunk de ~985 kB. Usar `React.lazy`/`import()` para o globe e painéis pesados; `manualChunks` para `three`/`satellite.js`/`recharts`.
-- Exit: sem chunk > 500 kB; TTFB melhorado.
+- Vite reports a ~985 kB chunk. Use `React.lazy`/`import()` for the globe and heavy panels; `manualChunks` for `three`/`satellite.js`/`recharts`.
+- Exit: no chunk > 500 kB; better TTFB.
 
-**T9 — Operação & deploy (M)**
-- `docker-compose.yml` (backend pipeline + frontend build), volumes para `data/` e `models/`, healthcheck, e documentação de backup/restore.
-- Exit: `docker compose up` sobe o board + pipeline reproduzível.
+**T9 — Operations & deploy (M)**
+- `docker-compose.yml` (backend pipeline + frontend build), volumes for `data/` and `models/`, healthcheck, backup/restore documentation.
+- Exit: `docker compose up` brings up the board + reproducible pipeline.
 
-## Ordem de dependências (resumo)
+## Dependency order (summary)
 
-1. **T1** primeiro (destrava T2 e T8).
-2. **T3 e T4** são independentes e podem rodar em paralelo com T1 (backend puro).
-3. **T5, T6, T7** independem de T1; só precisam dos quick-wins já feitos.
-4. **T9** por último (empacota tudo).
+1. **T1** first (unlocks T2 and T8).
+2. **T3 and T4** are independent and can run in parallel with T1 (pure backend).
+3. **T5, T6, T7** are independent of T1; they only need the quick-wins already done.
+4. **T9** last (packages everything).
 
-## Definition of Done global
+## Global Definition of Done
 
-- `python -m pytest -q` verde; `python scripts/smoke_test.py` verde.
-- `cd src/frontend && npm run build` verde (sem chunk warning).
-- Novos artefatos respeitam os invariantes de doutrina (scores imutáveis, past-only, baseline+asset = normalidade).
+- `python -m pytest -q` green; `python scripts/smoke_test.py` green.
+- `cd src/frontend && npm run build` green (no chunk warning).
+- New artifacts respect the doctrine invariants (immutable scores, past-only, baseline+asset = normality).

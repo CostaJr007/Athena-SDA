@@ -5,9 +5,10 @@ board. Tavily adds public-web context; it never becomes a score source.
 """
 from __future__ import annotations
 
+import json
 import os
 import re
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 import requests
 from dotenv import load_dotenv
@@ -24,7 +25,7 @@ DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
 TAVILY_URL = "https://api.tavily.com/search"
 DEFAULT_GROQ_MODEL = "llama-3.1-8b-instant"
 DEFAULT_DEEPSEEK_MODEL = "deepseek-chat"
-TIMEOUT = 20
+TIMEOUT = 60
 
 # Plain-language only. Keys stay stable for older imports.
 LINK_GLOSSARY = {
@@ -344,17 +345,15 @@ OBJECT ONTOLOGY GRAPH & LIVE CONTACTS:
 {header}
 {fact_block}
 
-TIMEOUT = 35
-
 INSTRUCTIONS:
-1. Language: Answer in the same language as the user's question (if asked in Portuguese, answer in fluent Portuguese; if asked in English, answer in English).
+1. Language: Respond in ENGLISH (US) by default — always. Only deviate if the operator explicitly asks you to answer in another language, and even then keep section headings and technical terms in English. If any cited source in the SOURCES block is in Portuguese or another language, translate and paraphrase it into English; never quote non-English text verbatim.
 2. Completeness: Always complete all sentences and sections thoroughly. Do not leave thoughts unfinished.
 3. Structure your response into clear, well-formatted Markdown sections:
-   - **1. Contexto & Ficha Técnica do Satélite:** Identificação, NORAD, Operador, Data e local de lançamento, Veículo lançador, Regime orbital e Capacidade/Propósito da missão.
-   - **2. Análise do Grafo de Ontologia:** Interpretação detalhada das conexões (ativos protegidos sob vigilância, alertas ativos, satélites relacionados da mesma constelação/operador e influência do clima espacial F10.7 na discriminação de arrasto vs manobra).
-   - **3. Scores Matemáticos do Modelo (Imutáveis):** Explicação contextualizada de Atenção, Anomalia e Evidência Combinada (Dempster-Shafer).
-   - **4. Implicações Operacionais & Riscos Orbitais:** Detalhar o que o alerta indica e o que NÃO indica (ex: aproximação vs ataque hostil; probabilidade de manobra vs ruído).
-   - **5. Conclusão & Recomendação Tática.**
+   - **1. Context & Satellite Technical Sheet:** Identification, NORAD ID, Operator, launch date and site, launch vehicle, orbital regime, and mission capability/purpose.
+   - **2. Ontology Graph Analysis:** Detailed interpretation of the connections (protected assets under watch, active alerts, related satellites from the same constellation/operator, and the influence of F10.7 space weather on drag-vs-maneuver discrimination).
+   - **3. Model Math Scores (Immutable):** Contextual explanation of Attention, Anomaly, and Combined Evidence (Dempster-Shafer).
+   - **4. Operational Implications & Orbital Risks:** Detail what the alert indicates and what it does NOT indicate (e.g., close approach vs hostile attack; maneuver probability vs noise).
+   - **5. Conclusion & Tactical Recommendation.**
 4. Score Integrity: Never invent or change numeric scores. Reference the computed anomaly, attention, and evidence scores given above.
 
 USER QUESTION:
@@ -367,10 +366,11 @@ USER QUESTION:
 EXPERT BRIEFING:"""
 
 
-def deepseek_complete(prompt: str) -> Optional[str]:
+def deepseek_stream(prompt: str) -> Iterator[str]:
+    """Yield text deltas from DeepSeek (SSE). Yields nothing on failure."""
     key = deepseek_api_key()
     if not key:
-        return None
+        return
     try:
         res = requests.post(
             DEEPSEEK_URL,
@@ -381,36 +381,58 @@ def deepseek_complete(prompt: str) -> Optional[str]:
             json={
                 "model": deepseek_model(),
                 "temperature": 0.3,
-                "max_tokens": 2500,
+                "max_tokens": 1600,
+                "stream": True,
                 "messages": [
                     {
                         "role": "system",
                         "content": (
                             "You are Athena-SDA Copilot, a senior military and space domain awareness analyst AI. "
                             "You provide elaborate, complete, highly organized, and professionally formatted briefings "
-                            "in the operator's language. Never leave an analysis cut off or incomplete."
+                            "in English (US) by default; use another language only if the operator explicitly asks. "
+                            "Never leave an analysis cut off or incomplete."
                         ),
                     },
                     {"role": "user", "content": prompt},
                 ],
             },
             timeout=TIMEOUT,
+            stream=True,
         )
         res.raise_for_status()
-        data = res.json()
-        text = (
-            ((data.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
-        ).strip()
-        return text or None
+        for line in res.iter_lines(decode_unicode=True):
+            if not line:
+                continue
+            line = line.strip()
+            if not line.startswith("data:"):
+                continue
+            data = line[len("data:") :].strip()
+            if data == "[DONE]":
+                break
+            try:
+                chunk = json.loads(data)
+            except json.JSONDecodeError:
+                continue
+            delta = (
+                ((chunk.get("choices") or [{}])[0].get("delta") or {}).get("content") or ""
+            )
+            if delta:
+                yield delta
     except Exception as exc:
-        logger.warning("deepseek complete failed: %s", exc)
-        return None
+        logger.warning("deepseek stream failed: %s", exc)
 
 
-def groq_complete(prompt: str) -> Optional[str]:
+def deepseek_complete(prompt: str) -> Optional[str]:
+    """Non-streaming wrapper (kept for tests and non-stream callers)."""
+    text = "".join(deepseek_stream(prompt)).strip()
+    return text or None
+
+
+def groq_stream(prompt: str) -> Iterator[str]:
+    """Yield text deltas from Groq (SSE). Yields nothing on failure."""
     key = groq_api_key()
     if not key:
-        return None
+        return
     try:
         res = requests.post(
             GROQ_URL,
@@ -422,28 +444,49 @@ def groq_complete(prompt: str) -> Optional[str]:
                 "model": groq_model(),
                 "temperature": 0.2,
                 "max_tokens": 1500,
+                "stream": True,
                 "messages": [
                     {
                         "role": "system",
                         "content": (
                             "You are Athena-SDA Copilot, an expert AI in Space Domain Awareness. "
-                            "Answer accurately in the user's language with complete structured sections without altering mathematical scores."
+                            "Answer accurately in English (US) by default, with complete structured sections "
+                            "and without altering mathematical scores; use another language only if the operator explicitly asks."
                         ),
                     },
                     {"role": "user", "content": prompt},
                 ],
             },
             timeout=TIMEOUT,
+            stream=True,
         )
         res.raise_for_status()
-        data = res.json()
-        text = (
-            ((data.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
-        ).strip()
-        return text or None
+        for line in res.iter_lines(decode_unicode=True):
+            if not line:
+                continue
+            line = line.strip()
+            if not line.startswith("data:"):
+                continue
+            data = line[len("data:") :].strip()
+            if data == "[DONE]":
+                break
+            try:
+                chunk = json.loads(data)
+            except json.JSONDecodeError:
+                continue
+            delta = (
+                ((chunk.get("choices") or [{}])[0].get("delta") or {}).get("content") or ""
+            )
+            if delta:
+                yield delta
     except Exception as exc:
-        logger.warning("groq complete failed: %s", exc)
-        return None
+        logger.warning("groq stream failed: %s", exc)
+
+
+def groq_complete(prompt: str) -> Optional[str]:
+    """Non-streaming wrapper (kept for tests and non-stream callers)."""
+    text = "".join(groq_stream(prompt)).strip()
+    return text or None
 
 
 def _web_query(payload: Dict[str, Any]) -> str:
@@ -493,4 +536,44 @@ def explain_graph(payload: Dict[str, Any]) -> Dict[str, Any]:
         "model": "local-graph",
         "source": "fallback",
         "citations": web_hits,
+    }
+
+
+def explain_graph_stream(payload: Dict[str, Any]) -> Iterator[Dict[str, Any]]:
+    """SSE events for the graph copilot: {"delta": str} chunks, then a final
+    {"done": True, "model": ..., "source": ...}.
+
+    Provider order: deepseek -> groq -> local fallback. The local fallback is
+    emitted as a single {"done": True, "text": ...} event (no deltas).
+    """
+    question = str(payload.get("question") or "").strip()
+    web_hits: List[Dict[str, str]] = []
+    if question and tavily_api_key():
+        web_hits = tavily_search(_web_query(payload))
+
+    prompt = build_graph_prompt(payload, web_hits=web_hits)
+
+    if deepseek_api_key():
+        got = False
+        for delta in deepseek_stream(prompt):
+            got = True
+            yield {"delta": delta}
+        if got:
+            yield {"done": True, "model": deepseek_model(), "source": "deepseek"}
+            return
+
+    if groq_api_key():
+        got = False
+        for delta in groq_stream(prompt):
+            got = True
+            yield {"delta": delta}
+        if got:
+            yield {"done": True, "model": groq_model(), "source": "groq"}
+            return
+
+    yield {
+        "done": True,
+        "model": "local-graph",
+        "source": "fallback",
+        "text": local_graph_brief(payload, web_hits),
     }
